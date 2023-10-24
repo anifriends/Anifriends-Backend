@@ -1,0 +1,23 @@
+name: Auto Reviewer CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+env:
+  REVIEWERS: hseong3243, bjo6300, pushedrumex, funnysunny08
+  GITHUB_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Assign Reviewer
+        uses: hkusu/review-assign-action@v1
+        with:
+          assignees: ${{ github.actor }} # assign pull request author
+          reviewers: ${{ env.REVIEWERS }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.YOUR_GITHUB_TOKEN_NAME }}
