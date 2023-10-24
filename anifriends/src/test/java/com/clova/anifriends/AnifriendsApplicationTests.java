@@ -1,10 +1,10 @@
-package com.clova.aws;
+package com.clova.anifriends;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AwsApplicationTests {
+class AnifriendsApplicationTests {
 
 	@Test
 	void contextLoads() {
