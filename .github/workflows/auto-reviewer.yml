@@ -7,6 +7,7 @@ on:
 
 env:
   REVIEWERS: hseong3243, bjo6300, pushedrumex, funnysunny08
+  GITHUB_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
 
 jobs:
   build:
@@ -18,3 +19,5 @@ jobs:
         with:
           assignees: ${{ github.actor }} # assign pull request author
           reviewers: ${{ env.REVIEWERS }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.YOUR_GITHUB_TOKEN_NAME }}
