@@ -1,4 +1,4 @@
-package com.clova.anifriends.docs;
+package com.clova.anifriends.docs.enumtype;
 
 import com.clova.anifriends.EnumType;
 

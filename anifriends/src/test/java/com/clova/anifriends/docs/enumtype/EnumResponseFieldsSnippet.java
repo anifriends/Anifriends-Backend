@@ -1,4 +1,4 @@
-package com.clova.anifriends.docs;
+package com.clova.anifriends.docs.enumtype;
 
 import java.util.List;
 import java.util.Map;
@@ -8,9 +8,9 @@ import org.springframework.restdocs.payload.AbstractFieldsSnippet;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.PayloadSubsectionExtractor;
 
-public class CustomResponseFieldsSnippet extends AbstractFieldsSnippet {
+public class EnumResponseFieldsSnippet extends AbstractFieldsSnippet {
 
-    public CustomResponseFieldsSnippet(String type, List<FieldDescriptor> descriptors,
+    public EnumResponseFieldsSnippet(String type, List<FieldDescriptor> descriptors,
         Map<String, Object> attributes,
         boolean ignoreUndocumentedFields,
         PayloadSubsectionExtractor<?> subsectionExtractor) {
