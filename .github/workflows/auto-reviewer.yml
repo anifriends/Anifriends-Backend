@@ -3,7 +3,7 @@ name: Auto Reviewer CI
 on:
   pull_request:
     branches:
-      - develop
+      - dev
 
 jobs:
   assign:
