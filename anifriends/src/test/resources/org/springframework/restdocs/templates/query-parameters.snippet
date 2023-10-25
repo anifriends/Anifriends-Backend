@@ -1,9 +1,10 @@
 |===
-|필드명|필수값|설명
+|필드명|필수값|제약|설명
 
 {{#parameters}}
 |{{#tableCellContent}}`+{{name}}+`{{/tableCellContent}}
 |{{#tableCellContent}}{{^optional}}true{{/optional}}{{/tableCellContent}}
+|{{#tableCellContent}}{{#constraint}}{{.}}{{/constraint}}{{/tableCellContent}}
 |{{#tableCellContent}}{{description}}{{/tableCellContent}}
 {{/parameters}}
 |===
