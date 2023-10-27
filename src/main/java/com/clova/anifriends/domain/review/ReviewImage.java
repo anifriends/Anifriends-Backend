@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.review;
 
+import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +14,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "review_image")
-public class ReviewImage {
+public class ReviewImage extends BaseTimeEntity {
 
     @Id
     @Column(name = "review_image_id")
