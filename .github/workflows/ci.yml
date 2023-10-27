@@ -40,12 +40,12 @@ jobs:
 
       ## gradle 권한 주기
       - name: Grant execute permission for gradlew
-        run: chmod +x ./anifriends/gradlew
+        run: chmod +x ./gradlew
         shell: bash
 
       # 빌드
       - name: Build with Gradle
-        run: ./anifriends/gradlew build
+        run: ./gradlew build
 
       ## 테스트 결과 PR 코멘트에 등록
       - name: Register the test results as PR comments
