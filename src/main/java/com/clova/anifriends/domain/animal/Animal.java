@@ -8,6 +8,7 @@ import com.clova.anifriends.domain.animal.wrapper.IsNeutered;
 import com.clova.anifriends.domain.animal.wrapper.Name;
 import com.clova.anifriends.domain.animal.wrapper.Type;
 import com.clova.anifriends.domain.animal.wrapper.Weight;
+import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.shelter.Shelter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -25,7 +26,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "animal")
-public class Animal {
+public class Animal extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

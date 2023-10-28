@@ -1,6 +1,6 @@
-package com.clova.anifriends.domain.recruitment;
+package com.clova.anifriends.domain.animal;
 
-import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.domain.common.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,19 +12,18 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "recruitment_image")
-public class RecruitmentImage {
+@Table(name = "animal_image")
+public class AnimalImage extends BaseTimeEntity {
 
     @Id
-    @Column(name = "recruitment_image_id")
+    @Column(name = "animal_image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long recruitmentImageId;
+    private Long animalImageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recruitment_id")
-    private Recruitment recruitment;
+    @JoinColumn(name = "animal_id")
+    private Animal animal;
 
     @Column(name = "image_url")
     private String imageUrl;
-
 }

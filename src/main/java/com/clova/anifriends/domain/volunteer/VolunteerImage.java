@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.volunteer;
 
+import com.clova.anifriends.domain.common.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,9 +9,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-public class VolunteerImage {
+@Table(name = "voulunteer_image")
+public class VolunteerImage extends BaseTimeEntity {
 
     @Id
     @Column(name = "volunteer_image_id")

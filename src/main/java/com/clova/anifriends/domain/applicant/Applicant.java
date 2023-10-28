@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.applicant;
 
 import com.clova.anifriends.domain.applicant.wrapper.Status;
+import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import jakarta.persistence.Column;
@@ -17,7 +18,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "applicant")
-public class Applicant {
+public class Applicant extends BaseTimeEntity {
 
     @Id
     @Column(name = "applicant_id")

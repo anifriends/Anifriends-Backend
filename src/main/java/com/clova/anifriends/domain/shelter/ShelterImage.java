@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.shelter;
 
+import com.clova.anifriends.domain.common.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,7 +13,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "shelter_image")
-public class ShelterImage {
+public class ShelterImage extends BaseTimeEntity {
 
     @Id
     @Column(name = "shelter_image_id")
