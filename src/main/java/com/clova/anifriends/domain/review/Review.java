@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.review;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.review.wrapper.Content;
+import com.clova.anifriends.domain.review.wrapper.ReviewContent;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -33,7 +33,7 @@ public class Review extends BaseTimeEntity {
     private Volunteer volunteer;
 
     @Embedded
-    private Content content;
+    private ReviewContent content;
 
     protected Review() {
     }
@@ -45,7 +45,7 @@ public class Review extends BaseTimeEntity {
     ) {
         this.recruitment = recruitment;
         this.volunteer = volunteer;
-        this.content = new Content(content);
+        this.content = new ReviewContent(content);
     }
 
 }

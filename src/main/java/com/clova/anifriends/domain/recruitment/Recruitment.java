@@ -1,10 +1,10 @@
 package com.clova.anifriends.domain.recruitment;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
-import com.clova.anifriends.domain.recruitment.wrapper.Capacity;
-import com.clova.anifriends.domain.recruitment.wrapper.Content;
-import com.clova.anifriends.domain.recruitment.wrapper.IsClosed;
-import com.clova.anifriends.domain.recruitment.wrapper.Title;
+import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentContent;
+import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentDeadlineInfo;
+import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentTime;
+import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentTitle;
 import com.clova.anifriends.domain.shelter.Shelter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -33,25 +33,16 @@ public class Recruitment extends BaseTimeEntity {
     private Shelter shelter;
 
     @Embedded
-    private Title title;
+    private RecruitmentTitle title;
 
     @Embedded
-    private Capacity capacity;
+    private RecruitmentContent content;
 
     @Embedded
-    private Content content;
+    private RecruitmentTime time;
 
     @Embedded
-    private IsClosed isClosed;
-
-    @Column(name = "startTime")
-    private LocalDateTime startTime;
-
-    @Column(name = "endTime")
-    private LocalDateTime endTime;
-
-    @Column(name = "deadline")
-    private LocalDateTime deadline;
+    private RecruitmentDeadlineInfo deadlineInfo;
 
     @LastModifiedDate
     @Column(name = "updated_at")
@@ -71,12 +62,9 @@ public class Recruitment extends BaseTimeEntity {
         LocalDateTime deadline
     ) {
         this.shelter = shelter;
-        this.title = new Title(title);
-        this.capacity = new Capacity(capacity);
-        this.content = new Content(content);
-        this.isClosed = new IsClosed(isClosed);
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.deadline = deadline;
+        this.title = new RecruitmentTitle(title);
+        this.content = new RecruitmentContent(content);
+        this.time = new RecruitmentTime(startTime, endTime);
+        this.deadlineInfo = new RecruitmentDeadlineInfo(deadline, isClosed, capacity);
     }
 }

@@ -1,18 +1,18 @@
-package com.clova.anifriends.domain.recruitment.wrapper;
+package com.clova.anifriends.domain.review.wrapper;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class Content {
+public class ReviewContent {
 
     @Column(name = "content")
     private String content;
 
-    protected Content() {
+    protected ReviewContent() {
     }
 
-    public Content(String value) {
+    public ReviewContent(String value) {
         this.content = value;
     }
 

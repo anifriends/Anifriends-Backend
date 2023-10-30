@@ -1,14 +1,11 @@
 package com.clova.anifriends.domain.shelter;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
-import com.clova.anifriends.domain.shelter.wrapper.Address;
-import com.clova.anifriends.domain.shelter.wrapper.AddressDetail;
-import com.clova.anifriends.domain.shelter.wrapper.Email;
-import com.clova.anifriends.domain.shelter.wrapper.IsOpenedAddress;
-import com.clova.anifriends.domain.shelter.wrapper.Name;
-import com.clova.anifriends.domain.shelter.wrapper.Password;
-import com.clova.anifriends.domain.shelter.wrapper.PhoneNumber;
-import jakarta.persistence.AttributeOverride;
+import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
+import com.clova.anifriends.domain.shelter.wrapper.ShelterName;
+import com.clova.anifriends.domain.shelter.wrapper.ShelterPassword;
+import com.clova.anifriends.domain.shelter.wrapper.ShelterAddressInfo;
+import com.clova.anifriends.domain.shelter.wrapper.ShelterPhoneNumberInfo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -27,30 +24,19 @@ public class Shelter extends BaseTimeEntity {
     private Long shelterId;
 
     @Embedded
-    private Email email;
+    private ShelterEmail email;
 
     @Embedded
-    private Password password;
+    private ShelterPassword password;
 
     @Embedded
-    private Address address;
+    private ShelterName name;
 
     @Embedded
-    private AddressDetail addressDetail;
+    private ShelterPhoneNumberInfo phoneNumberInfo;
 
     @Embedded
-    private Name name;
-
-    @Embedded
-    @AttributeOverride(name = "phoneNumber", column = @Column(name = "phone_number"))
-    private PhoneNumber phoneNumber;
-
-    @Embedded
-    @AttributeOverride(name = "phoneNumber", column = @Column(name = "spare_phone_number"))
-    private PhoneNumber sparePhoneNumber;
-
-    @Embedded
-    private IsOpenedAddress isOpenedAddress;
+    private ShelterAddressInfo addressInfo;
 
     protected Shelter() {
     }
@@ -65,13 +51,10 @@ public class Shelter extends BaseTimeEntity {
         String sparePhoneNumber,
         boolean isOpenedAddress
     ) {
-        this.email = new Email(email);
-        this.password = new Password(password);
-        this.address = new Address(address);
-        this.addressDetail = new AddressDetail(addressDetail);
-        this.name = new Name(name);
-        this.phoneNumber = new PhoneNumber(phoneNumber);
-        this.sparePhoneNumber = new PhoneNumber(sparePhoneNumber);
-        this.isOpenedAddress = new IsOpenedAddress(isOpenedAddress);
+        this.email = new ShelterEmail(email);
+        this.password = new ShelterPassword(password);
+        this.name = new ShelterName(name);
+        this.phoneNumberInfo = new ShelterPhoneNumberInfo(phoneNumber, sparePhoneNumber);
+        this.addressInfo = new ShelterAddressInfo(address, addressDetail, isOpenedAddress);
     }
 }

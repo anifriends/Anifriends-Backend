@@ -4,15 +4,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class Title {
+public class RecruitmentTitle {
 
     @Column(name = "title")
     private String title;
 
-    protected Title() {
+    protected RecruitmentTitle() {
     }
 
-    public Title(String value) {
+    public RecruitmentTitle(String value) {
         this.title = value;
     }
 
