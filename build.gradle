@@ -78,6 +78,7 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport  // 테스트 실행 후 항상 report가 생성됩니다.
 }
 
 //RestDocs start
@@ -132,6 +133,21 @@ clean {
 }
 
 //jacoco start
+private excludedClassFilesForReport(classDirectories) {
+	classDirectories.setFrom(
+			files(classDirectories.files.collect {
+				fileTree(dir: it, exclude: [
+						"**/Q*",
+						"**/*Dto*",
+						"**/*Application*",
+						"**/*Config*",
+						"**/*Response*",
+						"**/*Exception*",
+						"**/domain/*"
+				])
+			})
+	)
+}
 jacoco {
 	toolVersion = "0.8.9"
 }
@@ -142,9 +158,11 @@ jacocoTestReport {
 		csv.required = false
 		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
 	}
+	excludedClassFilesForReport(classDirectories)
 	finalizedBy jacocoTestCoverageVerification  // 테스트 실행 후 항상 테스트 커버리지 검증을 실행합니다.
 }
 jacocoTestCoverageVerification {  // 코드 커버리지를 검증합니다. 규칙을 만족하지 못하면 빌드는 실패합니다.
+	excludedClassFilesForReport(classDirectories)
 	violationRules {
 		rule {  // 규칙을 지정합니다.
 			enabled = true
@@ -164,7 +182,7 @@ jacocoTestCoverageVerification {  // 코드 커버리지를 검증합니다. 규
 				minimum = 0.70
 			}
 
-			excludes = ['Q*.class', '*Application*', '*Config*', '*Exception*', '*Response*']  // Q클래스와 메인 메서드, configuartion을 대상에서 제외합니다.
+//			excludes = ['**/domain/*', '*Application*', '*Config*', '*Exception*', '*Response*']  // Q클래스와 메인 메서드, configuartion을 대상에서 제외합니다.
 		}
 	}
 }
