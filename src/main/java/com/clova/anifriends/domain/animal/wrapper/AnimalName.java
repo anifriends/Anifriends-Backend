@@ -1,18 +1,20 @@
-package com.clova.anifriends.domain.shelter.wrapper;
+package com.clova.anifriends.domain.animal.wrapper;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
 
+@Getter
 @Embeddable
-public class Name {
+public class AnimalName {
 
     @Column(name = "name")
     private String name;
 
-    protected Name() {
+    protected AnimalName() {
     }
 
-    public Name(String value) {
+    public AnimalName(String value) {
         this.name = value;
     }
 

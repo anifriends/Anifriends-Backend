@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.applicant;
 
-import com.clova.anifriends.domain.applicant.wrapper.Status;
+import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.volunteer.Volunteer;
@@ -35,7 +35,7 @@ public class Applicant extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private Status status;
+    private ApplicantStatus status;
 
     protected Applicant() {
     }
@@ -47,6 +47,6 @@ public class Applicant extends BaseTimeEntity {
     ) {
         this.recruitment = recruitment;
         this.volunteer = volunteer;
-        this.status = Status.valueOf(status);
+        this.status = ApplicantStatus.valueOf(status);
     }
 }

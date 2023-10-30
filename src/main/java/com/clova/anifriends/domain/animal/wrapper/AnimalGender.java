@@ -1,17 +1,19 @@
 package com.clova.anifriends.domain.animal.wrapper;
 
-public enum Active {
+import com.clova.anifriends.EnumType;
 
-    QUIET,
-    NORMAL,
-    ACTIVE,
-    VERY_ACTIVE,
+public enum AnimalGender implements EnumType {
+
+    MALE,
+    FEMALE
     ;
 
+    @Override
     public String getName() {
         return this.name();
     }
 
+    @Override
     public String getValue() {
         return this.name();
     }

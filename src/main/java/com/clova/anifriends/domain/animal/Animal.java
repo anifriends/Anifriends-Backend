@@ -1,13 +1,13 @@
 package com.clova.anifriends.domain.animal;
 
-import com.clova.anifriends.domain.animal.wrapper.Active;
-import com.clova.anifriends.domain.animal.wrapper.Breed;
-import com.clova.anifriends.domain.animal.wrapper.Gender;
-import com.clova.anifriends.domain.animal.wrapper.Information;
-import com.clova.anifriends.domain.animal.wrapper.IsNeutered;
-import com.clova.anifriends.domain.animal.wrapper.Name;
-import com.clova.anifriends.domain.animal.wrapper.Type;
-import com.clova.anifriends.domain.animal.wrapper.Weight;
+import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
+import com.clova.anifriends.domain.animal.wrapper.AnimalBreed;
+import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
+import com.clova.anifriends.domain.animal.wrapper.AnimalInformation;
+import com.clova.anifriends.domain.animal.wrapper.AnimalName;
+import com.clova.anifriends.domain.animal.wrapper.AnimalNeutered;
+import com.clova.anifriends.domain.animal.wrapper.AnimalType;
+import com.clova.anifriends.domain.animal.wrapper.AnimalWeight;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.shelter.Shelter;
 import jakarta.persistence.Column;
@@ -38,33 +38,33 @@ public class Animal extends BaseTimeEntity {
     private Shelter shelter;
 
     @Embedded
-    private Name name;
+    private AnimalName name;
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    private Type type;
+    private AnimalType type;
 
     @Embedded
-    private Breed breed;
+    private AnimalBreed breed;
 
     @Embedded
-    private Gender gender;
+    private AnimalGender gender;
 
     @Embedded
-    private IsNeutered isNeutered;
+    private AnimalNeutered neutered;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "active")
-    private Active active;
+    private AnimalActive active;
 
     @Embedded
-    private Weight weight;
+    private AnimalWeight weight;
 
     @Embedded
-    private Information information;
+    private AnimalInformation information;
 
     protected Animal() {
     }
@@ -82,14 +82,22 @@ public class Animal extends BaseTimeEntity {
         String information
     ) {
         this.shelter = shelter;
-        this.name = new Name(name);
+        this.name = new AnimalName(name);
         this.birthDate = birthDate;
-        this.type = Type.valueOf(type);
-        this.breed = new Breed(breed);
-        this.gender = Gender.valueOf(gender);
-        this.isNeutered = new IsNeutered(isNeutered);
-        this.active = Active.valueOf(active);
-        this.weight = new Weight(weight);
-        this.information = new Information(information);
+        this.type = AnimalType.valueOf(type);
+        this.breed = new AnimalBreed(breed);
+        this.gender = AnimalGender.valueOf(gender);
+        this.neutered = new AnimalNeutered(isNeutered);
+        this.active = AnimalActive.valueOf(active);
+        this.weight = new AnimalWeight(weight);
+        this.information = new AnimalInformation(information);
+    }
+
+    public String getName() {
+        return this.name.getName();
+    }
+
+    public boolean isNeutered() {
+        return this.neutered.getIsNeutered();
     }
 }

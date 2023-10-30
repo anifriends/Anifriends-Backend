@@ -4,15 +4,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class Name {
+public class VolunteerName {
 
     @Column(name = "name")
     private String name;
 
-    protected Name() {
+    protected VolunteerName() {
     }
 
-    public Name(String value) {
+    public VolunteerName(String value) {
         this.name = value;
     }
 

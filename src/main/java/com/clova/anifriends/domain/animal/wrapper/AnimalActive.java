@@ -1,10 +1,11 @@
 package com.clova.anifriends.domain.animal.wrapper;
 
-public enum Type {
+public enum AnimalActive {
 
-    DOG,
-    CAT,
-    ETC,
+    QUIET,
+    NORMAL,
+    ACTIVE,
+    VERY_ACTIVE,
     ;
 
     public String getName() {
@@ -14,5 +15,4 @@ public enum Type {
     public String getValue() {
         return this.name();
     }
-
 }

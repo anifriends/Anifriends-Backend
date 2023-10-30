@@ -1,18 +1,18 @@
-package com.clova.anifriends.domain.volunteer.wrapper;
+package com.clova.anifriends.domain.shelter.wrapper;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class Password {
+public class ShelterPassword {
 
     @Column(name = "password")
     private String password;
 
-    protected Password() {
+    protected ShelterPassword() {
     }
 
-    public Password(String value) {
+    public ShelterPassword(String value) {
         this.password = value;
     }
 

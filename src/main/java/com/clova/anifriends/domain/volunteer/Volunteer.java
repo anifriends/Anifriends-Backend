@@ -1,12 +1,12 @@
 package com.clova.anifriends.domain.volunteer;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
-import com.clova.anifriends.domain.volunteer.wrapper.Email;
-import com.clova.anifriends.domain.volunteer.wrapper.Gender;
-import com.clova.anifriends.domain.volunteer.wrapper.Name;
-import com.clova.anifriends.domain.volunteer.wrapper.Password;
-import com.clova.anifriends.domain.volunteer.wrapper.PhoneNumber;
-import com.clova.anifriends.domain.volunteer.wrapper.Temperature;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerName;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerPassword;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerPhoneNumber;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerTemperature;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -28,26 +28,26 @@ public class Volunteer extends BaseTimeEntity {
     private Long volunteerId;
 
     @Embedded
-    private Email email;
+    private VolunteerEmail email;
 
     @Embedded
-    private Password password;
+    private VolunteerPassword password;
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
     @Embedded
-    private PhoneNumber phoneNumber;
+    private VolunteerPhoneNumber phoneNumber;
 
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
-    private Gender gender;
+    private VolunteerGender gender;
 
     @Embedded
-    private Temperature temperature;
+    private VolunteerTemperature temperature;
 
     @Embedded
-    private Name name;
+    private VolunteerName name;
 
     protected Volunteer() {
     }
@@ -61,12 +61,12 @@ public class Volunteer extends BaseTimeEntity {
         int temperature,
         String name
     ) {
-        this.email = new Email(email);
-        this.password = new Password(password);
+        this.email = new VolunteerEmail(email);
+        this.password = new VolunteerPassword(password);
         this.birthDate = birthDate;
-        this.phoneNumber = new PhoneNumber(phoneNumber);
-        this.gender = Gender.valueOf(gender);
-        this.temperature = new Temperature(temperature);
-        this.name = new Name(name);
+        this.phoneNumber = new VolunteerPhoneNumber(phoneNumber);
+        this.gender = VolunteerGender.valueOf(gender);
+        this.temperature = new VolunteerTemperature(temperature);
+        this.name = new VolunteerName(name);
     }
 }
