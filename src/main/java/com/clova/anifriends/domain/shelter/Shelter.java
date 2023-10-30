@@ -1,14 +1,11 @@
 package com.clova.anifriends.domain.shelter;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
-import com.clova.anifriends.domain.shelter.wrapper.Address;
-import com.clova.anifriends.domain.shelter.wrapper.AddressDetail;
 import com.clova.anifriends.domain.shelter.wrapper.Email;
-import com.clova.anifriends.domain.shelter.wrapper.IsOpenedAddress;
 import com.clova.anifriends.domain.shelter.wrapper.Name;
 import com.clova.anifriends.domain.shelter.wrapper.Password;
-import com.clova.anifriends.domain.shelter.wrapper.PhoneNumber;
-import jakarta.persistence.AttributeOverride;
+import com.clova.anifriends.domain.shelter.wrapper.ShelterAddressInfo;
+import com.clova.anifriends.domain.shelter.wrapper.ShelterPhoneNumber;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -33,24 +30,13 @@ public class Shelter extends BaseTimeEntity {
     private Password password;
 
     @Embedded
-    private Address address;
-
-    @Embedded
-    private AddressDetail addressDetail;
-
-    @Embedded
     private Name name;
 
     @Embedded
-    @AttributeOverride(name = "phoneNumber", column = @Column(name = "phone_number"))
-    private PhoneNumber phoneNumber;
+    private ShelterPhoneNumber shelterPhoneNumber;
 
     @Embedded
-    @AttributeOverride(name = "phoneNumber", column = @Column(name = "spare_phone_number"))
-    private PhoneNumber sparePhoneNumber;
-
-    @Embedded
-    private IsOpenedAddress isOpenedAddress;
+    private ShelterAddressInfo shelterAddressInfo;
 
     protected Shelter() {
     }
@@ -67,11 +53,8 @@ public class Shelter extends BaseTimeEntity {
     ) {
         this.email = new Email(email);
         this.password = new Password(password);
-        this.address = new Address(address);
-        this.addressDetail = new AddressDetail(addressDetail);
         this.name = new Name(name);
-        this.phoneNumber = new PhoneNumber(phoneNumber);
-        this.sparePhoneNumber = new PhoneNumber(sparePhoneNumber);
-        this.isOpenedAddress = new IsOpenedAddress(isOpenedAddress);
+        this.shelterPhoneNumber = new ShelterPhoneNumber(phoneNumber, sparePhoneNumber);
+        this.shelterAddressInfo = new ShelterAddressInfo(address, addressDetail, isOpenedAddress);
     }
 }

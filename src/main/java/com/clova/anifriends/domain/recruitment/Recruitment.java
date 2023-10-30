@@ -1,9 +1,9 @@
 package com.clova.anifriends.domain.recruitment;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
-import com.clova.anifriends.domain.recruitment.wrapper.Capacity;
 import com.clova.anifriends.domain.recruitment.wrapper.Content;
-import com.clova.anifriends.domain.recruitment.wrapper.IsClosed;
+import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentDeadline;
+import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentTime;
 import com.clova.anifriends.domain.recruitment.wrapper.Title;
 import com.clova.anifriends.domain.shelter.Shelter;
 import jakarta.persistence.Column;
@@ -36,22 +36,13 @@ public class Recruitment extends BaseTimeEntity {
     private Title title;
 
     @Embedded
-    private Capacity capacity;
-
-    @Embedded
     private Content content;
 
     @Embedded
-    private IsClosed isClosed;
+    private RecruitmentTime volunteerTime;
 
-    @Column(name = "startTime")
-    private LocalDateTime startTime;
-
-    @Column(name = "endTime")
-    private LocalDateTime endTime;
-
-    @Column(name = "deadline")
-    private LocalDateTime deadline;
+    @Embedded
+    private RecruitmentDeadline recruitmentDeadline;
 
     @LastModifiedDate
     @Column(name = "updated_at")
@@ -72,11 +63,8 @@ public class Recruitment extends BaseTimeEntity {
     ) {
         this.shelter = shelter;
         this.title = new Title(title);
-        this.capacity = new Capacity(capacity);
         this.content = new Content(content);
-        this.isClosed = new IsClosed(isClosed);
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.deadline = deadline;
+        this.volunteerTime = new RecruitmentTime(startTime, endTime);
+        this.recruitmentDeadline = new RecruitmentDeadline(deadline, isClosed, capacity);
     }
 }
