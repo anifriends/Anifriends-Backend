@@ -36,6 +36,11 @@ java {
 	sourceCompatibility = '17'
 }
 
+// plain jar 파일을 생성하지 않는다.
+jar {
+    enabled = false
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
