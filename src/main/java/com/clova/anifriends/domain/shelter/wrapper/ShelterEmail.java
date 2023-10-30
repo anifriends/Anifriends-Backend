@@ -1,18 +1,18 @@
-package com.clova.anifriends.domain.volunteer.wrapper;
+package com.clova.anifriends.domain.shelter.wrapper;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class Email {
+public class ShelterEmail {
 
     @Column(name = "email")
     private String email;
 
-    protected Email() {
+    protected ShelterEmail() {
     }
 
-    public Email(String value) {
+    public ShelterEmail(String value) {
         this.email = value;
     }
 

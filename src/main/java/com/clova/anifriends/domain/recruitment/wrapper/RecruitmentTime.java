@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 @Embeddable
 public class RecruitmentTime {
 
-    @Column(name = "startTime")
+    @Column(name = "start_time")
     private LocalDateTime startTime;
 
-    @Column(name = "endTime")
+    @Column(name = "end_time")
     private LocalDateTime endTime;
 
     protected RecruitmentTime() {

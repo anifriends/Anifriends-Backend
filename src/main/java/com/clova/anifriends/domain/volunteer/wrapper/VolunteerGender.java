@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.volunteer.wrapper;
 
 import com.clova.anifriends.EnumType;
 
-public enum Gender implements EnumType {
+public enum VolunteerGender implements EnumType {
 
     MALE,
     FEMALE

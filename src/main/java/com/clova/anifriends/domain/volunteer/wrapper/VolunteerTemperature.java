@@ -4,15 +4,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class Temperature {
+public class VolunteerTemperature {
 
     @Column(name = "temperature")
     private Integer temperature;
 
-    protected Temperature() {
+    protected VolunteerTemperature() {
     }
 
-    public Temperature(int value) {
+    public VolunteerTemperature(int value) {
         this.temperature = value;
     }
 

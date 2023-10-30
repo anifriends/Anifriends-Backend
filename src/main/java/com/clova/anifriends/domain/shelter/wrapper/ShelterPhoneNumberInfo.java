@@ -4,7 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class ShelterPhoneNumber {
+public class ShelterPhoneNumberInfo {
 
     @Column(name = "phone_number")
     private String phoneNumber;
@@ -12,10 +12,10 @@ public class ShelterPhoneNumber {
     @Column(name = "spare_phone_number")
     private String sparePhoneNumber;
 
-    protected ShelterPhoneNumber() {
+    protected ShelterPhoneNumberInfo() {
     }
 
-    public ShelterPhoneNumber(String phoneNumber, String sparePhoneNumber) {
+    public ShelterPhoneNumberInfo(String phoneNumber, String sparePhoneNumber) {
         this.phoneNumber = phoneNumber;
         this.sparePhoneNumber = sparePhoneNumber;
     }

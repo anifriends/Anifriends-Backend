@@ -5,7 +5,7 @@ import jakarta.persistence.Embeddable;
 import java.time.LocalDateTime;
 
 @Embeddable
-public class RecruitmentDeadline {
+public class RecruitmentDeadlineInfo {
 
     @Column(name = "deadline")
     private LocalDateTime deadline;
@@ -16,10 +16,10 @@ public class RecruitmentDeadline {
     @Column(name = "capacity")
     private int capacity;
 
-    protected RecruitmentDeadline() {
+    protected RecruitmentDeadlineInfo() {
     }
 
-    public RecruitmentDeadline(LocalDateTime deadline, boolean isClosed, int capacity) {
+    public RecruitmentDeadlineInfo(LocalDateTime deadline, boolean isClosed, int capacity) {
         this.deadline = deadline;
         this.isClosed = isClosed;
         this.capacity = capacity;

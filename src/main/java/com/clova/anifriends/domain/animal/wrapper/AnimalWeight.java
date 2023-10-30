@@ -4,15 +4,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class Weight {
+public class AnimalWeight {
 
     @Column(name = "weight")
     private Double weight;
 
-    protected Weight() {
+    protected AnimalWeight() {
     }
 
-    public Weight(double value) {
+    public AnimalWeight(double value) {
         this.weight = value;
     }
 
