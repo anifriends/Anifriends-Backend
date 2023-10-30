@@ -11,6 +11,17 @@ plugins {
 
 	//RestDocs
 	id "org.asciidoctor.jvm.convert" version "3.3.2"
+
+	id 'jacoco'
+	id "org.sonarqube" version "4.4.1.3373"
+}
+
+sonar {
+	properties {
+		property "sonar.projectKey", "Anifriends_Anifriends-Backend"
+		property "sonar.organization", "anifriends"
+		property "sonar.host.url", "https://sonarcloud.io"
+	}
 }
 
 group = 'com.clova'
@@ -114,3 +125,42 @@ sourceSets {
 clean {
 	delete file(generated)
 }
+
+//jacoco start
+jacoco {
+	toolVersion = "0.8.9"
+}
+jacocoTestReport {
+	dependsOn test  // report를 생성하기 전에 테스트를 실행해야합니다.
+	reports {
+		xml.required = true
+		csv.required = false
+		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+	}
+	finalizedBy jacocoTestCoverageVerification  // 테스트 실행 후 항상 테스트 커버리지 검증을 실행합니다.
+}
+jacocoTestCoverageVerification {  // 코드 커버리지를 검증합니다. 규칙을 만족하지 못하면 빌드는 실패합니다.
+	violationRules {
+		rule {  // 규칙을 지정합니다.
+			enabled = true
+			element = 'CLASS'  // 클래스 단위로 규칙을 체크합니다.
+
+			// 브랜치 커버리지를 최소 70% 만족시켜야 합니다.
+			limit {
+				counter = 'BRANCH'
+				value = 'COVEREDRATIO'
+				maximum = 0.70
+			}
+
+			// 라인 커버리지를 최소 70% 만족시켜야 합니다.
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.70
+			}
+
+			excludes = ['Q*.class', '*Application*', '*Config*', '*Exception*', '*Response*']  // Q클래스와 메인 메서드, configuartion을 대상에서 제외합니다.
+		}
+	}
+}
+//jacoco end
