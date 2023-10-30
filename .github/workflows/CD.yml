@@ -46,7 +46,7 @@ jobs:
     - name: Deploy
       run: |
         aws deploy create-deployment \
-        --application-name anifriends \
+        --application-name team07-deploy \
         --deployment-config-name CodeDeployDefault.AllAtOnce \
         --deployment-group-name team07 \
         --file-exists-behavior OVERWRITE \
