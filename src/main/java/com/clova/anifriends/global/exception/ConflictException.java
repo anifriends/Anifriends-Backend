@@ -1,8 +1,8 @@
 package com.clova.anifriends.global.exception;
 
-public abstract class ConflictException extends RuntimeException {
+public abstract class ConflictException extends AniFriendsException {
 
-    protected ConflictException(String message) {
-        super(message);
+    protected ConflictException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
     }
 }
