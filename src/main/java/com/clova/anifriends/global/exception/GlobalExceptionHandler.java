@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
         MethodArgumentNotValidException e) {
         FieldError fieldError = Objects.requireNonNull(e.getFieldError());
         return ResponseEntity.status(BAD_REQUEST)
-            .body(new ErrorResponse(ErrorCode.AF001,
+            .body(new ErrorResponse(ErrorCode.BAD_REQUEST,
                 String.format("%s. (%s)", fieldError.getDefaultMessage(), fieldError.getField())));
     }
 
@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleMissingRequestHeaderException(
         MissingRequestHeaderException e) {
         return ResponseEntity.status(BAD_REQUEST)
-            .body(new ErrorResponse(ErrorCode.AF001,
+            .body(new ErrorResponse(ErrorCode.BAD_REQUEST,
                 String.format("%s. (%s)", e.getMessage(), e.getHeaderName())));
     }
 
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleMissingRequestParameterException(
         MissingServletRequestParameterException e) {
         return ResponseEntity.status(BAD_REQUEST)
-            .body(new ErrorResponse(ErrorCode.AF001,
+            .body(new ErrorResponse(ErrorCode.BAD_REQUEST,
                 String.format("%s. (%s)", e.getMessage(), e.getParameterName())));
     }
 }
