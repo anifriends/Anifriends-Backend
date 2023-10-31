@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
 
+import com.clova.anifriends.domain.auth.exception.ExpiredAccessTokenException;
+import com.clova.anifriends.domain.auth.exception.ExpiredRefreshTokenException;
+import com.clova.anifriends.domain.auth.exception.InvalidJwtException;
 import com.clova.anifriends.domain.auth.jwt.response.CustomClaims;
 import com.clova.anifriends.domain.auth.jwt.response.UserToken;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
@@ -67,8 +70,8 @@ class JJwtProviderTest {
         }
 
         @Test
-        @DisplayName("IllegalArgumentException: 잘못된 토큰")
-        void IllegalArgumentExceptionWhenInvalidJwt() {
+        @DisplayName("예외(InvalidJwtException): 잘못된 토큰")
+        void exceptionWhenInvalidJwt() {
             //given
             String invalidSecret = testSecret + "invalid";
             JJwtProvider invalidJJwtProvider = new JJwtProvider(issuer, expirySeconds,
@@ -80,12 +83,12 @@ class JJwtProviderTest {
             //then
             assertThatThrownBy(
                 () -> jJwtProvider.parseAccessToken(invalidAccessToken))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidJwtException.class);
         }
 
         @Test
-        @DisplayName("IllegalArgumentException: 만료된 토큰")
-        void IllegalArgumentExceptionWhenExpiredJwt() {
+        @DisplayName("예외(ExpiredAccessTokenException): 만료된 토큰")
+        void exceptionWhenExpiredJwt() {
             //given
             int expirySeconds = -1;
             JJwtProvider expiredJJwtProvider = new JJwtProvider(issuer, expirySeconds,
@@ -96,11 +99,11 @@ class JJwtProviderTest {
             //when
             //then
             assertThatThrownBy(() -> jJwtProvider.parseAccessToken(expiredAccessToken))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(ExpiredAccessTokenException.class);
         }
 
         @Test
-        @DisplayName("IllegalArgumentException: 리프레시 토큰 사용 불가")
+        @DisplayName("예외(InvalidJwtException): 리프레시 토큰 사용 불가")
         void exceptionWhenUsingRefreshToken() {
             //given
             String refreshToken = userToken.refreshToken();
@@ -108,7 +111,7 @@ class JJwtProviderTest {
             //when
             //then
             assertThatThrownBy(() -> jJwtProvider.parseAccessToken(refreshToken))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidJwtException.class);
         }
     }
 
@@ -132,7 +135,7 @@ class JJwtProviderTest {
         }
 
         @Test
-        @DisplayName("IllegalArgumentException: 액세스 토큰 사용 불가")
+        @DisplayName("예외(InvalidJwtException): 액세스 토큰 사용 불가")
         void exceptionWhenUsingAccessToken() {
             //given
             String accessToken = userToken.accessToken();
@@ -140,7 +143,23 @@ class JJwtProviderTest {
             //when
             //then
             assertThatThrownBy(() -> jJwtProvider.refreshAccessToken(accessToken))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidJwtException.class);
+        }
+
+        @Test
+        @DisplayName("예외(ExpiredRefreshTokenException): 만료된 리프레시 토큰")
+        void exceptionWhenRefreshTokenIsExpired() {
+            //given
+            int refreshExpirySeconds = -1;
+            JJwtProvider expiredJJwtProvider = new JJwtProvider(issuer, expirySeconds,
+                refreshExpirySeconds, testSecret, testRefreshSecret);
+            UserToken userToken = expiredJJwtProvider.createToken(userId, roleVolunteer);
+            String expiredRefreshToken = userToken.refreshToken();
+
+            //when
+            //then
+            assertThatThrownBy(() -> jJwtProvider.refreshAccessToken(expiredRefreshToken))
+                .isInstanceOf(ExpiredRefreshTokenException.class);
         }
     }
 }

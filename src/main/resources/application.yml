@@ -4,3 +4,12 @@ jwt:
   secret: _4RNpxi%CB:eoO6a>j=#|*e#$Fp%%aX{dFi%.!Y(ZIy'UMuAt.9.;LxpWn2BZV*
   refresh-expiry-seconds: 18000
   refresh-secret: Tlolt.z[e$1yO!%Uc"F*QH=uf0vp3U5s5{X5=g=*nDZ>BWMIKIf9nzd6et2.:Fb
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: sa
+    url: jdbc:h2:mem:testdb
+  h2:
+    console:
+      path: /h2-console
+      enabled: true

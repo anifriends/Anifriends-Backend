@@ -1,12 +1,12 @@
 package com.clova.anifriends.domain.auth.resolver;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
+import com.clova.anifriends.domain.auth.exception.AuthAuthenticationException;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,7 +36,7 @@ class LoginUserArgumentResolverTest extends BaseControllerTest {
         }
 
         @Test
-        @DisplayName("예외: 액세스 토큰이 포함되어 있지 않으면")
+        @DisplayName("예외(AuthAuthenticationException): 액세스 토큰이 포함되어 있지 않으면")
         void exceptionWhenNotContainsAccessToken() throws Exception {
             //given
             //when
@@ -46,7 +46,7 @@ class LoginUserArgumentResolverTest extends BaseControllerTest {
                     result -> {
                         Exception resolvedException = result.getResolvedException();
                         assertThat(resolvedException).isInstanceOf(
-                            IllegalArgumentException.class);
+                            AuthAuthenticationException.class);
                     }
                 ).andDo(print());
         }

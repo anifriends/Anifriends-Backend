@@ -19,9 +19,9 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long refreshTokenId;
 
-    private String value;
+    private String tokenValue;
 
     public RefreshToken(String value) {
-        this.value = value;
+        this.tokenValue = value;
     }
 }

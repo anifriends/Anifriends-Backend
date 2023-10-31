@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
+import com.clova.anifriends.domain.auth.exception.AuthAuthenticationException;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.repository.RefreshTokenRepository;
 import com.clova.anifriends.domain.auth.service.response.TokenResponse;
@@ -114,7 +115,7 @@ class AuthServiceTest {
             //when
             //then
             assertThatThrownBy(() -> authService.volunteerLogin(email, notEqualsPassword))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AuthAuthenticationException.class);
         }
 
         @Test
@@ -126,7 +127,7 @@ class AuthServiceTest {
             //when
             //then
             assertThatThrownBy(() -> authService.volunteerLogin(email, password))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AuthAuthenticationException.class);
         }
     }
 
@@ -184,7 +185,7 @@ class AuthServiceTest {
             //when
             //then
             assertThatThrownBy(() -> authService.shelterLogin(email, notEqualsPassword))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AuthAuthenticationException.class);
         }
 
         @Test
@@ -196,7 +197,7 @@ class AuthServiceTest {
             //when
             //then
             assertThatThrownBy(() -> authService.shelterLogin(email, password))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AuthAuthenticationException.class);
         }
     }
 }

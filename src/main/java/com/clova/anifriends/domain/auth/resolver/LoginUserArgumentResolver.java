@@ -1,6 +1,9 @@
 package com.clova.anifriends.domain.auth.resolver;
 
+import static com.clova.anifriends.global.exception.ErrorCode.UN_AUTHENTICATION;
+
 import com.clova.anifriends.domain.auth.authentication.JwtAuthentication;
+import com.clova.anifriends.domain.auth.exception.AuthAuthenticationException;
 import java.util.Objects;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
@@ -30,7 +33,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
     private void checkAuthenticated(Authentication authentication) {
         if(Objects.isNull(authentication)) {
-            throw new IllegalArgumentException("인증되지 않은 요청입니다.");
+            throw new AuthAuthenticationException(UN_AUTHENTICATION, "인증되지 않은 요청입니다.");
         }
     }
 }

@@ -1,7 +1,11 @@
 package com.clova.anifriends.domain.auth.jwt;
 
+import com.clova.anifriends.domain.auth.exception.ExpiredAccessTokenException;
+import com.clova.anifriends.domain.auth.exception.InvalidJwtException;
+import com.clova.anifriends.domain.auth.exception.ExpiredRefreshTokenException;
 import com.clova.anifriends.domain.auth.jwt.response.CustomClaims;
 import com.clova.anifriends.domain.auth.jwt.response.UserToken;
+import com.clova.anifriends.global.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -57,26 +61,26 @@ public class JJwtProvider implements JwtProvider {
         return UserToken.of(accessToken, refreshToken);
     }
 
-    private String createAccessToken(Long memberId, UserRole userRole) {
+    private String createAccessToken(Long userId, UserRole userRole) {
         Date now = new Date();
         Date expiresAt = new Date(now.getTime() + expirySeconds * 1000L);
         return Jwts.builder()
             .issuer(issuer)
             .issuedAt(now)
-            .subject(memberId.toString())
+            .subject(userId.toString())
             .expiration(expiresAt)
             .claim(ROLE, userRole.getValue())
             .signWith(secretKey)
             .compact();
     }
 
-    private String createRefreshToken(Long memberId, UserRole userRole) {
+    private String createRefreshToken(Long userId, UserRole userRole) {
         Date now = new Date();
         Date expiresAt = new Date(now.getTime() + refreshExpirySeconds * 1000L);
         return Jwts.builder()
             .issuer(issuer)
             .issuedAt(now)
-            .subject(memberId.toString())
+            .subject(userId.toString())
             .expiration(expiresAt)
             .claim(ROLE, userRole.getValue())
             .signWith(refreshSecretKey)
@@ -87,16 +91,17 @@ public class JJwtProvider implements JwtProvider {
     public CustomClaims parseAccessToken(String token) {
         try {
             Claims claims = accessTokenParser.parseSignedClaims(token).getPayload();
-            Long memberId = Long.valueOf(claims.getSubject());
+            Long userId = Long.valueOf(claims.getSubject());
             String userRole = claims.get(ROLE, String.class);
             List<String> authorities = UserRole.valueOf(userRole).getAuthorities();
-            return CustomClaims.of(memberId, authorities);
+            return CustomClaims.of(userId, authorities);
         } catch (ExpiredJwtException ex) {
             log.info("[EX] {}: 만료된 JWT입니다.", ex.getClass().getSimpleName());
+            throw new ExpiredAccessTokenException(ErrorCode.TOKEN_EXPIRED, "만료된 액세스 토큰입니다.");
         } catch (JwtException ex) {
             log.info("[EX] {}: 잘못된 JWT입니다.", ex.getClass().getSimpleName());
         }
-        throw new IllegalArgumentException("유효하지 않은 JWT입니다.");
+        throw new InvalidJwtException(ErrorCode.UN_AUTHENTICATION, "유효하지 않은 JWT입니다.");
     }
 
     @Override
@@ -108,9 +113,10 @@ public class JJwtProvider implements JwtProvider {
             return createToken(userId, userRole);
         } catch (ExpiredJwtException ex) {
             log.info("[EX] {}: 만료된 리프레시 토큰입니다.", ex.getClass().getSimpleName());
+            throw new ExpiredRefreshTokenException(ErrorCode.TOKEN_EXPIRED, "만료된 리프레시 토큰입니다.");
         } catch (JwtException ex) {
             log.info("[EX] {}: 잘못된 리프레시 토큰입니다.", ex.getClass().getSimpleName());
         }
-        throw new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다.");
+        throw new InvalidJwtException(ErrorCode.UN_AUTHENTICATION, "유효하지 않은 리프레시 토큰입니다.");
     }
 }
