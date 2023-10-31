@@ -10,8 +10,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name = "voulunteer_image")
 public class VolunteerImage extends BaseTimeEntity {
 
@@ -26,5 +28,8 @@ public class VolunteerImage extends BaseTimeEntity {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    protected VolunteerImage() {
+    }
 
 }
