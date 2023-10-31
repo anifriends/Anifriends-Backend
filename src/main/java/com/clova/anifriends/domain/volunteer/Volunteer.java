@@ -1,5 +1,7 @@
 package com.clova.anifriends.domain.volunteer;
 
+import static com.clova.anifriends.global.exception.ErrorCode.BAD_REQUEST;
+
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
@@ -75,7 +77,7 @@ public class Volunteer extends BaseTimeEntity {
         try {
             return LocalDate.parse(birthDate);
         } catch (DateTimeParseException e) {
-            throw new VolunteerBadRequestException("생년월일 형식이 맞지 않습니다.");
+            throw new VolunteerBadRequestException(BAD_REQUEST, "생년월일 형식이 맞지 않습니다.");
         }
     }
 

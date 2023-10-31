@@ -2,13 +2,13 @@ package com.clova.anifriends.domain.volunteer.wrapper;
 
 import com.clova.anifriends.EnumType;
 import com.clova.anifriends.domain.volunteer.exception.NotFoundVolunteerGenderException;
+import com.clova.anifriends.global.exception.ErrorCode;
 import java.util.Arrays;
 
 public enum VolunteerGender implements EnumType {
 
     MALE,
-    FEMALE
-    ;
+    FEMALE;
 
     @Override
     public String getName() {
@@ -24,6 +24,7 @@ public enum VolunteerGender implements EnumType {
         return Arrays.stream(VolunteerGender.values())
             .filter(volunteerGender -> volunteerGender.name().equalsIgnoreCase(gender))
             .findAny()
-            .orElseThrow(() -> new NotFoundVolunteerGenderException("존재하지 않는 성별입니다."));
+            .orElseThrow(() -> new NotFoundVolunteerGenderException(ErrorCode.BAD_REQUEST,
+                "존재하지 않는 성별입니다."));
     }
 }

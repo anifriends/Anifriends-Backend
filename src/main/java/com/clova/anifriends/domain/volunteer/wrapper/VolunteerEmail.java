@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.volunteer.wrapper;
 
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
+import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.util.regex.Matcher;
@@ -24,7 +25,7 @@ public class VolunteerEmail {
 
     private void validateVolunteerEmail(String email) {
         if (email == null || email.isBlank()) {
-            throw new VolunteerBadRequestException("이메일은 필수 항목입니다.");
+            throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST, "이메일은 필수 항목입니다.");
         }
 
         String pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
@@ -33,7 +34,7 @@ public class VolunteerEmail {
         Matcher matcher = emailPattern.matcher(email);
 
         if (!matcher.matches()) {
-            throw new VolunteerBadRequestException("이메일 형식에 맞지 않습니다.");
+            throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST, "이메일 형식에 맞지 않습니다.");
         }
     }
 

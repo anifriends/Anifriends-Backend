@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.volunteer.wrapper;
 
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
+import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
@@ -25,7 +26,8 @@ public class VolunteerPassword {
 
     private void validateVolunteerPassword(String password) {
         if (password.length() < MIN_PASSWORD_LENGTH || password.length() > MAX_PASSWORD_LENGTH) {
-            throw new VolunteerBadRequestException("비밀번호는 최소 6자, 최대 16자입니다.");
+            throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST,
+                "비밀번호는 최소 6자, 최대 16자입니다.");
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.volunteer.wrapper;
 
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
+import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
@@ -24,7 +25,7 @@ public class VolunteerTemperature {
 
     private void validateVolunteerTemperature(int temperature) {
         if (temperature > MAX_VOLUNTEER_TEMPERATURE) {
-            throw new VolunteerBadRequestException("봉사자 체온은 99도 이하입니다.");
+            throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST, "봉사자 체온은 99도 이하입니다.");
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.volunteer.wrapper;
 
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
+import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
@@ -24,11 +25,11 @@ public class VolunteerName {
 
     private void validateVolunteerName(String name) {
         if (name == null || name.isBlank()) {
-            throw new VolunteerBadRequestException("이름은 필수 항목입니다.");
+            throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST, "이름은 필수 항목입니다.");
         }
 
         if (name.length() > MAX_VOLUNTEER_NAME_LENGTH) {
-            throw new VolunteerBadRequestException("이름은 최대 10자입니다.");
+            throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST, "이름은 최대 10자입니다.");
         }
     }
 }
