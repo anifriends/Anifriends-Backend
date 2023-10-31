@@ -1,9 +1,9 @@
 jwt:
   issuer: clova
   expiry-seconds: 3600
-  secret: _4RNpxi%CB:eoO6a>j=#|*e#$Fp%%aX{dFi%.!Y(ZIy'UMuAt.9.;LxpWn2BZV*
+  secret: ${ACCESS_TOKEN_SECRET}
   refresh-expiry-seconds: 18000
-  refresh-secret: Tlolt.z[e$1yO!%Uc"F*QH=uf0vp3U5s5{X5=g=*nDZ>BWMIKIf9nzd6et2.:Fb
+  refresh-secret: ${REFRESH_TOKEN_SECRET}
 spring:
   datasource:
     driver-class-name: org.h2.Driver
