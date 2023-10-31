@@ -57,4 +57,12 @@ public class Shelter extends BaseTimeEntity {
         this.phoneNumberInfo = new ShelterPhoneNumberInfo(phoneNumber, sparePhoneNumber);
         this.addressInfo = new ShelterAddressInfo(address, addressDetail, isOpenedAddress);
     }
+
+    public Long getShelterId() {
+        return this.shelterId;
+    }
+
+    public String getPassword() {
+        return this.password.getPassword();
+    }
 }

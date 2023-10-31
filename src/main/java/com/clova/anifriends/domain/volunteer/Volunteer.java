@@ -17,8 +17,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name = "volunteer")
 public class Volunteer extends BaseTimeEntity {
 
@@ -68,5 +70,9 @@ public class Volunteer extends BaseTimeEntity {
         this.gender = VolunteerGender.valueOf(gender);
         this.temperature = new VolunteerTemperature(temperature);
         this.name = new VolunteerName(name);
+    }
+
+    public String getPassword() {
+        return this.password.getPassword();
     }
 }
