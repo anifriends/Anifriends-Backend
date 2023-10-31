@@ -34,7 +34,7 @@ class ShelterImageRepositoryTest extends BaseRepositoryTest {
 
     @Nested
     @DisplayName("findShelterDetail 실행 시")
-    class findShelterImageByShelter {
+    class findShelterImageByShelterTest {
 
         @Test
         @DisplayName("성공")
