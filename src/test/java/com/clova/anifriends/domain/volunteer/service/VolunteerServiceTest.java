@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.then;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
+import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,7 +37,7 @@ class VolunteerServiceTest {
         void success() {
             // given
             given(volunteerRepository.save(any())).willReturn(volunteer);
-            RegisterVolunteerRequest registerVolunteerRequest = VolunteerFixture.registerVolunteerRequest();
+            RegisterVolunteerRequest registerVolunteerRequest = VolunteerDtoFixture.registerVolunteerRequest();
 
             // when
             volunteerService.registerVolunteer(registerVolunteerRequest);

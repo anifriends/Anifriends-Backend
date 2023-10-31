@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
-import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
+import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class VolunteerControllerTest extends BaseControllerTest {
         @DisplayName("성공")
         void registerVolunteer() throws Exception {
             // given
-            RegisterVolunteerRequest registerVolunteerRequest = VolunteerFixture.registerVolunteerRequest();
+            RegisterVolunteerRequest registerVolunteerRequest = VolunteerDtoFixture.registerVolunteerRequest();
             given(volunteerService.registerVolunteer(any())).willReturn(1L);
 
             // when
