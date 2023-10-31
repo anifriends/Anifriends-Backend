@@ -77,6 +77,10 @@ public class Recruitment extends BaseTimeEntity {
             .toList();
     }
 
+    public Long getRecruitmentId() {
+        return recruitmentId;
+    }
+
     public String getTitle() {
         return title.getTitle();
     }
@@ -97,7 +101,7 @@ public class Recruitment extends BaseTimeEntity {
         return info.getEndTime();
     }
 
-    public boolean getIsClosed() {
+    public Boolean getIsClosed() {
         return info.isClosed();
     }
 

@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.recruitment.service;
 
+import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture.shelter;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,7 +12,6 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
-import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,8 @@ class RecruitmentServiceTest {
     private RecruitmentRepository recruitmentRepository;
 
     @Nested
-    class findRecruitmentById {
+    @DisplayName("findRecruitmentById 실행 시")
+    class FindRecruitmentTest {
 
         @Test
         @DisplayName("성공")
@@ -40,8 +41,7 @@ class RecruitmentServiceTest {
             // given
             Shelter shelter = shelter();
             Recruitment recruitment = recruitment(shelter);
-            FindRecruitmentResponse expected = RecruitmentDtoFixture
-                .findRecruitmentResponse(recruitment);
+            FindRecruitmentResponse expected = findRecruitmentResponse(recruitment);
 
             when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.of(recruitment));
 

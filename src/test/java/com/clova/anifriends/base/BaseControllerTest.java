@@ -3,6 +3,7 @@ package com.clova.anifriends.base;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import com.clova.anifriends.base.config.RestDocsConfig;
+import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +31,9 @@ public abstract class BaseControllerTest {
 
     @Autowired
     protected RestDocumentationResultHandler restDocs;
+
+    @Autowired
+    protected RecruitmentService recruitmentService;
 
     @BeforeEach
     void setUp(
