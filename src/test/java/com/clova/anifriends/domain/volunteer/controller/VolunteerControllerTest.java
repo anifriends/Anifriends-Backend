@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.volunteer.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -29,7 +30,7 @@ class VolunteerControllerTest extends BaseControllerTest {
         void registerVolunteer() throws Exception {
             // given
             RegisterVolunteerRequest registerVolunteerRequest = VolunteerFixture.registerVolunteerRequest();
-            given(volunteerService.registerVolunteer(registerVolunteerRequest)).willReturn(1L);
+            given(volunteerService.registerVolunteer(any())).willReturn(1L);
 
             // when
             ResultActions resultActions = mockMvc.perform(
