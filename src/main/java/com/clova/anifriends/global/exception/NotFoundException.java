@@ -1,8 +1,8 @@
 package com.clova.anifriends.global.exception;
 
-public abstract class NotFoundException extends RuntimeException {
+public abstract class NotFoundException extends AniFriendsException {
 
-    protected NotFoundException(String message) {
-        super(message);
+    protected NotFoundException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
     }
 }

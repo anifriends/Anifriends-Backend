@@ -1,8 +1,8 @@
 package com.clova.anifriends.global.exception;
 
-public abstract class AuthenticationException extends RuntimeException {
+public abstract class AuthenticationException extends AniFriendsException {
 
-    protected AuthenticationException(String message) {
-        super(message);
+    protected AuthenticationException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
     }
 }
