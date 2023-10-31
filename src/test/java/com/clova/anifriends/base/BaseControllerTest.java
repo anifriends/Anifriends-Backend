@@ -3,6 +3,7 @@ package com.clova.anifriends.base;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import com.clova.anifriends.base.config.RestDocsConfig;
+import com.clova.anifriends.domain.shelter.service.ShelterService;
 import com.clova.anifriends.domain.volunteer.service.VolunteerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,9 @@ public abstract class BaseControllerTest {
     @MockBean
     protected VolunteerService volunteerService;
 
+    @MockBean
+    protected ShelterService shelterService;
+
     @BeforeEach
     void setUp(
         WebApplicationContext applicationContext,
@@ -43,7 +47,8 @@ public abstract class BaseControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext)
             .alwaysDo(print())
             .alwaysDo(restDocs)
-            .apply(MockMvcRestDocumentation.documentationConfiguration(documentationContextProvider))
+            .apply(
+                MockMvcRestDocumentation.documentationConfiguration(documentationContextProvider))
             .addFilter(new CharacterEncodingFilter("UTF-8", true))
             .build();
     }
