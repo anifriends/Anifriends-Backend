@@ -66,7 +66,7 @@ public class Volunteer extends BaseTimeEntity {
         this.password = new VolunteerPassword(password);
         this.birthDate = validateBirthDate(birthDate);
         this.phoneNumber = new VolunteerPhoneNumber(phoneNumber);
-        this.gender = VolunteerGender.valueOf(gender);
+        this.gender = VolunteerGender.from(gender);
         this.temperature = new VolunteerTemperature(36);
         this.name = new VolunteerName(name);
     }
