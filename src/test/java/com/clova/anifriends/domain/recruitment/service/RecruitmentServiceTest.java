@@ -55,7 +55,7 @@ class RecruitmentServiceTest {
         }
 
         @Test
-        @DisplayName("예외(NotFoundRecruitmentException): 존재하지 않는 모집글")
+        @DisplayName("예외(RecruitmentNotFoundException): 존재하지 않는 모집글")
         void exceptionWhenRecruitmentIsNotExist() {
             // given
             when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.empty());
