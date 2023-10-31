@@ -17,8 +17,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "volunteer")
@@ -60,7 +58,6 @@ public class Volunteer extends BaseTimeEntity {
         LocalDate birthDate,
         String phoneNumber,
         String gender,
-        int temperature,
         String name
     ) {
         this.email = new VolunteerEmail(email);
@@ -68,7 +65,7 @@ public class Volunteer extends BaseTimeEntity {
         this.birthDate = birthDate;
         this.phoneNumber = new VolunteerPhoneNumber(phoneNumber);
         this.gender = VolunteerGender.valueOf(gender);
-        this.temperature = new VolunteerTemperature(temperature);
+        this.temperature = new VolunteerTemperature(36);
         this.name = new VolunteerName(name);
     }
 
