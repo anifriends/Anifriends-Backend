@@ -66,4 +66,8 @@ public class Recruitment extends BaseTimeEntity {
         this.time = new RecruitmentTime(startTime, endTime);
         this.deadlineInfo = new RecruitmentDeadlineInfo(deadline, false, capacity);
     }
+
+    public Long getRecruitmentId() {
+        return recruitmentId;
+    }
 }
