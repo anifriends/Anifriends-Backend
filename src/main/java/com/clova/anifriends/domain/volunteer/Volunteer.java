@@ -1,6 +1,9 @@
 package com.clova.anifriends.domain.volunteer;
 
+import static com.clova.anifriends.global.exception.ErrorCode.BAD_REQUEST;
+
 import com.clova.anifriends.domain.common.BaseTimeEntity;
+import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerName;
@@ -17,6 +20,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 @Entity
 @Table(name = "volunteer")
@@ -55,18 +59,57 @@ public class Volunteer extends BaseTimeEntity {
     public Volunteer(
         String email,
         String password,
-        LocalDate birthDate,
+        String birthDate,
         String phoneNumber,
         String gender,
-        int temperature,
         String name
     ) {
         this.email = new VolunteerEmail(email);
         this.password = new VolunteerPassword(password);
-        this.birthDate = birthDate;
+        this.birthDate = validateBirthDate(birthDate);
         this.phoneNumber = new VolunteerPhoneNumber(phoneNumber);
-        this.gender = VolunteerGender.valueOf(gender);
-        this.temperature = new VolunteerTemperature(temperature);
+        this.gender = VolunteerGender.from(gender);
+        this.temperature = new VolunteerTemperature(36);
         this.name = new VolunteerName(name);
+    }
+
+    private LocalDate validateBirthDate(String birthDate) {
+        try {
+            return LocalDate.parse(birthDate);
+        } catch (DateTimeParseException e) {
+            throw new VolunteerBadRequestException(BAD_REQUEST, "생년월일 형식이 맞지 않습니다.");
+        }
+    }
+
+    public Long getVolunteerId() {
+        return volunteerId;
+    }
+
+    public String getEmail() {
+        return this.email.getEmail();
+    }
+
+    public String getPassword() {
+        return this.password.getPassword();
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public String getPhoneNumber() {
+        return this.phoneNumber.getPhoneNumber();
+    }
+
+    public String getGender() {
+        return this.gender.getName();
+    }
+
+    public Integer getTemperature() {
+        return this.temperature.getTemperature();
+    }
+
+    public String getName() {
+        return this.name.getName();
     }
 }
