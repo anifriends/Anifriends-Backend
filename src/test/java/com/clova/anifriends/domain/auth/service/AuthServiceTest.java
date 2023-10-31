@@ -10,6 +10,7 @@ import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.repository.RefreshTokenRepository;
 import com.clova.anifriends.domain.auth.service.response.TokenResponse;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
+import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
@@ -125,6 +126,76 @@ class AuthServiceTest {
             //when
             //then
             assertThatThrownBy(() -> authService.volunteerLogin(email, password))
+                .isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("shelterLogin 메서드 실행 시")
+    class ShelterLoginTest {
+
+        String email = "email@email.com";
+        String password = "password123!";
+        Shelter shelter = new Shelter(email, passwordEncoder.encode(password), "address",
+            "addressDetail", "name", "0212345678", "0212345678", false);
+
+        @BeforeEach
+        void setUp() {
+            ReflectionTestUtils.setField(shelter, "shelterId", 1L);
+        }
+
+        @Test
+        @DisplayName("성공")
+        void shelterLogin() {
+            //given
+            given(shelterRepository.findByEmail(any())).willReturn(Optional.ofNullable(shelter));
+
+            //when
+            TokenResponse response = authService.shelterLogin(email, password);
+
+            //then
+            assertThat(response.accessToken()).isNotBlank();
+            assertThat(response.refreshToken()).isNotBlank();
+        }
+
+        @Test
+        @DisplayName("성공: 리프레시 토큰 저장됨")
+        void saveRefreshToken() {
+            //given
+            given(shelterRepository.findByEmail(any())).willReturn(
+                Optional.ofNullable(shelter));
+
+            //when
+            TokenResponse response = authService.shelterLogin(email, password);
+
+            //then
+            then(refreshTokenRepository).should().save(any());
+        }
+
+        @Test
+        @DisplayName("예외: 비밀번호가 다름")
+        void exceptionWhenNotEqualsPassword() {
+            //given
+            String notEqualsPassword = password + "a";
+
+            given(shelterRepository.findByEmail(any())).willReturn(
+                Optional.ofNullable(shelter));
+
+            //when
+            //then
+            assertThatThrownBy(() -> authService.shelterLogin(email, notEqualsPassword))
+                .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        @DisplayName("예외: 존재하지 않는 보호소")
+        void exceptionWhenShelterNotFound() {
+            //given
+            given(shelterRepository.findByEmail(any())).willReturn(Optional.empty());
+
+            //when
+            //then
+            assertThatThrownBy(() -> authService.shelterLogin(email, password))
                 .isInstanceOf(IllegalArgumentException.class);
         }
     }
