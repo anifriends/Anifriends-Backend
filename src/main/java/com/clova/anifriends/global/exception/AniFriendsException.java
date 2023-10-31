@@ -9,7 +9,7 @@ public abstract class AniFriendsException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
-    public ErrorCode getErrorCode() {
-        return errorCode;
+    public String getErrorCode() {
+        return errorCode.getValue();
     }
 }
