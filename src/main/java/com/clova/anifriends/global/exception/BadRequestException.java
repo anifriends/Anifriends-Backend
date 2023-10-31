@@ -1,8 +1,8 @@
 package com.clova.anifriends.global.exception;
 
-public abstract class BadRequestException extends RuntimeException{
+public abstract class BadRequestException extends AniFriendsException {
 
-    protected BadRequestException(String message) {
-        super(message);
+    protected BadRequestException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
     }
 }
