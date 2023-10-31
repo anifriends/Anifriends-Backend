@@ -10,7 +10,7 @@ public class ExceptionController {
 
     @GetMapping("/bad-request")
     public void badRequest() {
-        throw new BadRequestException("bad-request") {
+        throw new BadRequestException(ErrorCode.AF001, "bad-request") {
             @Override
             public String getMessage() {
                 return super.getMessage();
@@ -20,7 +20,7 @@ public class ExceptionController {
 
     @GetMapping("/authentication")
     public void authentication() {
-        throw new AuthenticationException("authentication") {
+        throw new AuthenticationException(ErrorCode.AF101, "authentication") {
             @Override
             public String getMessage() {
                 return super.getMessage();
@@ -30,7 +30,7 @@ public class ExceptionController {
 
     @GetMapping("/authorization")
     public void authorization() {
-        throw new AuthorizationException("authorization") {
+        throw new AuthorizationException(ErrorCode.AF301, "authorization") {
             @Override
             public String getMessage() {
                 return super.getMessage();
@@ -40,7 +40,7 @@ public class ExceptionController {
 
     @GetMapping("/not-found")
     public void notFound() {
-        throw new NotFoundException("notFound") {
+        throw new NotFoundException(ErrorCode.AF401, "notFound") {
             @Override
             public String getMessage() {
                 return super.getMessage();
@@ -50,7 +50,7 @@ public class ExceptionController {
 
     @GetMapping("/conflict")
     public void conflict() {
-        throw new ConflictException("conflict") {
+        throw new ConflictException(ErrorCode.AF901, "conflict") {
             @Override
             public String getMessage() {
                 return super.getMessage();
