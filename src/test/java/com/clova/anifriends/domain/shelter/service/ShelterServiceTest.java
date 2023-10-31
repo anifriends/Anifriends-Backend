@@ -76,7 +76,7 @@ class ShelterServiceTest {
         }
 
         @Test
-        @DisplayName("예외: 존재하지 않은 보호소")
+        @DisplayName("예외(ShelterNotFoundException): 존재하지 않은 보호소")
         void throwExceptionWhenShelterNotFound() {
             //given
             Long shelterId = 1L;
@@ -89,7 +89,7 @@ class ShelterServiceTest {
         }
 
         @Test
-        @DisplayName("예외: 존재하지 않은 보호소 이미지")
+        @DisplayName("예외(ShelterImageNotFoundException): 존재하지 않은 보호소 이미지")
         void throwExceptionWhenShelterImageNotFound() {
             //given
             Long shelterImageId = 1L;
