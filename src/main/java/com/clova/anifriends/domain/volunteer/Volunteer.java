@@ -17,6 +17,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "volunteer")
@@ -68,5 +70,37 @@ public class Volunteer extends BaseTimeEntity {
         this.gender = VolunteerGender.valueOf(gender);
         this.temperature = new VolunteerTemperature(temperature);
         this.name = new VolunteerName(name);
+    }
+
+    public Long getVolunteerId() {
+        return volunteerId;
+    }
+
+    public String getEmail() {
+        return this.email.getEmail();
+    }
+
+    public String getPassword() {
+        return this.password.getPassword();
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public String getPhoneNumber() {
+        return this.phoneNumber.getPhoneNumber();
+    }
+
+    public String getGender() {
+        return this.gender.getName();
+    }
+
+    public Integer getTemperature() {
+        return this.temperature.getTemperature();
+    }
+
+    public String getName() {
+        return this.name.getName();
     }
 }
