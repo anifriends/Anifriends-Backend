@@ -56,7 +56,6 @@ public class Recruitment extends BaseTimeEntity {
         String title,
         int capacity,
         String content,
-        boolean isClosed,
         LocalDateTime startTime,
         LocalDateTime endTime,
         LocalDateTime deadline
@@ -65,6 +64,6 @@ public class Recruitment extends BaseTimeEntity {
         this.title = new RecruitmentTitle(title);
         this.content = new RecruitmentContent(content);
         this.time = new RecruitmentTime(startTime, endTime);
-        this.deadlineInfo = new RecruitmentDeadlineInfo(deadline, isClosed, capacity);
+        this.deadlineInfo = new RecruitmentDeadlineInfo(deadline, false, capacity);
     }
 }
