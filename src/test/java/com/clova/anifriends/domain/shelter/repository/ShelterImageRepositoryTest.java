@@ -38,7 +38,7 @@ class ShelterImageRepositoryTest extends BaseRepositoryTest {
 
         @Test
         @DisplayName("성공")
-        public void success() {
+        void success() {
             // given
             shelterRepository.save(givenShelter);
             shelterImageRepository.save(givenShelterImage);
