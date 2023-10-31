@@ -75,9 +75,9 @@ public abstract class BaseControllerTest {
             .apply(springSecurity())
             .apply(MockMvcRestDocumentation.documentationConfiguration(documentationContextProvider))
             .addFilter(new CharacterEncodingFilter("UTF-8", true))
-            .defaultRequest(post("/**").with(csrf()))
-            .defaultRequest(patch("/**").with(csrf()))
-            .defaultRequest(delete("/**").with(csrf()))
+            .defaultRequest(post("/**").with(csrf().asHeader()))
+            .defaultRequest(patch("/**").with(csrf().asHeader()))
+            .defaultRequest(delete("/**").with(csrf().asHeader()))
             .build();
     }
 }
