@@ -13,6 +13,7 @@ import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.service.AuthService;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
+import com.clova.anifriends.domain.volunteer.service.VolunteerService;
 import com.clova.anifriends.global.config.SecurityConfig;
 import com.clova.anifriends.global.config.WebMvcConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,6 +66,9 @@ public abstract class BaseControllerTest {
     @MockBean
     protected AuthService authService;
 
+    @MockBean
+    protected VolunteerService volunteerService;
+
     @BeforeEach
     void setUp(
         WebApplicationContext applicationContext,
@@ -73,7 +77,8 @@ public abstract class BaseControllerTest {
             .alwaysDo(print())
             .alwaysDo(restDocs)
             .apply(springSecurity())
-            .apply(MockMvcRestDocumentation.documentationConfiguration(documentationContextProvider))
+            .apply(
+                MockMvcRestDocumentation.documentationConfiguration(documentationContextProvider))
             .addFilter(new CharacterEncodingFilter("UTF-8", true))
             .defaultRequest(post("/**").with(csrf().asHeader()))
             .defaultRequest(patch("/**").with(csrf().asHeader()))
