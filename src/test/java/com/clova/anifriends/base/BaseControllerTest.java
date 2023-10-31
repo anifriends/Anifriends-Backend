@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import com.clova.anifriends.base.config.RestDocsConfig;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
+import com.clova.anifriends.domain.volunteer.service.VolunteerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +36,9 @@ public abstract class BaseControllerTest {
 
     @MockBean
     protected RecruitmentService recruitmentService;
+
+    @MockBean
+    protected VolunteerService volunteerService;
 
     @BeforeEach
     void setUp(
