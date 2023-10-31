@@ -2,8 +2,7 @@ package com.clova.anifriends.domain.recruitment;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentContent;
-import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentDeadlineInfo;
-import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentTime;
+import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentInfo;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentTitle;
 import com.clova.anifriends.domain.shelter.Shelter;
 import jakarta.persistence.Column;
@@ -39,10 +38,7 @@ public class Recruitment extends BaseTimeEntity {
     private RecruitmentContent content;
 
     @Embedded
-    private RecruitmentTime time;
-
-    @Embedded
-    private RecruitmentDeadlineInfo deadlineInfo;
+    private RecruitmentInfo info;
 
     @LastModifiedDate
     @Column(name = "updated_at")
@@ -63,8 +59,7 @@ public class Recruitment extends BaseTimeEntity {
         this.shelter = shelter;
         this.title = new RecruitmentTitle(title);
         this.content = new RecruitmentContent(content);
-        this.time = new RecruitmentTime(startTime, endTime);
-        this.deadlineInfo = new RecruitmentDeadlineInfo(deadline, false, capacity);
+        this.info = new RecruitmentInfo(startTime, endTime, deadline, false, capacity);
     }
 
     public Long getRecruitmentId() {
