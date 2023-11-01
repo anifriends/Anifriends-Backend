@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/volunteers")
+@RequestMapping("/api")
 public class VolunteerController {
 
     private final VolunteerService volunteerService;
     private static final String BASE_URI = "/api/volunteers/";
 
-    @PostMapping
+    @PostMapping("/volunteers")
     public ResponseEntity<Void> registerVolunteer(
         @RequestBody @Valid RegisterVolunteerRequest registerVolunteerRequest
     ) {
