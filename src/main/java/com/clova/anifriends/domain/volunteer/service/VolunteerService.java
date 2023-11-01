@@ -2,6 +2,8 @@ package com.clova.anifriends.domain.volunteer.service;
 
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
+import com.clova.anifriends.domain.volunteer.dto.response.GetVolunteerMyPageResponse;
+import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,4 +30,13 @@ public class VolunteerService {
         return volunteer.getVolunteerId();
     }
 
+    @Transactional(readOnly = true)
+    public GetVolunteerMyPageResponse getVolunteerMyPage(Long volunteerId) {
+        return GetVolunteerMyPageResponse.from(getVolunteer(volunteerId));
+    }
+
+    private Volunteer getVolunteer(Long volunteerId) {
+        return volunteerRepository.findById(volunteerId)
+            .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
+    }
 }
