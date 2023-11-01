@@ -30,6 +30,11 @@ public final class AuthFixture {
         return userToken.accessToken();
     }
 
+    public static String volunteerAccessToken() {
+        UserToken userToken = jwtProvider().createToken(USER_ID, UserRole.ROLE_VOLUNTEER);
+        return userToken.accessToken();
+    }
+
     public static UserToken userToken() {
         return jwtProvider().createToken(USER_ID, UserRole.ROLE_VOLUNTEER);
     }

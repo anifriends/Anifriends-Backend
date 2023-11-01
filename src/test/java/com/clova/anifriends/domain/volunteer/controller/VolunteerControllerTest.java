@@ -80,7 +80,7 @@ class VolunteerControllerTest extends BaseControllerTest {
         // when
         ResultActions resultActions = mockMvc.perform(
             get("/api/volunteers/me")
-                .header("volunteerId", 1L)
+                .header(AUTHORIZATION, volunteerAccessToken)
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
