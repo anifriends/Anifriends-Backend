@@ -1,14 +1,20 @@
 package com.clova.anifriends.domain.volunteer.service;
 
+import static java.util.Optional.ofNullable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
+import com.clova.anifriends.domain.volunteer.dto.response.GetVolunteerMyPageResponse;
+import com.clova.anifriends.domain.volunteer.repository.VolunteerImageRepository;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
+import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,6 +31,9 @@ class VolunteerServiceTest {
 
     @Mock
     VolunteerRepository volunteerRepository;
+
+    @Mock
+    VolunteerImageRepository volunteerImageRepository;
 
     @Nested
     @DisplayName("registerVolunteer 메서드 실행 시")
@@ -44,6 +53,32 @@ class VolunteerServiceTest {
 
             // then
             then(volunteerRepository).should().save(any());
+        }
+    }
+
+    @Nested
+    @DisplayName("getVolunteerMyPage 메서드 실행 시")
+    class GetVolunteerMyPageTest {
+
+        Volunteer volunteer;
+        VolunteerImage volunteerImage;
+
+        @Test
+        @DisplayName("성공")
+        void success() {
+            // given
+            volunteer = VolunteerFixture.volunteer();
+            volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
+            GetVolunteerMyPageResponse expected = GetVolunteerMyPageResponse.of(volunteer, volunteerImage.getImageUrl());
+
+            given(volunteerRepository.findById(any())).willReturn(ofNullable(volunteer));
+            given(volunteerImageRepository.findByVolunteer(any())).willReturn(ofNullable(volunteerImage));
+
+            // when
+            GetVolunteerMyPageResponse result = volunteerService.getVolunteerMyPage(1L);
+
+            // then
+            assertThat(result).usingRecursiveComparison().isEqualTo(expected);
         }
     }
 

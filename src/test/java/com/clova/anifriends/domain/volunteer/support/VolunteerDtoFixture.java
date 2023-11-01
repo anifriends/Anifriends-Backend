@@ -1,9 +1,10 @@
 package com.clova.anifriends.domain.volunteer.support;
 
+import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
 import com.clova.anifriends.domain.volunteer.dto.response.GetVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
-import java.time.LocalDate;
 
 public class VolunteerDtoFixture {
 
@@ -17,15 +18,18 @@ public class VolunteerDtoFixture {
     private static final String NAME = "김봉사";
     private static final String IMAGE_URL = "image/url";
     private static final Long VOLUNTEER_COUNT = 2L;
+    private static final Volunteer volunteer = VolunteerFixture.volunteer();
+    private static final VolunteerImage volunteerImage = VolunteerImageFixture.volunteerImage(
+        volunteer);
 
     public static RegisterVolunteerRequest registerVolunteerRequest() {
         return new RegisterVolunteerRequest(EMAIL, PASSWORD, NAME, BIRTH_DATE, PHONE_NUMBER,
             GENDER);
     }
 
-    public static GetVolunteerMyPageResponse getVolunteerMyPageResponse() {
-        return new GetVolunteerMyPageResponse(EMAIL, NAME, LocalDate.parse(BIRTH_DATE),
-            PHONE_NUMBER, TEMPERATURE,
-            VOLUNTEER_COUNT, IMAGE_URL);
+    public static GetVolunteerMyPageResponse getVolunteerMyPageResponse(Volunteer volunteer,
+        String imageUrl) {
+        return GetVolunteerMyPageResponse.of(volunteer, imageUrl);
     }
 }
+

@@ -14,8 +14,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
+import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
+import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
+import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -57,8 +60,11 @@ class VolunteerControllerTest extends BaseControllerTest {
     @DisplayName("봉사자 마이페이지 조회 API 호출 시")
     void getVolunteerMyPage() throws Exception {
         // given
+        Volunteer volunteer = VolunteerFixture.volunteer();
         given(volunteerService.getVolunteerMyPage(any())).willReturn(
-            VolunteerDtoFixture.getVolunteerMyPageResponse());
+            VolunteerDtoFixture.getVolunteerMyPageResponse(
+                volunteer,
+                VolunteerImageFixture.volunteerImage(volunteer).getImageUrl()));
 
         // when
         ResultActions resultActions = mockMvc.perform(
