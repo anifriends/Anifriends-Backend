@@ -12,7 +12,6 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
-import com.clova.anifriends.domain.volunteer.repository.VolunteerImageRepository;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
@@ -33,9 +32,6 @@ class VolunteerServiceTest {
 
     @Mock
     VolunteerRepository volunteerRepository;
-
-    @Mock
-    VolunteerImageRepository volunteerImageRepository;
 
     @Nested
     @DisplayName("registerVolunteer 메서드 실행 시")
