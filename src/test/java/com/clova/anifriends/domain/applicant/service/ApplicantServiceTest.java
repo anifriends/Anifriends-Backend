@@ -72,8 +72,8 @@ class ApplicantServiceTest {
                 Optional.ofNullable(recruitment));
             given(volunteerRepository.findById(anyLong())).willReturn(
                 Optional.ofNullable(volunteer));
-            when(applicantRepository.existsByRecruitmentAndVolunteer(recruitment, volunteer))
-                .thenReturn(false);
+            given(applicantRepository.existsByRecruitmentAndVolunteer(recruitment, volunteer))
+                .willReturn(false);
 
             // when
             applicantService.registerApplicant(recruitment.getRecruitmentId(),
