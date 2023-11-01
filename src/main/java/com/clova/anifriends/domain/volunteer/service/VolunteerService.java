@@ -40,10 +40,10 @@ public class VolunteerService {
     public FindVolunteerProfileResponse findVolunteerProfile(
         Long volunteerId
     ) {
-        Volunteer foundVolunteerId = getVolunteer(volunteerId);
+        Volunteer foundVolunteer = getVolunteer(volunteerId);
 
         return FindVolunteerProfileResponse.from(
-            foundVolunteerId
+            foundVolunteer
         );
     }
 
