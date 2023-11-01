@@ -9,8 +9,8 @@ public class ShelterFixture {
     private static final String SHELTER_ADDRESS = "shelterAddress";
     private static final String SHELTER_ADDRESS_DETAIL = "shelterAddressDetail";
     private static final String SHELTER_NAME = "shelterName";
-    private static final String PHONE_NUMBER = "01012345678";
-    private static final String SPARE_PHONE_NUMBER = "01087654321";
+    private static final String PHONE_NUMBER = "010-1234-5678";
+    private static final String SPARE_PHONE_NUMBER = "010-8765-4321";
     private static final boolean IS_OPENED_ADDRESS = true;
 
     public static Shelter shelter() {
