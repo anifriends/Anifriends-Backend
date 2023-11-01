@@ -36,15 +36,13 @@ class ShelterServiceTest {
 
     @Nested
     @DisplayName("findShelterDetail 실행 시")
-    class findShelterDetailTest {
+    class FindShelterDetailTest {
 
         @Test
         @DisplayName("성공")
         void findShelterDetail() {
             //given
             givenShelter = ShelterFixture.shelter();
-            givenShelterImage = ShelterImageFixture.shelterImage(givenShelter);
-            givenShelter.setShelterImage(givenShelterImage);
 
             given(shelterRepository.findById(anyLong())).willReturn(
                 Optional.ofNullable(givenShelter));
@@ -80,7 +78,7 @@ class ShelterServiceTest {
 
     @Nested
     @DisplayName("findShelterMyPage 실행 시")
-    class findShelterMyPageTest {
+    class FindShelterMyPageTest {
 
         @Test
         @DisplayName("성공")

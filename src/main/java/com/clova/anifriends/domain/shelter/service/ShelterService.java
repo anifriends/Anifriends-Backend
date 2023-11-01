@@ -24,11 +24,6 @@ public class ShelterService {
         return FindShelterDetailResponse.from(foundShelter);
     }
 
-    private Shelter getShelter(Long shelterId) {
-        return shelterRepository.findById(shelterId)
-            .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
-    }
-
     @Transactional(readOnly = true)
     public FindShelterMyPageResponse findShelterMyPage(
         Long shelterId
@@ -36,5 +31,11 @@ public class ShelterService {
         Shelter foundShelter = getShelter(shelterId);
 
         return FindShelterMyPageResponse.from(foundShelter);
+    }
+
+    private Shelter getShelter(Long shelterId) {
+        return shelterRepository.findById(shelterId)
+            .orElseThrow(
+                () -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
     }
 }
