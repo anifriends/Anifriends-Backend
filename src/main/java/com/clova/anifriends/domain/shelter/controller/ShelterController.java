@@ -16,7 +16,7 @@ public class ShelterController {
 
     private final ShelterService shelterService;
 
-    @GetMapping("/shelters/{shelterId}/profile")
+    @GetMapping("/volunteers/shelters/{shelterId}/profile")
     public ResponseEntity<FindShelterDetailResponse> findShelterDetail(
         @PathVariable Long shelterId
     ) {
