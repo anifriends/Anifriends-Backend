@@ -2,18 +2,19 @@ package com.clova.anifriends.domain.volunteer.dto.response;
 
 import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import java.time.LocalDate;
 
 public record GetVolunteerMyPageResponse(
     String email,
     String name,
-    String birthDate,
+    LocalDate birthDate,
     String phoneNumber,
     int temperature,
-    int volunteerCount,
+    long volunteerCount,
     String imageUrl
 ) {
 
-    public static GetVolunteerMyPageResponse from(Volunteer volunteer) {
+    public static GetVolunteerMyPageResponse from(Volunteer volunteer){
         return new GetVolunteerMyPageResponse(
             volunteer.getEmail(),
             volunteer.getName(),

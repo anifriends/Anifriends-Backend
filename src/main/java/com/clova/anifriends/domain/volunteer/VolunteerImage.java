@@ -8,13 +8,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Table(name = "voulunteer_image")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VolunteerImage extends BaseTimeEntity {
 
     @Id
@@ -22,14 +25,15 @@ public class VolunteerImage extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long volunteerImageId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "volunteer_id")
     private Volunteer volunteer;
 
     @Column(name = "image_url")
     private String imageUrl;
 
-    protected VolunteerImage() {
+    public VolunteerImage(Volunteer volunteer, String imageUrl) {
+        this.volunteer = volunteer;
+        this.imageUrl = imageUrl;
     }
-
 }
