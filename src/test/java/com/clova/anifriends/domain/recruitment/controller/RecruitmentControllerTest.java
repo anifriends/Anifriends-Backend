@@ -6,6 +6,8 @@ import static com.clova.anifriends.domain.recruitment.support.fixture.Recruitmen
 import static com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture.shelter;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
@@ -97,6 +99,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         // then
         result.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(headerWithName(AUTHORIZATION).description("액세스 토큰")),
                 pathParameters(
                     parameterWithName("recruitmentId").description("봉사 모집글 ID")
                 ),
