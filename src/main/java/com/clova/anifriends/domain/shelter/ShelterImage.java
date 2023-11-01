@@ -10,9 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @Table(name = "shelter_image")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ShelterImage extends BaseTimeEntity {
 
     @Id
@@ -27,4 +32,8 @@ public class ShelterImage extends BaseTimeEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
+    public ShelterImage(Shelter shelter, String imageUrl) {
+        this.shelter = shelter;
+        this.imageUrl = imageUrl;
+    }
 }

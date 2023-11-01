@@ -27,13 +27,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
       # 빌드 시 캐시 적용
       - name: Gradle Caching
         uses: actions/cache@v3
@@ -50,12 +43,9 @@ jobs:
         run: chmod +x ./gradlew
         shell: bash
 
-      # Build with sonar
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonar --info
+      # 빌드
+      - name: Build with Gradle
+        run: ./gradlew build
 
       ## 테스트 결과 PR 코멘트에 등록
       - name: Register the test results as PR comments
