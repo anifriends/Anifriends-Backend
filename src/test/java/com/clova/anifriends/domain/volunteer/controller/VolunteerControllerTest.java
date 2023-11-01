@@ -4,9 +4,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,6 +49,33 @@ class VolunteerControllerTest extends BaseControllerTest {
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 리소스 위치")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("봉사자 마이페이지 조회 API 호출 시")
+    void getVolunteerMyPage() throws Exception {
+        // given
+        given(volunteerService.getVolunteerMyPage(any())).willReturn(
+            VolunteerDtoFixture.getVolunteerMyPageResponse());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+            get("/api/volunteers/me")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                responseFields(
+                    fieldWithPath("email").type(STRING).description("이메일"),
+                    fieldWithPath("name").type(STRING).description("이름"),
+                    fieldWithPath("birthDate").type(STRING).description("생년월일"),
+                    fieldWithPath("phoneNumber").type(STRING).description("전화번호"),
+                    fieldWithPath("temperature").type(NUMBER).description("체온"),
+                    fieldWithPath("volunteerCount").type(NUMBER).description("봉사 횟수"),
+                    fieldWithPath("imageUrl").type(STRING).description("프로필 이미지 URL")
                 )
             ));
     }
