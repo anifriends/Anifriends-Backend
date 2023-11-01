@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ShelterName {
 
-    private static final int MAX_SHELTER_NAME_LENGTH = 10;
+    private static final int MAX_SHELTER_NAME_LENGTH = 20;
 
     @Column(name = "name")
     private String name;

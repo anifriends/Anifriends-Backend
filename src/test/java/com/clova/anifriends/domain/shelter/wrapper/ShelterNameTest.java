@@ -58,10 +58,10 @@ class ShelterNameTest {
         }
 
         @Test
-        @DisplayName("예외: 이름이 10자 초과인 경우")
+        @DisplayName("예외: 이름이 20자 초과인 경우")
         void throwExceptionWhenNameIsMoreThanTen() {
             // given
-            name = "abcdefghijk";
+            name = "abcdefghijkfasdfwerxfsfaserawe";
 
             // when
             Exception exception = catchException(
