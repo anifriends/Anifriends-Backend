@@ -25,8 +25,13 @@ public final class AuthFixture {
             TEST_REFRESH_SECRET);
     }
 
-    public static String accessToken() {
+    public static String volunteerAccessToken() {
         UserToken userToken = jwtProvider().createToken(USER_ID, UserRole.ROLE_VOLUNTEER);
+        return userToken.accessToken();
+    }
+
+    public static String shelterAccessToken() {
+        UserToken userToken = jwtProvider().createToken(USER_ID, UserRole.ROLE_SHELTER);
         return userToken.accessToken();
     }
 

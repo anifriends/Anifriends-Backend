@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
-import com.clova.anifriends.domain.recruitment.dto.RecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
@@ -46,7 +46,7 @@ class RecruitmentServiceTest {
         String content = "content";
         List<String> imageUrls = List.of();
 
-        RecruitmentRequest request = new RecruitmentRequest(
+        RegisterRecruitmentRequest request = new RegisterRecruitmentRequest(
             title, startTime, endTime, deadline, capacity, content, imageUrls);
 
         @Test

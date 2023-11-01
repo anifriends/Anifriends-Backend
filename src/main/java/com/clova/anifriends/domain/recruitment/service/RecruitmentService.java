@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.recruitment.service;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.dto.RecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -21,7 +21,7 @@ public class RecruitmentService {
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
         Long shelterId,
-        RecruitmentRequest request) {
+        RegisterRecruitmentRequest request) {
         Shelter shelter = shelterRepository.findById(shelterId)
             .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
         Recruitment recruitment = new Recruitment(
