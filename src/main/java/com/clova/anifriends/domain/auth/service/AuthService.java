@@ -20,6 +20,7 @@ import com.clova.anifriends.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
+    @Transactional
     public TokenResponse volunteerLogin(String email, String password) {
         Volunteer volunteer = volunteerRepository.findByEmail(new VolunteerEmail(email))
             .orElseThrow(
@@ -41,6 +43,7 @@ public class AuthService {
         return createToken(volunteer.getVolunteerId(), UserRole.ROLE_VOLUNTEER);
     }
 
+    @Transactional
     public TokenResponse shelterLogin(String email, String password) {
         Shelter shelter = shelterRepository.findByEmail(new ShelterEmail(email))
             .orElseThrow(
@@ -61,6 +64,7 @@ public class AuthService {
         return TokenResponse.from(userToken);
     }
 
+    @Transactional
     public TokenResponse refreshAccessToken(String accessToken, String refreshToken) {
         RefreshToken findRefreshToken = refreshTokenRepository.findByTokenValue(refreshToken)
             .orElseThrow(
