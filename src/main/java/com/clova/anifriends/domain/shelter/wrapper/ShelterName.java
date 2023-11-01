@@ -6,6 +6,7 @@ import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import java.text.MessageFormat;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +32,8 @@ public class ShelterName {
         }
 
         if (name.length() > MAX_SHELTER_NAME_LENGTH) {
-            throw new ShelterBadRequestException(ErrorCode.BAD_REQUEST, "이름은 최대 10자입니다.");
+            throw new ShelterBadRequestException(ErrorCode.BAD_REQUEST,
+                MessageFormat.format("이름은 최대 {0}입니다.", MAX_SHELTER_NAME_LENGTH));
         }
     }
 }
