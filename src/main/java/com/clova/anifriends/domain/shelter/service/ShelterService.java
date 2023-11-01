@@ -3,7 +3,6 @@ package com.clova.anifriends.domain.shelter.service;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
-import com.clova.anifriends.domain.shelter.repository.ShelterImageRepository;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShelterService {
 
     private final ShelterRepository shelterRepository;
-    private final ShelterImageRepository shelterImageRepository;
 
     @Transactional(readOnly = true)
     public FindShelterDetailResponse findShelterDetail(
