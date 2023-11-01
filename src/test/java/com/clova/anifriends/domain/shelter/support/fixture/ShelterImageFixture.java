@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.shelter.support;
+package com.clova.anifriends.domain.shelter.support.fixture;
 
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
