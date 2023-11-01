@@ -1,9 +1,12 @@
 package com.clova.anifriends.domain.applicant;
 
+import com.clova.anifriends.domain.applicant.exception.ApplicantBadRequestException;
+import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -45,12 +49,32 @@ public class Applicant extends BaseTimeEntity {
         Volunteer volunteer,
         String status
     ) {
+        validateRecruitment(recruitment);
         this.recruitment = recruitment;
+        validateVolunteer(volunteer);
         this.volunteer = volunteer;
         this.status = ApplicantStatus.valueOf(status);
     }
 
     public ApplicantStatus getStatus() {
         return status;
+    }
+
+    private void validateRecruitment(Recruitment recruitment) {
+        if (recruitment == null) {
+            throw new ApplicantBadRequestException("봉사는 필수 입력 항목입니다.");
+        }
+        if (recruitment.isClosed() || recruitment.getDeadline().isBefore(LocalDateTime.now())) {
+            throw new ApplicantBadRequestException("모집이 마감된 봉사입니다.");
+        }
+        if (recruitment.getApplicantCount() >= recruitment.getCapacity()) {
+            throw new ApplicantConflictException(ErrorCode.CONCURRENCY, "모집 인원이 초과되었습니다.");
+        }
+    }
+
+    private void validateVolunteer(Volunteer volunteer) {
+        if (volunteer == null) {
+            throw new ApplicantBadRequestException("봉사자는 필수 입력 항목입니다.");
+        }
     }
 }

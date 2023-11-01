@@ -16,7 +16,7 @@ public class ApplicantController {
 
     private final ApplicantService applicantService;
 
-    @PostMapping("/recruitments/{recruitmentId}/apply")
+    @PostMapping("/volunteers/recruitments/{recruitmentId}/apply")
     public ResponseEntity<Void> registerApplicant(
         @PathVariable Long recruitmentId,
         @LoginUser Long volunteerId
