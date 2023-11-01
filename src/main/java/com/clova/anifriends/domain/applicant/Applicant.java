@@ -49,6 +49,7 @@ public class Applicant extends BaseTimeEntity {
         Volunteer volunteer
     ) {
         validateRecruitment(recruitment);
+        checkConcurrency(recruitment);
         this.recruitment = recruitment;
         validateVolunteer(volunteer);
         this.volunteer = volunteer;
@@ -74,14 +75,17 @@ public class Applicant extends BaseTimeEntity {
         if (recruitment.isClosed() || recruitment.getDeadline().isBefore(LocalDateTime.now())) {
             throw new ApplicantBadRequestException("모집이 마감된 봉사입니다.");
         }
-        if (recruitment.getApplicantCount() >= recruitment.getCapacity()) {
-            throw new ApplicantConflictException(ErrorCode.CONCURRENCY, "모집 인원이 초과되었습니다.");
-        }
     }
 
     private void validateVolunteer(Volunteer volunteer) {
         if (volunteer == null) {
             throw new ApplicantBadRequestException("봉사자는 필수 입력 항목입니다.");
+        }
+    }
+
+    private void checkConcurrency(Recruitment recruitment) {
+        if (recruitment.getApplicantCount() >= recruitment.getCapacity()) {
+            throw new ApplicantConflictException(ErrorCode.CONCURRENCY, "모집 인원이 초과되었습니다.");
         }
     }
 }
