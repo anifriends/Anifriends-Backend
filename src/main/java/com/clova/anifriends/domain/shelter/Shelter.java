@@ -86,7 +86,7 @@ public class Shelter extends BaseTimeEntity {
         return this.addressInfo.getAddressDetail();
     }
 
-    public Boolean IsOpenedAddress() {
+    public Boolean isOpenedAddress() {
         return this.addressInfo.isOpenedAddress();
     }
 

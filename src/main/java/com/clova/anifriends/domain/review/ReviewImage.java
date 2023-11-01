@@ -1,7 +1,6 @@
 package com.clova.anifriends.domain.review;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
-import com.clova.anifriends.domain.volunteer.Volunteer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,9 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @Table(name = "review_image")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewImage extends BaseTimeEntity {
 
     @Id
@@ -28,4 +32,8 @@ public class ReviewImage extends BaseTimeEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
+    public ReviewImage(Review review, String imageUrl) {
+        this.review = review;
+        this.imageUrl = imageUrl;
+    }
 }

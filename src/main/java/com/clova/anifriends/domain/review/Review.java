@@ -48,4 +48,8 @@ public class Review extends BaseTimeEntity {
         this.content = new ReviewContent(content);
     }
 
+    public String getContent() {
+        return content.getContent();
+    }
+
 }

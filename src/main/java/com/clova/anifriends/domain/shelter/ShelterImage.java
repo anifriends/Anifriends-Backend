@@ -31,7 +31,7 @@ public class ShelterImage extends BaseTimeEntity {
 
     @Column(name = "image_url")
     private String imageUrl;
-
+    
     public ShelterImage(
         Shelter shelter,
         String imageUrl
