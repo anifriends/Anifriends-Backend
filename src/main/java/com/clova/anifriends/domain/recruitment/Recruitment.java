@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.recruitment;
 
+import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentContent;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentInfo;
@@ -14,13 +15,21 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Table(name = "recruitment")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Recruitment extends BaseTimeEntity {
+
+    public static final boolean IS_CLOSED_DEFAULT = false;
 
     @Id
     @Column(name = "recruitment_id")
@@ -30,6 +39,12 @@ public class Recruitment extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
+
+    @OneToMany(mappedBy = "recruitment", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<RecruitmentImage> imageUrls = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recruitment", fetch = FetchType.LAZY)
+    private List<Applicant> applications = new ArrayList<>();
 
     @Embedded
     private RecruitmentTitle title;
@@ -44,9 +59,6 @@ public class Recruitment extends BaseTimeEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    protected Recruitment() {
-    }
-
     public Recruitment(
         Shelter shelter,
         String title,
@@ -54,12 +66,16 @@ public class Recruitment extends BaseTimeEntity {
         String content,
         LocalDateTime startTime,
         LocalDateTime endTime,
-        LocalDateTime deadline
+        LocalDateTime deadline,
+        List<String> imageUrls
     ) {
         this.shelter = shelter;
         this.title = new RecruitmentTitle(title);
         this.content = new RecruitmentContent(content);
-        this.info = new RecruitmentInfo(startTime, endTime, deadline, false, capacity);
+        this.info = new RecruitmentInfo(startTime, endTime, deadline, IS_CLOSED_DEFAULT, capacity);
+        this.imageUrls = imageUrls.stream()
+            .map(url -> new RecruitmentImage(this, url))
+            .toList();
     }
 
     public Long getRecruitmentId() {
@@ -68,6 +84,10 @@ public class Recruitment extends BaseTimeEntity {
 
     public String getTitle() {
         return title.getTitle();
+    }
+
+    public int getCapacity() {
+        return info.getCapacity();
     }
 
     public String getContent() {
@@ -82,15 +102,29 @@ public class Recruitment extends BaseTimeEntity {
         return info.getEndTime();
     }
 
+    public Boolean isClosed() {
+        return info.isClosed();
+    }
+
     public LocalDateTime getDeadline() {
         return info.getDeadline();
     }
 
-    public int getCapacity() {
-        return info.getCapacity();
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public boolean isClosed() {
-        return info.isClosed();
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public List<String> getImageUrls() {
+        return imageUrls.stream()
+            .map(RecruitmentImage::getImageUrl)
+            .toList();
+    }
+
+    public int getApplicantCount() {
+        return applications.size();
     }
 }

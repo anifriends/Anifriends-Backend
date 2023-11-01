@@ -3,6 +3,8 @@ package com.clova.anifriends.domain.recruitment.service;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.RegisterRecruitmentResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
+import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
@@ -31,8 +33,19 @@ public class RecruitmentService {
             request.content(),
             request.startTime(),
             request.endTime(),
-            request.deadline());
+            request.deadline(),
+            request.imageUrls());
         recruitmentRepository.save(recruitment);
         return RegisterRecruitmentResponse.from(recruitment);
+    }
+
+    public FindRecruitmentByShelterResponse findRecruitmentByIdByShelter(long id) {
+        Recruitment recruitment = getRecruitmentById(id);
+        return FindRecruitmentByShelterResponse.from(recruitment);
+    }
+
+    private Recruitment getRecruitmentById(long id) {
+        return recruitmentRepository.findById(id)
+            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글입니다."));
     }
 }
