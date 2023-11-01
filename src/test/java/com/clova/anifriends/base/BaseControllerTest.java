@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import com.clova.anifriends.base.BaseControllerTest.WebMvcTestConfig;
 import com.clova.anifriends.base.config.RestDocsConfig;
+import com.clova.anifriends.domain.applicant.service.ApplicantService;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
 import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
@@ -87,6 +88,9 @@ public abstract class BaseControllerTest {
 
     @MockBean
     protected ShelterService shelterService;
+
+    @MockBean
+    protected ApplicantService applicantService;
 
     @BeforeEach
     void setUp(
