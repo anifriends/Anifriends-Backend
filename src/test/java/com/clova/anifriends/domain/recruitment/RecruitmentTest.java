@@ -24,7 +24,7 @@ class RecruitmentTest {
             LocalDateTime now = LocalDateTime.now();
             List<String> imageUrls = List.of("imageUrl1", "imageUrl2");
             LocalDateTime startTime = now.plusHours(1);
-            LocalDateTime endTime = startTime.minusMinutes(1);
+            LocalDateTime endTime = startTime.plusMinutes(1);
             LocalDateTime deadline = now.plusMinutes(10);
 
             //when
