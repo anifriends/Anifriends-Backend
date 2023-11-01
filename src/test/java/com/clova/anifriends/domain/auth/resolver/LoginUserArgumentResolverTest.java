@@ -20,7 +20,7 @@ class LoginUserArgumentResolverTest extends BaseControllerTest {
     @DisplayName("@LoginUser를 사용하는 경우")
     class LoginUserTest {
 
-        String accessToken = AuthFixture.accessToken();
+        String accessToken = AuthFixture.shelterAccessToken();
 
         @Test
         @DisplayName("성공: 액세스 토큰이 포함되어 있으면")

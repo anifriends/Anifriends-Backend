@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.volunteer;
 
 import static com.clova.anifriends.global.exception.ErrorCode.BAD_REQUEST;
 
+import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
@@ -15,12 +16,18 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -55,6 +62,12 @@ public class Volunteer extends BaseTimeEntity {
 
     @Embedded
     private VolunteerName name;
+
+    @OneToMany(mappedBy = "volunteer", fetch = FetchType.LAZY)
+    private List<Applicant> applications = new ArrayList<>();
+
+    @OneToOne(mappedBy = "volunteer")
+    private VolunteerImage volunteerImage;
 
     public Volunteer(
         String email,
@@ -111,5 +124,13 @@ public class Volunteer extends BaseTimeEntity {
 
     public String getName() {
         return this.name.getName();
+    }
+
+    public String getVolunteerImageUrl() {
+        return volunteerImage.getImageUrl();
+    }
+
+    public List<Applicant> getApplications() {
+        return Collections.unmodifiableList(applications);
     }
 }

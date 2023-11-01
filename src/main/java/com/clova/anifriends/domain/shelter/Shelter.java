@@ -67,39 +67,43 @@ public class Shelter extends BaseTimeEntity {
     }
 
     public String getEmail() {
-        return email.getEmail();
-    }
-
-    public String getPassword() {
-        return password.getPassword();
+        return this.email.getEmail();
     }
 
     public String getName() {
         return name.getName();
     }
 
-    public String getPhoneNumber() {
-        return phoneNumberInfo.getPhoneNumber();
-    }
-
-    public String getSparePhoneNumber() {
-        return phoneNumberInfo.getSparePhoneNumber();
-    }
-
-    public ShelterAddressInfo getAddressInfo() {
-        return addressInfo;
+    public String getPassword() {
+        return this.password.getPassword();
     }
 
     public String getAddress() {
-        return addressInfo.getAddress();
+        return this.addressInfo.getAddress();
     }
 
     public String getAddressDetail() {
-        return addressInfo.getAddressDetail();
+        return this.addressInfo.getAddressDetail();
     }
 
-    public boolean isOpenedAddress() {
-        return addressInfo.isOpenedAddress();
+    public Boolean isOpenedAddress() {
+        return this.addressInfo.isOpenedAddress();
+    }
+
+    public String getPhoneNumber() {
+        return this.phoneNumberInfo.getPhoneNumber();
+    }
+
+    public String getSparePhoneNumber() {
+        return this.phoneNumberInfo.getSparePhoneNumber();
+    }
+
+    public String getShelterImageUrl() {
+        return this.shelterImage.getImageUrl();
+    }
+
+    public void setShelterImage(ShelterImage shelterImage) {
+        this.shelterImage = shelterImage;
     }
 
     public String getImageUrl() {
