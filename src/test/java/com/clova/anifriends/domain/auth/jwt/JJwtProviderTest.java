@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.auth.jwt;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchException;
 import static org.awaitility.Awaitility.await;
 
 import com.clova.anifriends.domain.auth.exception.ExpiredAccessTokenException;
@@ -12,6 +12,7 @@ import com.clova.anifriends.domain.auth.jwt.response.UserToken;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.awaitility.core.ThrowingRunnable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -80,10 +81,11 @@ class JJwtProviderTest {
             String invalidAccessToken = UserToken.accessToken();
 
             //when
+            Exception exception = catchException(
+                () -> jJwtProvider.parseAccessToken(invalidAccessToken));
+
             //then
-            assertThatThrownBy(
-                () -> jJwtProvider.parseAccessToken(invalidAccessToken))
-                .isInstanceOf(InvalidJwtException.class);
+            assertThat(exception).isInstanceOf(InvalidJwtException.class);
         }
 
         @Test
@@ -97,9 +99,11 @@ class JJwtProviderTest {
             String expiredAccessToken = userToken.accessToken();
 
             //when
+            Exception exception = catchException(
+                () -> jJwtProvider.parseAccessToken(expiredAccessToken));
+
             //then
-            assertThatThrownBy(() -> jJwtProvider.parseAccessToken(expiredAccessToken))
-                .isInstanceOf(ExpiredAccessTokenException.class);
+            assertThat(exception).isInstanceOf(ExpiredAccessTokenException.class);
         }
 
         @Test
@@ -109,9 +113,10 @@ class JJwtProviderTest {
             String refreshToken = userToken.refreshToken();
 
             //when
+            Exception exception = catchException(() -> jJwtProvider.parseAccessToken(refreshToken));
+
             //then
-            assertThatThrownBy(() -> jJwtProvider.parseAccessToken(refreshToken))
-                .isInstanceOf(InvalidJwtException.class);
+            assertThat(exception).isInstanceOf(InvalidJwtException.class);
         }
     }
 
@@ -126,12 +131,14 @@ class JJwtProviderTest {
             String refreshToken = userToken.refreshToken();
 
             //when
-            //then
-            await().atLeast(10, TimeUnit.MILLISECONDS).untilAsserted(() ->
+            ThrowingRunnable runnable = () ->
             {
                 UserToken newUserToken = jJwtProvider.refreshAccessToken(refreshToken);
                 assertThat(newUserToken.accessToken()).isNotEqualTo(refreshToken);
-            });
+            };
+
+            //then
+            await().atLeast(10, TimeUnit.MILLISECONDS).untilAsserted(runnable);
         }
 
         @Test
@@ -141,9 +148,11 @@ class JJwtProviderTest {
             String accessToken = userToken.accessToken();
 
             //when
+            Exception exception = catchException(
+                () -> jJwtProvider.refreshAccessToken(accessToken));
+
             //then
-            assertThatThrownBy(() -> jJwtProvider.refreshAccessToken(accessToken))
-                .isInstanceOf(InvalidJwtException.class);
+            assertThat(exception).isInstanceOf(InvalidJwtException.class);
         }
 
         @Test
@@ -157,9 +166,11 @@ class JJwtProviderTest {
             String expiredRefreshToken = userToken.refreshToken();
 
             //when
+            Exception exception = catchException(
+                () -> jJwtProvider.refreshAccessToken(expiredRefreshToken));
+
             //then
-            assertThatThrownBy(() -> jJwtProvider.refreshAccessToken(expiredRefreshToken))
-                .isInstanceOf(ExpiredRefreshTokenException.class);
+            assertThat(exception).isInstanceOf(ExpiredRefreshTokenException.class);
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.auth.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -104,7 +104,7 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("예외: 비밀번호가 다름")
+        @DisplayName("예외(AuthAuthenticationException): 비밀번호가 다름")
         void exceptionWhenNotEqualsPassword() {
             //given
             String notEqualsPassword = password + "a";
@@ -113,21 +113,24 @@ class AuthServiceTest {
                 Optional.ofNullable(volunteer));
 
             //when
+            Exception exception = catchException(
+                () -> authService.volunteerLogin(email, notEqualsPassword));
+
             //then
-            assertThatThrownBy(() -> authService.volunteerLogin(email, notEqualsPassword))
-                .isInstanceOf(AuthAuthenticationException.class);
+            assertThat(exception).isInstanceOf(AuthAuthenticationException.class);
         }
 
         @Test
-        @DisplayName("예외: 존재하지 않는 봉사자")
+        @DisplayName("예외(AuthAuthenticationException): 존재하지 않는 봉사자")
         void exceptionWhenVolunteerNotFound() {
             //given
             given(volunteerRepository.findByEmail(any())).willReturn(Optional.empty());
 
             //when
+            Exception exception = catchException(() -> authService.volunteerLogin(email, password));
+
             //then
-            assertThatThrownBy(() -> authService.volunteerLogin(email, password))
-                .isInstanceOf(AuthAuthenticationException.class);
+            assertThat(exception).isInstanceOf(AuthAuthenticationException.class);
         }
     }
 
@@ -174,7 +177,7 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("예외: 비밀번호가 다름")
+        @DisplayName("예외(AuthAuthenticationException): 비밀번호가 다름")
         void exceptionWhenNotEqualsPassword() {
             //given
             String notEqualsPassword = password + "a";
@@ -183,21 +186,24 @@ class AuthServiceTest {
                 Optional.ofNullable(shelter));
 
             //when
+            Exception exception = catchException(
+                () -> authService.shelterLogin(email, notEqualsPassword));
+
             //then
-            assertThatThrownBy(() -> authService.shelterLogin(email, notEqualsPassword))
-                .isInstanceOf(AuthAuthenticationException.class);
+            assertThat(exception).isInstanceOf(AuthAuthenticationException.class);
         }
 
         @Test
-        @DisplayName("예외: 존재하지 않는 보호소")
+        @DisplayName("예외(AuthAuthenticationException): 존재하지 않는 보호소")
         void exceptionWhenShelterNotFound() {
             //given
             given(shelterRepository.findByEmail(any())).willReturn(Optional.empty());
 
             //when
+            Exception exception = catchException(() -> authService.shelterLogin(email, password));
+
             //then
-            assertThatThrownBy(() -> authService.shelterLogin(email, password))
-                .isInstanceOf(AuthAuthenticationException.class);
+            assertThat(exception).isInstanceOf(AuthAuthenticationException.class);
         }
     }
 }
