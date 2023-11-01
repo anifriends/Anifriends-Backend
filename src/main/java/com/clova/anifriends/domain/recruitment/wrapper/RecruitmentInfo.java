@@ -27,8 +27,13 @@ public class RecruitmentInfo {
     @Column(name = "capacity")
     private int capacity;
 
-    public RecruitmentInfo(LocalDateTime startTime, LocalDateTime endTime, LocalDateTime deadline,
-        boolean isClosed, int capacity) {
+    public RecruitmentInfo(
+        LocalDateTime startTime,
+        LocalDateTime endTime,
+        LocalDateTime deadline,
+        boolean isClosed,
+        int capacity
+    ) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.deadline = deadline;

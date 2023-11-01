@@ -1,0 +1,7 @@
+exclude com/clova/anifriends/domain/*/dto/response/*
+exclude com/clova/anifriends/domain/*/dto/request/*
+exclude com/clova/anifriends/domain/*/exception/*
+exclude com/clova/anifriends/domain/*/Q*
+exclude com/clova/anifriends/global/*
+exclude com/clova/anifriends/domain/common/QBaseTimeEntity
+exclude com/clova/anifriends/domain/*/wrapper/Q*
