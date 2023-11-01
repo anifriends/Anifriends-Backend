@@ -127,7 +127,7 @@ public class Volunteer extends BaseTimeEntity {
     }
 
     public String getVolunteerImageUrl() {
-        return volunteerImage.getImageUrl();
+        return this.volunteerImage == null ? null : volunteerImage.getImageUrl();
     }
 
     public List<Applicant> getApplications() {

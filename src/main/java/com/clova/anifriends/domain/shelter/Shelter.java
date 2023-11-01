@@ -71,7 +71,7 @@ public class Shelter extends BaseTimeEntity {
     }
 
     public String getName() {
-        return this.name.getName();
+        return name.getName();
     }
 
     public String getPassword() {
@@ -99,10 +99,14 @@ public class Shelter extends BaseTimeEntity {
     }
 
     public String getShelterImageUrl() {
-        return this.shelterImage.getImageUrl();
+        return this.shelterImage == null ? null : this.shelterImage.getImageUrl();
     }
 
     public void setShelterImage(ShelterImage shelterImage) {
         this.shelterImage = shelterImage;
+    }
+
+    public String getImageUrl() {
+        return this.shelterImage == null ? null : this.shelterImage.getImageUrl();
     }
 }

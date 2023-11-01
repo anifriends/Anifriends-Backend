@@ -21,11 +21,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "animal")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Animal extends BaseTimeEntity {
 
     @Id
@@ -66,8 +72,8 @@ public class Animal extends BaseTimeEntity {
     @Embedded
     private AnimalInformation information;
 
-    protected Animal() {
-    }
+    @OneToMany(mappedBy = "animal", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<AnimalImage> imageUrls = new ArrayList<>();
 
     public Animal(
         Shelter shelter,
@@ -131,5 +137,11 @@ public class Animal extends BaseTimeEntity {
 
     public String getInformation() {
         return information.getInformation();
+    }
+
+    public List<String> getImageUrls() {
+        return imageUrls.stream()
+            .map(AnimalImage::getImageUrl)
+            .toList();
     }
 }

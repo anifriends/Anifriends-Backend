@@ -3,12 +3,14 @@ package com.clova.anifriends.domain.volunteer.controller;
 import com.clova.anifriends.domain.auth.resolver.LoginUser;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
+import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
 import com.clova.anifriends.domain.volunteer.service.VolunteerService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,5 +38,16 @@ public class VolunteerController {
         @LoginUser Long volunteerId
     ) {
         return ResponseEntity.ok(volunteerService.findVolunteerMyPage(volunteerId));
+    }
+
+    @GetMapping("/volunteers/{volunteerId}/profile")
+    public ResponseEntity<FindVolunteerProfileResponse> findVolunteerProfile(
+        @PathVariable Long volunteerId
+    ) {
+        return ResponseEntity.ok(
+            volunteerService.findVolunteerProfile(
+                volunteerId
+            )
+        );
     }
 }

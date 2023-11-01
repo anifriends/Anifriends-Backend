@@ -12,7 +12,7 @@ class ShelterPasswordTest {
 
     @Nested
     @DisplayName("ShelterPassword 생성 시")
-    class newShelterPasswordTest {
+    class NewShelterPasswordTest {
 
         String password;
 
