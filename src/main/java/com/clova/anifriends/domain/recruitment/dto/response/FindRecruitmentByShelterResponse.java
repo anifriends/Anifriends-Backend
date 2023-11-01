@@ -4,7 +4,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record FindRecruitmentResponse(
+public record FindRecruitmentByShelterResponse(
     String title,
     int capacity,
     int applicantCount,
@@ -18,8 +18,8 @@ public record FindRecruitmentResponse(
     List<String> imageUrls
 ) {
 
-    public static FindRecruitmentResponse from(Recruitment recruitment) {
-        return new FindRecruitmentResponse(
+    public static FindRecruitmentByShelterResponse from(Recruitment recruitment) {
+        return new FindRecruitmentByShelterResponse(
             recruitment.getTitle(),
             recruitment.getCapacity(),
             recruitment.getApplicantCount(),

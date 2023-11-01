@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,9 +33,9 @@ class RecruitmentControllerTest extends BaseControllerTest {
         // given
         Shelter shelter = shelter();
         Recruitment recruitment = recruitment(shelter);
-        FindRecruitmentResponse response = findRecruitmentResponse(recruitment);
+        FindRecruitmentByShelterResponse response = findRecruitmentResponse(recruitment);
 
-        when(recruitmentService.findRecruitmentById(anyLong()))
+        when(recruitmentService.findRecruitmentByIdByShelter(anyLong()))
             .thenReturn(response);
 
         // when

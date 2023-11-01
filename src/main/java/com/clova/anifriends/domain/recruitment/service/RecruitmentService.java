@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.recruitment.service;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +13,9 @@ public class RecruitmentService {
 
     private final RecruitmentRepository recruitmentRepository;
 
-    public FindRecruitmentResponse findRecruitmentById(long id) {
+    public FindRecruitmentByShelterResponse findRecruitmentByIdByShelter(long id) {
         Recruitment recruitment = getRecruitmentById(id);
-        return FindRecruitmentResponse.from(recruitment);
+        return FindRecruitmentByShelterResponse.from(recruitment);
     }
 
     private Recruitment getRecruitmentById(long id) {

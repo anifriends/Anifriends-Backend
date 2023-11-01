@@ -9,7 +9,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -41,13 +41,13 @@ class RecruitmentServiceTest {
             // given
             Shelter shelter = shelter();
             Recruitment recruitment = recruitment(shelter);
-            FindRecruitmentResponse expected = findRecruitmentResponse(recruitment);
+            FindRecruitmentByShelterResponse expected = findRecruitmentResponse(recruitment);
 
             when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.of(recruitment));
 
             // when
-            FindRecruitmentResponse result = recruitmentService
-                .findRecruitmentById(anyLong());
+            FindRecruitmentByShelterResponse result = recruitmentService
+                .findRecruitmentByIdByShelter(anyLong());
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
@@ -62,7 +62,7 @@ class RecruitmentServiceTest {
 
             // when
             Exception exception = catchException(
-                () -> recruitmentService.findRecruitmentById(anyLong()));
+                () -> recruitmentService.findRecruitmentByIdByShelter(anyLong()));
 
             // then
             assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
