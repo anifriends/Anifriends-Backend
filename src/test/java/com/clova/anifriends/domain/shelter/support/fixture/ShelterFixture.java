@@ -1,5 +1,7 @@
 package com.clova.anifriends.domain.shelter.support.fixture;
 
+import static com.clova.anifriends.domain.shelter.support.ShelterImageFixture.shelterImage;
+
 import com.clova.anifriends.domain.shelter.Shelter;
 
 public class ShelterFixture {
@@ -14,7 +16,7 @@ public class ShelterFixture {
     private static final boolean IS_OPENED_ADDRESS = true;
 
     public static Shelter shelter() {
-        return new Shelter(
+        Shelter shelter = new Shelter(
             SHELTER_EMAIL,
             SHELTER_PASSWORD,
             SHELTER_ADDRESS,
@@ -24,5 +26,8 @@ public class ShelterFixture {
             SPARE_PHONE_NUMBER,
             IS_OPENED_ADDRESS
         );
+        shelter.setShelterImage(shelterImage(shelter));
+
+        return shelter;
     }
 }
