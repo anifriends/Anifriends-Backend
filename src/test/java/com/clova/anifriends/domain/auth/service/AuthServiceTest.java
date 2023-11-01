@@ -141,7 +141,7 @@ class AuthServiceTest {
         String email = "email@email.com";
         String password = "password123!";
         Shelter shelter = new Shelter(email, passwordEncoder.encode(password), "address",
-            "addressDetail", "name", "0212345678", "0212345678", false);
+            "addressDetail", "name", "02-1234-5678", "02-1234-5678", false);
 
         @BeforeEach
         void setUp() {
