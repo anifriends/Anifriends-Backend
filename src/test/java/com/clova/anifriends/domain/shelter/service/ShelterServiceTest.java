@@ -76,6 +76,7 @@ class ShelterServiceTest {
             // when
             Exception exception = catchException(
                 () -> shelterService.findShelterDetail(shelterId));
+
             // then
             assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
         }
