@@ -3,7 +3,6 @@ package com.clova.anifriends.domain.animal.controller;
 import static com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture.findAnimalByVolunteerResponse;
 import static com.clova.anifriends.domain.animal.support.fixture.AnimalFixture.animal;
 import static com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture.shelter;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
@@ -32,17 +31,17 @@ class AnimalControllerTest extends BaseControllerTest {
     @DisplayName("findAnimalByIdByVolunteer 실행 시")
     void FindAnimalTest() throws Exception {
         // given
+        long shelterId = 1L;
         Shelter shelter = shelter();
-        ReflectionTestUtils.setField(shelter, "shelterId", 1L);
+        ReflectionTestUtils.setField(shelter, "shelterId", shelterId);
         Animal animal = animal(shelter);
         FindAnimalByVolunteerResponse response = findAnimalByVolunteerResponse(animal);
 
-        when(animalService.findAnimalByIdByVolunteer(anyLong()))
-            .thenReturn(response);
+        when(animalService.findAnimalByIdByVolunteer(shelterId)).thenReturn(response);
 
         // when
         ResultActions result = mockMvc.perform(
-            get("/api/volunteers/animals/{animalId}", anyLong())
+            get("/api/volunteers/animals/{animalId}", shelterId)
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
