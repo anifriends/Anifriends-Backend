@@ -34,7 +34,7 @@ class JJwtProviderTest {
 
         @Test
         @DisplayName("성공")
-        void success() {
+        void createToken() {
             //given
             Long userId = 1L;
             UserRole volunteerRole = UserRole.ROLE_VOLUNTEER;
@@ -55,7 +55,7 @@ class JJwtProviderTest {
 
         @Test
         @DisplayName("성공")
-        void success() {
+        void parseAccessToken() {
             //given
             UserToken userToken = jJwtProvider.createToken(userId, roleVolunteer);
 

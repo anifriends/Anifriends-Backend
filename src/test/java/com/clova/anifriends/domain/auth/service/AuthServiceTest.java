@@ -76,7 +76,7 @@ class AuthServiceTest {
 
         @Test
         @DisplayName("성공")
-        void success() {
+        void volunteerLogin() {
             //given
             given(volunteerRepository.findByEmail(any())).willReturn(
                 Optional.ofNullable(volunteer));
