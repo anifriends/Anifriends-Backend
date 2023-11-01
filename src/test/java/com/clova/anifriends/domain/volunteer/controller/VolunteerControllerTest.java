@@ -108,12 +108,8 @@ class VolunteerControllerTest extends BaseControllerTest {
         Long volunteerId = 1L;
         Volunteer volunteer = VolunteerFixture.volunteer();
 
-        FindVolunteerProfileResponse findVolunteerMyPageResponse = new FindVolunteerProfileResponse(
-            volunteer.getEmail(),
-            volunteer.getName(),
-            volunteer.getTemperature(),
-            volunteer.getPhoneNumber(),
-            volunteer.getVolunteerImageUrl()
+        FindVolunteerProfileResponse findVolunteerMyPageResponse = FindVolunteerProfileResponse.from(
+            volunteer
         );
 
         given(volunteerService.findVolunteerProfile(anyLong())).willReturn(
