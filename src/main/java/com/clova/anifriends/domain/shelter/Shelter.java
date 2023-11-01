@@ -12,6 +12,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -40,6 +41,9 @@ public class Shelter extends BaseTimeEntity {
 
     @Embedded
     private ShelterAddressInfo addressInfo;
+
+    @OneToOne(mappedBy = "shelter")
+    private ShelterImage shelterImage;
 
     public Shelter(
         String email,
@@ -82,7 +86,7 @@ public class Shelter extends BaseTimeEntity {
         return this.addressInfo.getAddressDetail();
     }
 
-    public Boolean getIsOpenedAddress() {
+    public Boolean IsOpenedAddress() {
         return this.addressInfo.isOpenedAddress();
     }
 
@@ -92,5 +96,13 @@ public class Shelter extends BaseTimeEntity {
 
     public String getSparePhoneNumber() {
         return this.phoneNumberInfo.getSparePhoneNumber();
+    }
+
+    public String getShelterImageUrl() {
+        return this.shelterImage.getImageUrl();
+    }
+
+    public void setShelterImage(ShelterImage shelterImage) {
+        this.shelterImage = shelterImage;
     }
 }

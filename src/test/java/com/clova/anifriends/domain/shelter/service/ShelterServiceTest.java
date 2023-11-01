@@ -1,21 +1,20 @@
 package com.clova.anifriends.domain.shelter.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
-import com.clova.anifriends.domain.shelter.exception.ShelterImageNotFoundException;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterImageRepository;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,12 +38,6 @@ class ShelterServiceTest {
     Shelter givenShelter;
     ShelterImage givenShelterImage;
 
-    @BeforeEach
-    void setUp() {
-        givenShelter = ShelterFixture.shelter();
-        givenShelterImage = ShelterImageFixture.shelterImage(givenShelter);
-    }
-
     @Nested
     @DisplayName("findShelterDetail 실행 시")
     class findShelterDetailTest {
@@ -53,26 +46,23 @@ class ShelterServiceTest {
         @DisplayName("성공")
         void findShelterDetail() {
             //given
-            given(shelterRepository.findById(any())).willReturn(Optional.ofNullable(givenShelter));
-            given(shelterImageRepository.findShelterImageByShelter(any())).willReturn(
-                Optional.ofNullable(givenShelterImage));
+            givenShelter = ShelterFixture.shelter();
+            givenShelterImage = ShelterImageFixture.shelterImage(givenShelter);
+            givenShelter.setShelterImage(givenShelterImage);
+
+            given(shelterRepository.findById(anyLong())).willReturn(
+                Optional.ofNullable(givenShelter));
+            FindShelterDetailResponse expectedFindShelterDetailResponse = FindShelterDetailResponse.from(
+                givenShelter);
 
             //when
             FindShelterDetailResponse foundShelterDetailResponse = shelterService.findShelterDetail(
-                1L);
+                anyLong());
 
             //then
-            assertThat(givenShelter.getAddress()).isEqualTo(foundShelterDetailResponse.address());
-            assertThat(givenShelter.getAddressDetail()).isEqualTo(
-                foundShelterDetailResponse.addressDetail());
-            assertThat(givenShelter.getName()).isEqualTo(foundShelterDetailResponse.name());
-            assertThat(givenShelter.getEmail()).isEqualTo(foundShelterDetailResponse.email());
-            assertThat(givenShelter.getPhoneNumber()).isEqualTo(
-                foundShelterDetailResponse.phoneNumber());
-            assertThat(givenShelter.getSparePhoneNumber()).isEqualTo(
-                foundShelterDetailResponse.sparePhoneNumber());
-            assertThat(givenShelterImage.getImageUrl()).isEqualTo(
-                foundShelterDetailResponse.imageUrl());
+            assertThat(foundShelterDetailResponse).usingRecursiveComparison()
+                .ignoringFields("shelterId")
+                .isEqualTo(expectedFindShelterDetailResponse);
         }
 
         @Test
@@ -83,22 +73,11 @@ class ShelterServiceTest {
 
             given(shelterRepository.findById(any())).willReturn(Optional.empty());
 
-            //when & then
-            assertThatThrownBy(() -> shelterService.findShelterDetail(shelterId))
-                .isInstanceOf(ShelterNotFoundException.class);
-        }
-
-        @Test
-        @DisplayName("예외(ShelterImageNotFoundException): 존재하지 않은 보호소 이미지")
-        void throwExceptionWhenShelterImageNotFound() {
-            //given
-            Long shelterImageId = 1L;
-
-            given(shelterRepository.findById(any())).willReturn(Optional.ofNullable(givenShelter));
-
-            //when & then
-            assertThatThrownBy(() -> shelterService.findShelterDetail(shelterImageId))
-                .isInstanceOf(ShelterImageNotFoundException.class);
+            // when
+            Exception exception = catchException(
+                () -> shelterService.findShelterDetail(shelterId));
+            // then
+            assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
         }
     }
 }

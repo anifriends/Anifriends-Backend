@@ -1,9 +1,7 @@
 package com.clova.anifriends.domain.shelter.service;
 
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
-import com.clova.anifriends.domain.shelter.exception.ShelterImageNotFoundException;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterImageRepository;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -27,14 +25,8 @@ public class ShelterService {
             .orElseThrow(
                 () -> new ShelterNotFoundException(ErrorCode.NOT_FOUND, "존재하지 않는 보호소입니다."));
 
-        ShelterImage foundShelterImage = shelterImageRepository.findShelterImageByShelter(
-                foundShelter)
-            .orElseThrow(() -> new ShelterImageNotFoundException(ErrorCode.NOT_FOUND,
-                "존재하지 않는 보호소 이미지입니다."));
-
-        return FindShelterDetailResponse.of(
-            foundShelter,
-            foundShelterImage
+        return FindShelterDetailResponse.from(
+            foundShelter
         );
     }
 }

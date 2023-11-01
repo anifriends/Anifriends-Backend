@@ -1,7 +1,6 @@
 package com.clova.anifriends.domain.shelter.dto;
 
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.ShelterImage;
 
 public record FindShelterDetailResponse(
     Long shelterId,
@@ -15,8 +14,8 @@ public record FindShelterDetailResponse(
 
 ) {
 
-    public static FindShelterDetailResponse of(
-        Shelter shelter, ShelterImage shelterImage
+    public static FindShelterDetailResponse from(
+        Shelter shelter
     ) {
         return new FindShelterDetailResponse(
             shelter.getShelterId(),
@@ -26,7 +25,7 @@ public record FindShelterDetailResponse(
             shelter.getAddressDetail(),
             shelter.getPhoneNumber(),
             shelter.getSparePhoneNumber(),
-            shelterImage.getImageUrl()
+            shelter.getShelterImageUrl()
         );
     }
 }
