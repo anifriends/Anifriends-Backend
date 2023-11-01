@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.recruitment;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,13 +22,14 @@ class RecruitmentTest {
             int capacity = 10;
             String content = "content";
             LocalDateTime now = LocalDateTime.now();
+            List<String> imageUrls = List.of("imageUrl1", "imageUrl2");
             LocalDateTime startTime = now.plusHours(1);
             LocalDateTime endTime = startTime.minusMinutes(1);
             LocalDateTime deadline = now.plusMinutes(10);
 
             //when
             Recruitment recruitment = new Recruitment(
-                null, title, capacity, content, startTime, endTime, deadline);
+                null, title, capacity, content, startTime, endTime, deadline, imageUrls);
 
             //then
             assertThat(recruitment.getTitle()).isEqualTo(title);
