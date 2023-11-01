@@ -1,5 +1,3 @@
-import java.util.stream.Collectors
-
 buildscript {
     ext {
         queryDslVersion = "5.0.0"
@@ -134,10 +132,30 @@ clean {
     delete file(generated)
 }
 
+//jacoco start
+
+ext { // 커버리지 측정 제외 파일 패턴
+    exclusions = [
+            "**/Q*",
+            "**/*Dto*",
+            "**/*Application*",
+            "**/*Config*",
+            "**/*Response*",
+            "**/exception/**"
+    ]
+}
+
+private excludedClassFilesForReport(classDirectories) {
+    classDirectories.setFrom(
+            files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: exclusions)
+            })
+    )
+}
+
 jacoco {
     toolVersion = "0.8.9"
 }
-
 jacocoTestReport {
     dependsOn test  // report를 생성하기 전에 테스트를 실행해야합니다.
     reports {
@@ -145,30 +163,20 @@ jacocoTestReport {
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
-
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: exclusions)
+        }))
+    }
+    excludedClassFilesForReport(classDirectories)
     finalizedBy jacocoTestCoverageVerification  // 테스트 실행 후 항상 테스트 커버리지 검증을 실행합니다.
 }
-
-var excludeFromCoverage = new ArrayList<String>()
-file('coverage-exclude.anifriends').withInputStream() {
-    it ->
-        excludeFromCoverage.addAll(new BufferedReader(new InputStreamReader(it))
-                .lines()
-                .parallel()
-                .map(s -> s.substring(7).strip())
-                .collect(Collectors.toList()))
-}
-
 jacocoTestCoverageVerification {  // 코드 커버리지를 검증합니다. 규칙을 만족하지 못하면 빌드는 실패합니다.
+    excludedClassFilesForReport(classDirectories)
     violationRules {
         rule {  // 규칙을 지정합니다.
             enabled = true
             element = 'CLASS'  // 클래스 단위로 규칙을 체크합니다.
-
-            // 커버리지에 제외할 파일패턴을 설정합니다.
-            excludes += excludeFromCoverage.stream()
-                    .map(s -> s.replace("/", "."))
-                    .collect(Collectors.toList())
 
             // 브랜치 커버리지를 최소 70% 만족시켜야 합니다.
             limit {
@@ -183,7 +191,6 @@ jacocoTestCoverageVerification {  // 코드 커버리지를 검증합니다. 규
                 value = 'COVEREDRATIO'
                 minimum = 0.70
             }
-
         }
     }
 }
