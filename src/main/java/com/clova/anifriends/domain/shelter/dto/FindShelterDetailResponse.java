@@ -17,12 +17,18 @@ public record FindShelterDetailResponse(
     public static FindShelterDetailResponse from(
         Shelter shelter
     ) {
+        String addressDetail = "비공개";
+
+        if (Boolean.TRUE.equals(shelter.isOpenedAddress())) {
+            addressDetail = shelter.getAddressDetail();
+        }
+
         return new FindShelterDetailResponse(
             shelter.getShelterId(),
             shelter.getEmail(),
             shelter.getName(),
             shelter.getAddress(),
-            shelter.getAddressDetail(),
+            addressDetail,
             shelter.getPhoneNumber(),
             shelter.getSparePhoneNumber(),
             shelter.getShelterImageUrl()
