@@ -23,7 +23,7 @@ public class ShelterService {
 
         return FindShelterDetailResponse.from(foundShelter);
     }
-    
+
     @Transactional(readOnly = true)
     public FindShelterMyPageResponse findShelterMyPage(
         Long shelterId
@@ -36,6 +36,6 @@ public class ShelterService {
     private Shelter getShelter(Long shelterId) {
         return shelterRepository.findById(shelterId)
             .orElseThrow(
-                () -> new ShelterNotFoundException(ErrorCode.NOT_FOUND, "존재하지 않는 보호소입니다."));
+                () -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
     }
 }

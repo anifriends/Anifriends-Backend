@@ -101,4 +101,8 @@ public class Shelter extends BaseTimeEntity {
     public String getShelterImageUrl() {
         return this.shelterImage == null ? null : this.shelterImage.getImageUrl();
     }
+
+    public void setShelterImage(ShelterImage shelterImage) {
+        this.shelterImage = shelterImage;
+    }
 }
