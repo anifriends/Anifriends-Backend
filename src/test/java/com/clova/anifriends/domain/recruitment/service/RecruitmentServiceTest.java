@@ -13,13 +13,14 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.dto.RegisterRecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
+import com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -63,11 +64,9 @@ class RecruitmentServiceTest {
         @DisplayName("성공")
         void registerRecruitment() {
             //given
-            Shelter shelter = new Shelter("email@email.com", "password123!", "address",
-                "addressDetail", "name",
-                "0212345678", "0212345678", false);
+            Shelter shelter = ShelterFixture.shelter();
 
-            given(shelterRepository.findById(any())).willReturn(Optional.of(shelter));
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
 
             //when
             recruitmentService.registerRecruitment(shelterId, request);
@@ -80,7 +79,7 @@ class RecruitmentServiceTest {
         @DisplayName("예외(ShelterNotFoundException): 존재하지 않는 shelter")
         void exceptionWhenShelterNotFound() {
             //given
-            given(shelterRepository.findById(any())).willReturn(Optional.empty());
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.empty());
 
             //when
             //then

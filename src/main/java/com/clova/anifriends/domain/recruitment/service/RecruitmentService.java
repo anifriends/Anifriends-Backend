@@ -1,8 +1,8 @@
 package com.clova.anifriends.domain.recruitment.service;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.dto.RegisterRecruitmentRequest;
-import com.clova.anifriends.domain.recruitment.dto.RegisterRecruitmentResponse;
+import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -24,8 +24,7 @@ public class RecruitmentService {
     public RegisterRecruitmentResponse registerRecruitment(
         Long shelterId,
         RegisterRecruitmentRequest request) {
-        Shelter shelter = shelterRepository.findById(shelterId)
-            .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
+        Shelter shelter = getShelterById(shelterId);
         Recruitment recruitment = new Recruitment(
             shelter,
             request.title(),
@@ -37,6 +36,11 @@ public class RecruitmentService {
             request.imageUrls());
         recruitmentRepository.save(recruitment);
         return RegisterRecruitmentResponse.from(recruitment);
+    }
+
+    private Shelter getShelterById(Long shelterId) {
+        return shelterRepository.findById(shelterId)
+            .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
     }
 
     public FindRecruitmentByShelterResponse findRecruitmentByIdByShelter(long id) {

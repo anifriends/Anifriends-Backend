@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.recruitment.dto;
+package com.clova.anifriends.domain.recruitment.dto.response;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
 

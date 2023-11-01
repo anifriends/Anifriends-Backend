@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.recruitment.wrapper;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.AccessLevel;
@@ -46,26 +47,28 @@ public class RecruitmentInfo {
         this.capacity = capacity;
     }
 
-    private void validateNotNull(LocalDateTime startTime, LocalDateTime endTime, LocalDateTime deadline) {
-        if(Objects.isNull(startTime) || Objects.isNull(endTime) || Objects.isNull(deadline)) {
+    private void validateNotNull(LocalDateTime startTime, LocalDateTime endTime,
+        LocalDateTime deadline) {
+        if (Objects.isNull(startTime) || Objects.isNull(endTime) || Objects.isNull(deadline)) {
             throw new RecruitmentBadRequestException("봉사 시간은 필수입니다.");
         }
     }
 
     private void validateStartTimeIsAfterNow(LocalDateTime startTime) {
         LocalDateTime now = LocalDateTime.now();
-        if(startTime.isBefore(now)) {
+        if (startTime.isBefore(now)) {
             throw new RecruitmentBadRequestException("봉사 시작 시간은 현재 시간 이후여야 합니다.");
         }
     }
 
     private void validateEndTimeIsAfterStartTime(LocalDateTime startTime, LocalDateTime endTime) {
-        if(endTime.isBefore(startTime)) {
+        if (endTime.isBefore(startTime)) {
             throw new RecruitmentBadRequestException("봉사 종료 시간은 봉사 시작 시간 이후여야 합니다.");
         }
     }
 
-    private void validateDeadlineIsBetweenNowAndStartTime(LocalDateTime deadline, LocalDateTime startTime) {
+    private void validateDeadlineIsBetweenNowAndStartTime(LocalDateTime deadline,
+        LocalDateTime startTime) {
         if (deadline.isBefore(LocalDateTime.now()) || deadline.isAfter(startTime)) {
             throw new RecruitmentBadRequestException("봉사 마감 시간은 현재 시간 이후, 봉시 시작 시간 이전이어야 합니다.");
         }
@@ -73,7 +76,9 @@ public class RecruitmentInfo {
 
     private void validateCapacitySize(int capacity) {
         if (capacity < MIN_CAPACITY || capacity > MAX_CAPACITY) {
-            throw new RecruitmentBadRequestException("봉사 모집 인원은 1명 이상, 99명 이하 여야 합니다.");
+            throw new RecruitmentBadRequestException(
+                MessageFormat.format(
+                    "봉사 모집 인원은 {0}명 이상, {1}명 이하여야 합니다.", MIN_CAPACITY, MAX_CAPACITY));
         }
     }
 }

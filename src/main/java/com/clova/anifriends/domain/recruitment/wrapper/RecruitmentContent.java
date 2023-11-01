@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.recruitment.wrapper;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import java.text.MessageFormat;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,7 +34,8 @@ public class RecruitmentContent {
 
     private void validateLength(String value) {
         if(value.length() < MIN_LENGTH || value.length() > MAX_LENGTH) {
-            throw new RecruitmentBadRequestException("본문은 1자 이상, 1000자 이하여야 합니다.");
+            throw new RecruitmentBadRequestException(
+                MessageFormat.format("본문은 {0}자 이상, {1}자 이하여야 합니다.", MIN_LENGTH, MAX_LENGTH));
         }
     }
 }

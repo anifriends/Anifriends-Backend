@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.recruitment.wrapper;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
 
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
 import org.junit.jupiter.api.DisplayName;
@@ -16,13 +16,15 @@ class RecruitmentTitleTest {
 
         @Test
         @DisplayName("성공")
-        void success() {
+        void newRecruitmentTitle() {
             //given
             String title = "타이틀";
 
             //when
+            RecruitmentTitle recruitmentTitle = new RecruitmentTitle(title);
+
             //then
-            assertThatCode(() -> new RecruitmentTitle(title)).doesNotThrowAnyException();
+            assertThat(recruitmentTitle.getTitle()).isEqualTo(title);
         }
 
         @Test
@@ -32,9 +34,10 @@ class RecruitmentTitleTest {
             String title = null;
 
             //when
+            Exception exception = catchException(() -> new RecruitmentTitle(title));
+
             //then
-            assertThatThrownBy(() -> new RecruitmentTitle(title))
-                .isInstanceOf(RecruitmentBadRequestException.class);
+            assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
         }
 
         @Test
@@ -44,9 +47,10 @@ class RecruitmentTitleTest {
             String title = "";
 
             //when
+            Exception exception = catchException(() -> new RecruitmentTitle(title));
+
             //then
-            assertThatThrownBy(() -> new RecruitmentTitle(title))
-                .isInstanceOf(RecruitmentBadRequestException.class);
+            assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
         }
 
         @Test
@@ -56,9 +60,10 @@ class RecruitmentTitleTest {
             String title = "a".repeat(101);
 
             //when
+            Exception exception = catchException(() -> new RecruitmentTitle(title));
+
             //then
-            assertThatThrownBy(() -> new RecruitmentTitle(title))
-                .isInstanceOf(RecruitmentBadRequestException.class);
+            assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
         }
     }
 }

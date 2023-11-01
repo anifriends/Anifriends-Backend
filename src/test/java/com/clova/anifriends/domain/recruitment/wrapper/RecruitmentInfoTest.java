@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.recruitment.wrapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchException;
 
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ class RecruitmentInfoTest {
 
         @Test
         @DisplayName("성공")
-        void success() {
+        void newRecruitmentInfo() {
             //given
             //when
             RecruitmentInfo recruitmentTime = new RecruitmentInfo(startTime, endTime, deadline,
@@ -45,9 +45,11 @@ class RecruitmentInfoTest {
             LocalDateTime nullStartTime = null;
 
             //when
-            assertThatThrownBy(
-                () -> new RecruitmentInfo(nullStartTime, endTime, deadline, isClosed, capacity))
-                .isInstanceOf(RecruitmentBadRequestException.class);
+            Exception exception = catchException(
+                () -> new RecruitmentInfo(nullStartTime, endTime, deadline, isClosed, capacity));
+
+            //then
+            assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
         }
 
         @Test
@@ -57,9 +59,11 @@ class RecruitmentInfoTest {
             LocalDateTime nullEndTime = null;
 
             //when
-            assertThatThrownBy(
-                () -> new RecruitmentInfo(startTime, nullEndTime, deadline, isClosed, capacity))
-                .isInstanceOf(RecruitmentBadRequestException.class);
+            Exception exception = catchException(
+                () -> new RecruitmentInfo(startTime, nullEndTime, deadline, isClosed, capacity));
+
+            //then
+            assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
         }
 
         @Test
@@ -69,9 +73,11 @@ class RecruitmentInfoTest {
             LocalDateTime nullDeadline = null;
 
             //when
-            assertThatThrownBy(
-                () -> new RecruitmentInfo(startTime, endTime, nullDeadline, isClosed, capacity))
-                .isInstanceOf(RecruitmentBadRequestException.class);
+            Exception exception = catchException(
+                () -> new RecruitmentInfo(startTime, endTime, nullDeadline, isClosed, capacity));
+
+            //then
+            assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
         }
 
         @Test
@@ -81,11 +87,13 @@ class RecruitmentInfoTest {
             LocalDateTime beforeStartTime = now.minusMinutes(1);
 
             //when
+            Exception exception = catchException(
+                () -> new RecruitmentInfo(beforeStartTime, endTime, deadline, isClosed, capacity));
+
             //then
-            assertThatThrownBy(
-                () -> new RecruitmentInfo(beforeStartTime, endTime, deadline, isClosed, capacity))
-                .isInstanceOf(RecruitmentBadRequestException.class);
+            assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
         }
+
         @Test
         @DisplayName("예외(RecruitmentBadRequestException): endTime이 시작 시간보다 이전")
         void exceptionWhenEndTimeIsBeforeStartTime() {
@@ -95,10 +103,11 @@ class RecruitmentInfoTest {
             LocalDateTime beforeEndTime = startTime.minusSeconds(1);
 
             //when
+            Exception exception = catchException(
+                () -> new RecruitmentInfo(startTime, beforeEndTime, deadline, isClosed, capacity));
+
             //then
-            assertThatThrownBy(() -> new RecruitmentInfo(
-                startTime, beforeEndTime, deadline, isClosed, capacity))
-                .isInstanceOf(RecruitmentBadRequestException.class);
+            assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
         }
 
         @Test
@@ -108,9 +117,12 @@ class RecruitmentInfoTest {
             LocalDateTime deadlineBeforeNow = LocalDateTime.now().minusMinutes(1);
 
             //when
+            Exception exception = catchException(
+                () -> new RecruitmentInfo(startTime, endTime, deadlineBeforeNow, isClosed,
+                    capacity));
+
             //then
-            assertThatThrownBy(() -> new RecruitmentInfo(
-                startTime, endTime, deadlineBeforeNow, isClosed, capacity))
+            assertThat(exception)
                 .isInstanceOf(RecruitmentBadRequestException.class);
         }
 
@@ -121,9 +133,11 @@ class RecruitmentInfoTest {
             LocalDateTime deadlineAfterStartTime = startTime.plusMinutes(1);
 
             //when
+            Exception exception = catchException(() -> new RecruitmentInfo(
+                startTime, endTime, deadlineAfterStartTime, isClosed, capacity));
+
             //then
-            assertThatThrownBy(() -> new RecruitmentInfo(
-                startTime, endTime, deadlineAfterStartTime, isClosed, capacity))
+            assertThat(exception)
                 .isInstanceOf(RecruitmentBadRequestException.class);
         }
 
@@ -137,9 +151,12 @@ class RecruitmentInfoTest {
             int capacityOutOfSize = Integer.parseInt(size);
 
             //when
+            Exception exception = catchException(
+                () -> new RecruitmentInfo(startTime, endTime, deadline, isClosed,
+                    capacityOutOfSize));
+
             //then
-            assertThatThrownBy(() -> new RecruitmentInfo(
-                startTime, endTime, deadline, isClosed, capacityOutOfSize))
+            assertThat(exception)
                 .isInstanceOf(RecruitmentBadRequestException.class);
         }
     }
