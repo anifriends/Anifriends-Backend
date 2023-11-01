@@ -1,13 +1,11 @@
 package com.clova.anifriends.domain.shelter.controller;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
@@ -44,7 +42,7 @@ class ShelterControllerTest extends BaseControllerTest {
             shelterImage.getImageUrl()
         );
 
-        given(shelterService.findShelterDetail(any())).willReturn(findShelterDetailResponse);
+        given(shelterService.findShelterDetail(shelterId)).willReturn(findShelterDetailResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -53,7 +51,6 @@ class ShelterControllerTest extends BaseControllerTest {
 
         // then
         resultActions.andExpect(status().isOk())
-            .andDo(print())
             .andDo(restDocs.document(
                 pathParameters(
                     parameterWithName("shelterId").description("보호소 ID")
