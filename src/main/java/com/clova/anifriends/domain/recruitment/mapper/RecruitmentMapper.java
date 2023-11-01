@@ -5,9 +5,7 @@ import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRe
 import com.clova.anifriends.domain.shelter.Shelter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public final class RecruitmentMapper {
 
