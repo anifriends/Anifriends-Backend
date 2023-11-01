@@ -1,10 +1,10 @@
 package com.clova.anifriends.domain.shelter;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
+import com.clova.anifriends.domain.shelter.wrapper.ShelterAddressInfo;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterName;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterPassword;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterAddressInfo;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterPhoneNumberInfo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -12,10 +12,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "shelter")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Shelter extends BaseTimeEntity {
 
     @Id
@@ -38,8 +42,8 @@ public class Shelter extends BaseTimeEntity {
     @Embedded
     private ShelterAddressInfo addressInfo;
 
-    protected Shelter() {
-    }
+    @OneToOne(mappedBy = "shelter")
+    private ShelterImage shelterImage;
 
     public Shelter(
         String email,
@@ -63,38 +67,42 @@ public class Shelter extends BaseTimeEntity {
     }
 
     public String getEmail() {
-        return email.getEmail();
+        return this.email.getEmail();
+    }
+
+    public String getName() {
+        return this.name.getName();
     }
 
     public String getPassword() {
-        return password.getPassword();
-    }
-
-    public String  getName() {
-        return name.getName();
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumberInfo.getPhoneNumber();
-    }
-
-    public String getSparePhoneNumber() {
-        return phoneNumberInfo.getSparePhoneNumber();
-    }
-
-    public ShelterAddressInfo getAddressInfo() {
-        return addressInfo;
+        return this.password.getPassword();
     }
 
     public String getAddress() {
-        return addressInfo.getAddress();
+        return this.addressInfo.getAddress();
     }
 
     public String getAddressDetail() {
-        return addressInfo.getAddressDetail();
+        return this.addressInfo.getAddressDetail();
     }
 
-    public boolean isOpenedAddress() {
-        return addressInfo.isOpenedAddress();
+    public Boolean isOpenedAddress() {
+        return this.addressInfo.isOpenedAddress();
+    }
+
+    public String getPhoneNumber() {
+        return this.phoneNumberInfo.getPhoneNumber();
+    }
+
+    public String getSparePhoneNumber() {
+        return this.phoneNumberInfo.getSparePhoneNumber();
+    }
+
+    public String getShelterImageUrl() {
+        return this.shelterImage.getImageUrl();
+    }
+
+    public void setShelterImage(ShelterImage shelterImage) {
+        this.shelterImage = shelterImage;
     }
 }
