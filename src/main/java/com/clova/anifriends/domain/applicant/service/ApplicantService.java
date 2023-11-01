@@ -3,7 +3,6 @@ package com.clova.anifriends.domain.applicant.service;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -30,8 +29,7 @@ public class ApplicantService {
         if (applicantRepository.existsByRecruitmentAndVolunteer(recruitment, volunteer)) {
             throw new ApplicantConflictException(ErrorCode.ALREADY_EXISTS, "이미 신청한 봉사입니다.");
         }
-        Applicant applicant = new Applicant(recruitment, volunteer,
-            ApplicantStatus.PENDING.getValue());
+        Applicant applicant = new Applicant(recruitment, volunteer);
         applicantRepository.save(applicant);
     }
 

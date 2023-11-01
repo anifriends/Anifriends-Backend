@@ -6,7 +6,6 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.applicant.exception.ApplicantBadRequestException;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentInfo;
@@ -29,7 +28,6 @@ class ApplicantTest {
         RecruitmentInfo recruitmentInfo;
         Recruitment recruitment;
         Volunteer volunteer;
-        String status;
 
         @Test
         @DisplayName("성공")
@@ -45,13 +43,12 @@ class ApplicantTest {
             recruitment = RecruitmentFixture.recruitment(shelter);
             setField(recruitment, "info", recruitmentInfo);
             volunteer = VolunteerFixture.volunteer();
-            status = ApplicantStatus.PENDING.getValue();
 
             //when
-            Applicant applicant = new Applicant(recruitment, volunteer, status);
+            Applicant applicant = new Applicant(recruitment, volunteer);
 
             //then
-            assertThat(applicant.getStatus()).isEqualTo(ApplicantStatus.valueOf(status));
+            assertThat(applicant.getRecruitment()).isEqualTo(recruitment);
         }
 
         @Test
@@ -68,10 +65,9 @@ class ApplicantTest {
             recruitment = RecruitmentFixture.recruitment(shelter);
             setField(recruitment, "info", recruitmentInfo);
             volunteer = VolunteerFixture.volunteer();
-            status = ApplicantStatus.PENDING.getValue();
 
             //when
-            Exception exception = catchException(() -> new Applicant(recruitment, volunteer, status));
+            Exception exception = catchException(() -> new Applicant(recruitment, volunteer));
 
             //then
             assertThat(exception).isInstanceOf(ApplicantBadRequestException.class);
@@ -91,10 +87,9 @@ class ApplicantTest {
             recruitment = RecruitmentFixture.recruitment(shelter);
             setField(recruitment, "info", recruitmentInfo);
             volunteer = VolunteerFixture.volunteer();
-            status = ApplicantStatus.PENDING.getValue();
 
             //when
-            Exception exception = catchException(() -> new Applicant(recruitment, volunteer, status));
+            Exception exception = catchException(() -> new Applicant(recruitment, volunteer));
 
             //then
             assertThat(exception).isInstanceOf(ApplicantBadRequestException.class);
@@ -105,10 +100,9 @@ class ApplicantTest {
         void throwExceptionWhenRecruitmentIsNull() {
             //given
             volunteer = VolunteerFixture.volunteer();
-            status = ApplicantStatus.PENDING.getValue();
 
             //when
-            Exception exception = catchException(() -> new Applicant(recruitment, volunteer, status));
+            Exception exception = catchException(() -> new Applicant(recruitment, volunteer));
 
             //then
             assertThat(exception).isInstanceOf(ApplicantBadRequestException.class);
@@ -125,10 +119,9 @@ class ApplicantTest {
                 false,
                 30
             );
-            status = ApplicantStatus.PENDING.getValue();
 
             //when
-            Exception exception = catchException(() -> new Applicant(recruitment, volunteer, status));
+            Exception exception = catchException(() -> new Applicant(recruitment, volunteer));
 
             //then
             assertThat(exception).isInstanceOf(ApplicantBadRequestException.class);
@@ -148,10 +141,9 @@ class ApplicantTest {
             recruitment = RecruitmentFixture.recruitment(shelter);
             setField(recruitment, "info", recruitmentInfo);
             volunteer = VolunteerFixture.volunteer();
-            status = ApplicantStatus.PENDING.getValue();
 
             //when
-            Exception exception = catchException(() -> new Applicant(recruitment, volunteer, status));
+            Exception exception = catchException(() -> new Applicant(recruitment, volunteer));
 
             //then
             assertThat(exception).isInstanceOf(ApplicantConflictException.class);

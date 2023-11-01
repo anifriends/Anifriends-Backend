@@ -46,18 +46,25 @@ public class Applicant extends BaseTimeEntity {
 
     public Applicant(
         Recruitment recruitment,
-        Volunteer volunteer,
-        String status
+        Volunteer volunteer
     ) {
         validateRecruitment(recruitment);
         this.recruitment = recruitment;
         validateVolunteer(volunteer);
         this.volunteer = volunteer;
-        this.status = ApplicantStatus.valueOf(status);
+        this.status = ApplicantStatus.PENDING;
     }
 
     public ApplicantStatus getStatus() {
         return status;
+    }
+
+    public Recruitment getRecruitment() {
+        return recruitment;
+    }
+
+    public Volunteer getVolunteer() {
+        return volunteer;
     }
 
     private void validateRecruitment(Recruitment recruitment) {
