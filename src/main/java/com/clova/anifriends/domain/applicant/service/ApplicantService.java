@@ -31,7 +31,7 @@ public class ApplicantService {
             throw new ApplicantConflictException(ErrorCode.ALREADY_EXISTS, "이미 신청한 봉사입니다.");
         }
         Applicant applicant = new Applicant(recruitment, volunteer,
-            ApplicantStatus.ATTENDANCE.getValue());
+            ApplicantStatus.PENDING.getValue());
         applicantRepository.save(applicant);
     }
 
