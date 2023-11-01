@@ -65,3 +65,4 @@ public class VolunteerImage extends BaseTimeEntity {
         }
     }
 }
+

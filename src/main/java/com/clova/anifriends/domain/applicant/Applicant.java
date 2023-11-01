@@ -50,19 +50,7 @@ public class Applicant extends BaseTimeEntity {
         this.status = ApplicantStatus.valueOf(status);
     }
 
-    public Long getApplicantId() {
-        return applicantId;
-    }
-
-    public Recruitment getRecruitment() {
-        return recruitment;
-    }
-
-    public Volunteer getVolunteer() {
-        return volunteer;
-    }
-
-    public String getStatus() {
-        return this.status.getValue();
+    public ApplicantStatus getStatus() {
+        return status;
     }
 }

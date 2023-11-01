@@ -14,15 +14,16 @@ public record GetVolunteerMyPageResponse(
     String imageUrl
 ) {
 
-    public static GetVolunteerMyPageResponse of(Volunteer volunteer, String imageUrl){
+    public static GetVolunteerMyPageResponse of(Volunteer volunteer, String imageUrl) {
         return new GetVolunteerMyPageResponse(
             volunteer.getEmail(),
             volunteer.getName(),
             volunteer.getBirthDate(),
             volunteer.getPhoneNumber(),
             volunteer.getTemperature(),
-            volunteer.getApplications().stream().filter(applicant -> applicant.getStatus().equals(
-                ApplicantStatus.ATTENDANCE.getValue())).count(),
+            volunteer.getApplications().stream()
+                .filter(applicant -> applicant.getStatus().equals(ApplicantStatus.ATTENDANCE))
+                .count(),
             imageUrl
         );
     }
