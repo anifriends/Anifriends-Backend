@@ -15,6 +15,7 @@ import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.service.AuthService;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
+import com.clova.anifriends.domain.review.service.ReviewService;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
 import com.clova.anifriends.domain.volunteer.service.VolunteerService;
 import com.clova.anifriends.global.config.SecurityConfig;
@@ -91,6 +92,9 @@ public abstract class BaseControllerTest {
 
     @MockBean
     protected AnimalService animalService;
+
+    @MockBean
+    protected ReviewService reviewService;
 
     protected final String volunteerAccessToken = AuthFixture.volunteerAccessToken();
     protected final String shelterAccessToken = AuthFixture.shelterAccessToken();
