@@ -29,6 +29,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Recruitment extends BaseTimeEntity {
 
+    public static final boolean IS_CLOSED_DEFAULT = false;
+
     @Id
     @Column(name = "recruitment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,7 +64,6 @@ public class Recruitment extends BaseTimeEntity {
         String title,
         int capacity,
         String content,
-        boolean isClosed,
         LocalDateTime startTime,
         LocalDateTime endTime,
         LocalDateTime deadline,
@@ -71,7 +72,7 @@ public class Recruitment extends BaseTimeEntity {
         this.shelter = shelter;
         this.title = new RecruitmentTitle(title);
         this.content = new RecruitmentContent(content);
-        this.info = new RecruitmentInfo(startTime, endTime, deadline, isClosed, capacity);
+        this.info = new RecruitmentInfo(startTime, endTime, deadline, IS_CLOSED_DEFAULT, capacity);
         this.imageUrls = imageUrls.stream()
             .map(url -> new RecruitmentImage(this, url))
             .toList();

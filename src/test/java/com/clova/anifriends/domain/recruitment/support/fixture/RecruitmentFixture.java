@@ -12,7 +12,6 @@ public class RecruitmentFixture {
     private static final LocalDateTime START_TIME = LocalDateTime.parse("2023-10-31T15:00:00.000");
     private static final LocalDateTime END_TIME = LocalDateTime.parse("2023-10-31T17:00:00.000");
     private static final LocalDateTime DEADLINE = LocalDateTime.parse("2023-10-30T00:00:00.000");
-    private static final boolean IS_CLOSED = false;
     private static final int CAPACITY = 10;
     private static final List<String> IMAGE_URL_LIST = List.of("imageUrl1", "imageUrl2");
 
@@ -22,7 +21,6 @@ public class RecruitmentFixture {
             RECRUITMENT_TITLE,
             CAPACITY,
             RECRUITMENT_CONTENT,
-            IS_CLOSED,
             START_TIME,
             END_TIME,
             DEADLINE,

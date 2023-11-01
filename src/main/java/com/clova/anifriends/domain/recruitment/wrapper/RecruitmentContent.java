@@ -17,5 +17,4 @@ public class RecruitmentContent {
     public RecruitmentContent(String value) {
         this.content = value;
     }
-
 }
