@@ -93,6 +93,10 @@ public class Animal extends BaseTimeEntity {
         this.information = new AnimalInformation(information);
     }
 
+    public Long getAnimalId() {
+        return animalId;
+    }
+
     public Shelter getShelter() {
         return shelter;
     }
