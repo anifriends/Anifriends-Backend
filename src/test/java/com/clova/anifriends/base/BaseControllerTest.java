@@ -87,7 +87,7 @@ public abstract class BaseControllerTest {
 
     @MockBean
     protected ShelterService shelterService;
-
+    
     protected final String shelterAccessToken = AuthFixture.shelterAccessToken();
 
     @BeforeEach
