@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.volunteer.service;
 
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
-import com.clova.anifriends.domain.volunteer.dto.response.GetVolunteerMyPageResponse;
+import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +31,8 @@ public class VolunteerService {
     }
 
     @Transactional(readOnly = true)
-    public GetVolunteerMyPageResponse getVolunteerMyPage(Long volunteerId) {
-        return GetVolunteerMyPageResponse.from(getVolunteer(volunteerId));
+    public FindVolunteerMyPageResponse findVolunteerMyPage(Long volunteerId) {
+        return FindVolunteerMyPageResponse.from(getVolunteer(volunteerId));
     }
 
     private Volunteer getVolunteer(Long volunteerId) {

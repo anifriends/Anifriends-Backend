@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.volunteer.controller;
 
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
-import com.clova.anifriends.domain.volunteer.dto.response.GetVolunteerMyPageResponse;
+import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.service.VolunteerService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -32,9 +32,9 @@ public class VolunteerController {
     }
 
     @GetMapping("/volunteers/me")
-    public ResponseEntity<GetVolunteerMyPageResponse> getVolunteerMyPage(
+    public ResponseEntity<FindVolunteerMyPageResponse> findVolunteerMyPage(
         @RequestHeader Long volunteerId // @UserId로 대체해야 함!
     ) {
-        return ResponseEntity.ok(volunteerService.getVolunteerMyPage(volunteerId));
+        return ResponseEntity.ok(volunteerService.findVolunteerMyPage(volunteerId));
     }
 }

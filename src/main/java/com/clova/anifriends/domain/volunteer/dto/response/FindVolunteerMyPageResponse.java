@@ -4,7 +4,7 @@ import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.time.LocalDate;
 
-public record GetVolunteerMyPageResponse(
+public record FindVolunteerMyPageResponse(
     String email,
     String name,
     LocalDate birthDate,
@@ -14,8 +14,8 @@ public record GetVolunteerMyPageResponse(
     String imageUrl
 ) {
 
-    public static GetVolunteerMyPageResponse from(Volunteer volunteer) {
-        return new GetVolunteerMyPageResponse(
+    public static FindVolunteerMyPageResponse from(Volunteer volunteer) {
+        return new FindVolunteerMyPageResponse(
             volunteer.getEmail(),
             volunteer.getName(),
             volunteer.getBirthDate(),

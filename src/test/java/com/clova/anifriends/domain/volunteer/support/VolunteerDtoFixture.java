@@ -3,7 +3,6 @@ package com.clova.anifriends.domain.volunteer.support;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
-import com.clova.anifriends.domain.volunteer.dto.response.GetVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
 
 public class VolunteerDtoFixture {
@@ -25,10 +24,6 @@ public class VolunteerDtoFixture {
     public static RegisterVolunteerRequest registerVolunteerRequest() {
         return new RegisterVolunteerRequest(EMAIL, PASSWORD, NAME, BIRTH_DATE, PHONE_NUMBER,
             GENDER);
-    }
-
-    public static GetVolunteerMyPageResponse getVolunteerMyPageResponse(Volunteer volunteer) {
-        return GetVolunteerMyPageResponse.from(volunteer);
     }
 }
 

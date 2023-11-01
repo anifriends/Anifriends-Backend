@@ -11,7 +11,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
-import com.clova.anifriends.domain.volunteer.dto.response.GetVolunteerMyPageResponse;
+import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerImageRepository;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
@@ -59,8 +59,8 @@ class VolunteerServiceTest {
     }
 
     @Nested
-    @DisplayName("getVolunteerMyPage 메서드 실행 시")
-    class GetVolunteerMyPageTest {
+    @DisplayName("findVolunteerMyPage 메서드 실행 시")
+    class FindVolunteerMyPageTest {
 
         Volunteer volunteer;
         VolunteerImage volunteerImage;
@@ -72,12 +72,12 @@ class VolunteerServiceTest {
             volunteer = VolunteerFixture.volunteer();
             volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
             setField(volunteer, "volunteerImage", volunteerImage);
-            GetVolunteerMyPageResponse expected = GetVolunteerMyPageResponse.from(volunteer);
+            FindVolunteerMyPageResponse expected = FindVolunteerMyPageResponse.from(volunteer);
 
             given(volunteerRepository.findById(anyLong())).willReturn(ofNullable(volunteer));
 
             // when
-            GetVolunteerMyPageResponse result = volunteerService.getVolunteerMyPage(1L);
+            FindVolunteerMyPageResponse result = volunteerService.findVolunteerMyPage(1L);
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);

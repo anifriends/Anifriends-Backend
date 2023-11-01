@@ -18,7 +18,7 @@ import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
-import com.clova.anifriends.domain.volunteer.dto.response.GetVolunteerMyPageResponse;
+import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
@@ -61,10 +61,10 @@ class VolunteerControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("봉사자 마이페이지 조회 API 호출 시")
-    void getVolunteerMyPage() throws Exception {
+    void findVolunteerMyPage() throws Exception {
         // given
         Volunteer volunteer = VolunteerFixture.volunteer();
-        GetVolunteerMyPageResponse getVolunteerMyPageResponse = new GetVolunteerMyPageResponse(
+        FindVolunteerMyPageResponse findVolunteerMyPageResponse = new FindVolunteerMyPageResponse(
             volunteer.getEmail(),
             volunteer.getName(),
             volunteer.getBirthDate(),
@@ -74,7 +74,8 @@ class VolunteerControllerTest extends BaseControllerTest {
                 .filter(applicant -> applicant.getStatus().equals(ApplicantStatus.ATTENDANCE))
                 .count(),
             VolunteerImageFixture.volunteerImage(volunteer).getImageUrl());
-        given(volunteerService.getVolunteerMyPage(anyLong())).willReturn(getVolunteerMyPageResponse);
+        given(volunteerService.findVolunteerMyPage(anyLong())).willReturn(
+            findVolunteerMyPageResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(
