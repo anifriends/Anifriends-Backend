@@ -5,6 +5,7 @@ import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRe
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
+import com.clova.anifriends.domain.recruitment.mapper.RecruitmentMapper;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
@@ -25,15 +26,7 @@ public class RecruitmentService {
         Long shelterId,
         RegisterRecruitmentRequest request) {
         Shelter shelter = getShelterById(shelterId);
-        Recruitment recruitment = new Recruitment(
-            shelter,
-            request.title(),
-            request.capacity(),
-            request.content(),
-            request.startTime(),
-            request.endTime(),
-            request.deadline(),
-            request.imageUrls());
+        Recruitment recruitment = RecruitmentMapper.toRecruitment(shelter, request);
         recruitmentRepository.save(recruitment);
         return RegisterRecruitmentResponse.from(recruitment);
     }
