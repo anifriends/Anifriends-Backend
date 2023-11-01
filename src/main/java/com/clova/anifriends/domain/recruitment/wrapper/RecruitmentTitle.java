@@ -4,8 +4,13 @@ import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestEx
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
 @Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecruitmentTitle {
 
     private static final int MIN_LENGTH = 1;
@@ -13,9 +18,6 @@ public class RecruitmentTitle {
 
     @Column(name = "title")
     private String title;
-
-    protected RecruitmentTitle() {
-    }
 
     public RecruitmentTitle(String value) {
         validateNotNull(value);
@@ -34,5 +36,4 @@ public class RecruitmentTitle {
             throw new RecruitmentBadRequestException("제목은 필수입니다.");
         }
     }
-
 }

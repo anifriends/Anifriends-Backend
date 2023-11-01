@@ -5,10 +5,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecruitmentInfo {
 
     private static final int MIN_CAPACITY = 1;
@@ -28,9 +31,6 @@ public class RecruitmentInfo {
 
     @Column(name = "capacity")
     private int capacity;
-
-    protected RecruitmentInfo() {
-    }
 
     public RecruitmentInfo(LocalDateTime startTime, LocalDateTime endTime, LocalDateTime deadline,
         boolean isClosed, int capacity) {

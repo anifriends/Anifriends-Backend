@@ -4,8 +4,13 @@ import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestEx
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
 @Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecruitmentContent {
 
     private static final int MIN_LENGTH = 1;
@@ -13,9 +18,6 @@ public class RecruitmentContent {
 
     @Column(name = "content")
     private String content;
-
-    protected RecruitmentContent() {
-    }
 
     public RecruitmentContent(String value) {
         validateNotNull(value);
@@ -34,5 +36,4 @@ public class RecruitmentContent {
             throw new RecruitmentBadRequestException("본문은 1자 이상, 1000자 이하여야 합니다.");
         }
     }
-
 }

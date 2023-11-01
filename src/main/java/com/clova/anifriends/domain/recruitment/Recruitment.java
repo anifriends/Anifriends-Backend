@@ -65,4 +65,32 @@ public class Recruitment extends BaseTimeEntity {
     public Long getRecruitmentId() {
         return recruitmentId;
     }
+
+    public String getTitle() {
+        return title.getTitle();
+    }
+
+    public String getContent() {
+        return content.getContent();
+    }
+
+    public LocalDateTime getStartTime() {
+        return info.getStartTime();
+    }
+
+    public LocalDateTime getEndTime() {
+        return info.getEndTime();
+    }
+
+    public LocalDateTime getDeadline() {
+        return info.getDeadline();
+    }
+
+    public int getCapacity() {
+        return info.getCapacity();
+    }
+
+    public boolean isClosed() {
+        return info.isClosed();
+    }
 }
