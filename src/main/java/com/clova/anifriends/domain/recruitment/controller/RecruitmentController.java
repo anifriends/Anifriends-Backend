@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/recruitments")
+@RequestMapping("/api")
 public class RecruitmentController {
 
     private final RecruitmentService recruitmentService;
 
-    @GetMapping("/{recruitmentId}")
-    public ResponseEntity<FindRecruitmentResponse> findRecruitmentById(@PathVariable Long recruitmentId) {
+    @GetMapping("/shelters/recruitments/{recruitmentId}")
+    public ResponseEntity<FindRecruitmentResponse> findRecruitmentById(
+        @PathVariable Long recruitmentId) {
         return ResponseEntity.ok(recruitmentService.findRecruitmentById(recruitmentId));
     }
 }

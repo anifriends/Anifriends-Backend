@@ -101,7 +101,7 @@ public class Recruitment extends BaseTimeEntity {
         return info.getEndTime();
     }
 
-    public Boolean getIsClosed() {
+    public Boolean isClosed() {
         return info.isClosed();
     }
 

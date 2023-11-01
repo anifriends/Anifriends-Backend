@@ -40,7 +40,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-            get("/api/recruitments/{recruitmentId}", anyLong())
+            get("/api/shelters/recruitments/{recruitmentId}", anyLong())
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
