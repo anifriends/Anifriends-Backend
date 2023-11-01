@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class ShelterNameTest {
 
     @Nested
-    @DisplayName("VolunteerName 생성 시")
+    @DisplayName("ShelterName 생성 시")
     class newShelterNameTest {
 
         String name;
