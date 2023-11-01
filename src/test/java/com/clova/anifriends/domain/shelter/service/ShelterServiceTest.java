@@ -2,7 +2,6 @@ package com.clova.anifriends.domain.shelter.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
@@ -68,7 +67,7 @@ class ShelterServiceTest {
             //given
             Long shelterId = 1L;
 
-            given(shelterRepository.findById(any())).willReturn(Optional.empty());
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when
             Exception exception = catchException(
@@ -112,7 +111,7 @@ class ShelterServiceTest {
             //given
             Long shelterId = 1L;
 
-            given(shelterRepository.findById(any())).willReturn(Optional.empty());
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when
             Exception exception = catchException(
