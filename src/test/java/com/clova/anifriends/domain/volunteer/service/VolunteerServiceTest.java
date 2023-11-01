@@ -1,10 +1,12 @@
 package com.clova.anifriends.domain.volunteer.service;
 
 import static java.util.Optional.ofNullable;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
@@ -69,10 +71,10 @@ class VolunteerServiceTest {
             // given
             volunteer = VolunteerFixture.volunteer();
             volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
-            GetVolunteerMyPageResponse expected = GetVolunteerMyPageResponse.of(volunteer, volunteerImage.getImageUrl());
+            setField(volunteer, "volunteerImage", volunteerImage);
+            GetVolunteerMyPageResponse expected = GetVolunteerMyPageResponse.from(volunteer);
 
-            given(volunteerRepository.findById(any())).willReturn(ofNullable(volunteer));
-            given(volunteerImageRepository.findByVolunteer(any())).willReturn(ofNullable(volunteerImage));
+            given(volunteerRepository.findById(anyLong())).willReturn(ofNullable(volunteer));
 
             // when
             GetVolunteerMyPageResponse result = volunteerService.getVolunteerMyPage(1L);
@@ -81,5 +83,4 @@ class VolunteerServiceTest {
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
         }
     }
-
 }

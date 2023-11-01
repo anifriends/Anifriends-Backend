@@ -41,18 +41,6 @@ public class VolunteerImage extends BaseTimeEntity {
         this.imageUrl = imageUrl;
     }
 
-    public Long getVolunteerImageId() {
-        return volunteerImageId;
-    }
-
-    public Volunteer getVolunteer() {
-        return volunteer;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
     private void validateVolunteer(Volunteer value) {
         if (value == null) {
             throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST, "봉사자는 필수 항목입니다.");
@@ -65,4 +53,3 @@ public class VolunteerImage extends BaseTimeEntity {
         }
     }
 }
-

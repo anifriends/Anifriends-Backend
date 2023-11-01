@@ -14,7 +14,7 @@ public record GetVolunteerMyPageResponse(
     String imageUrl
 ) {
 
-    public static GetVolunteerMyPageResponse of(Volunteer volunteer, String imageUrl) {
+    public static GetVolunteerMyPageResponse from(Volunteer volunteer) {
         return new GetVolunteerMyPageResponse(
             volunteer.getEmail(),
             volunteer.getName(),
@@ -24,7 +24,7 @@ public record GetVolunteerMyPageResponse(
             volunteer.getApplications().stream()
                 .filter(applicant -> applicant.getStatus().equals(ApplicantStatus.ATTENDANCE))
                 .count(),
-            imageUrl
+            volunteer.getVolunteerImageUrl()
         );
     }
 }

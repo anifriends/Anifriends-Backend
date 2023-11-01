@@ -27,9 +27,8 @@ public class VolunteerDtoFixture {
             GENDER);
     }
 
-    public static GetVolunteerMyPageResponse getVolunteerMyPageResponse(Volunteer volunteer,
-        String imageUrl) {
-        return GetVolunteerMyPageResponse.of(volunteer, imageUrl);
+    public static GetVolunteerMyPageResponse getVolunteerMyPageResponse(Volunteer volunteer) {
+        return GetVolunteerMyPageResponse.from(volunteer);
     }
 }
 

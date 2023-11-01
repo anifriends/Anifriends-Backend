@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.volunteer.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -14,8 +15,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
+import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
+import com.clova.anifriends.domain.volunteer.dto.response.GetVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
@@ -61,14 +64,22 @@ class VolunteerControllerTest extends BaseControllerTest {
     void getVolunteerMyPage() throws Exception {
         // given
         Volunteer volunteer = VolunteerFixture.volunteer();
-        given(volunteerService.getVolunteerMyPage(any())).willReturn(
-            VolunteerDtoFixture.getVolunteerMyPageResponse(
-                volunteer,
-                VolunteerImageFixture.volunteerImage(volunteer).getImageUrl()));
+        GetVolunteerMyPageResponse getVolunteerMyPageResponse = new GetVolunteerMyPageResponse(
+            volunteer.getEmail(),
+            volunteer.getName(),
+            volunteer.getBirthDate(),
+            volunteer.getPhoneNumber(),
+            volunteer.getTemperature(),
+            volunteer.getApplications().stream()
+                .filter(applicant -> applicant.getStatus().equals(ApplicantStatus.ATTENDANCE))
+                .count(),
+            VolunteerImageFixture.volunteerImage(volunteer).getImageUrl());
+        given(volunteerService.getVolunteerMyPage(anyLong())).willReturn(getVolunteerMyPageResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(
             get("/api/volunteers/me")
+                .header("volunteerId", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then

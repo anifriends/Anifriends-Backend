@@ -21,10 +21,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -63,6 +65,9 @@ public class Volunteer extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "volunteer", fetch = FetchType.LAZY)
     private List<Applicant> applications = new ArrayList<>();
+
+    @OneToOne(mappedBy = "volunteer")
+    private VolunteerImage volunteerImage;
 
     public Volunteer(
         String email,
@@ -121,7 +126,11 @@ public class Volunteer extends BaseTimeEntity {
         return this.name.getName();
     }
 
+    public String getVolunteerImageUrl() {
+        return volunteerImage.getImageUrl();
+    }
+
     public List<Applicant> getApplications() {
-        return applications;
+        return Collections.unmodifiableList(applications);
     }
 }
