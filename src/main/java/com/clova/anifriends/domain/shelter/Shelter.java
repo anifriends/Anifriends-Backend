@@ -1,10 +1,10 @@
 package com.clova.anifriends.domain.shelter;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
+import com.clova.anifriends.domain.shelter.wrapper.ShelterAddressInfo;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterName;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterPassword;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterAddressInfo;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterPhoneNumberInfo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -12,10 +12,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "shelter")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Shelter extends BaseTimeEntity {
 
     @Id
@@ -38,8 +42,8 @@ public class Shelter extends BaseTimeEntity {
     @Embedded
     private ShelterAddressInfo addressInfo;
 
-    protected Shelter() {
-    }
+    @OneToOne(mappedBy = "shelter")
+    private ShelterImage shelterImage;
 
     public Shelter(
         String email,
@@ -70,7 +74,7 @@ public class Shelter extends BaseTimeEntity {
         return password.getPassword();
     }
 
-    public String  getName() {
+    public String getName() {
         return name.getName();
     }
 
@@ -96,5 +100,9 @@ public class Shelter extends BaseTimeEntity {
 
     public boolean isOpenedAddress() {
         return addressInfo.isOpenedAddress();
+    }
+
+    public String getImageUrl() {
+        return this.shelterImage == null ? null : this.shelterImage.getImageUrl();
     }
 }
