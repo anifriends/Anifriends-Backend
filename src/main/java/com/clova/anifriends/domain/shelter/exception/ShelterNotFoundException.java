@@ -5,7 +5,7 @@ import com.clova.anifriends.global.exception.NotFoundException;
 
 public class ShelterNotFoundException extends NotFoundException {
 
-    public ShelterNotFoundException(ErrorCode errorCode, String message) {
-        super(errorCode, message);
+    public ShelterNotFoundException(String message) {
+        super(ErrorCode.NOT_FOUND, message);
     }
 }

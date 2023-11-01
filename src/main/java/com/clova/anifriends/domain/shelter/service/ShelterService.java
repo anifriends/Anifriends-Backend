@@ -5,7 +5,6 @@ import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
-import com.clova.anifriends.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +26,7 @@ public class ShelterService {
 
     private Shelter getShelter(Long shelterId) {
         return shelterRepository.findById(shelterId)
-            .orElseThrow(
-                () -> new ShelterNotFoundException(ErrorCode.NOT_FOUND, "존재하지 않는 보호소입니다."));
+            .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
     }
 
     @Transactional(readOnly = true)
