@@ -106,7 +106,7 @@ class ShelterControllerTest extends BaseControllerTest {
             shelter.getShelterImageUrl()
         );
 
-        given(shelterService.findShelterMyPageResponse(shelterId)).willReturn(
+        given(shelterService.findShelterMyPage(shelterId)).willReturn(
             findShelterMyPageResponse);
 
         // when

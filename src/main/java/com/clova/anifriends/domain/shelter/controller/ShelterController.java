@@ -33,7 +33,7 @@ public class ShelterController {
         @LoginUser Long shelterId
     ) {
         return ResponseEntity.ok()
-            .body(shelterService.findShelterMyPageResponse(
+            .body(shelterService.findShelterMyPage(
                 shelterId
             ));
     }

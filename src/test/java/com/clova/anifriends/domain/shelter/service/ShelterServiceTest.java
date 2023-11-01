@@ -9,8 +9,8 @@ import static org.mockito.BDDMockito.given;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
+import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
-import com.clova.anifriends.domain.shelter.repository.ShelterImageRepository;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
@@ -31,9 +31,6 @@ class ShelterServiceTest {
 
     @Mock
     private ShelterRepository shelterRepository;
-
-    @Mock
-    private ShelterImageRepository shelterImageRepository;
 
     Shelter givenShelter;
     ShelterImage givenShelterImage;
@@ -76,6 +73,50 @@ class ShelterServiceTest {
             // when
             Exception exception = catchException(
                 () -> shelterService.findShelterDetail(shelterId));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("findShelterMyPage 실행 시")
+    class findShelterMyPageTest {
+
+        @Test
+        @DisplayName("성공")
+        void findShelterMyPage() {
+            //given
+            givenShelter = ShelterFixture.shelter();
+            givenShelterImage = ShelterImageFixture.shelterImage(givenShelter);
+            givenShelter.setShelterImage(givenShelterImage);
+
+            given(shelterRepository.findById(anyLong())).willReturn(
+                Optional.ofNullable(givenShelter));
+            FindShelterMyPageResponse expectedFindShelterMyPageResponse = FindShelterMyPageResponse.from(
+                givenShelter);
+
+            //when
+            FindShelterMyPageResponse foundShelterMyPageResponse = shelterService.findShelterMyPage(
+                anyLong());
+
+            //then
+            assertThat(foundShelterMyPageResponse).usingRecursiveComparison()
+                .ignoringFields("shelterId")
+                .isEqualTo(expectedFindShelterMyPageResponse);
+        }
+
+        @Test
+        @DisplayName("예외(ShelterNotFoundException): 존재하지 않은 보호소")
+        void throwExceptionWhenShelterNotFound() {
+            //given
+            Long shelterId = 1L;
+
+            given(shelterRepository.findById(any())).willReturn(Optional.empty());
+
+            // when
+            Exception exception = catchException(
+                () -> shelterService.findShelterMyPage(shelterId));
 
             // then
             assertThat(exception).isInstanceOf(ShelterNotFoundException.class);

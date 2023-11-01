@@ -32,7 +32,7 @@ public class ShelterService {
     }
 
     @Transactional(readOnly = true)
-    public FindShelterMyPageResponse findShelterMyPageResponse(
+    public FindShelterMyPageResponse findShelterMyPage(
         Long shelterId
     ) {
         Shelter foundShelter = getShelter(shelterId);
