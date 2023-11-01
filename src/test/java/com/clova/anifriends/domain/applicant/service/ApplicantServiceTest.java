@@ -52,10 +52,10 @@ class ApplicantServiceTest {
         Shelter shelter = ShelterFixture.shelter();
         Volunteer volunteer = VolunteerFixture.volunteer();
         Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-        RecruitmentInfo recruitmentInfo = recruitmentInfo = new RecruitmentInfo(
-            LocalDateTime.now().minusDays(3),
+        RecruitmentInfo recruitmentInfo = new RecruitmentInfo(
+            LocalDateTime.now().plusDays(5),
             LocalDateTime.now().plusDays(10),
-            LocalDateTime.now().plusDays(7),
+            LocalDateTime.now().plusDays(3),
             false,
             30
         );

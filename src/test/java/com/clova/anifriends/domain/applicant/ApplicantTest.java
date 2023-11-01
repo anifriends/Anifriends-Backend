@@ -34,9 +34,9 @@ class ApplicantTest {
         void newApplicant() {
             //given
             recruitmentInfo = new RecruitmentInfo(
-                LocalDateTime.now().minusDays(3),
+                LocalDateTime.now().plusDays(5),
                 LocalDateTime.now().plusDays(10),
-                LocalDateTime.now().plusDays(7),
+                LocalDateTime.now().plusDays(3),
                 false,
                 30
             );
@@ -56,9 +56,9 @@ class ApplicantTest {
         void throwExceptionWhenRecruitmentIsClosed() {
             //given
             recruitmentInfo = new RecruitmentInfo(
-                LocalDateTime.now().minusDays(3),
-                LocalDateTime.now().minusDays(1),
-                LocalDateTime.now().minusDays(2),
+                LocalDateTime.now().plusDays(5),
+                LocalDateTime.now().plusDays(10),
+                LocalDateTime.now().plusDays(3),
                 true,
                 30
             );
@@ -78,12 +78,13 @@ class ApplicantTest {
         void throwExceptionWhenRecruitmentDeadLineIsOver() {
             //given
             recruitmentInfo = new RecruitmentInfo(
-                LocalDateTime.now().minusDays(3),
-                LocalDateTime.now().minusDays(1),
-                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(5),
+                LocalDateTime.now().plusDays(10),
+                LocalDateTime.now().plusDays(3),
                 false,
                 30
             );
+            setField(recruitmentInfo, "deadline", LocalDateTime.now());
             recruitment = RecruitmentFixture.recruitment(shelter);
             setField(recruitment, "info", recruitmentInfo);
             volunteer = VolunteerFixture.volunteer();
@@ -113,9 +114,9 @@ class ApplicantTest {
         void throwExceptionWhenVolunteerIsNull() {
             //given
             recruitmentInfo = new RecruitmentInfo(
-                LocalDateTime.now().minusDays(3),
+                LocalDateTime.now().plusDays(5),
                 LocalDateTime.now().plusDays(10),
-                LocalDateTime.now().plusDays(7),
+                LocalDateTime.now().plusDays(3),
                 false,
                 30
             );
@@ -132,12 +133,13 @@ class ApplicantTest {
         void throwExceptionWhenRecruitmentCapacityIsOver() {
             //given
             recruitmentInfo = new RecruitmentInfo(
-                LocalDateTime.now().minusDays(3),
+                LocalDateTime.now().plusDays(5),
                 LocalDateTime.now().plusDays(10),
-                LocalDateTime.now().plusDays(7),
+                LocalDateTime.now().plusDays(3),
                 false,
-                0
+                30
             );
+            setField(recruitmentInfo, "capacity", 0);
             recruitment = RecruitmentFixture.recruitment(shelter);
             setField(recruitment, "info", recruitmentInfo);
             volunteer = VolunteerFixture.volunteer();

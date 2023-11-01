@@ -12,6 +12,7 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
+import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
@@ -77,6 +78,35 @@ class VolunteerServiceTest {
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("findVolunteerProfile 메서드 실행 시")
+    class FindVolunteerProfileTest {
+
+        Volunteer volunteer;
+        VolunteerImage volunteerImage;
+
+        @Test
+        @DisplayName("성공")
+        void findVolunteerProfile() {
+            // given
+            volunteer = VolunteerFixture.volunteer();
+            volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
+            setField(volunteer, "volunteerImage", volunteerImage);
+            FindVolunteerProfileResponse expectedFindVolunteerProfileResponse = FindVolunteerProfileResponse.from(
+                volunteer);
+
+            given(volunteerRepository.findById(anyLong())).willReturn(ofNullable(volunteer));
+
+            // when
+            FindVolunteerProfileResponse foundFindVolunteerProfileResponse = volunteerService.findVolunteerProfile(
+                1L);
+
+            // then
+            assertThat(foundFindVolunteerProfileResponse).usingRecursiveComparison()
+                .isEqualTo(expectedFindVolunteerProfileResponse);
         }
     }
 }
