@@ -2,8 +2,13 @@ package com.clova.anifriends.domain.shelter.wrapper;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
 @Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ShelterAddressInfo {
 
     @Column(name = "address")
@@ -14,9 +19,6 @@ public class ShelterAddressInfo {
 
     @Column(name = "is_opened_address")
     private boolean isOpenedAddress;
-
-    protected ShelterAddressInfo() {
-    }
 
     public ShelterAddressInfo(String address, String addressDetail, boolean isOpenedAddress) {
         this.address = address;

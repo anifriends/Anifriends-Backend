@@ -150,8 +150,7 @@ private excludedClassFilesForReport(classDirectories) {
 						"**/*Application*",
 						"**/*Config*",
 						"**/*Response*",
-						"**/*Exception*",
-						"**/domain/*"
+						"**/exception/**"
 				])
 			})
 	)
@@ -180,7 +179,7 @@ jacocoTestCoverageVerification {  // 코드 커버리지를 검증합니다. 규
 			limit {
 				counter = 'BRANCH'
 				value = 'COVEREDRATIO'
-				maximum = 0.70
+				minimum = 0.70
 			}
 
 			// 라인 커버리지를 최소 70% 만족시켜야 합니다.
@@ -189,8 +188,6 @@ jacocoTestCoverageVerification {  // 코드 커버리지를 검증합니다. 규
 				value = 'COVEREDRATIO'
 				minimum = 0.70
 			}
-
-//			excludes = ['**/domain/*', '*Application*', '*Config*', '*Exception*', '*Response*']  // Q클래스와 메인 메서드, configuartion을 대상에서 제외합니다.
 		}
 	}
 }

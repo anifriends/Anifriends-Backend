@@ -93,11 +93,43 @@ public class Animal extends BaseTimeEntity {
         this.information = new AnimalInformation(information);
     }
 
+    public Shelter getShelter() {
+        return shelter;
+    }
+
     public String getName() {
         return this.name.getName();
     }
 
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public AnimalType getType() {
+        return type;
+    }
+
+    public String getBreed() {
+        return breed.getBreed();
+    }
+
+    public AnimalGender getGender() {
+        return gender;
+    }
+
     public boolean isNeutered() {
         return this.neutered.getIsNeutered();
+    }
+
+    public AnimalActive getActive() {
+        return active;
+    }
+
+    public double getWeight() {
+        return weight.getWeight();
+    }
+
+    public String getInformation() {
+        return information.getInformation();
     }
 }
