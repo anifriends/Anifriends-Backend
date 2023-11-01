@@ -12,7 +12,7 @@ import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
-import com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture;
+import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
