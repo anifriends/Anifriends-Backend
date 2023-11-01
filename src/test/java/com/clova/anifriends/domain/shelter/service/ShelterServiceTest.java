@@ -11,8 +11,8 @@ import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
-import com.clova.anifriends.domain.shelter.support.ShelterFixture;
-import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
+import com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture;
+import com.clova.anifriends.domain.shelter.support.fixture.ShelterImageFixture;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,7 +36,7 @@ class ShelterServiceTest {
 
     @Nested
     @DisplayName("findShelterDetail 실행 시")
-    class findShelterDetailTest {
+    class FindShelterDetailTest {
 
         @Test
         @DisplayName("성공")
@@ -80,7 +80,7 @@ class ShelterServiceTest {
 
     @Nested
     @DisplayName("findShelterMyPage 실행 시")
-    class findShelterMyPageTest {
+    class FindShelterMyPageTest {
 
         @Test
         @DisplayName("성공")
