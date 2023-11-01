@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.recruitment.service;
 
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
-import static com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture.shelter;
+import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchException;
@@ -20,7 +20,7 @@ import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
-import com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture;
+import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
