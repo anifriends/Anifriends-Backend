@@ -52,7 +52,7 @@ class ApplicantTest {
         }
 
         @Test
-        @DisplayName("예외: 모집이 마감된 경우")
+        @DisplayName("예외(ApplicantBadRequestException): 모집이 마감된 경우")
         void throwExceptionWhenRecruitmentIsClosed() {
             //given
             recruitmentInfo = new RecruitmentInfo(
@@ -74,7 +74,7 @@ class ApplicantTest {
         }
 
         @Test
-        @DisplayName("예외: 모집 마감 시간이 지난 경우")
+        @DisplayName("예외(ApplicantBadRequestException): 모집 마감 시간이 지난 경우")
         void throwExceptionWhenRecruitmentDeadLineIsOver() {
             //given
             recruitmentInfo = new RecruitmentInfo(
@@ -96,7 +96,7 @@ class ApplicantTest {
         }
 
         @Test
-        @DisplayName("예외: 봉사 모집이 null인 경우")
+        @DisplayName("예외(ApplicantBadRequestException): 봉사 모집이 null인 경우")
         void throwExceptionWhenRecruitmentIsNull() {
             //given
             volunteer = VolunteerFixture.volunteer();
@@ -109,7 +109,7 @@ class ApplicantTest {
         }
 
         @Test
-        @DisplayName("예외: 봉사자가 null인 경우")
+        @DisplayName("예외(ApplicantBadRequestException): 봉사자가 null인 경우")
         void throwExceptionWhenVolunteerIsNull() {
             //given
             recruitmentInfo = new RecruitmentInfo(
@@ -128,7 +128,7 @@ class ApplicantTest {
         }
 
         @Test
-        @DisplayName("예외: 봉사 모집 인원이 마감된 경우")
+        @DisplayName("예외(ApplicantConflictException): 봉사 모집 인원이 마감된 경우")
         void throwExceptionWhenRecruitmentCapacityIsOver() {
             //given
             recruitmentInfo = new RecruitmentInfo(

@@ -63,7 +63,7 @@ class ApplicantServiceTest {
 
         @Test
         @DisplayName("성공")
-        void success() {
+        void registerApplicant() {
             // given
             setField(volunteer, "volunteerId", 1L);
             setField(recruitment, "recruitmentId", 1L);
@@ -84,7 +84,7 @@ class ApplicantServiceTest {
         }
 
         @Test
-        @DisplayName("예외: 이미 신청한 경우")
+        @DisplayName("예외(ApplicantConflictException): 이미 신청한 경우")
         void throwExceptionWhenAlreadyApplied() {
             // given
             setField(volunteer, "volunteerId", 1L);
