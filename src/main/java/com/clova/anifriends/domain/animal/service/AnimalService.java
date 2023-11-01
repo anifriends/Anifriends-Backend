@@ -1,7 +1,5 @@
 package com.clova.anifriends.domain.animal.service;
 
-import static com.clova.anifriends.global.exception.ErrorCode.NOT_FOUND;
-
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
 import com.clova.anifriends.domain.animal.exception.NotFoundAnimalException;
@@ -23,6 +21,6 @@ public class AnimalService {
 
     private Animal getAnimalById(Long animalId) {
         return animalRepository.findById(animalId)
-            .orElseThrow(() -> new NotFoundAnimalException(NOT_FOUND, "존재하지 않는 보호 동물입니다."));
+            .orElseThrow(() -> new NotFoundAnimalException("존재하지 않는 보호 동물입니다."));
     }
 }

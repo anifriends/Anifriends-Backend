@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.animal.controller;
 
 import static com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture.findAnimalByVolunteerResponse;
 import static com.clova.anifriends.domain.animal.support.fixture.AnimalFixture.animal;
-import static com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture.shelter;
+import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;

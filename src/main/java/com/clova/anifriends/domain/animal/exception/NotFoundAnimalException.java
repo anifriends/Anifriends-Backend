@@ -1,11 +1,12 @@
 package com.clova.anifriends.domain.animal.exception;
 
-import com.clova.anifriends.global.exception.ErrorCode;
+import static com.clova.anifriends.global.exception.ErrorCode.NOT_FOUND;
+
 import com.clova.anifriends.global.exception.NotFoundException;
 
 public class NotFoundAnimalException extends NotFoundException {
 
-    public NotFoundAnimalException(ErrorCode errorCode, String message) {
-        super(errorCode, message);
+    public NotFoundAnimalException(String message) {
+        super(NOT_FOUND, message);
     }
 }
