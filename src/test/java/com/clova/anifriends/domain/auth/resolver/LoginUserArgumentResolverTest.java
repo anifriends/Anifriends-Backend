@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.auth.resolver;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
@@ -49,6 +50,19 @@ class LoginUserArgumentResolverTest extends BaseControllerTest {
                             AuthAuthenticationException.class);
                     }
                 ).andDo(print());
+        }
+
+        @Test
+        @DisplayName("무시: Long 이외의 파라미터와 사용한 경우")
+        void ignoreWhenUsingWithInvalidParameter() throws Exception {
+            //given
+            //when
+            ResultActions resultActions = mockMvc.perform(get("/test/login-user/invalid")
+                .header(AUTHORIZATION, accessToken));
+
+            //then
+            resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$").doesNotExist());
         }
     }
 }

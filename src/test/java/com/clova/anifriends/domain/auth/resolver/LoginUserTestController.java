@@ -13,4 +13,9 @@ public class LoginUserTestController {
     public ResponseEntity<Long> loginUser(@LoginUser Long memberId) {
         return ResponseEntity.ok(memberId);
     }
+
+    @GetMapping("/login-user/invalid")
+    public ResponseEntity<String> invalidLoginUser(@LoginUser String memberId) {
+        return ResponseEntity.ok(memberId);
+    }
 }
