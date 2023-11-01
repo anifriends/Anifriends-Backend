@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.recruitment.controller;
 
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,5 +21,11 @@ public class RecruitmentController {
     public ResponseEntity<FindRecruitmentByShelterResponse> findRecruitmentByIdByShelter(
         @PathVariable Long recruitmentId) {
         return ResponseEntity.ok(recruitmentService.findRecruitmentByIdByShelter(recruitmentId));
+    }
+
+    @GetMapping("/volunteers/recruitments/{recruitmentId}")
+    public ResponseEntity<FindRecruitmentByVolunteerResponse> findRecruitmentByIdByVolunteer(
+        @PathVariable Long recruitmentId) {
+        return ResponseEntity.ok(recruitmentService.findRecruitmentByIdByVolunteer(recruitmentId));
     }
 }
