@@ -9,11 +9,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import com.clova.anifriends.base.BaseControllerTest.WebMvcTestConfig;
 import com.clova.anifriends.base.config.RestDocsConfig;
-import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
+import com.clova.anifriends.domain.animal.service.AnimalService;
 import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.service.AuthService;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
+import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
 import com.clova.anifriends.domain.volunteer.service.VolunteerService;
 import com.clova.anifriends.global.config.SecurityConfig;
 import com.clova.anifriends.global.config.WebMvcConfig;
@@ -45,8 +46,10 @@ public abstract class BaseControllerTest {
     @BeforeAll
     static void beforeAll() {
         Properties properties = System.getProperties();
-        properties.setProperty("ACCESS_TOKEN_SECRET", "_4RNpxi%CB:eoO6a>j=#|*e#$Fp%%aX{dFi%.!Y(ZIy'UMuAt.9.;LxpWn2BZV*");
-        properties.setProperty("REFRESH_TOKEN_SECRET", "Tlolt.z[e$1yO!%Uc\"F*QH=uf0vp3U5s5{X5=g=*nDZ>BWMIKIf9nzd6et2.:Fb");
+        properties.setProperty("ACCESS_TOKEN_SECRET",
+            "_4RNpxi%CB:eoO6a>j=#|*e#$Fp%%aX{dFi%.!Y(ZIy'UMuAt.9.;LxpWn2BZV*");
+        properties.setProperty("REFRESH_TOKEN_SECRET",
+            "Tlolt.z[e$1yO!%Uc\"F*QH=uf0vp3U5s5{X5=g=*nDZ>BWMIKIf9nzd6et2.:Fb");
     }
 
     protected static final String AUTHORIZATION = "Authorization";
@@ -81,6 +84,9 @@ public abstract class BaseControllerTest {
 
     @MockBean
     protected VolunteerService volunteerService;
+
+    @MockBean
+    protected AnimalService animalService;
 
     @BeforeEach
     void setUp(
