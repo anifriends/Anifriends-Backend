@@ -3,6 +3,7 @@ package com.clova.anifriends.global.exception;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -17,6 +18,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> runtimeEx(RuntimeException e) {
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+            .body(new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR.getValue(),
+                "예측하지 못한 예외가 발생하였습니다."));
+    }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> badRequestEx(BadRequestException e) {
