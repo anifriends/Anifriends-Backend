@@ -1,6 +1,8 @@
 package com.clova.anifriends.domain.shelter.controller;
 
+import com.clova.anifriends.domain.auth.resolver.LoginUser;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
+import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,16 @@ public class ShelterController {
     ) {
         return ResponseEntity.ok()
             .body(shelterService.findShelterDetail(
+                shelterId
+            ));
+    }
+
+    @GetMapping("/shelters/me")
+    public ResponseEntity<FindShelterMyPageResponse> findShelterMyPage(
+        @LoginUser Long shelterId
+    ) {
+        return ResponseEntity.ok()
+            .body(shelterService.findShelterMyPageResponse(
                 shelterId
             ));
     }
