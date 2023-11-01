@@ -12,7 +12,6 @@ import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture;
-import com.clova.anifriends.domain.shelter.support.fixture.ShelterImageFixture;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -43,8 +42,6 @@ class ShelterServiceTest {
         void findShelterDetail() {
             //given
             givenShelter = ShelterFixture.shelter();
-            givenShelterImage = ShelterImageFixture.shelterImage(givenShelter);
-            givenShelter.setShelterImage(givenShelterImage);
 
             given(shelterRepository.findById(anyLong())).willReturn(
                 Optional.ofNullable(givenShelter));
@@ -87,8 +84,6 @@ class ShelterServiceTest {
         void findShelterMyPage() {
             //given
             givenShelter = ShelterFixture.shelter();
-            givenShelterImage = ShelterImageFixture.shelterImage(givenShelter);
-            givenShelter.setShelterImage(givenShelterImage);
 
             given(shelterRepository.findById(anyLong())).willReturn(
                 Optional.ofNullable(givenShelter));

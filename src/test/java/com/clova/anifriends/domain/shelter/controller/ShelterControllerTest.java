@@ -10,11 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture;
-import com.clova.anifriends.domain.shelter.support.fixture.ShelterImageFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -31,8 +29,6 @@ class ShelterControllerTest extends BaseControllerTest {
         Long shelterId = 1L;
         Shelter shelter = ShelterFixture.shelter();
         ReflectionTestUtils.setField(shelter, "shelterId", shelterId);
-        ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
-        shelter.setShelterImage(shelterImage);
         FindShelterDetailResponse findShelterDetailResponse = new FindShelterDetailResponse(
             shelter.getShelterId(),
             shelter.getEmail(),
@@ -81,7 +77,7 @@ class ShelterControllerTest extends BaseControllerTest {
                         .description("보호소 임시 전화번호"),
                     fieldWithPath("imageUrl").type(
                             JsonFieldType.STRING)
-                        .description("보호소 이미지 Url")
+                        .description("보호소 이미지 Url").optional()
                 )
             ));
     }
@@ -93,8 +89,7 @@ class ShelterControllerTest extends BaseControllerTest {
         Long shelterId = 1L;
         Shelter shelter = ShelterFixture.shelter();
         ReflectionTestUtils.setField(shelter, "shelterId", shelterId);
-        ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
-        shelter.setShelterImage(shelterImage);
+
         FindShelterMyPageResponse findShelterMyPageResponse = new FindShelterMyPageResponse(
             shelter.getShelterId(),
             shelter.getName(),
@@ -140,7 +135,7 @@ class ShelterControllerTest extends BaseControllerTest {
                             JsonFieldType.STRING)
                         .description("보호소 임시 전화번호"),
                     fieldWithPath("imageUrl").type(
-                            JsonFieldType.STRING)
+                            JsonFieldType.STRING).optional()
                         .description("보호소 이미지 Url")
                 )
             ));
