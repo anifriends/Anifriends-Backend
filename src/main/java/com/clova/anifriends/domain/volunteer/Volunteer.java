@@ -21,9 +21,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "volunteer")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Volunteer extends BaseTimeEntity {
 
     @Id
@@ -52,9 +55,6 @@ public class Volunteer extends BaseTimeEntity {
 
     @Embedded
     private VolunteerName name;
-
-    protected Volunteer() {
-    }
 
     public Volunteer(
         String email,
