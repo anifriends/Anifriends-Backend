@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
@@ -89,6 +90,7 @@ class VolunteerControllerTest extends BaseControllerTest {
         // then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(headerWithName("Authorization").description("액세스 토큰")),
                 responseFields(
                     fieldWithPath("email").type(STRING).description("이메일"),
                     fieldWithPath("name").type(STRING).description("이름"),
