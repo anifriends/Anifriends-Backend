@@ -1,5 +1,7 @@
 package com.clova.anifriends.domain.shelter.wrapper;
 
+import static java.util.Objects.isNull;
+
 import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
@@ -24,7 +26,7 @@ public class ShelterName {
     }
 
     private void validateName(String name) {
-        if (name == null || name.isBlank()) {
+        if (isNull(name) || name.isBlank()) {
             throw new ShelterBadRequestException(ErrorCode.BAD_REQUEST, "이름은 필수 항목입니다.");
         }
 

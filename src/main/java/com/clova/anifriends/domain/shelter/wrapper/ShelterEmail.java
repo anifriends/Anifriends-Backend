@@ -1,5 +1,7 @@
 package com.clova.anifriends.domain.shelter.wrapper;
 
+import static java.util.Objects.isNull;
+
 import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
@@ -26,7 +28,7 @@ public class ShelterEmail {
     }
 
     private void validateEmail(String email) {
-        if (email == null || email.isBlank()) {
+        if (isNull(email) || email.isBlank()) {
             throw new ShelterBadRequestException(ErrorCode.BAD_REQUEST, "이메일은 필수 항목입니다.");
         }
 
