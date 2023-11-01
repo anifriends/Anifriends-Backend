@@ -6,6 +6,7 @@ import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import java.text.MessageFormat;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,8 @@ public class ShelterPassword {
 
         if (password.length() < MIN_PASSWORD_LENGTH || password.length() > MAX_PASSWORD_LENGTH) {
             throw new ShelterBadRequestException(ErrorCode.BAD_REQUEST,
-                "비밀번호는 최소 6자, 최대 16자입니다.");
+                MessageFormat.format("이름은 최소 {0}자, 최대 {1}자 입니다.", MIN_PASSWORD_LENGTH,
+                    MAX_PASSWORD_LENGTH));
         }
     }
 }
