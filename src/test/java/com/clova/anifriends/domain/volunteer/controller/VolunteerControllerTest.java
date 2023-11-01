@@ -5,12 +5,14 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -19,6 +21,7 @@ import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
+import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
@@ -91,9 +94,49 @@ class VolunteerControllerTest extends BaseControllerTest {
                     fieldWithPath("name").type(STRING).description("이름"),
                     fieldWithPath("birthDate").type(STRING).description("생년월일"),
                     fieldWithPath("phoneNumber").type(STRING).description("전화번호"),
-                    fieldWithPath("temperature").type(NUMBER).description("체온"),
+                    fieldWithPath("temperature").type(NUMBER).description("온도"),
                     fieldWithPath("volunteerCount").type(NUMBER).description("봉사 횟수"),
                     fieldWithPath("imageUrl").type(STRING).description("프로필 이미지 URL")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("봉사자 프로필 조회 API 호출 시")
+    void findVolunteerProfile() throws Exception {
+        // given
+        Long volunteerId = 1L;
+        Volunteer volunteer = VolunteerFixture.volunteer();
+
+        FindVolunteerProfileResponse findVolunteerMyPageResponse = new FindVolunteerProfileResponse(
+            volunteer.getEmail(),
+            volunteer.getName(),
+            volunteer.getTemperature(),
+            volunteer.getPhoneNumber(),
+            volunteer.getVolunteerImageUrl()
+        );
+
+        given(volunteerService.findVolunteerProfile(anyLong())).willReturn(
+            findVolunteerMyPageResponse);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+            get("/api/volunteers/{volunteerId}/profile", volunteerId)
+                .header(AUTHORIZATION, volunteerAccessToken)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                pathParameters(
+                    parameterWithName("volunteerId").description("봉사자 ID")
+                ),
+                responseFields(
+                    fieldWithPath("email").type(STRING).description("이메일"),
+                    fieldWithPath("name").type(STRING).description("이름"),
+                    fieldWithPath("temperature").type(NUMBER).description("온도"),
+                    fieldWithPath("phoneNumber").type(STRING).description("전화번호"),
+                    fieldWithPath("imageUrl").type(STRING).description("프로필 이미지 URL").optional()
                 )
             ));
     }
