@@ -2,16 +2,20 @@ package com.clova.anifriends.domain.recruitment.service;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
-import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.mapper.RecruitmentMapper;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,5 +54,15 @@ public class RecruitmentService {
     private Recruitment getRecruitmentById(long id) {
         return recruitmentRepository.findById(id)
             .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글입니다."));
+    }
+
+    @Transactional(readOnly = true)
+    public FindRecruitmentsByVolunteerResponse findRecruitmentsByVolunteer(
+        String keyword, LocalDate startDate, LocalDate endDate, Boolean isClosed, Boolean title,
+        Boolean content, Boolean shelterName, Pageable pageable) {
+        Page<Recruitment> recruitments = recruitmentRepository.findRecruitments(keyword, startDate,
+            endDate, isClosed, title,
+            content, shelterName, pageable);
+        return null;
     }
 }
