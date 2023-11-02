@@ -48,7 +48,7 @@ public class RecruitmentController {
     }
 
     @GetMapping("/volunteers/recruitments/{recruitmentId}/shelters")
-    public ResponseEntity<FindShelterByVolunteerReviewResponse> FindShelterByVolunteerReview(
+    public ResponseEntity<FindShelterByVolunteerReviewResponse> findShelterByVolunteerReview(
         @PathVariable Long recruitmentId) {
         return ResponseEntity.ok(recruitmentService.findShelterByVolunteerReview(recruitmentId));
     }
