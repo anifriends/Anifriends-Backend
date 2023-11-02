@@ -14,18 +14,22 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
+import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse.FindRecruitmentByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
-import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
+import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +40,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 class RecruitmentServiceTest {
@@ -143,12 +149,13 @@ class RecruitmentServiceTest {
             ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
             setField(shelter, "shelterImage", shelterImage);
             Recruitment recruitment = recruitment(shelter);
-            FindRecruitmentByVolunteerResponse expected = findRecruitmentByVolunteerResponse(recruitment);
+            FindRecruitmentDetailByVolunteerResponse expected = findRecruitmentByVolunteerResponse(
+                recruitment);
 
             when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.of(recruitment));
 
             // when
-            FindRecruitmentByVolunteerResponse result = recruitmentService
+            FindRecruitmentDetailByVolunteerResponse result = recruitmentService
                 .findRecruitmentByIdByVolunteer(anyLong());
 
             // then
@@ -167,6 +174,50 @@ class RecruitmentServiceTest {
 
             // then
             assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("findRecruitmentsByVolunteer 실행 시")
+    class FindRecruitmentsByVolunteerTest {
+
+        @Test
+        @DisplayName("성공")
+        void findRecruitmentsByVolunteer() {
+            //give
+            String keyword = "keyword";
+            LocalDate startDate = LocalDate.now();
+            LocalDate endDate = LocalDate.now();
+            boolean isClosed = false;
+            boolean title = false;
+            boolean content = false;
+            boolean shelterName = false;
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            PageImpl<Recruitment> recruitments = new PageImpl<>(List.of(recruitment));
+
+            given(recruitmentRepository.findRecruitments(keyword, startDate, endDate, isClosed,
+                title, content, shelterName, pageRequest)).willReturn(recruitments);
+
+            //when
+            FindRecruitmentsByVolunteerResponse recruitmentsByVolunteer
+                = recruitmentService.findRecruitmentsByVolunteer(keyword, startDate, endDate,
+                isClosed, title, content, shelterName, pageRequest);
+
+            //then
+            PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
+            assertThat(pageInfo.totalElements()).isEqualTo(recruitments.getSize());
+            FindRecruitmentByVolunteerResponse findRecruitment = recruitmentsByVolunteer.recruitments()
+                .get(0);
+            assertThat(findRecruitment.title()).isEqualTo(recruitment.getTitle());
+            assertThat(findRecruitment.startTime()).isEqualTo(recruitment.getStartTime());
+            assertThat(findRecruitment.endTime()).isEqualTo(recruitment.getEndTime());
+            assertThat(findRecruitment.applicantCount()).isEqualTo(recruitment.getApplicantCount());
+            assertThat(findRecruitment.capacity()).isEqualTo(recruitment.getCapacity());
+            assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
+            assertThat(findRecruitment.shelterImageUrl())
+                .isEqualTo(recruitment.getShelter().getShelterImageUrl());
         }
     }
 }

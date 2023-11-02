@@ -3,7 +3,7 @@ package com.clova.anifriends.domain.recruitment.service;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
@@ -46,9 +46,9 @@ public class RecruitmentService {
         return FindRecruitmentByShelterResponse.from(recruitment);
     }
 
-    public FindRecruitmentByVolunteerResponse findRecruitmentByIdByVolunteer(long id) {
+    public FindRecruitmentDetailByVolunteerResponse findRecruitmentByIdByVolunteer(long id) {
         Recruitment recruitment = getRecruitmentById(id);
-        return FindRecruitmentByVolunteerResponse.from(recruitment);
+        return FindRecruitmentDetailByVolunteerResponse.from(recruitment);
     }
 
     private Recruitment getRecruitmentById(long id) {
@@ -63,6 +63,6 @@ public class RecruitmentService {
         Page<Recruitment> recruitments = recruitmentRepository.findRecruitments(keyword, startDate,
             endDate, isClosed, title,
             content, shelterName, pageable);
-        return null;
+        return FindRecruitmentsByVolunteerResponse.from(recruitments);
     }
 }

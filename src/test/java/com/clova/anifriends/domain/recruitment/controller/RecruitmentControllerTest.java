@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -33,7 +32,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -149,7 +148,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
         setField(shelter, "shelterImage", shelterImage);
         Recruitment recruitment = recruitment(shelter);
-        FindRecruitmentByVolunteerResponse response = findRecruitmentByVolunteerResponse(
+        FindRecruitmentDetailByVolunteerResponse response = findRecruitmentByVolunteerResponse(
             recruitment);
 
         when(recruitmentService.findRecruitmentByIdByVolunteer(anyLong()))
