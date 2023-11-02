@@ -98,7 +98,7 @@ class VolunteerControllerTest extends BaseControllerTest {
                     fieldWithPath("phoneNumber").type(STRING).description("전화번호"),
                     fieldWithPath("temperature").type(NUMBER).description("온도"),
                     fieldWithPath("volunteerCount").type(NUMBER).description("봉사 횟수"),
-                    fieldWithPath("imageUrl").type(STRING).description("프로필 이미지 URL")
+                    fieldWithPath("imageUrl").type(STRING).description("프로필 이미지 URL").optional()
                 )
             ));
     }
