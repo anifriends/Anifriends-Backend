@@ -12,7 +12,7 @@ import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
-import com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture;
+import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -68,7 +68,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
                     Animal.class)
                 .setParameter("id", response.animalId())
                 .getSingleResult();
-            assertThat(animal.getImages()).hasSize(imageUrls.size());
+            assertThat(animal.getImageUrls()).hasSize(imageUrls.size());
         }
     }
 }

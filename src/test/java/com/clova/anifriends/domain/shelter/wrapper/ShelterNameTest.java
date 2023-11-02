@@ -12,7 +12,7 @@ class ShelterNameTest {
 
     @Nested
     @DisplayName("ShelterName 생성 시")
-    class newShelterNameTest {
+    class NewShelterNameTest {
 
         String name;
 

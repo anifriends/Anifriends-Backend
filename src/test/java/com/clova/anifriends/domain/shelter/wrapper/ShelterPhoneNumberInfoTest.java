@@ -12,7 +12,7 @@ class ShelterPhoneNumberInfoTest {
 
     @Nested
     @DisplayName("ShelterPhoneNumber 생성 시")
-    class newShelterPhoneNumberTest {
+    class NewShelterPhoneNumberTest {
 
         String phoneNumber;
         String sparePhoneNumber;

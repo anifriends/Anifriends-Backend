@@ -1,14 +1,20 @@
 package com.clova.anifriends.domain.animal.service;
 
+import static com.clova.anifriends.domain.animal.support.fixture.AnimalFixture.animal;
+import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
+import static com.clova.anifriends.domain.shelter.support.ShelterImageFixture.shelterImage;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.when;
 
+import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
-import com.clova.anifriends.domain.animal.repository.AnimalImageRepository;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
+import com.clova.anifriends.domain.animal.exception.NotFoundAnimalException;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
@@ -16,7 +22,7 @@ import com.clova.anifriends.domain.animal.wrapper.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
-import com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture;
+import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -39,9 +45,6 @@ class AnimalServiceTest {
 
     @Mock
     ShelterRepository shelterRepository;
-
-    @Mock
-    AnimalImageRepository animalImageRepository;
 
     @Nested
     @DisplayName("registerAnimal 메서드 실행 시")
@@ -86,6 +89,44 @@ class AnimalServiceTest {
 
             //then
             assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("findAnimalByIdByVolunteer 실행 시")
+    class FindAnimalTest {
+
+        @Test
+        @DisplayName("성공")
+        void findAnimalByIdByVolunteer() {
+            // given
+            Shelter shelter = shelter();
+            shelter.setShelterImage(shelterImage(shelter));
+            Animal animal = animal(shelter);
+            FindAnimalByVolunteerResponse expected = FindAnimalByVolunteerResponse.from(animal);
+
+            when(animalRepository.findById(anyLong())).thenReturn(Optional.of(animal));
+
+            // when
+            FindAnimalByVolunteerResponse result = animalService.findAnimalByIdByVolunteer(
+                anyLong());
+
+            // then
+            assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("예외(NotFoundAnimalException): 존재하지 않는 보호 동물")
+        void exceptionWhenAnimalIsNotExist() {
+            // given
+            when(animalRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+            // when
+            Exception exception = catchException(
+                () -> animalService.findAnimalByIdByVolunteer(anyLong()));
+
+            // then
+            assertThat(exception).isInstanceOf(NotFoundAnimalException.class);
         }
     }
 }

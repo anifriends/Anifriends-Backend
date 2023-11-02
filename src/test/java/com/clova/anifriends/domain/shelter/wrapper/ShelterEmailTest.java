@@ -12,7 +12,7 @@ class ShelterEmailTest {
 
     @Nested
     @DisplayName("ShelterEmail 생성 시")
-    class newShelterEmailTest {
+    class NewShelterEmailTest {
 
         String email;
 

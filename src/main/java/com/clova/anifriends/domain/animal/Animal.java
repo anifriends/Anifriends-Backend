@@ -26,11 +26,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "animal")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Animal extends BaseTimeEntity {
 
     private static final int MAX_IMAGES_SIZE = 5;
@@ -75,10 +79,7 @@ public class Animal extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "animal", cascade = CascadeType.PERSIST,
         fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<AnimalImage> images;
-
-    protected Animal() {
-    }
+    private List<AnimalImage> images = new ArrayList<>();
 
     public Animal(
         Shelter shelter,
@@ -166,7 +167,9 @@ public class Animal extends BaseTimeEntity {
         return information.getInformation();
     }
 
-    public List<AnimalImage> getImages() {
-        return images;
+    public List<String> getImageUrls() {
+        return images.stream()
+            .map(AnimalImage::getImageUrl)
+            .toList();
     }
 }
