@@ -50,6 +50,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -213,16 +214,12 @@ class RecruitmentControllerTest extends BaseControllerTest {
         params.add("shelterName", "false");
         params.add("pageNumber", "0");
         params.add("pageSize", "10");
+        Shelter shelter = shelter();
+        shelter.setShelterImage(new ShelterImage(shelter, "www.aws.s3.com/2"));
+        Recruitment recruitment = recruitment(shelter);
+        ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
         FindRecruitmentByVolunteerResponse findRecruitmentByVolunteerResponse
-            = new FindRecruitmentByVolunteerResponse(
-            1L,
-            "모집글 제목",
-            LocalDateTime.now(),
-            LocalDateTime.now(),
-            5,
-            10,
-            "보호소 이름",
-            "www.aws.s3.com/2");
+            = FindRecruitmentByVolunteerResponse.from(recruitment);
         PageInfo pageInfo = new PageInfo(1, false);
         FindRecruitmentsByVolunteerResponse response = new FindRecruitmentsByVolunteerResponse(
             List.of(findRecruitmentByVolunteerResponse), pageInfo);
