@@ -13,8 +13,9 @@ import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
-import com.clova.anifriends.domain.animal.exception.NotFoundAnimalException;
+import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
@@ -126,7 +127,53 @@ class AnimalServiceTest {
                 () -> animalService.findAnimalByIdByVolunteer(anyLong()));
 
             // then
-            assertThat(exception).isInstanceOf(NotFoundAnimalException.class);
+            assertThat(exception).isInstanceOf(AnimalNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("findAnimalByShelter 메서드 실행 시")
+    class FindAnimalByShelterTest {
+
+        Long animalId = 1L;
+        Shelter shelter = ShelterFixture.shelter();
+        Animal animal = animal(shelter);
+
+        @Test
+        @DisplayName("성공")
+        void findAnimalByShelter() {
+            //given
+            given(animalRepository.findByIdWithImages(anyLong())).willReturn(Optional.of(animal));
+
+            //when
+            FindAnimalByShelterResponse response = animalService.findAnimalByShelter(
+                animalId);
+
+            //then
+            assertThat(response.name()).isEqualTo(animal.getName());
+            assertThat(response.birthDate()).isEqualTo(animal.getBirthDate());
+            assertThat(response.type()).isEqualTo(animal.getType());
+            assertThat(response.breed()).isEqualTo(animal.getBreed());
+            assertThat(response.gender()).isEqualTo(animal.getGender());
+            assertThat(response.isNeutered()).isEqualTo(animal.isNeutered());
+            assertThat(response.active()).isEqualTo(animal.getActive());
+            assertThat(response.weight()).isEqualTo(animal.getWeight());
+            assertThat(response.information()).isEqualTo(animal.getInformation());
+            assertThat(response.isAdopted()).isEqualTo(animal.isAdopted());
+            assertThat(response.imageUrls()).containsExactlyElementsOf(animal.getImageUrls());
+        }
+
+        @Test
+        @DisplayName("예외(AnimalNotFoundException): 존재하지 않는 보호 동물")
+        void exceptionWhenShelterNotFound() {
+            //given
+            given(animalRepository.findByIdWithImages(anyLong())).willReturn(Optional.empty());
+
+            //when
+            Exception exception = catchException(() -> animalService.findAnimalByShelter(animalId));
+
+            //then
+            assertThat(exception).isInstanceOf(AnimalNotFoundException.class);
         }
     }
 }

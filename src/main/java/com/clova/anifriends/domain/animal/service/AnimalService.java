@@ -2,9 +2,10 @@ package com.clova.anifriends.domain.animal.service;
 
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
-import com.clova.anifriends.domain.animal.exception.NotFoundAnimalException;
+import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.mapper.AnimalMapper;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -40,8 +41,19 @@ public class AnimalService {
         return FindAnimalByVolunteerResponse.from(getAnimalById(animalId));
     }
 
+    @Transactional(readOnly = true)
+    public FindAnimalByShelterResponse findAnimalByShelter(Long animalId) {
+        return FindAnimalByShelterResponse.from(getAnimalByIdWithImages(animalId));
+    }
+
     private Animal getAnimalById(Long animalId) {
         return animalRepository.findById(animalId)
-            .orElseThrow(() -> new NotFoundAnimalException("존재하지 않는 보호 동물입니다."));
+            .orElseThrow(() -> new AnimalNotFoundException("존재하지 않는 보호 동물입니다."));
+    }
+
+    private Animal getAnimalByIdWithImages(Long animalId) {
+        return animalRepository.findByIdWithImages(animalId)
+            .orElseThrow(() -> new AnimalNotFoundException("존재하지 않는 보호 동물입니다."));
+
     }
 }
