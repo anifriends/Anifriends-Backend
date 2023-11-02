@@ -1,17 +1,22 @@
 package com.clova.anifriends.domain.recruitment.service;
 
+import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
-import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.mapper.RecruitmentMapper;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +35,30 @@ public class RecruitmentService {
         Recruitment recruitment = RecruitmentMapper.toRecruitment(shelter, request);
         recruitmentRepository.save(recruitment);
         return RegisterRecruitmentResponse.from(recruitment);
+    }
+
+    @Transactional(readOnly = true)
+    public FindRecruitmentsByShelterResponse findRecruitmentsByShelter(
+        Long shelterId,
+        String keyword,
+        LocalDate startDate,
+        LocalDate endDate,
+        boolean content,
+        boolean title,
+        int page,
+        int size
+    ) {
+        Page<Recruitment> pagination = recruitmentRepository.findRecruitmentsByShelterOrderByCreatedAt(
+            shelterId,
+            keyword,
+            startDate,
+            endDate,
+            content,
+            title,
+            PageRequest.of(page, size)
+        );
+
+        return FindRecruitmentsByShelterResponse.of(pagination.getContent(), PageInfo.from(pagination));
     }
 
     private Shelter getShelterById(Long shelterId) {

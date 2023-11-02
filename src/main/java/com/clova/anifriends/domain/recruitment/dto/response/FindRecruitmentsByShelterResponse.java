@@ -34,7 +34,7 @@ public record FindRecruitmentsByShelterResponse(
         }
     }
 
-    public static FindRecruitmentsByShelterResponse from(List<Recruitment> recruitments, PageInfo pageInfo){
+    public static FindRecruitmentsByShelterResponse of(List<Recruitment> recruitments, PageInfo pageInfo){
         return new FindRecruitmentsByShelterResponse(
             pageInfo,
             recruitments.stream()
@@ -42,5 +42,4 @@ public record FindRecruitmentsByShelterResponse(
                 .toList()
         );
     }
-
 }

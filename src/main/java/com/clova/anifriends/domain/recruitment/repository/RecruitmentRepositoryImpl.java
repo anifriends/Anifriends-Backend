@@ -9,6 +9,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +21,7 @@ public class RecruitmentRepositoryImpl implements RecruitmentRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Recruitment> findRecruitmentsByShelterOrderByCreatedAt(long shelterId,
+    public Page<Recruitment> findRecruitmentsByShelterOrderByCreatedAt(long shelterId,
         String keyword, LocalDate startDate, LocalDate endDate, boolean content, boolean title,
         Pageable pageable) {
 
@@ -27,12 +29,13 @@ public class RecruitmentRepositoryImpl implements RecruitmentRepositoryCustom {
             .and(getDateCondition(startDate, endDate))
             .and(getKeywordCondition(keyword, content, title));
 
-        return queryFactory.selectFrom(recruitment)
+        List<Recruitment> recruitments =  queryFactory.selectFrom(recruitment)
             .where(predicate)
             .orderBy(recruitment.createdAt.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
+        return new PageImpl<>(recruitments);
     }
 
     Predicate getDateCondition(LocalDate startDate, LocalDate endDate) {
