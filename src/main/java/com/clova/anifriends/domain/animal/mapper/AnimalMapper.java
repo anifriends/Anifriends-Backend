@@ -20,6 +20,7 @@ public final class AnimalMapper {
             registerAnimalRequest.isNeutered(),
             registerAnimalRequest.active(),
             registerAnimalRequest.weight(),
-            registerAnimalRequest.information());
+            registerAnimalRequest.information(),
+            registerAnimalRequest.imageUrls());
     }
 }

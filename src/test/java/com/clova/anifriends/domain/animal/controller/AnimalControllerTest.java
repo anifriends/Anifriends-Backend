@@ -19,6 +19,7 @@ import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -33,7 +34,7 @@ class AnimalControllerTest extends BaseControllerTest {
         //given
         RegisterAnimalRequest registerAnimalRequest = new RegisterAnimalRequest(
             "name", LocalDate.now(), AnimalType.DOG.getName(), "품종", AnimalGender.FEMALE.getName(),
-            false, AnimalActive.QUIET.getName(), 0.7, "기타 정보");
+            false, AnimalActive.QUIET.getName(), 0.7, "기타 정보", List.of("www.aws.s3.com/2"));
         RegisterAnimalResponse registerAnimalResponse = new RegisterAnimalResponse(1L);
 
         given(animalService.registerAnimal(anyLong(), any())).willReturn(registerAnimalResponse);
@@ -68,7 +69,9 @@ class AnimalControllerTest extends BaseControllerTest {
                     fieldWithPath("weight").type(JsonFieldType.NUMBER).description("몸무게")
                         .attributes(DocumentationFormatGenerator.getConstraint("0 이상, 50 이하")),
                     fieldWithPath("information").type(JsonFieldType.STRING).description("기타 정보")
-                        .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 1000자 이하"))
+                        .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 1000자 이하")),
+                    fieldWithPath("imageUrls").type(JsonFieldType.ARRAY).description("이미지 url 리스트")
+                        .attributes(DocumentationFormatGenerator.getConstraint("1장 이상, 5장 이하"))
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 리소스에 접근 가능한 api")

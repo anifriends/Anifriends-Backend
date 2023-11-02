@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.animal;
 
+import com.clova.anifriends.domain.animal.exception.AnimalBadRequestException;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalBreed;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
@@ -10,6 +11,7 @@ import com.clova.anifriends.domain.animal.wrapper.AnimalType;
 import com.clova.anifriends.domain.animal.wrapper.AnimalWeight;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.shelter.Shelter;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -21,12 +23,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "animal")
 public class Animal extends BaseTimeEntity {
+
+    private static final int MAX_IMAGES_SIZE = 5;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,6 +73,10 @@ public class Animal extends BaseTimeEntity {
     @Embedded
     private AnimalInformation information;
 
+    @OneToMany(mappedBy = "animal", cascade = CascadeType.PERSIST,
+        fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<AnimalImage> images;
+
     protected Animal() {
     }
 
@@ -79,8 +90,11 @@ public class Animal extends BaseTimeEntity {
         boolean isNeutered,
         String active,
         double weight,
-        String information
+        String information,
+        List<String> imageUrls
     ) {
+        validateImageIsNotNull(imageUrls);
+        validateImageSize(imageUrls);
         this.shelter = shelter;
         this.name = new AnimalName(name);
         this.birthDate = birthDate;
@@ -91,6 +105,21 @@ public class Animal extends BaseTimeEntity {
         this.active = AnimalActive.valueOf(active);
         this.weight = new AnimalWeight(weight);
         this.information = new AnimalInformation(information);
+        this.images = imageUrls.stream()
+            .map(url -> new AnimalImage(this, url))
+            .toList();
+    }
+
+    private void validateImageIsNotNull(List<String> imageUrls) {
+        if (Objects.isNull(imageUrls)) {
+            throw new AnimalBadRequestException("보호 동물 이미지는 필수값입니다.");
+        }
+    }
+
+    private void validateImageSize(List<String> imageUrls) {
+        if (imageUrls.isEmpty() || imageUrls.size() > MAX_IMAGES_SIZE) {
+            throw new AnimalBadRequestException("보호 동물 이미지 크기는 1장 이상, 5장 이하여야 합니다.");
+        }
     }
 
     public Long getAnimalId() {
@@ -135,5 +164,9 @@ public class Animal extends BaseTimeEntity {
 
     public String getInformation() {
         return information.getInformation();
+    }
+
+    public List<AnimalImage> getImages() {
+        return images;
     }
 }

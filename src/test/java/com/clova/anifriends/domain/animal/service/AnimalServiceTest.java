@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
+import com.clova.anifriends.domain.animal.repository.AnimalImageRepository;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
@@ -17,6 +18,7 @@ import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.fixture.ShelterFixture;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -38,11 +40,15 @@ class AnimalServiceTest {
     @Mock
     ShelterRepository shelterRepository;
 
+    @Mock
+    AnimalImageRepository animalImageRepository;
+
     @Nested
     @DisplayName("registerAnimal 메서드 실행 시")
     class RegisterAnimalTest {
 
         Shelter shelter = ShelterFixture.shelter();
+        List<String> imageUrls = List.of("www.aws.s3.com/2", "www.aws.s3.com/3");
         RegisterAnimalRequest registerAnimalRequest = new RegisterAnimalRequest(
             "name",
             LocalDate.now(),
@@ -52,7 +58,8 @@ class AnimalServiceTest {
             false,
             AnimalActive.QUIET.getName(),
             0.7,
-            "기타 정보"
+            "기타 정보",
+            imageUrls
         );
 
         @Test
@@ -65,6 +72,7 @@ class AnimalServiceTest {
             animalService.registerAnimal(1L, registerAnimalRequest);
 
             //then
+            then(animalRepository).should().save(any());
             then(animalRepository).should().save(any());
         }
 
