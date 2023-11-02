@@ -13,10 +13,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "review")
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class Review extends BaseTimeEntity {
 
     @Id
@@ -32,11 +37,11 @@ public class Review extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Volunteer volunteer;
 
+    @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<ReviewImage> imageUrls = new ArrayList<>();
+
     @Embedded
     private ReviewContent content;
-
-    protected Review() {
-    }
 
     public Review(
         Recruitment recruitment,
@@ -52,4 +57,17 @@ public class Review extends BaseTimeEntity {
         return content.getContent();
     }
 
+    public List<String> getImageUrls() {
+        return imageUrls.stream()
+            .map(ReviewImage::getImageUrl)
+            .toList();
+    }
+
+    public Long getReviewId() {
+        return reviewId;
+    }
+
+    public Recruitment getRecruitment() {
+        return recruitment;
+    }
 }
