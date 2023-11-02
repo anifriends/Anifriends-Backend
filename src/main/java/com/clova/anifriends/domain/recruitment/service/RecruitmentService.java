@@ -58,11 +58,17 @@ public class RecruitmentService {
 
     @Transactional(readOnly = true)
     public FindRecruitmentsByVolunteerResponse findRecruitmentsByVolunteer(
-        String keyword, LocalDate startDate, LocalDate endDate, Boolean isClosed, Boolean title,
-        Boolean content, Boolean shelterName, Pageable pageable) {
-        Page<Recruitment> recruitments = recruitmentRepository.findRecruitments(keyword, startDate,
-            endDate, isClosed, title,
-            content, shelterName, pageable);
+        String keyword, LocalDate startDate, LocalDate endDate, Boolean isClosed, Boolean titleContains,
+        Boolean contentContains, Boolean shelterNameContains, Pageable pageable) {
+        Page<Recruitment> recruitments = recruitmentRepository.findRecruitments(
+            keyword,
+            startDate,
+            endDate,
+            isClosed,
+            titleContains,
+            contentContains,
+            shelterNameContains,
+            pageable);
         return FindRecruitmentsByVolunteerResponse.from(recruitments);
     }
 }

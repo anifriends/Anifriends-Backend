@@ -25,14 +25,14 @@ public class RecruitmentRepositoryImpl implements
 
     @Override
     public Page<Recruitment> findRecruitments(String keyword, LocalDate startDate,
-        LocalDate endDate, Boolean isClosed, boolean titleFilter, boolean contentFilter,
-        boolean shelterNameFilter, Pageable pageable) {
+        LocalDate endDate, Boolean isClosed, boolean titleContains, boolean contentContains,
+        boolean shelterNameContains, Pageable pageable) {
         List<Recruitment> content = query.select(recruitment)
             .from(recruitment)
             .join(recruitment.shelter)
             .leftJoin(recruitment.applicants)
             .where(
-                keywordSearch(keyword, titleFilter, contentFilter, shelterNameFilter),
+                keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
                 recruitmentIsClosed(isClosed),
                 recruitmentStartTimeGoe(startDate),
                 recruitmentStartTimeLoe(endDate)
@@ -46,7 +46,7 @@ public class RecruitmentRepositoryImpl implements
             .from(recruitment)
             .join(recruitment.shelter)
             .where(
-                keywordSearch(keyword, titleFilter, contentFilter, shelterNameFilter),
+                keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
                 recruitmentIsClosed(isClosed),
                 recruitmentStartTimeGoe(startDate),
                 recruitmentStartTimeLoe(endDate)
