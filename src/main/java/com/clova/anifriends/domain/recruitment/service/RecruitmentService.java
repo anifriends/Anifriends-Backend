@@ -4,6 +4,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.mapper.RecruitmentMapper;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -39,6 +40,11 @@ public class RecruitmentService {
     public FindRecruitmentByShelterResponse findRecruitmentByIdByShelter(long id) {
         Recruitment recruitment = getRecruitmentById(id);
         return FindRecruitmentByShelterResponse.from(recruitment);
+    }
+
+    public FindRecruitmentByVolunteerResponse findRecruitmentByIdByVolunteer(long id) {
+        Recruitment recruitment = getRecruitmentById(id);
+        return FindRecruitmentByVolunteerResponse.from(recruitment);
     }
 
     private Recruitment getRecruitmentById(long id) {
