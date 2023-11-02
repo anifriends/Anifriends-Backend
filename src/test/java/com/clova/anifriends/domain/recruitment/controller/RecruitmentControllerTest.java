@@ -11,8 +11,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
@@ -32,18 +30,20 @@ import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindShelterByVolunteerReviewResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.ShelterImage;
+import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import com.clova.anifriends.domain.shelter.ShelterImage;
-import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 
 class RecruitmentControllerTest extends BaseControllerTest {
@@ -101,8 +101,9 @@ class RecruitmentControllerTest extends BaseControllerTest {
             ));
     }
 
+    @Test
     @DisplayName("findRecruitmentById 실행 시")
-    void FindRecruitmentTest() throws Exception {
+    void findRecruitment() throws Exception {
         // given
         Shelter shelter = shelter();
         Recruitment recruitment = recruitment(shelter);
@@ -138,12 +139,11 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("imageUrls[]").type(ARRAY).description("이미지 url 리스트")
                 )
             ));
-
     }
 
     @Test
     @DisplayName("findRecruitmentByIdByVolunteer 실행 시")
-    void findRecruitmentByIdByVolunteerTest() throws Exception {
+    void findRecruitmentByIdByVolunteer() throws Exception {
         // given
         Shelter shelter = shelter();
         ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
@@ -189,5 +189,41 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("shelterInfo.email").type(STRING).description("보호소 이메일")
                 )
             ));
+    }
+
+    @Test
+    @DisplayName("findShelterByVolunteerReview 실행 시")
+    void findShelterByVolunteerReview() throws Exception {
+        // given
+        Long recruitmentId = 1L;
+        Shelter shelter = shelter();
+        Recruitment recruitment = recruitment(shelter);
+        ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
+        FindShelterByVolunteerReviewResponse response = FindShelterByVolunteerReviewResponse.from(
+            recruitment);
+
+        given(recruitmentService.findShelterByVolunteerReview(recruitmentId)).willReturn(response);
+
+        // when
+        ResultActions result = mockMvc.perform(
+            get("/api/volunteers/recruitments/{recruitmentId}/shelters", recruitmentId)
+                .header(AUTHORIZATION, shelterAccessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                pathParameters(
+                    parameterWithName("recruitmentId").description("봉사 모집글 ID")
+                ),
+                responseFields(
+                    fieldWithPath("name").type(STRING).description("보호소 이름"),
+                    fieldWithPath("email").type(STRING).description("보호소 이메일"),
+                    fieldWithPath("address").type(STRING).description("보호소 주소"),
+                    fieldWithPath("imageUrl").type(STRING).description("보호소 이미지 url").optional()
+                )
+            ));
+
     }
 }
