@@ -88,16 +88,17 @@ public abstract class BaseControllerTest {
     protected VolunteerService volunteerService;
 
     @MockBean
-    protected ShelterService shelterService;
+    protected AnimalService animalService;
 
     @MockBean
-    protected AnimalService animalService;
+    protected ShelterService shelterService;
 
     @MockBean
     protected ApplicantService applicantService;
 
     protected final String volunteerAccessToken = AuthFixture.volunteerAccessToken();
-    protected final String shelterAccessToken = AuthFixture.shelterAccessToken();
+    protected String shelterAccessToken = AuthFixture.shelterAccessToken();
+
 
     @BeforeEach
     void setUp(

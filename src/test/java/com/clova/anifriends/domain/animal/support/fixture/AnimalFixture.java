@@ -6,6 +6,7 @@ import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
 import java.time.LocalDate;
+import java.util.List;
 
 public class AnimalFixture {
 
@@ -18,6 +19,7 @@ public class AnimalFixture {
     public static final String ANIMAL_ACTIVE = AnimalActive.NORMAL.getValue();
     public static final double WEIGHT = 1.2;
     public static final String ANIMAL_INFORMATION = "animalInformation";
+    private static final List<String> IMAGE_URLS = List.of("www.aws.s3.com/2", "www.aws.s3.com/2");
 
     public static Animal animal(Shelter shelter) {
         return new Animal(
@@ -30,7 +32,8 @@ public class AnimalFixture {
             IS_NEUTERED,
             ANIMAL_ACTIVE,
             WEIGHT,
-            ANIMAL_INFORMATION
+            ANIMAL_INFORMATION,
+            IMAGE_URLS
         );
     }
 }

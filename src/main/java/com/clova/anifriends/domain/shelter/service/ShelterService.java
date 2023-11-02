@@ -35,7 +35,6 @@ public class ShelterService {
 
     private Shelter getShelter(Long shelterId) {
         return shelterRepository.findById(shelterId)
-            .orElseThrow(
-                () -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
+            .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
     }
 }
