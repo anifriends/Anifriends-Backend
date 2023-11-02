@@ -30,10 +30,12 @@ import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
+import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -143,22 +145,12 @@ class AnimalControllerTest extends BaseControllerTest {
     void findAnimalByShelter() throws Exception {
         //given
         Long animalId = 1L;
-        FindAnimalByShelterResponse response = new FindAnimalByShelterResponse(
-            animalId,
-            "name",
-            LocalDate.now().minusYears(1),
-            AnimalType.DOG,
-            "요크셔테리어",
-            AnimalGender.MALE,
-            false,
-            AnimalActive.ACTIVE,
-            2.7,
-            "기타 정보",
-            false,
-            List.of("www.aws.s3.com/2", "www.aws.s3.com/2")
-        );
+        Shelter shelter = ShelterFixture.shelter();
+        Animal animal = AnimalFixture.animal(shelter);
+        ReflectionTestUtils.setField(animal, "animalId", animalId);
+        FindAnimalByShelterResponse response = FindAnimalByShelterResponse.from(animal);
 
-        given(animalService.findAnimalByShelter(anyLong())).willReturn(response);
+        given(animalService.findAnimalByShelter(anyLong(), anyLong())).willReturn(response);
 
         //when
         ResultActions resultActions = mockMvc.perform(

@@ -34,6 +34,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class AnimalServiceTest {
@@ -136,6 +137,7 @@ class AnimalServiceTest {
     class FindAnimalByShelterTest {
 
         Long animalId = 1L;
+        Long shelterId = 1L;
         Shelter shelter = ShelterFixture.shelter();
         Animal animal = animal(shelter);
 
@@ -143,34 +145,30 @@ class AnimalServiceTest {
         @DisplayName("성공")
         void findAnimalByShelter() {
             //given
-            given(animalRepository.findByIdWithImages(anyLong())).willReturn(Optional.of(animal));
+            ReflectionTestUtils.setField(animal, "animalId", animalId);
+            FindAnimalByShelterResponse expected = FindAnimalByShelterResponse.from(animal);
+
+            given(animalRepository.findByAnimalIdAndShelterIdWithImages(anyLong(),
+                anyLong())).willReturn(Optional.of(animal));
 
             //when
             FindAnimalByShelterResponse response = animalService.findAnimalByShelter(
-                animalId);
+                animalId, shelterId);
 
             //then
-            assertThat(response.name()).isEqualTo(animal.getName());
-            assertThat(response.birthDate()).isEqualTo(animal.getBirthDate());
-            assertThat(response.type()).isEqualTo(animal.getType());
-            assertThat(response.breed()).isEqualTo(animal.getBreed());
-            assertThat(response.gender()).isEqualTo(animal.getGender());
-            assertThat(response.isNeutered()).isEqualTo(animal.isNeutered());
-            assertThat(response.active()).isEqualTo(animal.getActive());
-            assertThat(response.weight()).isEqualTo(animal.getWeight());
-            assertThat(response.information()).isEqualTo(animal.getInformation());
-            assertThat(response.isAdopted()).isEqualTo(animal.isAdopted());
-            assertThat(response.imageUrls()).containsExactlyElementsOf(animal.getImageUrls());
+            assertThat(response).usingRecursiveComparison().isEqualTo(expected);
         }
 
         @Test
         @DisplayName("예외(AnimalNotFoundException): 존재하지 않는 보호 동물")
         void exceptionWhenShelterNotFound() {
             //given
-            given(animalRepository.findByIdWithImages(anyLong())).willReturn(Optional.empty());
+            given(animalRepository.findByAnimalIdAndShelterIdWithImages(anyLong(),
+                anyLong())).willReturn(Optional.empty());
 
             //when
-            Exception exception = catchException(() -> animalService.findAnimalByShelter(animalId));
+            Exception exception = catchException(() -> animalService.findAnimalByShelter(animalId,
+                shelterId));
 
             //then
             assertThat(exception).isInstanceOf(AnimalNotFoundException.class);

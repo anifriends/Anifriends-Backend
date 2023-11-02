@@ -42,8 +42,9 @@ public class AnimalService {
     }
 
     @Transactional(readOnly = true)
-    public FindAnimalByShelterResponse findAnimalByShelter(Long animalId) {
-        return FindAnimalByShelterResponse.from(getAnimalByIdWithImages(animalId));
+    public FindAnimalByShelterResponse findAnimalByShelter(Long animalId, Long shelterId) {
+        return FindAnimalByShelterResponse.from(
+            getAnimalByAnimalIdAndShelterIdWithImages(animalId, shelterId));
     }
 
     private Animal getAnimalById(Long animalId) {
@@ -51,8 +52,8 @@ public class AnimalService {
             .orElseThrow(() -> new AnimalNotFoundException("존재하지 않는 보호 동물입니다."));
     }
 
-    private Animal getAnimalByIdWithImages(Long animalId) {
-        return animalRepository.findByIdWithImages(animalId)
+    private Animal getAnimalByAnimalIdAndShelterIdWithImages(Long animalId, Long shelterId) {
+        return animalRepository.findByAnimalIdAndShelterIdWithImages(animalId, shelterId)
             .orElseThrow(() -> new AnimalNotFoundException("존재하지 않는 보호 동물입니다."));
 
     }

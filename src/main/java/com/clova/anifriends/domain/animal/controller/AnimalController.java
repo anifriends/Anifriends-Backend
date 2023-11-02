@@ -43,7 +43,8 @@ public class AnimalController {
 
     @GetMapping("/shelters/animals/{animalId}")
     public ResponseEntity<FindAnimalByShelterResponse> findAnimalByShelter(
+        @LoginUser Long shelterId,
         @PathVariable Long animalId) {
-        return ResponseEntity.ok(animalService.findAnimalByShelter(animalId));
+        return ResponseEntity.ok(animalService.findAnimalByShelter(animalId, shelterId));
     }
 }
