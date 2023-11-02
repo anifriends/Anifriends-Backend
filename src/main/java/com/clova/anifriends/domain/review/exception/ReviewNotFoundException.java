@@ -4,9 +4,9 @@ import static com.clova.anifriends.global.exception.ErrorCode.NOT_FOUND;
 
 import com.clova.anifriends.global.exception.NotFoundException;
 
-public class NotFoundReviewException extends NotFoundException {
+public class ReviewNotFoundException extends NotFoundException {
 
-    public NotFoundReviewException(String message) {
+    public ReviewNotFoundException(String message) {
         super(NOT_FOUND, message);
     }
 }

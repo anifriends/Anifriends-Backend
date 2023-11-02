@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
-import com.clova.anifriends.domain.review.exception.NotFoundReviewException;
+import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
@@ -71,7 +71,7 @@ class ReviewServiceTest {
                 () -> reviewService.findReview(anyLong(), anyLong()));
 
             //then
-            assertThat(exception).isInstanceOf(NotFoundReviewException.class);
+            assertThat(exception).isInstanceOf(ReviewNotFoundException.class);
         }
     }
 
