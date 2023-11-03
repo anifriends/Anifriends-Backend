@@ -61,6 +61,4 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             assertThat(result).isEqualTo(Optional.of(applicant));
         }
     }
-
-
 }
