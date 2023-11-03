@@ -1,16 +1,22 @@
 package com.clova.anifriends.domain.recruitment.controller;
 
 import com.clova.anifriends.domain.auth.resolver.LoginUser;
+import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByShelterRequest;
+import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByVolunteerRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
-import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,8 +47,41 @@ public class RecruitmentController {
     }
 
     @GetMapping("/volunteers/recruitments/{recruitmentId}")
-    public ResponseEntity<FindRecruitmentByVolunteerResponse> findRecruitmentByIdByVolunteer(
+    public ResponseEntity<FindRecruitmentDetailByVolunteerResponse> findRecruitmentByIdByVolunteer(
         @PathVariable Long recruitmentId) {
         return ResponseEntity.ok(recruitmentService.findRecruitmentByIdByVolunteer(recruitmentId));
+    }
+
+    @GetMapping("/volunteers/recruitments")
+    public ResponseEntity<FindRecruitmentsByVolunteerResponse> findRecruitmentsByVolunteer(
+        @ModelAttribute @Valid FindRecruitmentsByVolunteerRequest findRecruitmentsByVolunteerRequest,
+        Pageable pageable) {
+        return ResponseEntity.ok(recruitmentService.findRecruitmentsByVolunteer(
+            findRecruitmentsByVolunteerRequest.keyword(),
+            findRecruitmentsByVolunteerRequest.startDate(),
+            findRecruitmentsByVolunteerRequest.endDate(),
+            findRecruitmentsByVolunteerRequest.isClosed(),
+            findRecruitmentsByVolunteerRequest.title(),
+            findRecruitmentsByVolunteerRequest.content(),
+            findRecruitmentsByVolunteerRequest.shelterName(),
+            pageable
+        ));
+    }
+
+    @GetMapping("/shelters/recruitments")
+    public ResponseEntity<FindRecruitmentsByShelterResponse> findRecruitmentsByShelter(
+        @LoginUser Long shelterId,
+        @ModelAttribute @Valid FindRecruitmentsByShelterRequest findRecruitmentsByShelterRequest,
+        Pageable pageable
+    ) {
+        return ResponseEntity.ok(recruitmentService.findRecruitmentsByShelter(
+            shelterId,
+            findRecruitmentsByShelterRequest.keyword(),
+            findRecruitmentsByShelterRequest.startDate(),
+            findRecruitmentsByShelterRequest.endDate(),
+            findRecruitmentsByShelterRequest.content(),
+            findRecruitmentsByShelterRequest.title(),
+            pageable
+        ));
     }
 }

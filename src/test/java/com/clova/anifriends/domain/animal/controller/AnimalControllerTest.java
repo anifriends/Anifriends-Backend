@@ -27,12 +27,15 @@ import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
+import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -133,6 +136,49 @@ class AnimalControllerTest extends BaseControllerTest {
                         .optional(),
                     fieldWithPath("shelter.email").type(STRING).description("보호소 이메일"),
                     fieldWithPath("shelter.address").type(STRING).description("보호소 주소")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("보호 동물 상세 조회(보호소) api 호출 시")
+    void findAnimalByShelter() throws Exception {
+        //given
+        Long animalId = 1L;
+        Shelter shelter = ShelterFixture.shelter();
+        Animal animal = AnimalFixture.animal(shelter);
+        ReflectionTestUtils.setField(animal, "animalId", animalId);
+        FindAnimalByShelterResponse response = FindAnimalByShelterResponse.from(animal);
+
+        given(animalService.findAnimalByShelter(anyLong(), anyLong())).willReturn(response);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            get("/api/shelters/animals/{animalId}", animalId)
+                .header(AUTHORIZATION, shelterAccessToken));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("animalId").description("보호 동물 ID")
+                ),
+                responseFields(
+                    fieldWithPath("animalId").type(NUMBER).description("보호 동물 ID"),
+                    fieldWithPath("name").type(STRING).description("보호 동물 이름"),
+                    fieldWithPath("birthDate").type(STRING).description("출생 날짜"),
+                    fieldWithPath("type").type(STRING).description("종류"),
+                    fieldWithPath("breed").type(STRING).description("품종"),
+                    fieldWithPath("gender").type(STRING).description("성별"),
+                    fieldWithPath("isNeutered").type(BOOLEAN).description("중성화 유무"),
+                    fieldWithPath("active").type(STRING).description("활동성"),
+                    fieldWithPath("weight").type(NUMBER).description("몸무게"),
+                    fieldWithPath("information").type(STRING).description("기타 정보"),
+                    fieldWithPath("isAdopted").type(BOOLEAN).description("입양 여부"),
+                    fieldWithPath("imageUrls[]").type(ARRAY).description("이미지 url 리스트")
                 )
             ));
     }
