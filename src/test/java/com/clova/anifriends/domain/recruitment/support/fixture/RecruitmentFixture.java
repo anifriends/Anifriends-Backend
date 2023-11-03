@@ -1,9 +1,11 @@
 package com.clova.anifriends.domain.recruitment.support.fixture;
 
+import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.shelter.Shelter;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public class RecruitmentFixture {
 
@@ -27,6 +29,12 @@ public class RecruitmentFixture {
             DEADLINE,
             IMAGE_URL_LIST
         );
+    }
+
+    public static Recruitment recruitment(Shelter shelter, List<Applicant> applicants) {
+        Recruitment recruitment = recruitment(shelter);
+        ReflectionTestUtils.setField(recruitment, "applicants", applicants);
+        return recruitment;
     }
 
 }
