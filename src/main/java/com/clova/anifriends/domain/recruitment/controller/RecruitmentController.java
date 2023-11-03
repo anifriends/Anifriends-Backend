@@ -1,7 +1,9 @@
 package com.clova.anifriends.domain.recruitment.controller;
 
 import com.clova.anifriends.domain.auth.resolver.LoginUser;
+import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByShelterRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
@@ -44,5 +46,22 @@ public class RecruitmentController {
     public ResponseEntity<FindRecruitmentByVolunteerResponse> findRecruitmentByIdByVolunteer(
         @PathVariable Long recruitmentId) {
         return ResponseEntity.ok(recruitmentService.findRecruitmentByIdByVolunteer(recruitmentId));
+    }
+
+    @GetMapping("/shelters/recruitments")
+    public ResponseEntity<FindRecruitmentsByShelterResponse> findRecruitmentsByShelter(
+        @LoginUser Long shelterId,
+        FindRecruitmentsByShelterRequest findRecruitmentsByShelterRequest
+    ) {
+        return ResponseEntity.ok(recruitmentService.findRecruitmentsByShelter(
+            shelterId,
+            findRecruitmentsByShelterRequest.keyword(),
+            findRecruitmentsByShelterRequest.startDate(),
+            findRecruitmentsByShelterRequest.endDate(),
+            findRecruitmentsByShelterRequest.content(),
+            findRecruitmentsByShelterRequest.title(),
+            findRecruitmentsByShelterRequest.pageSize(),
+            findRecruitmentsByShelterRequest.pageNumber()
+        ));
     }
 }
