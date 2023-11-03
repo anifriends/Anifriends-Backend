@@ -2,12 +2,14 @@ package com.clova.anifriends.domain.recruitment.service;
 
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentByVolunteerResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentResponse;
+import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentsByShelterResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -19,6 +21,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse.FindRecruitmentByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
@@ -40,6 +43,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
@@ -143,7 +147,7 @@ class RecruitmentServiceTest {
 
         @Test
         @DisplayName("성공")
-        void success() {
+        void findRecruitmentByIdByVolunteer() {
             // given
             Shelter shelter = shelter();
             ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
@@ -218,6 +222,35 @@ class RecruitmentServiceTest {
             assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
             assertThat(findRecruitment.shelterImageUrl())
                 .isEqualTo(recruitment.getShelter().getShelterImageUrl());
+
+        }
+    }
+
+    @Nested
+    @DisplayName("findRecruitmentsByShelter 메서드 실행 시")
+    class FindRecruitmentsByShelterTest {
+
+        @Test
+        @DisplayName("성공")
+        void findRecruitmentsByShelter() {
+            // given
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            setField(recruitment, "recruitmentId", 4L);
+            Page<Recruitment> pageResult = new PageImpl<>(List.of(recruitment));
+            FindRecruitmentsByShelterResponse expected = findRecruitmentsByShelterResponse(
+                pageResult);
+
+            when(recruitmentRepository.findRecruitmentsByShelterOrderByCreatedAt(
+                anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), any()))
+                .thenReturn(pageResult);
+
+            // when
+            FindRecruitmentsByShelterResponse result = recruitmentService.findRecruitmentsByShelter(
+                anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), any());
+
+            // then
+            assertThat(result).usingRecursiveComparison().isEqualTo(expected);
         }
     }
 }

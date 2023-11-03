@@ -1,10 +1,12 @@
 package com.clova.anifriends.domain.recruitment.service;
 
+import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.mapper.RecruitmentMapper;
@@ -34,6 +36,29 @@ public class RecruitmentService {
         Recruitment recruitment = RecruitmentMapper.toRecruitment(shelter, request);
         recruitmentRepository.save(recruitment);
         return RegisterRecruitmentResponse.from(recruitment);
+    }
+
+    @Transactional(readOnly = true)
+    public FindRecruitmentsByShelterResponse findRecruitmentsByShelter(
+        Long shelterId,
+        String keyword,
+        LocalDate startDate,
+        LocalDate endDate,
+        Boolean content,
+        Boolean title,
+        Pageable pageable
+    ) {
+        Page<Recruitment> pagination = recruitmentRepository.findRecruitmentsByShelterOrderByCreatedAt(
+            shelterId,
+            keyword,
+            startDate,
+            endDate,
+            content,
+            title,
+            pageable
+        );
+
+        return FindRecruitmentsByShelterResponse.of(pagination.getContent(), PageInfo.from(pagination));
     }
 
     private Shelter getShelterById(Long shelterId) {

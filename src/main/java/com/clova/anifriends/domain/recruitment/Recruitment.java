@@ -131,4 +131,8 @@ public class Recruitment extends BaseTimeEntity {
     public int getApplicantCount() {
         return applicants.size();
     }
+
+    public RecruitmentInfo getInfo() {
+        return info;
+    }
 }
