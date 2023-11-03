@@ -31,7 +31,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindShelterByVolunteerReviewResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
@@ -199,10 +199,10 @@ class RecruitmentControllerTest extends BaseControllerTest {
         Shelter shelter = shelter();
         Recruitment recruitment = recruitment(shelter);
         ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
-        FindShelterByVolunteerReviewResponse response = FindShelterByVolunteerReviewResponse.from(
+        FindShelterSimpleResponse response = FindShelterSimpleResponse.from(
             recruitment);
 
-        given(recruitmentService.findShelterByVolunteerReview(recruitmentId)).willReturn(response);
+        given(recruitmentService.findShelterSimple(recruitmentId)).willReturn(response);
 
         // when
         ResultActions result = mockMvc.perform(

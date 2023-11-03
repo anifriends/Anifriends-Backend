@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.recruitment.dto.response;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
 
-public record FindShelterByVolunteerReviewResponse(
+public record FindShelterSimpleResponse(
     String name,
     String email,
     String address,
@@ -10,8 +10,8 @@ public record FindShelterByVolunteerReviewResponse(
 
 ) {
 
-    public static FindShelterByVolunteerReviewResponse from(Recruitment recruitment) {
-        return new FindShelterByVolunteerReviewResponse(
+    public static FindShelterSimpleResponse from(Recruitment recruitment) {
+        return new FindShelterSimpleResponse(
             recruitment.getShelter().getName(),
             recruitment.getShelter().getEmail(),
             recruitment.getShelter().getAddress(),

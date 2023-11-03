@@ -18,7 +18,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindShelterByVolunteerReviewResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -174,21 +174,21 @@ class RecruitmentServiceTest {
 
     @Nested
     @DisplayName("findShelterByVolunteerReview 실행 시")
-    class FindShelterByVolunteerReview {
+    class FindShelterSimpleTest {
 
         @Test
         @DisplayName("성공")
-        void findShelterByVolunteerReview() {
+        void findShelterSimple() {
             // given
             Shelter shelter = shelter();
             Recruitment recruitment = recruitment(shelter);
-            FindShelterByVolunteerReviewResponse expected = FindShelterByVolunteerReviewResponse.from(
+            FindShelterSimpleResponse expected = FindShelterSimpleResponse.from(
                 recruitment);
 
             given(recruitmentRepository.findById(anyLong())).willReturn(Optional.of(recruitment));
 
             // when
-            FindShelterByVolunteerReviewResponse foundShelterByVolunteerReview = recruitmentService.findShelterByVolunteerReview(
+            FindShelterSimpleResponse foundShelterByVolunteerReview = recruitmentService.findShelterSimple(
                 anyLong());
 
             // then
