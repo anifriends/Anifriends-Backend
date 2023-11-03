@@ -29,4 +29,9 @@ public class RecruitmentFixture {
         );
     }
 
+    public static List<Recruitment> createRecruitments(List<Shelter> shelters) {
+        return shelters.stream()
+            .map(RecruitmentFixture::recruitment)
+            .toList();
+    }
 }

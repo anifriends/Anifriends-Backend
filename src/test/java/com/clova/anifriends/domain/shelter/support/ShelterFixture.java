@@ -2,6 +2,8 @@ package com.clova.anifriends.domain.shelter.support;
 
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
+import java.util.List;
+import java.util.stream.IntStream;
 
 public class ShelterFixture {
 
@@ -32,5 +34,18 @@ public class ShelterFixture {
         ShelterImage shelterImage = new ShelterImage(shelter, SHELTER_IMAGE_URL);
         shelter.setShelterImage(shelterImage);
         return shelterImage;
+    }
+
+    public static List<Shelter> createShelters(int end) {
+        return IntStream.range(0, end)
+            .mapToObj(i -> new Shelter(
+                SHELTER_EMAIL,
+                SHELTER_PASSWORD,
+                SHELTER_ADDRESS,
+                SHELTER_ADDRESS_DETAIL,
+                SHELTER_NAME + i,
+                PHONE_NUMBER, SPARE_PHONE_NUMBER,
+                IS_OPENED_ADDRESS))
+            .toList();
     }
 }

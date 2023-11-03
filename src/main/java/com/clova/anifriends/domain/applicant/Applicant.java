@@ -56,18 +56,6 @@ public class Applicant extends BaseTimeEntity {
         this.status = ApplicantStatus.PENDING;
     }
 
-    public ApplicantStatus getStatus() {
-        return status;
-    }
-
-    public Recruitment getRecruitment() {
-        return recruitment;
-    }
-
-    public Volunteer getVolunteer() {
-        return volunteer;
-    }
-
     private void validateRecruitment(Recruitment recruitment) {
         if (recruitment == null) {
             throw new ApplicantBadRequestException("봉사는 필수 입력 항목입니다.");
@@ -87,5 +75,17 @@ public class Applicant extends BaseTimeEntity {
         if (recruitment.getApplicantCount() >= recruitment.getCapacity()) {
             throw new ApplicantConflictException(ErrorCode.CONCURRENCY, "모집 인원이 초과되었습니다.");
         }
+    }
+
+    public ApplicantStatus getStatus() {
+        return status;
+    }
+
+    public Recruitment getRecruitment() {
+        return recruitment;
+    }
+
+    public Volunteer getVolunteer() {
+        return volunteer;
     }
 }

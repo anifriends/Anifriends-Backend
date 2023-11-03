@@ -1,7 +1,9 @@
 package com.clova.anifriends.domain.recruitment.service;
 
+import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitments;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
@@ -12,6 +14,7 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +24,7 @@ public class RecruitmentService {
 
     private final ShelterRepository shelterRepository;
     private final RecruitmentRepository recruitmentRepository;
+    private final ApplicantRepository applicantRepository;
 
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
@@ -50,5 +54,12 @@ public class RecruitmentService {
     private Recruitment getRecruitmentById(long id) {
         return recruitmentRepository.findById(id)
             .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글입니다."));
+    }
+
+    @Transactional(readOnly = true)
+    public FindCompletedRecruitments findCompletedRecruitments(
+        Long volunteerId,
+        Pageable pageable) {
+        return null;
     }
 }
