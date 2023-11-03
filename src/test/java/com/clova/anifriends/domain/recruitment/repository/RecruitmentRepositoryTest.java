@@ -24,7 +24,7 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
 
     @Nested
     @DisplayName("findCompletedRecruitments 메서드 실행 시")
-    class FindCompletedRecruitmentsTest {
+    class FindCompletedRecruitmentsResponseTestResponse {
 
         @BeforeEach
         void setUp() {

@@ -1,9 +1,8 @@
 package com.clova.anifriends.domain.recruitment.service;
 
-import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
-import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitments;
+import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
@@ -14,6 +13,7 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +24,6 @@ public class RecruitmentService {
 
     private final ShelterRepository shelterRepository;
     private final RecruitmentRepository recruitmentRepository;
-    private final ApplicantRepository applicantRepository;
 
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
@@ -57,9 +56,11 @@ public class RecruitmentService {
     }
 
     @Transactional(readOnly = true)
-    public FindCompletedRecruitments findCompletedRecruitments(
+    public FindCompletedRecruitmentsResponse findCompletedRecruitments(
         Long volunteerId,
         Pageable pageable) {
-        return null;
+        Page<Recruitment> recruitmentPage
+            = recruitmentRepository.findCompletedRecruitments(volunteerId, pageable);
+        return FindCompletedRecruitmentsResponse.from(recruitmentPage);
     }
 }

@@ -16,16 +16,17 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
-import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
+import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 class RecruitmentServiceTest {
@@ -143,7 +146,8 @@ class RecruitmentServiceTest {
             ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
             setField(shelter, "shelterImage", shelterImage);
             Recruitment recruitment = recruitment(shelter);
-            FindRecruitmentByVolunteerResponse expected = findRecruitmentByVolunteerResponse(recruitment);
+            FindRecruitmentByVolunteerResponse expected = findRecruitmentByVolunteerResponse(
+                recruitment);
 
             when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.of(recruitment));
 
@@ -167,6 +171,36 @@ class RecruitmentServiceTest {
 
             // then
             assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("findCompeletedRecruitments 메서드 실행 시")
+    class FindCompletedRecruitmentsTest {
+
+        @Test
+        @DisplayName("성공")
+        void findCompletedRecruitments() {
+            //given
+            Long volunteerId = 1L;
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            PageImpl<Recruitment> recruitmentPage = new PageImpl<>(List.of(recruitment));
+            FindCompletedRecruitmentsResponse expected = FindCompletedRecruitmentsResponse.from(
+                recruitmentPage);
+
+            given(recruitmentRepository.findCompletedRecruitments(anyLong(), any()))
+                .willReturn(recruitmentPage);
+
+            //when
+            FindCompletedRecruitmentsResponse recruitments = recruitmentService.findCompletedRecruitments(
+                volunteerId, pageRequest);
+
+            //then
+            assertThat(recruitments).usingRecursiveComparison()
+                .ignoringFields("recruitmentId")
+                .isEqualTo(expected);
         }
     }
 }
