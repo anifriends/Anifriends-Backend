@@ -16,7 +16,7 @@ import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,8 +45,7 @@ public class RecruitmentService {
         LocalDate endDate,
         Boolean content,
         Boolean title,
-        int page,
-        int size
+        Pageable pageable
     ) {
         Page<Recruitment> pagination = recruitmentRepository.findRecruitmentsByShelterOrderByCreatedAt(
             shelterId,
@@ -55,7 +54,7 @@ public class RecruitmentService {
             endDate,
             content,
             title,
-            PageRequest.of(page, size)
+            pageable
         );
 
         return FindRecruitmentsByShelterResponse.of(pagination.getContent(), PageInfo.from(pagination));

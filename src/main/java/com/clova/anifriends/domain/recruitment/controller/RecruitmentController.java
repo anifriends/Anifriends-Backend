@@ -11,8 +11,10 @@ import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,7 +53,8 @@ public class RecruitmentController {
     @GetMapping("/shelters/recruitments")
     public ResponseEntity<FindRecruitmentsByShelterResponse> findRecruitmentsByShelter(
         @LoginUser Long shelterId,
-        FindRecruitmentsByShelterRequest findRecruitmentsByShelterRequest
+        @ModelAttribute @Valid FindRecruitmentsByShelterRequest findRecruitmentsByShelterRequest,
+        Pageable pageable
     ) {
         return ResponseEntity.ok(recruitmentService.findRecruitmentsByShelter(
             shelterId,
@@ -60,8 +63,7 @@ public class RecruitmentController {
             findRecruitmentsByShelterRequest.endDate(),
             findRecruitmentsByShelterRequest.content(),
             findRecruitmentsByShelterRequest.title(),
-            findRecruitmentsByShelterRequest.pageSize(),
-            findRecruitmentsByShelterRequest.pageNumber()
+            pageable
         ));
     }
 }

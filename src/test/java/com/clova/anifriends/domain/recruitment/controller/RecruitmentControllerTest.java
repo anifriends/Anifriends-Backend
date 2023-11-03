@@ -6,7 +6,6 @@ import static com.clova.anifriends.domain.recruitment.support.fixture.Recruitmen
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -207,7 +206,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         Page<Recruitment> pageResult = new PageImpl<>(List.of(recruitment));
         FindRecruitmentsByShelterResponse response = RecruitmentDtoFixture.findRecruitmentsByShelterResponse(pageResult);
 
-        when(recruitmentService.findRecruitmentsByShelter(anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), anyInt(), anyInt()))
+        when(recruitmentService.findRecruitmentsByShelter(anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), any()))
             .thenReturn(response);
 
         // when

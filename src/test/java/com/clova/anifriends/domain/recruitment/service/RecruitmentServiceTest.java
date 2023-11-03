@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -196,7 +195,7 @@ class RecruitmentServiceTest {
 
             // when
             FindRecruitmentsByShelterResponse result = recruitmentService.findRecruitmentsByShelter(
-                anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), anyInt(), 5);
+                anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), any());
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
