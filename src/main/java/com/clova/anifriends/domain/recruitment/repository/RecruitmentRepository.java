@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface RecruitmentRepository extends JpaRepository<Recruitment, Long> {
+public interface RecruitmentRepository
+    extends JpaRepository<Recruitment, Long>, RecruitmentRepositoryCustom {
 
     @Query("select r from Recruitment r"
         + " where r.recruitmentId in ("
