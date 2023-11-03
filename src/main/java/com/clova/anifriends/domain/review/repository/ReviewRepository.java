@@ -9,5 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("select r from Review r where r.reviewId = :reviewId and r.volunteer.volunteerId = :userId")
-    Optional<Review> findByReviewIdAndVolunteerId(@Param("reviewId") Long reviewId, @Param("userId") Long userId);
+    Optional<Review> findByReviewIdAndVolunteerId(
+        @Param("reviewId") Long reviewId,
+        @Param("userId") Long userId);
 }
