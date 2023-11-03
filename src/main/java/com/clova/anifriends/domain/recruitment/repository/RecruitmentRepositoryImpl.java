@@ -29,8 +29,21 @@ public class RecruitmentRepositoryImpl implements RecruitmentRepositoryCustom {
             .and(getDateCondition(startDate, endDate))
             .and(getKeywordCondition(keyword, content, title));
 
-        List<Recruitment> recruitments =  queryFactory.selectFrom(recruitment)
+        List<Recruitment> recruitments = queryFactory.selectFrom(recruitment)
             .where(predicate)
+            .orderBy(recruitment.createdAt.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+        return new PageImpl<>(recruitments);
+    }
+
+    @Override
+    public Page<Recruitment> findRecruitmentsByShelterId(long shelterId, Pageable pageable) {
+
+        List<Recruitment> recruitments = queryFactory.selectFrom(recruitment)
+            .where(recruitment.shelter.shelterId.eq(shelterId)
+                .and(recruitment.info.isClosed.eq(false)))
             .orderBy(recruitment.createdAt.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())

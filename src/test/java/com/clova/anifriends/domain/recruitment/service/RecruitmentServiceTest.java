@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.recruitment.service;
 
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentByVolunteerResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentResponse;
+import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentsByShelterIdResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentsByShelterResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
@@ -20,6 +21,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -196,6 +198,31 @@ class RecruitmentServiceTest {
             // when
             FindRecruitmentsByShelterResponse result = recruitmentService.findRecruitmentsByShelter(
                 anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), any());
+
+            // then
+            assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("findRecruitmentsByShelterId 메서드 실행 시")
+    class FindRecruitmentsByShelterId {
+
+        @Test
+        @DisplayName("성공")
+        void findRecruitmentsByShelterId() {
+            // given
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            Page<Recruitment> pageResult = new PageImpl<>(List.of(recruitment));
+            FindRecruitmentsByShelterIdResponse expected = findRecruitmentsByShelterIdResponse(pageResult);
+
+            when(recruitmentRepository.findRecruitmentsByShelterId(anyLong(), any()))
+                .thenReturn(pageResult);
+
+            // when
+            FindRecruitmentsByShelterIdResponse result = recruitmentService.findRecruitmentsByShelterId(
+                anyLong(), any());
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);

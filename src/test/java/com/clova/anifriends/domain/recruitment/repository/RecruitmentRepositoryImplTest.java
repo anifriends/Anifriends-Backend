@@ -165,5 +165,66 @@ class RecruitmentRepositoryImplTest extends BaseRepositoryTest {
         }
     }
 
+    @Nested
+    @DisplayName("findRecruitmentsByShelterId 메서드 실행 시")
+    class FindRecruitmentsByShelterIdTest {
 
+        @Test
+        @DisplayName("성공")
+        void findRecruitmentsByShelterId() {
+            // given
+            Shelter shelter = shelter();
+            setField(shelter, "shelterId", 1L);
+
+            shelterRepository.save(shelter);
+
+            Recruitment recruitment1 = new Recruitment(
+                shelter,
+                "a",
+                10,
+                "d",
+                LocalDateTime.now().plusMonths(2),
+                LocalDateTime.now().plusMonths(2).plusHours(3),
+                LocalDateTime.now().plusDays(1),
+                List.of()
+            );
+
+            Recruitment recruitment2 = new Recruitment(
+                shelter,
+                "ab",
+                10,
+                "de",
+                LocalDateTime.now().plusMonths(3),
+                LocalDateTime.now().plusMonths(3).plusHours(3),
+                LocalDateTime.now().plusMonths(1),
+                List.of()
+            );
+
+            setField(recruitment2.getInfo(), "isClosed", true);
+
+            Recruitment recruitment3 = new Recruitment(
+                shelter,
+                "abc",
+                10,
+                "def",
+                LocalDateTime.now().plusMonths(4),
+                LocalDateTime.now().plusMonths(4).plusHours(3),
+                LocalDateTime.now().plusMonths(2),
+                List.of()
+            );
+
+            recruitmentRepository.saveAll(List.of(recruitment1, recruitment2, recruitment3));
+
+            PageRequest pageable = PageRequest.of(0, 10);
+
+            // when
+            Page<Recruitment> recruitments = customRecruitmentRepository.findRecruitmentsByShelterId(
+                shelter.getShelterId(),
+                pageable
+            );
+
+            // then
+            assertThat(recruitments).contains(recruitment1, recruitment3);
+        }
+    }
 }

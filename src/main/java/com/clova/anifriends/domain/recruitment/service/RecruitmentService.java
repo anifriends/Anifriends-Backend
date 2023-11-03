@@ -5,6 +5,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
@@ -57,7 +58,19 @@ public class RecruitmentService {
             pageable
         );
 
-        return FindRecruitmentsByShelterResponse.of(pagination.getContent(), PageInfo.from(pagination));
+        return FindRecruitmentsByShelterResponse.of(pagination.getContent(),
+            PageInfo.from(pagination));
+    }
+
+    @Transactional(readOnly = true)
+    public FindRecruitmentsByShelterIdResponse findRecruitmentsByShelterId(
+        long shelterId, Pageable pageable
+    ) {
+        Page<Recruitment> pagination = recruitmentRepository.findRecruitmentsByShelterId(
+            shelterId, pageable
+        );
+        return FindRecruitmentsByShelterIdResponse.of(pagination.getContent(),
+            PageInfo.from(pagination));
     }
 
     private Shelter getShelterById(Long shelterId) {
