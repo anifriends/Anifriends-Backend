@@ -61,7 +61,8 @@ public class Animal extends BaseTimeEntity {
     @Embedded
     private AnimalBreed breed;
 
-    @Embedded
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
     private AnimalGender gender;
 
     @Embedded
@@ -76,6 +77,9 @@ public class Animal extends BaseTimeEntity {
 
     @Embedded
     private AnimalInformation information;
+
+    @Column(name = "is_adopted")
+    private boolean isAdopted;
 
     @OneToMany(mappedBy = "animal", cascade = CascadeType.PERSIST,
         fetch = FetchType.LAZY, orphanRemoval = true)
@@ -109,6 +113,7 @@ public class Animal extends BaseTimeEntity {
         this.images = imageUrls.stream()
             .map(url -> new AnimalImage(this, url))
             .toList();
+        this.isAdopted = false;
     }
 
     private void validateImageIsNotNull(List<String> imageUrls) {
@@ -171,5 +176,9 @@ public class Animal extends BaseTimeEntity {
         return images.stream()
             .map(AnimalImage::getImageUrl)
             .toList();
+    }
+
+    public boolean isAdopted() {
+        return isAdopted;
     }
 }
