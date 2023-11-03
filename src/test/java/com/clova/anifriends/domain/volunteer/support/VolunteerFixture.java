@@ -9,7 +9,7 @@ public class VolunteerFixture {
     private static final String EMAIL = "asdf@gmail.com";
     private static final String PASSWORD = "asdf1234";
     private static final String BIRTH_DATE = "1999-03-23";
-    private static final String PHONE_NUMBER = "01012345678";
+    private static final String PHONE_NUMBER = "010-1234-5678";
     private static final String GENDER = VolunteerGender.MALE.getName();
     private static final Integer TEMPERATURE = 36;
     private static final String NAME = "김봉사";
