@@ -1,7 +1,8 @@
 package com.clova.anifriends.domain.review;
 
-import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicantWithAttendance;
-import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicantWithPending;
+import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
+import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
+import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.PENDING;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static com.clova.anifriends.domain.volunteer.support.VolunteerFixture.volunteer;
@@ -30,7 +31,7 @@ class ReviewTest {
             //given
             Recruitment recruitment = recruitment(shelter());
             Volunteer volunteer = volunteer();
-            Applicant applicant = applicantWithAttendance(recruitment, volunteer);
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
             String content = "1234567890";
 
             //when
@@ -46,7 +47,7 @@ class ReviewTest {
             //given
             Recruitment recruitment = recruitment(shelter());
             Volunteer volunteer = volunteer();
-            Applicant applicant = applicantWithAttendance(recruitment, volunteer);
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
             String content = "1234567890";
             String imageUrl1 = "www.aws.s3.com/1";
             String imageUrl2 = "www.aws.s3.com/2";
@@ -71,7 +72,7 @@ class ReviewTest {
             //given
             Recruitment recruitment = recruitment(shelter());
             Volunteer volunteer = volunteer();
-            Applicant applicant = applicantWithPending(recruitment, volunteer);
+            Applicant applicant = applicant(recruitment, volunteer, PENDING);
             String content = "1234567890";
 
             //when

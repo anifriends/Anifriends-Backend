@@ -3,11 +3,9 @@ package com.clova.anifriends.domain.review;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
-import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.exception.ReviewAuthorizationException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import com.clova.anifriends.domain.review.wrapper.ReviewContent;
-import com.clova.anifriends.domain.volunteer.Volunteer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -15,9 +13,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -35,13 +32,8 @@ public class Review extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
 
-    @JoinColumn(name = "recruitment_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Recruitment recruitment;
-
-    @JoinColumn(name = "volunteer_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Volunteer volunteer;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Applicant applicant;
 
     @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ReviewImage> imageUrls = new ArrayList<>();
@@ -56,8 +48,7 @@ public class Review extends BaseTimeEntity {
     ) {
         validateApplicant(applicant);
         validateImageUrlsSize(imageUrls);
-        this.recruitment = applicant.getRecruitment();
-        this.volunteer = applicant.getVolunteer();
+        this.applicant = applicant;
         this.content = new ReviewContent(content);
         this.imageUrls = imageUrls == null ? null : imageUrls.stream()
             .map(url -> new ReviewImage(this, url))
@@ -92,7 +83,7 @@ public class Review extends BaseTimeEntity {
         return reviewId;
     }
 
-    public Recruitment getRecruitment() {
-        return recruitment;
+    public Applicant getApplicant() {
+        return applicant;
     }
 }

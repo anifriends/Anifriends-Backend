@@ -8,15 +8,15 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 public class ApplicantFixture {
 
-    public static Applicant applicantWithPending(Recruitment recruitment, Volunteer volunteer) {
+    public static Applicant applicant(Recruitment recruitment, Volunteer volunteer,
+        ApplicantStatus status) {
         Applicant applicant = new Applicant(recruitment, volunteer);
-        ReflectionTestUtils.setField(applicant, "status", ApplicantStatus.PENDING);
+        ReflectionTestUtils.setField(applicant, "status", status);
         return applicant;
     }
 
-    public static Applicant applicantWithAttendance(Recruitment recruitment, Volunteer volunteer) {
-        Applicant applicant = new Applicant(recruitment, volunteer);
-        ReflectionTestUtils.setField(applicant, "status", ApplicantStatus.ATTENDANCE);
-        return applicant;
+    public static Applicant applicant(Recruitment recruitment, Volunteer volunteer) {
+        return applicant(recruitment, volunteer, ApplicantStatus.PENDING);
+
     }
 }
