@@ -1,5 +1,7 @@
 package com.clova.anifriends.domain.review.service;
 
+import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
+import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.review.support.ReviewDtoFixture.findReviewResponse;
 import static com.clova.anifriends.domain.review.support.ReviewFixture.review;
@@ -10,6 +12,7 @@ import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
@@ -46,7 +49,8 @@ class ReviewServiceTest {
             Shelter shelter = shelter();
             Volunteer volunteer = volunteer();
             Recruitment recruitment = recruitment(shelter);
-            Review review = review(recruitment, volunteer);
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+            Review review = review(applicant);
             FindReviewResponse expected = findReviewResponse(review);
 
             when(reviewRepository.findByReviewIdAndVolunteerId(anyLong(), anyLong()))

@@ -14,8 +14,8 @@ public record FindReviewResponse(
         return new FindReviewResponse(
             review.getContent(),
             review.getImageUrls(),
-            review.getRecruitment().getShelter().getName(),
-            review.getRecruitment().getShelter().getImageUrl()
+            review.getApplicant().getRecruitment().getShelter().getName(),
+            review.getApplicant().getRecruitment().getShelter().getImageUrl()
         );
     }
 }

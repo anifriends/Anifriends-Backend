@@ -1,5 +1,7 @@
 package com.clova.anifriends.domain.review.controller;
 
+import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
+import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.review.support.ReviewDtoFixture.findReviewResponse;
 import static com.clova.anifriends.domain.review.support.ReviewFixture.review;
@@ -18,6 +20,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
+import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
@@ -38,8 +41,9 @@ class ReviewControllerTest extends BaseControllerTest {
         Shelter shelter = shelter();
         Volunteer volunteer = volunteer();
         Recruitment recruitment = recruitment(shelter);
+        Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
         long reviewId = 1L;
-        Review review = review(recruitment, volunteer);
+        Review review = review(applicant);
         ReflectionTestUtils.setField(review, "reviewId", reviewId);
         FindReviewResponse response = findReviewResponse(review);
 
