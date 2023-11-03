@@ -8,6 +8,6 @@ import org.springframework.data.domain.Pageable;
 public interface RecruitmentRepositoryCustom {
 
     Page<Recruitment> findRecruitmentsByShelterOrderByCreatedAt(long shelterId, String keyword,
-        LocalDate startDate, LocalDate endDate, boolean content, boolean title, Pageable pageable);
+        LocalDate startDate, LocalDate endDate, Boolean content, Boolean title, Pageable pageable);
 
 }

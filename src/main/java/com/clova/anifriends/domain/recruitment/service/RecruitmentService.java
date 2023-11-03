@@ -43,8 +43,8 @@ public class RecruitmentService {
         String keyword,
         LocalDate startDate,
         LocalDate endDate,
-        boolean content,
-        boolean title,
+        Boolean content,
+        Boolean title,
         int page,
         int size
     ) {

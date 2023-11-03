@@ -22,7 +22,7 @@ public class RecruitmentRepositoryImpl implements RecruitmentRepositoryCustom {
 
     @Override
     public Page<Recruitment> findRecruitmentsByShelterOrderByCreatedAt(long shelterId,
-        String keyword, LocalDate startDate, LocalDate endDate, boolean content, boolean title,
+        String keyword, LocalDate startDate, LocalDate endDate, Boolean content, Boolean title,
         Pageable pageable) {
 
         Predicate predicate = recruitment.shelter.shelterId.eq(shelterId)
@@ -49,7 +49,7 @@ public class RecruitmentRepositoryImpl implements RecruitmentRepositoryCustom {
         return predicate;
     }
 
-    Predicate getKeywordCondition(String keyword, boolean content, boolean title) {
+    Predicate getKeywordCondition(String keyword, Boolean content, Boolean title) {
         BooleanExpression predicate = recruitment.isNotNull();
         if (keyword == null || keyword.isBlank()) {
             return predicate;
