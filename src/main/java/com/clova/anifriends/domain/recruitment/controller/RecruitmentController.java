@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.recruitment.controller;
 import com.clova.anifriends.domain.auth.resolver.LoginUser;
 import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByShelterRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
@@ -65,5 +66,14 @@ public class RecruitmentController {
             findRecruitmentsByShelterRequest.title(),
             pageable
         ));
+    }
+
+    @GetMapping("/shelters/{shelterId}/recruitments")
+    public ResponseEntity<FindRecruitmentsByShelterIdResponse> findRecruitmentsByShelterId(
+        @PathVariable Long shelterId,
+        Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+            recruitmentService.findRecruitmentsByShelterId(shelterId, pageable));
     }
 }
