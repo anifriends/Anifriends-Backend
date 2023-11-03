@@ -44,7 +44,7 @@ public class Recruitment extends BaseTimeEntity {
     private List<RecruitmentImage> imageUrls = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitment", fetch = FetchType.LAZY)
-    private List<Applicant> applications = new ArrayList<>();
+    private List<Applicant> applicants = new ArrayList<>();
 
     @Embedded
     private RecruitmentTitle title;
@@ -129,7 +129,7 @@ public class Recruitment extends BaseTimeEntity {
     }
 
     public int getApplicantCount() {
-        return applications.size();
+        return applicants.size();
     }
 
     public RecruitmentInfo getInfo() {

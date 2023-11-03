@@ -4,7 +4,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record FindRecruitmentByVolunteerResponse(
+public record FindRecruitmentDetailByVolunteerResponse(
     String title,
     int capacity,
     int applicantCount,
@@ -26,8 +26,8 @@ public record FindRecruitmentByVolunteerResponse(
     ) {
     }
 
-    public static FindRecruitmentByVolunteerResponse from(Recruitment recruitment) {
-        return new FindRecruitmentByVolunteerResponse(
+    public static FindRecruitmentDetailByVolunteerResponse from(Recruitment recruitment) {
+        return new FindRecruitmentDetailByVolunteerResponse(
             recruitment.getTitle(),
             recruitment.getCapacity(),
             recruitment.getApplicantCount(),
