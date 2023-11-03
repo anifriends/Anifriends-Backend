@@ -5,14 +5,13 @@ import static com.clova.anifriends.domain.recruitment.support.fixture.Recruitmen
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
@@ -24,6 +23,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,18 +32,23 @@ import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
+import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.ShelterImage;
+import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import com.clova.anifriends.domain.shelter.ShelterImage;
-import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 
 class RecruitmentControllerTest extends BaseControllerTest {
@@ -187,6 +192,62 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("shelterInfo.imageUrl").type(STRING).description("보호소 이미지 url")
                         .optional(),
                     fieldWithPath("shelterInfo.email").type(STRING).description("보호소 이메일")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("findRecruitmentsByShelter 실행 시")
+    void findRecruitmentsByShelter() throws Exception {
+        // given
+        Shelter shelter = shelter();
+        Recruitment recruitment = recruitment(shelter);
+        ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+        Page<Recruitment> pageResult = new PageImpl<>(List.of(recruitment));
+        FindRecruitmentsByShelterResponse response = RecruitmentDtoFixture.findRecruitmentsByShelterResponse(
+            pageResult);
+
+        when(recruitmentService.findRecruitmentsByShelter(anyLong(), any(), any(), any(),
+            anyBoolean(), anyBoolean(), any()))
+            .thenReturn(response);
+
+        // when
+        ResultActions result = mockMvc.perform(
+            get("/api/shelters/recruitments")
+                .header(AUTHORIZATION, shelterAccessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestHeaders(headerWithName(AUTHORIZATION).description("액세스 토큰")),
+                queryParameters(
+                    parameterWithName("keyword").description("검색어").optional(),
+                    parameterWithName("startDate").description("검색 시작 날짜").optional()
+                        .attributes(DocumentationFormatGenerator.getDateConstraint()),
+                    parameterWithName("endDate").description("검색 종료 날짜").optional()
+                        .attributes(DocumentationFormatGenerator.getDateConstraint()),
+                    parameterWithName("content").description("내용 검색 여부").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("기본값 null")),
+                    parameterWithName("title").description("제목 검색 여부").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("기본값 null")),
+                    parameterWithName("pageSize").description("페이지 크기").optional(),
+                    parameterWithName("pageNumber").description("페이지 번호").optional()
+                ),
+                responseFields(
+                    fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 게시글 수"),
+                    fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
+                    fieldWithPath("recruitments[]").type(ARRAY).description("모집 게시글 리스트"),
+                    fieldWithPath("recruitments[].recruitmentId").type(NUMBER).description("모집 ID"),
+                    fieldWithPath("recruitments[].title").type(STRING).description("모집 제목"),
+                    fieldWithPath("recruitments[].startTime").type(STRING).description("봉사 시작 시간"),
+                    fieldWithPath("recruitments[].endTime").type(STRING).description("봉사 끝난 시간"),
+                    fieldWithPath("recruitments[].deadline").type(STRING).description("모집 마감 시간"),
+                    fieldWithPath("recruitments[].isClosed").type(BOOLEAN).description("모집 마감 여부"),
+                    fieldWithPath("recruitments[].applicantCount").type(NUMBER)
+                        .description("현재 지원자 수"),
+                    fieldWithPath("recruitments[].capacity").type(NUMBER).description("모집 정원")
                 )
             ));
     }
