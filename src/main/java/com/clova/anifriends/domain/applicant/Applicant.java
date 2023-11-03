@@ -5,6 +5,7 @@ import com.clova.anifriends.domain.applicant.exception.ApplicantConflictExceptio
 import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
@@ -17,6 +18,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -39,6 +41,9 @@ public class Applicant extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "volunteer_id")
     private Volunteer volunteer;
+
+    @OneToOne(mappedBy = "applicant", fetch = FetchType.LAZY)
+    private Review review;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -87,5 +92,13 @@ public class Applicant extends BaseTimeEntity {
         if (recruitment.getApplicantCount() >= recruitment.getCapacity()) {
             throw new ApplicantConflictException(ErrorCode.CONCURRENCY, "모집 인원이 초과되었습니다.");
         }
+    }
+
+    public Long getApplicantId() {
+        return applicantId;
+    }
+
+    public boolean hasReview() {
+        return review != null;
     }
 }
