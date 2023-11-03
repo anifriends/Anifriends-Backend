@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.review.service;
 
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
+import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicantWithReview;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.review.support.ReviewDtoFixture.findReviewResponse;
@@ -9,13 +10,19 @@ import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter
 import static com.clova.anifriends.domain.volunteer.support.VolunteerFixture.volunteer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
+import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
+import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -37,6 +44,9 @@ class ReviewServiceTest {
 
     @Mock
     private ReviewRepository reviewRepository;
+
+    @Mock
+    private ApplicantRepository applicantRepository;
 
     @Nested
     @DisplayName("findReviewById 메서드 실행 시")
@@ -78,5 +88,63 @@ class ReviewServiceTest {
             assertThat(exception).isInstanceOf(ReviewNotFoundException.class);
         }
     }
+
+    @Nested
+    @DisplayName("registerReview 메서드 실행 시")
+    class RegisterReview {
+
+        @Test
+        @DisplayName("성공")
+        void registerReview() {
+            // given
+            Shelter shelter = shelter();
+            Applicant applicant = applicant(recruitment(shelter), volunteer(), ATTENDANCE);
+
+            when(applicantRepository.findByApplicantIdAndVolunteerId(anyLong(), anyLong()))
+                .thenReturn(Optional.of(applicant));
+
+            // when
+            reviewService.registerReview(anyLong(), anyLong(), "reviewContent", null);
+
+            // then
+            verify(reviewRepository, times(1)).save(any(Review.class));
+        }
+
+        @Test
+        @DisplayName("예외(ApplicantNotFoundException): 존재하지 않는 봉사 신청")
+        void exceptionWhenApplicantNotFound() {
+            // given
+            when(applicantRepository.findByApplicantIdAndVolunteerId(anyLong(), anyLong()))
+                .thenReturn(Optional.empty());
+
+            // when
+            Exception exception = catchException(
+                () -> reviewService.registerReview(anyLong(), anyLong(), "reviewContent", null));
+
+            // then
+            assertThat(exception).isInstanceOf(ApplicantNotFoundException.class);
+        }
+
+        @Test
+        @DisplayName("예외(ReviewBadRequestException): 이미 작성된 리뷰가 존재")
+        void exceptionWhenAlreadyExistReview() {
+            // given
+            Shelter shelter = shelter();
+            Applicant applicant = applicantWithReview(recruitment(shelter), volunteer());
+
+            when(applicantRepository.findByApplicantIdAndVolunteerId(anyLong(), anyLong()))
+                .thenReturn(Optional.of(applicant));
+
+            // when
+            Exception exception = catchException(
+                () -> reviewService.registerReview(anyLong(), anyLong(), "reviewContent", null));
+
+            // then
+            assertThat(exception).isInstanceOf(ReviewBadRequestException.class);
+        }
+
+
+    }
+
 
 }
