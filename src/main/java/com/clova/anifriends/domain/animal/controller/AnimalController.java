@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.animal.controller;
 
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.service.AnimalService;
@@ -38,5 +39,12 @@ public class AnimalController {
     public ResponseEntity<FindAnimalByVolunteerResponse> findAnimalByIdByVolunteer(
         @PathVariable Long animalId) {
         return ResponseEntity.ok(animalService.findAnimalByIdByVolunteer(animalId));
+    }
+
+    @GetMapping("/shelters/animals/{animalId}")
+    public ResponseEntity<FindAnimalByShelterResponse> findAnimalByShelter(
+        @LoginUser Long shelterId,
+        @PathVariable Long animalId) {
+        return ResponseEntity.ok(animalService.findAnimalByShelter(animalId, shelterId));
     }
 }
