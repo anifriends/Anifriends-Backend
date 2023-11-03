@@ -26,9 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 class ReviewRepositoryTest extends BaseRepositoryTest {
 
     @Autowired
-    private ReviewRepository reviewRepository;
-
-    @Autowired
     private ShelterRepository shelterRepository;
 
     @Autowired
