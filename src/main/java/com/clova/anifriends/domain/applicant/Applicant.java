@@ -96,8 +96,4 @@ public class Applicant extends BaseTimeEntity {
     public boolean isAttendance() {
         return this.status == ApplicantStatus.ATTENDANCE;
     }
-
-    public boolean isApproved() {
-        return this.status == ApplicantStatus.ATTENDANCE || this.status == ApplicantStatus.NO_SHOW;
-    }
 }
