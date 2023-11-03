@@ -204,9 +204,11 @@ class RecruitmentControllerTest extends BaseControllerTest {
         Recruitment recruitment = recruitment(shelter);
         ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
         Page<Recruitment> pageResult = new PageImpl<>(List.of(recruitment));
-        FindRecruitmentsByShelterResponse response = RecruitmentDtoFixture.findRecruitmentsByShelterResponse(pageResult);
+        FindRecruitmentsByShelterResponse response = RecruitmentDtoFixture.findRecruitmentsByShelterResponse(
+            pageResult);
 
-        when(recruitmentService.findRecruitmentsByShelter(anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), any()))
+        when(recruitmentService.findRecruitmentsByShelter(anyLong(), any(), any(), any(),
+            anyBoolean(), anyBoolean(), any()))
             .thenReturn(response);
 
         // when
@@ -222,10 +224,14 @@ class RecruitmentControllerTest extends BaseControllerTest {
                 requestHeaders(headerWithName(AUTHORIZATION).description("액세스 토큰")),
                 queryParameters(
                     parameterWithName("keyword").description("검색어").optional(),
-                    parameterWithName("startDate").description("검색 시작 날짜").optional(),
-                    parameterWithName("endDate").description("검색 종료 날짜").optional(),
-                    parameterWithName("content").description("내용 검색 여부").optional(),
-                    parameterWithName("title").description("제목 검색 여부").optional(),
+                    parameterWithName("startDate").description("검색 시작 날짜").optional()
+                        .attributes(DocumentationFormatGenerator.getDateConstraint()),
+                    parameterWithName("endDate").description("검색 종료 날짜").optional()
+                        .attributes(DocumentationFormatGenerator.getDateConstraint()),
+                    parameterWithName("content").description("내용 검색 여부").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("기본값 null")),
+                    parameterWithName("title").description("제목 검색 여부").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("기본값 null")),
                     parameterWithName("pageSize").description("페이지 크기").optional(),
                     parameterWithName("pageNumber").description("페이지 번호").optional()
                 ),
@@ -239,7 +245,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("recruitments[].endTime").type(STRING).description("봉사 끝난 시간"),
                     fieldWithPath("recruitments[].deadline").type(STRING).description("모집 마감 시간"),
                     fieldWithPath("recruitments[].isClosed").type(BOOLEAN).description("모집 마감 여부"),
-                    fieldWithPath("recruitments[].applicantCount").type(NUMBER).description("현재 지원자 수"),
+                    fieldWithPath("recruitments[].applicantCount").type(NUMBER)
+                        .description("현재 지원자 수"),
                     fieldWithPath("recruitments[].capacity").type(NUMBER).description("모집 정원")
                 )
             ));
