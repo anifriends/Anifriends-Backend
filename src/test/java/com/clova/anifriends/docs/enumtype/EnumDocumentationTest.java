@@ -6,8 +6,14 @@ import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
+import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
+import com.clova.anifriends.domain.animal.wrapper.AnimalType;
+import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.common.EnumType;
 import com.clova.anifriends.base.BaseControllerTest;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import com.clova.anifriends.global.exception.ErrorCode;
 import java.util.Arrays;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
@@ -36,9 +42,99 @@ public class EnumDocumentationTest extends BaseControllerTest {
                     enumConvertFieldDescriptor(TestEnum.values()))));
     }
 
+    @Test
+    @DisplayName("AnimalActive 문서화")
+    void animalActive() throws Exception {
+        ResultActions resultActions = mockMvc.perform(get("/test/docs/enum/animal/active")
+            .accept(MediaType.APPLICATION_JSON));
+
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                enumResponseFields("enum-response",  // 스니펫 파일의 이름
+                    attributes(key(TITLE).value("보호 동물 성격")),  // 문서화한 enum의 타이틀
+                    null,  // API 응답을 감싸서 전달하는 경우 beneathPath("data").withSubsectionId("providers") 추가할 것
+                    enumConvertFieldDescriptor(AnimalActive.values()))));
+    }
+
+    @Test
+    @DisplayName("AnimalGender 문서화")
+    void animalGender() throws Exception {
+        ResultActions resultActions = mockMvc.perform(get("/test/docs/enum/animal/gender")
+            .accept(MediaType.APPLICATION_JSON));
+
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                enumResponseFields("enum-response",  // 스니펫 파일의 이름
+                    attributes(key(TITLE).value("보호 동물 성별")),  // 문서화한 enum의 타이틀
+                    null,  // API 응답을 감싸서 전달하는 경우 beneathPath("data").withSubsectionId("providers") 추가할 것
+                    enumConvertFieldDescriptor(AnimalGender.values()))));
+    }
+
+    @Test
+    @DisplayName("AnimalType 문서화")
+    void animalType() throws Exception {
+        ResultActions resultActions = mockMvc.perform(get("/test/docs/enum/animal/type")
+            .accept(MediaType.APPLICATION_JSON));
+
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                enumResponseFields("enum-response",  // 스니펫 파일의 이름
+                    attributes(key(TITLE).value("보호 동물 종류")),  // 문서화한 enum의 타이틀
+                    null,  // API 응답을 감싸서 전달하는 경우 beneathPath("data").withSubsectionId("providers") 추가할 것
+                    enumConvertFieldDescriptor(AnimalType.values()))));
+    }
+
+    @Test
+    @DisplayName("ApplicantStatus 문서화")
+    void applicantStatus() throws Exception {
+        ResultActions resultActions = mockMvc.perform(get("/test/docs/enum/applicant/status")
+            .accept(MediaType.APPLICATION_JSON));
+
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                enumResponseFields("enum-response",  // 스니펫 파일의 이름
+                    attributes(key(TITLE).value("봉사 신청자 상태")),  // 문서화한 enum의 타이틀
+                    null,  // API 응답을 감싸서 전달하는 경우 beneathPath("data").withSubsectionId("providers") 추가할 것
+                    enumConvertFieldDescriptor(ApplicantStatus.values()))));
+    }
+
+    @Test
+    @DisplayName("VolunteerGender 문서화")
+    void volunteerGender() throws Exception {
+        ResultActions resultActions = mockMvc.perform(get("/test/docs/enum/volunteer/gender")
+            .accept(MediaType.APPLICATION_JSON));
+
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                enumResponseFields("enum-response",  // 스니펫 파일의 이름
+                    attributes(key(TITLE).value("봉사자 성별")),  // 문서화한 enum의 타이틀
+                    null,  // API 응답을 감싸서 전달하는 경우 beneathPath("data").withSubsectionId("providers") 추가할 것
+                    enumConvertFieldDescriptor(VolunteerGender.values()))));
+    }
+
     private FieldDescriptor[] enumConvertFieldDescriptor(EnumType[] enumTypes) {
         return Arrays.stream(enumTypes)
             .map(enumType -> fieldWithPath(enumType.getName()).description(enumType.getName()))
+            .toArray(FieldDescriptor[]::new);
+    }
+
+    @Test
+    @DisplayName("ErrorCode 문서화")
+    void errorCode() throws Exception {
+        ResultActions resultActions = mockMvc.perform(get("/test/docs/enum/error-code")
+            .accept(MediaType.APPLICATION_JSON));
+
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                enumResponseFields("enum-response",  // 스니펫 파일의 이름
+                    attributes(key(TITLE).value("에러 코드")),  // 문서화한 enum의 타이틀
+                    null,  // API 응답을 감싸서 전달하는 경우 beneathPath("data").withSubsectionId("providers") 추가할 것
+                    errorCodeConvertFieldDescriptor(ErrorCode.values()))));
+    }
+
+    private FieldDescriptor[] errorCodeConvertFieldDescriptor(ErrorCode[] errorCodes) {
+        return Arrays.stream(errorCodes)
+            .map(errorCode -> fieldWithPath(errorCode.getName()).description(errorCode.getValue()))
             .toArray(FieldDescriptor[]::new);
     }
 

@@ -1,6 +1,8 @@
 package com.clova.anifriends.domain.animal.wrapper;
 
-public enum AnimalActive {
+import com.clova.anifriends.domain.common.EnumType;
+
+public enum AnimalActive implements EnumType {
 
     QUIET,
     NORMAL,
@@ -8,6 +10,7 @@ public enum AnimalActive {
     VERY_ACTIVE,
     ;
 
+    @Override
     public String getName() {
         return this.name();
     }
