@@ -16,4 +16,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         @Param("userId") Long userId);
 
     Page<Review> findAllByRecruitmentShelterShelterId(Long shelterId, Pageable pageable);
+
+    Page<Review> findAllByVolunteerVolunteerIdOrderByCreatedAtDesc(Long volunteerId,
+        Pageable pageable);
 }

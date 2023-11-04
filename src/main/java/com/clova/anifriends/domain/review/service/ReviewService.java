@@ -1,8 +1,10 @@
 package com.clova.anifriends.domain.review.service;
 
+import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +33,13 @@ public class ReviewService {
         Page<Review> reviewPage
             = reviewRepository.findAllByRecruitmentShelterShelterId(shelterId, pageable);
         return FindShelterReviewsResponse.from(reviewPage);
+    }
+
+    @Transactional(readOnly = true)
+    public FindVolunteerReviewsResponse findVolunteerReviews(Long volunteerId, Pageable pageable) {
+        Page<Review> reviewPage
+            = reviewRepository.findAllByVolunteerVolunteerIdOrderByCreatedAtDesc(volunteerId,
+            pageable);
+        return FindVolunteerReviewsResponse.of(reviewPage.getContent(), PageInfo.from(reviewPage));
     }
 }
