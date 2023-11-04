@@ -45,10 +45,17 @@ class VolunteerServiceTest {
         void success() {
             // given
             given(volunteerRepository.save(any())).willReturn(volunteer);
-            RegisterVolunteerRequest registerVolunteerRequest = VolunteerDtoFixture.registerVolunteerRequest();
+            RegisterVolunteerRequest request = VolunteerDtoFixture.registerVolunteerRequest();
 
             // when
-            volunteerService.registerVolunteer(registerVolunteerRequest);
+            volunteerService.registerVolunteer(
+                request.email(),
+                request.password(),
+                request.name(),
+                request.birthDate(),
+                request.phoneNumber(),
+                request.gender()
+            );
 
             // then
             then(volunteerRepository).should().save(any());
