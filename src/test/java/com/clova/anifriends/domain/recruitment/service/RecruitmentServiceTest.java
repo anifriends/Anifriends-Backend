@@ -18,7 +18,6 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
@@ -73,9 +72,6 @@ class RecruitmentServiceTest {
         String content = "content";
         List<String> imageUrls = List.of();
 
-        RegisterRecruitmentRequest request = new RegisterRecruitmentRequest(
-            title, startTime, endTime, deadline, capacity, content, imageUrls);
-
         @Test
         @DisplayName("성공")
         void registerRecruitment() {
@@ -85,7 +81,8 @@ class RecruitmentServiceTest {
             given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
 
             //when
-            recruitmentService.registerRecruitment(shelterId, request);
+            recruitmentService.registerRecruitment(shelterId, title, startTime, endTime, deadline,
+                capacity, content, imageUrls);
 
             //then
             then(recruitmentRepository).should().save(any());
@@ -99,7 +96,8 @@ class RecruitmentServiceTest {
 
             //when
             //then
-            assertThatThrownBy(() -> recruitmentService.registerRecruitment(shelterId, request))
+            assertThatThrownBy(() -> recruitmentService.registerRecruitment(
+                shelterId, title, startTime, endTime, deadline, capacity, content, imageUrls))
                 .isInstanceOf(ShelterNotFoundException.class);
         }
     }
