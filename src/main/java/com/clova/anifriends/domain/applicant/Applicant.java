@@ -56,22 +56,6 @@ public class Applicant extends BaseTimeEntity {
         this.status = ApplicantStatus.PENDING;
     }
 
-    public ApplicantStatus getStatus() {
-        return status;
-    }
-
-    public Recruitment getRecruitment() {
-        return recruitment;
-    }
-
-    public Volunteer getVolunteer() {
-        return volunteer;
-    }
-
-    public Long getApplicantId() {
-        return applicantId;
-    }
-
     private void validateRecruitment(Recruitment recruitment) {
         if (recruitment == null) {
             throw new ApplicantBadRequestException("봉사는 필수 입력 항목입니다.");
@@ -95,5 +79,21 @@ public class Applicant extends BaseTimeEntity {
 
     public boolean isAttendance() {
         return this.status == ApplicantStatus.ATTENDANCE;
+    }
+
+    public ApplicantStatus getStatus() {
+        return status;
+    }
+
+    public Recruitment getRecruitment() {
+        return recruitment;
+    }
+
+    public Volunteer getVolunteer() {
+        return volunteer;
+    }
+
+    public Long getApplicantId() {
+        return applicantId;
     }
 }

@@ -31,10 +31,15 @@ public class RecruitmentFixture {
         );
     }
 
+    public static List<Recruitment> createRecruitments(List<Shelter> shelters) {
+        return shelters.stream()
+            .map(RecruitmentFixture::recruitment)
+            .toList();
+    }
+
     public static Recruitment recruitment(Shelter shelter, List<Applicant> applicants) {
         Recruitment recruitment = recruitment(shelter);
         ReflectionTestUtils.setField(recruitment, "applicants", applicants);
         return recruitment;
     }
-
 }

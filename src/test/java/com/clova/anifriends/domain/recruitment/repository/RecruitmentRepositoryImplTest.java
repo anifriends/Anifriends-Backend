@@ -177,8 +177,7 @@ class RecruitmentRepositoryImplTest extends BaseRepositoryTest {
                 LocalDateTime.now().plusMonths(1),
                 List.of()
             );
-
-            setField(recruitment2.getInfo(), "isClosed", true);
+            recruitment2.closeRecruitment();
 
             Recruitment recruitment3 = new Recruitment(
                 shelter,

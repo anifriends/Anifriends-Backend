@@ -141,10 +141,6 @@ public class Recruitment extends BaseTimeEntity {
         info = new RecruitmentInfo(startTime, endTime, deadline, true, capacity);
     }
 
-    public RecruitmentInfo getInfo() {
-        return info;
-    }
-
     public List<Applicant> getApplicants() {
         return Collections.unmodifiableList(applicants);
     }

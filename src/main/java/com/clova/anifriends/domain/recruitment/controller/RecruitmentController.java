@@ -4,6 +4,7 @@ import com.clova.anifriends.domain.auth.resolver.LoginUser;
 import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByShelterRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByVolunteerRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
@@ -50,6 +51,15 @@ public class RecruitmentController {
     public ResponseEntity<FindRecruitmentDetailByVolunteerResponse> findRecruitmentByIdByVolunteer(
         @PathVariable Long recruitmentId) {
         return ResponseEntity.ok(recruitmentService.findRecruitmentByIdByVolunteer(recruitmentId));
+    }
+
+    @GetMapping("/volunteers/{volunteerId}/recruitments/completed")
+    public ResponseEntity<FindCompletedRecruitmentsResponse> findCompletedRecruitments(
+        @PathVariable("volunteerId") Long volunteerId,
+        Pageable pageable) {
+        FindCompletedRecruitmentsResponse response = recruitmentService.findCompletedRecruitments(
+            volunteerId, pageable);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/volunteers/recruitments")
