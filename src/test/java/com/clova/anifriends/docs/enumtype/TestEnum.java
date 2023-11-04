@@ -16,7 +16,6 @@ public enum TestEnum implements EnumType {
         return name();
     }
 
-    @Override
     public String getValue() {
         return value;
     }

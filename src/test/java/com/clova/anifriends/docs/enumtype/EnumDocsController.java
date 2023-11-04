@@ -20,6 +20,6 @@ public class EnumDocsController {
 
     private Map<String, String> getEnumTypes(EnumType[] enumTypes) {
         return Arrays.stream(enumTypes)
-            .collect(Collectors.toMap(EnumType::getName, EnumType::getValue));
+            .collect(Collectors.toMap(EnumType::getName, EnumType::getName));
     }
 }

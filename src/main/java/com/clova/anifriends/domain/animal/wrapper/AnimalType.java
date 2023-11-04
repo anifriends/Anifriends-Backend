@@ -10,9 +10,4 @@ public enum AnimalType {
     public String getName() {
         return this.name();
     }
-
-    public String getValue() {
-        return this.name();
-    }
-
 }

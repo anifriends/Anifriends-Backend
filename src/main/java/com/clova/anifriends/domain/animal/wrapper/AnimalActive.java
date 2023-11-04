@@ -11,8 +11,4 @@ public enum AnimalActive {
     public String getName() {
         return this.name();
     }
-
-    public String getValue() {
-        return this.name();
-    }
 }

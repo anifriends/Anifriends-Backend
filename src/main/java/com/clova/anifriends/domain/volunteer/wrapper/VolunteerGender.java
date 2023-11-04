@@ -15,11 +15,6 @@ public enum VolunteerGender implements EnumType {
         return this.name();
     }
 
-    @Override
-    public String getValue() {
-        return this.name();
-    }
-
     public static VolunteerGender from(String gender) {
         return Arrays.stream(VolunteerGender.values())
             .filter(volunteerGender -> volunteerGender.name().equalsIgnoreCase(gender))

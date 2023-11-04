@@ -38,7 +38,7 @@ public class EnumDocumentationTest extends BaseControllerTest {
 
     private FieldDescriptor[] enumConvertFieldDescriptor(EnumType[] enumTypes) {
         return Arrays.stream(enumTypes)
-            .map(enumType -> fieldWithPath(enumType.getName()).description(enumType.getValue()))
+            .map(enumType -> fieldWithPath(enumType.getName()).description(enumType.getName()))
             .toArray(FieldDescriptor[]::new);
     }
 

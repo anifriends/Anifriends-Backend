@@ -12,9 +12,4 @@ public enum AnimalGender implements EnumType {
     public String getName() {
         return this.name();
     }
-
-    @Override
-    public String getValue() {
-        return this.name();
-    }
 }
