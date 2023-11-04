@@ -7,6 +7,7 @@ import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -17,6 +18,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
+import static org.springframework.restdocs.payload.JsonFieldType.OBJECT;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -29,16 +31,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
+import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse.FindRecruitmentByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +57,8 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 class RecruitmentControllerTest extends BaseControllerTest {
 
@@ -106,6 +115,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
             ));
     }
 
+    @Test
     @DisplayName("findRecruitmentById 실행 시")
     void FindRecruitmentTest() throws Exception {
         // given
@@ -119,12 +129,16 @@ class RecruitmentControllerTest extends BaseControllerTest {
         // when
         ResultActions result = mockMvc.perform(
             get("/api/shelters/recruitments/{recruitmentId}", anyLong())
+                .header(AUTHORIZATION, shelterAccessToken)
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
         // then
         result.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("액세스 토큰")
+                ),
                 pathParameters(
                     parameterWithName("recruitmentId").description("봉사 모집글 ID")
                 ),
@@ -154,7 +168,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
         setField(shelter, "shelterImage", shelterImage);
         Recruitment recruitment = recruitment(shelter);
-        FindRecruitmentByVolunteerResponse response = findRecruitmentByVolunteerResponse(
+        FindRecruitmentDetailByVolunteerResponse response = findRecruitmentByVolunteerResponse(
             recruitment);
 
         when(recruitmentService.findRecruitmentByIdByVolunteer(anyLong()))
@@ -192,6 +206,130 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("shelterInfo.imageUrl").type(STRING).description("보호소 이미지 url")
                         .optional(),
                     fieldWithPath("shelterInfo.email").type(STRING).description("보호소 이메일")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 봉사자가 완료한 봉사 리스트 조회 API 호출 시")
+    void findCompletedRecruitments() throws Exception {
+        //given
+        Long volunteerId = 1L;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("pageNumber", "0");
+        params.add("pageSize", "10");
+        Shelter shelter = shelter();
+        Recruitment recruitment = recruitment(shelter);
+        ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+        PageImpl<Recruitment> recruitments = new PageImpl<>(List.of(recruitment));
+        FindCompletedRecruitmentsResponse response = FindCompletedRecruitmentsResponse.from(
+            recruitments);
+
+        given(recruitmentService.findCompletedRecruitments(anyLong(), any()))
+            .willReturn(response);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            get("/api/volunteers/{volunteerId}/recruitments/completed", volunteerId)
+                .params(params));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                pathParameters(
+                    parameterWithName("volunteerId").description("봉사자 ID")
+                ),
+                queryParameters(
+                    parameterWithName("pageNumber").description("페이지 번호"),
+                    parameterWithName("pageSize").description("페이지 사이즈")
+                ),
+                responseFields(
+                    fieldWithPath("recruitments").type(ARRAY).description("봉사 모집글 리스트"),
+                    fieldWithPath("recruitments[].recruitmentId").type(NUMBER)
+                        .description("봉사 모집글 ID"),
+                    fieldWithPath("recruitments[].title").type(STRING).description("봉사 모집글 제목"),
+                    fieldWithPath("recruitments[].volunteerDate").type(STRING).description("봉사 날짜"),
+                    fieldWithPath("recruitments[].name").type(STRING).description("보호소 이름"),
+                    fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
+                    fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
+                    fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 봉사 모집글 조회, 검색(봉사자) API 호출")
+    void findRecruitmentsByVolunteer() throws Exception {
+        //given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("keyword", "겅색어");
+        params.add("startDate", LocalDate.now().toString());
+        params.add("endDate", LocalDate.now().toString());
+        params.add("isClosed", "false");
+        params.add("title", "true");
+        params.add("content", "false");
+        params.add("shelterName", "false");
+        params.add("pageNumber", "0");
+        params.add("pageSize", "10");
+        Shelter shelter = shelter();
+        ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
+        shelter.updateShelterImage(shelterImage);
+        Recruitment recruitment = recruitment(shelter);
+        ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+        FindRecruitmentByVolunteerResponse findRecruitmentByVolunteerResponse
+            = FindRecruitmentByVolunteerResponse.from(recruitment);
+        PageInfo pageInfo = new PageInfo(1, false);
+        FindRecruitmentsByVolunteerResponse response = new FindRecruitmentsByVolunteerResponse(
+            List.of(findRecruitmentByVolunteerResponse), pageInfo);
+
+        given(recruitmentService.findRecruitmentsByVolunteer(anyString(), any(), any(),
+            anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), any()))
+            .willReturn(response);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/api/volunteers/recruitments")
+            .header(AUTHORIZATION, volunteerAccessToken)
+            .params(params));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
+                queryParameters(
+                    parameterWithName("keyword").description("검색어").optional(),
+                    parameterWithName("startDate").description("검색 시작일").optional()
+                        .attributes(DocumentationFormatGenerator.getDateConstraint()),
+                    parameterWithName("endDate").description("검색 종료일").optional()
+                        .attributes(DocumentationFormatGenerator.getDateConstraint()),
+                    parameterWithName("isClosed").description("마감 여부").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("true, false")),
+                    parameterWithName("title").description("제목 포함 검색").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("기본값 true")),
+                    parameterWithName("content").description("본문 포함 검색").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("기본값 true")),
+                    parameterWithName("shelterName").description("보호소 이름 포함 검색").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("기본값 true")),
+                    parameterWithName("pageNumber").description("페이지 번호"),
+                    parameterWithName("pageSize").description("페이지 사이즈")
+                ),
+                responseFields(
+                    fieldWithPath("recruitments").type(ARRAY).description("봉사 모집글 리스트"),
+                    fieldWithPath("recruitments[].recruitmentId").type(NUMBER)
+                        .description("봉사 모집글 ID"),
+                    fieldWithPath("recruitments[].title").type(STRING).description("봉사 모집글 제목"),
+                    fieldWithPath("recruitments[].startTime").type(STRING).description("봉사 시작 시간"),
+                    fieldWithPath("recruitments[].endTime").type(STRING).description("봉사 종료 시간"),
+                    fieldWithPath("recruitments[].applicantCount").type(NUMBER)
+                        .description("봉사 신청 인원"),
+                    fieldWithPath("recruitments[].capacity").type(NUMBER).description("봉사 정원"),
+                    fieldWithPath("recruitments[].shelterName").type(STRING).description("보호소 이름"),
+                    fieldWithPath("recruitments[].shelterImageUrl").type(STRING)
+                        .description("보호소 이미지 url"),
+                    fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
+                    fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
+                    fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부")
                 )
             ));
     }

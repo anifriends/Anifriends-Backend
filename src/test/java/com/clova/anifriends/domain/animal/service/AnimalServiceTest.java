@@ -13,8 +13,9 @@ import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
-import com.clova.anifriends.domain.animal.exception.NotFoundAnimalException;
+import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
@@ -33,6 +34,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class AnimalServiceTest {
@@ -101,7 +103,7 @@ class AnimalServiceTest {
         void findAnimalByIdByVolunteer() {
             // given
             Shelter shelter = shelter();
-            shelter.setShelterImage(shelterImage(shelter));
+            shelter.updateShelterImage(shelterImage(shelter));
             Animal animal = animal(shelter);
             FindAnimalByVolunteerResponse expected = FindAnimalByVolunteerResponse.from(animal);
 
@@ -126,7 +128,50 @@ class AnimalServiceTest {
                 () -> animalService.findAnimalByIdByVolunteer(anyLong()));
 
             // then
-            assertThat(exception).isInstanceOf(NotFoundAnimalException.class);
+            assertThat(exception).isInstanceOf(AnimalNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("findAnimalByShelter 메서드 실행 시")
+    class FindAnimalByShelterTest {
+
+        Long animalId = 1L;
+        Long shelterId = 1L;
+        Shelter shelter = ShelterFixture.shelter();
+        Animal animal = animal(shelter);
+
+        @Test
+        @DisplayName("성공")
+        void findAnimalByShelter() {
+            //given
+            ReflectionTestUtils.setField(animal, "animalId", animalId);
+            FindAnimalByShelterResponse expected = FindAnimalByShelterResponse.from(animal);
+
+            given(animalRepository.findByAnimalIdAndShelterIdWithImages(anyLong(),
+                anyLong())).willReturn(Optional.of(animal));
+
+            //when
+            FindAnimalByShelterResponse response = animalService.findAnimalByShelter(
+                animalId, shelterId);
+
+            //then
+            assertThat(response).usingRecursiveComparison().isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("예외(AnimalNotFoundException): 존재하지 않는 보호 동물")
+        void exceptionWhenShelterNotFound() {
+            //given
+            given(animalRepository.findByAnimalIdAndShelterIdWithImages(anyLong(),
+                anyLong())).willReturn(Optional.empty());
+
+            //when
+            Exception exception = catchException(() -> animalService.findAnimalByShelter(animalId,
+                shelterId));
+
+            //then
+            assertThat(exception).isInstanceOf(AnimalNotFoundException.class);
         }
     }
 }

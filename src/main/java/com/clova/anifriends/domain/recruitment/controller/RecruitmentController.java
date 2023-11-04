@@ -2,11 +2,14 @@ package com.clova.anifriends.domain.recruitment.controller;
 
 import com.clova.anifriends.domain.auth.resolver.LoginUser;
 import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByShelterRequest;
+import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByVolunteerRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -45,9 +48,34 @@ public class RecruitmentController {
     }
 
     @GetMapping("/volunteers/recruitments/{recruitmentId}")
-    public ResponseEntity<FindRecruitmentByVolunteerResponse> findRecruitmentByIdByVolunteer(
+    public ResponseEntity<FindRecruitmentDetailByVolunteerResponse> findRecruitmentByIdByVolunteer(
         @PathVariable Long recruitmentId) {
         return ResponseEntity.ok(recruitmentService.findRecruitmentByIdByVolunteer(recruitmentId));
+    }
+
+    @GetMapping("/volunteers/{volunteerId}/recruitments/completed")
+    public ResponseEntity<FindCompletedRecruitmentsResponse> findCompletedRecruitments(
+        @PathVariable("volunteerId") Long volunteerId,
+        Pageable pageable) {
+        FindCompletedRecruitmentsResponse response = recruitmentService.findCompletedRecruitments(
+            volunteerId, pageable);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/volunteers/recruitments")
+    public ResponseEntity<FindRecruitmentsByVolunteerResponse> findRecruitmentsByVolunteer(
+        @ModelAttribute @Valid FindRecruitmentsByVolunteerRequest findRecruitmentsByVolunteerRequest,
+        Pageable pageable) {
+        return ResponseEntity.ok(recruitmentService.findRecruitmentsByVolunteer(
+            findRecruitmentsByVolunteerRequest.keyword(),
+            findRecruitmentsByVolunteerRequest.startDate(),
+            findRecruitmentsByVolunteerRequest.endDate(),
+            findRecruitmentsByVolunteerRequest.isClosed(),
+            findRecruitmentsByVolunteerRequest.title(),
+            findRecruitmentsByVolunteerRequest.content(),
+            findRecruitmentsByVolunteerRequest.shelterName(),
+            pageable
+        ));
     }
 
     @GetMapping("/shelters/recruitments")
