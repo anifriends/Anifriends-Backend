@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.auth.jwt;
 
-import com.clova.anifriends.EnumType;
+import com.clova.anifriends.domain.common.EnumType;
 import java.util.List;
 
 public enum UserRole implements EnumType {

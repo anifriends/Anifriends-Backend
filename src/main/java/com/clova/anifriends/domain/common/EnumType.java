@@ -1,4 +1,4 @@
-package com.clova.anifriends;
+package com.clova.anifriends.domain.common;
 
 public interface EnumType {
 

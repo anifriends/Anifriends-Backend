@@ -1,6 +1,6 @@
 package com.clova.anifriends.docs.enumtype;
 
-import com.clova.anifriends.EnumType;
+import com.clova.anifriends.domain.common.EnumType;
 
 public enum TestEnum implements EnumType {
     MALE("남성"), FEMALE("여성");

@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.volunteer.wrapper;
 
-import com.clova.anifriends.EnumType;
+import com.clova.anifriends.domain.common.EnumType;
 import com.clova.anifriends.domain.volunteer.exception.NotFoundVolunteerGenderException;
 import com.clova.anifriends.global.exception.ErrorCode;
 import java.util.Arrays;

@@ -6,7 +6,7 @@ import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.clova.anifriends.EnumType;
+import com.clova.anifriends.domain.common.EnumType;
 import com.clova.anifriends.base.BaseControllerTest;
 import java.util.Arrays;
 import java.util.Map;

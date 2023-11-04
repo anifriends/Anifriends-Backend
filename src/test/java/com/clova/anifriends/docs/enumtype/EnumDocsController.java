@@ -1,6 +1,6 @@
 package com.clova.anifriends.docs.enumtype;
 
-import com.clova.anifriends.EnumType;
+import com.clova.anifriends.domain.common.EnumType;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;

@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.applicant.wrapper;
 
-import com.clova.anifriends.EnumType;
+import com.clova.anifriends.domain.common.EnumType;
 
 public enum ApplicantStatus implements EnumType {
 

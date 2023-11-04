@@ -1,6 +1,6 @@
 package com.clova.anifriends.global.exception;
 
-import com.clova.anifriends.EnumType;
+import com.clova.anifriends.domain.common.EnumType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
