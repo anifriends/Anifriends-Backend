@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.recruitment.service;
 import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
@@ -92,6 +93,15 @@ public class RecruitmentService {
     private Recruitment getRecruitmentById(long id) {
         return recruitmentRepository.findById(id)
             .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글입니다."));
+    }
+
+    @Transactional(readOnly = true)
+    public FindCompletedRecruitmentsResponse findCompletedRecruitments(
+        Long volunteerId,
+        Pageable pageable) {
+        Page<Recruitment> recruitmentPage
+            = recruitmentRepository.findCompletedRecruitments(volunteerId, pageable);
+        return FindCompletedRecruitmentsResponse.from(recruitmentPage);
     }
 
     @Transactional(readOnly = true)

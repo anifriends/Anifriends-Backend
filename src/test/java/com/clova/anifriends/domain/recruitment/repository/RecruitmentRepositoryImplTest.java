@@ -177,8 +177,7 @@ class RecruitmentRepositoryImplTest extends BaseRepositoryTest {
                 LocalDateTime.now().plusMonths(1),
                 List.of()
             );
-
-            setField(recruitment2.getInfo(), "isClosed", true);
+            recruitment2.closeRecruitment();
 
             Recruitment recruitment3 = new Recruitment(
                 shelter,
@@ -246,8 +245,6 @@ class RecruitmentRepositoryImplTest extends BaseRepositoryTest {
                 List.of()
             );
 
-            setField(recruitment2.getInfo(), "isClosed", true);
-
             Recruitment recruitment3 = new Recruitment(
                 shelter,
                 "abc",
@@ -270,7 +267,7 @@ class RecruitmentRepositoryImplTest extends BaseRepositoryTest {
             );
 
             // then
-            assertThat(recruitments).contains(recruitment1, recruitment3);
+            assertThat(recruitments).contains(recruitment1, recruitment2, recruitment3);
         }
     }
 }

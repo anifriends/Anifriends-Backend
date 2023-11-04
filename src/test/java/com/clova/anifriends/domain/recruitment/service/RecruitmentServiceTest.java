@@ -20,6 +20,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
@@ -180,6 +181,37 @@ class RecruitmentServiceTest {
 
             // then
             assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
+        }
+    }
+
+    @Nested
+
+    @DisplayName("findCompeletedRecruitments 메서드 실행 시")
+    class FindCompletedRecruitmentsTest {
+
+        @Test
+        @DisplayName("성공")
+        void findCompletedRecruitments() {
+            //given
+            Long volunteerId = 1L;
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            PageImpl<Recruitment> recruitmentPage = new PageImpl<>(List.of(recruitment));
+            FindCompletedRecruitmentsResponse expected = FindCompletedRecruitmentsResponse.from(
+                recruitmentPage);
+
+            given(recruitmentRepository.findCompletedRecruitments(anyLong(), any()))
+                .willReturn(recruitmentPage);
+
+            //when
+            FindCompletedRecruitmentsResponse recruitments = recruitmentService.findCompletedRecruitments(
+                volunteerId, pageRequest);
+
+            //then
+            assertThat(recruitments).usingRecursiveComparison()
+                .ignoringFields("recruitmentId")
+                .isEqualTo(expected);
         }
     }
 

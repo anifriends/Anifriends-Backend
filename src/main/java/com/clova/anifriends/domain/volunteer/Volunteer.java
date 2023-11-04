@@ -133,4 +133,8 @@ public class Volunteer extends BaseTimeEntity {
     public List<Applicant> getApplications() {
         return Collections.unmodifiableList(applications);
     }
+
+    public void updateVolunteerImage(VolunteerImage volunteerImage) {
+        this.volunteerImage = volunteerImage;
+    }
 }
