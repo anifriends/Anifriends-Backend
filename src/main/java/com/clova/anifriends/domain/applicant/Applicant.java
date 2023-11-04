@@ -21,6 +21,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -104,5 +105,9 @@ public class Applicant extends BaseTimeEntity {
 
     public boolean isAttendance() {
         return this.status == ApplicantStatus.ATTENDANCE;
+    }
+
+    public boolean shouldWriteReview() {
+        return getStatus().equals(ApplicantStatus.ATTENDANCE) && Objects.isNull(getReview());
     }
 }
