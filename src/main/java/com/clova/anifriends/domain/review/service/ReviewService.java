@@ -29,7 +29,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public FindShelterReviewsResponse findShelterReviews(Long shelterId, Pageable pageable) {
         Page<Review> reviewPage
-            = reviewRepository.findAllByRecruitmentShelterShelterId(shelterId, pageable);
+            = reviewRepository.findAllByApplicantRecruitmentShelterShelterId(shelterId, pageable);
         return FindShelterReviewsResponse.from(reviewPage);
     }
 }

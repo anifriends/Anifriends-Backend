@@ -15,7 +15,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         + "where r.reviewId = :reviewId and a.volunteer.volunteerId = :volunteerId")
     Optional<Review> findByReviewIdAndVolunteerId(
         @Param("reviewId") Long reviewId,
-        @Param("userId") Long userId);
+        @Param("volunteerId") Long volunteerId);
 
-    Page<Review> findAllByRecruitmentShelterShelterId(Long shelterId, Pageable pageable);
+    Page<Review> findAllByApplicantRecruitmentShelterShelterId(Long shelterId, Pageable pageable);
 }
