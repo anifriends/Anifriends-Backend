@@ -224,7 +224,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
         params.add("pageNumber", "0");
         params.add("pageSize", "10");
         Shelter shelter = shelter();
-        shelter.setShelterImage(new ShelterImage(shelter, "www.aws.s3.com/2"));
+        ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
+        shelter.updateShelterImage(shelterImage);
         Recruitment recruitment = recruitment(shelter);
         ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
         FindRecruitmentByVolunteerResponse findRecruitmentByVolunteerResponse
