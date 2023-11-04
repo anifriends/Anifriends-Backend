@@ -121,15 +121,18 @@ class RecruitmentControllerTest extends BaseControllerTest {
     void findRecruitment() throws Exception {
         // given
         Shelter shelter = shelter();
+        ReflectionTestUtils.setField(shelter, "shelterId", 1L);
         Recruitment recruitment = recruitment(shelter);
+        ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
         FindRecruitmentByShelterResponse response = findRecruitmentResponse(recruitment);
 
-        when(recruitmentService.findRecruitmentByIdByShelter(anyLong()))
+        when(recruitmentService.findRecruitmentByShelterIdAndRecruitmentIdByShelter(
+            shelter.getShelterId(), recruitment.getRecruitmentId()))
             .thenReturn(response);
 
         // when
         ResultActions result = mockMvc.perform(
-            get("/api/shelters/recruitments/{recruitmentId}", anyLong())
+            get("/api/shelters/recruitments/{recruitmentId}", recruitment.getRecruitmentId())
                 .header(AUTHORIZATION, shelterAccessToken)
                 .contentType(MediaType.APPLICATION_JSON)
         );

@@ -69,8 +69,10 @@ public class RecruitmentService {
             .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
     }
 
-    public FindRecruitmentByShelterResponse findRecruitmentByIdByShelter(long id) {
-        Recruitment recruitment = getRecruitmentById(id);
+    public FindRecruitmentByShelterResponse findRecruitmentByShelterIdAndRecruitmentIdByShelter(
+        long shelterId, long recruitmentId) {
+        Recruitment recruitment = getRecruitmentByShelterIdAndRecruitmentId(shelterId,
+            recruitmentId);
         return FindRecruitmentByShelterResponse.from(recruitment);
     }
 
@@ -86,6 +88,12 @@ public class RecruitmentService {
         Recruitment foundRecruitment = getRecruitmentById(recruitmentId);
 
         return FindShelterSimpleResponse.from(foundRecruitment);
+    }
+
+    private Recruitment getRecruitmentByShelterIdAndRecruitmentId(long shelterId,
+        long recruitmentId) {
+        return recruitmentRepository.findByShelterIdAndRecruitmentId(shelterId, recruitmentId)
+            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글입니다."));
     }
 
     private Recruitment getRecruitmentById(long id) {
