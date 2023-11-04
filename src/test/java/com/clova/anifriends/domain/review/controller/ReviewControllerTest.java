@@ -23,28 +23,29 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
+import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
-import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
-import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 
 class ReviewControllerTest extends BaseControllerTest {
@@ -58,7 +59,7 @@ class ReviewControllerTest extends BaseControllerTest {
         Recruitment recruitment = recruitment(shelter);
         long reviewId = 1L;
         Review review = review(recruitment, volunteer);
-        ReflectionTestUtils.setField(review, "reviewId", reviewId);
+        setField(review, "reviewId", reviewId);
         FindReviewResponse response = findReviewResponse(review);
 
         when(reviewService.findReview(anyLong(), eq(reviewId)))
@@ -100,8 +101,8 @@ class ReviewControllerTest extends BaseControllerTest {
         VolunteerImage volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
         volunteer.updateVolunteerImage(volunteerImage);
         Review review = review(recruitment, volunteer);
-        ReflectionTestUtils.setField(review, "reviewId", 1L);
-        ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());
+        setField(review, "reviewId", 1L);
+        setField(review, "createdAt", LocalDateTime.now());
         PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
         FindShelterReviewsResponse response = FindShelterReviewsResponse.from(reviewPage);
 
@@ -143,6 +144,53 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
                     fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 봉사자가 작성 후기 리스트 조회 api 호출")
+    void findVolunteerReviews() throws Exception {
+        // given
+        Long volunteerId = 1L;
+        Volunteer volunteer = volunteer();
+        Shelter shelter = shelter();
+        Recruitment recruitment = recruitment(shelter);
+        Review review = review(recruitment, volunteer);
+        setField(review, "reviewId", 1L);
+        setField(review, "createdAt", LocalDateTime.now());
+        Page<Review> page = new PageImpl<>(List.of(review));
+        FindVolunteerReviewsResponse response = FindVolunteerReviewsResponse.of(
+            page.getContent(), PageInfo.from(page));
+
+        given(reviewService.findVolunteerReviews(anyLong(), any())).willReturn(response);
+
+        // when
+        ResultActions resultActions
+            = mockMvc.perform(get("/api/volunteers/{volunteerId}/reviews", volunteerId)
+            .param("pageNumber", "0")
+            .param("pageSize", "10"));
+
+        // then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                pathParameters(
+                    parameterWithName("volunteerId").description("봉사자 ID")
+                ),
+                queryParameters(
+                    parameterWithName("pageNumber").description("페이지 번호"),
+                    parameterWithName("pageSize").description("페이지 사이즈")
+                ),
+                responseFields(
+                    fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
+                    fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
+                    fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
+                    fieldWithPath("reviews").type(ARRAY).description("리뷰 리스트"),
+                    fieldWithPath("reviews[].reviewId").type(NUMBER).description("리뷰 ID"),
+                    fieldWithPath("reviews[].shelterName").type(STRING).description("보호소 이름"),
+                    fieldWithPath("reviews[].createdAt").type(STRING).description("리뷰 생성일"),
+                    fieldWithPath("reviews[].content").type(STRING).description("리뷰 내용"),
+                    fieldWithPath("reviews[].imageUrls").type(ARRAY).description("리뷰 이미지 url 리스트")
                 )
             ));
     }
