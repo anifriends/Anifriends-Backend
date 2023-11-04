@@ -28,7 +28,7 @@ public record FindApplyingVolunteersResponse(
                 applicant.getRecruitment().getTitle(),
                 applicant.getRecruitment().getShelter().getName(),
                 applicant.getStatus(),
-                applicant.shouldWriteReview(),
+                applicant.hasNotReview(),
                 applicant.getRecruitment().getStartTime()
             );
         }

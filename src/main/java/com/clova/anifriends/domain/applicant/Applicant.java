@@ -107,7 +107,7 @@ public class Applicant extends BaseTimeEntity {
         return this.status == ApplicantStatus.ATTENDANCE;
     }
 
-    public boolean shouldWriteReview() {
-        return getStatus().equals(ApplicantStatus.ATTENDANCE) && Objects.isNull(getReview());
+    public boolean hasNotReview() {
+        return getStatus().equals(ApplicantStatus.ATTENDANCE) && Objects.isNull(review);
     }
 }
