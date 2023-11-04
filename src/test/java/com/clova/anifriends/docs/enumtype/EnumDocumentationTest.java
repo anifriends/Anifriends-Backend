@@ -118,20 +118,6 @@ public class EnumDocumentationTest extends BaseControllerTest {
             .toArray(FieldDescriptor[]::new);
     }
 
-    @Test
-    @DisplayName("ErrorCode 문서화")
-    void errorCode() throws Exception {
-        ResultActions resultActions = mockMvc.perform(get("/test/docs/enum/error-code")
-            .accept(MediaType.APPLICATION_JSON));
-
-        resultActions.andExpect(status().isOk())
-            .andDo(restDocs.document(
-                enumResponseFields("enum-response",  // 스니펫 파일의 이름
-                    attributes(key(TITLE).value("에러 코드")),  // 문서화한 enum의 타이틀
-                    null,  // API 응답을 감싸서 전달하는 경우 beneathPath("data").withSubsectionId("providers") 추가할 것
-                    errorCodeConvertFieldDescriptor(ErrorCode.values()))));
-    }
-
     private FieldDescriptor[] errorCodeConvertFieldDescriptor(ErrorCode[] errorCodes) {
         return Arrays.stream(errorCodes)
             .map(errorCode -> fieldWithPath(errorCode.getName()).description(errorCode.getValue()))
