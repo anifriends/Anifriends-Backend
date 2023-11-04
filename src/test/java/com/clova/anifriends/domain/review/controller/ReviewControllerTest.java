@@ -12,6 +12,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -26,6 +27,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
+import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
@@ -105,10 +107,15 @@ class ReviewControllerTest extends BaseControllerTest {
         //then
         result.andExpect(status().isCreated())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
                 requestFields(
                     fieldWithPath("applicationId").type(NUMBER).description("봉사 신청 ID"),
-                    fieldWithPath("content").type(STRING).description("리뷰 내용"),
+                    fieldWithPath("content").type(STRING).description("리뷰 내용")
+                        .description(DocumentationFormatGenerator.getConstraint("10 ~ 300자")),
                     fieldWithPath("imageUrls[]").type(ARRAY).description("리뷰 이미지 url 리스트")
+                        .description(DocumentationFormatGenerator.getConstraint("최대 5개"))
                         .optional()
                 ),
                 responseHeaders(
