@@ -1,6 +1,5 @@
 package com.clova.anifriends.domain.review.repository;
 
-import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.review.support.ReviewFixture.review;
@@ -11,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.review.Review;
@@ -44,7 +44,7 @@ class ReviewRepositoryTest extends BaseRepositoryTest {
         Shelter shelter = shelter();
         Volunteer volunteer = volunteer();
         Recruitment recruitment = recruitment(shelter);
-        Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+        Applicant applicant = ApplicantFixture.applicantWithStatus(recruitment, volunteer, ATTENDANCE);
         Review review = review(applicant);
 
         shelterRepository.save(shelter);

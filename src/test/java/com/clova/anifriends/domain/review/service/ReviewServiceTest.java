@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.review.service;
 
-import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
+import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicantWithStatus;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.review.support.ReviewDtoFixture.findReviewResponse;
@@ -55,7 +55,7 @@ class ReviewServiceTest {
             Shelter shelter = shelter();
             Volunteer volunteer = volunteer();
             Recruitment recruitment = recruitment(shelter);
-            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+            Applicant applicant = applicantWithStatus(recruitment, volunteer, ATTENDANCE);
             Review review = review(applicant);
             FindReviewResponse expected = findReviewResponse(review);
 
@@ -98,11 +98,11 @@ class ReviewServiceTest {
             Shelter shelter = shelter();
             Recruitment recruitment = recruitment(shelter);
             Volunteer volunteer = volunteer();
-            Review review = review(recruitment, volunteer);
+            Review review = review(applicantWithStatus(recruitment, volunteer, ATTENDANCE));
             PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
             FindShelterReviewsResponse expected = FindShelterReviewsResponse.from(reviewPage);
 
-            given(reviewRepository.findAllByRecruitmentShelterShelterId(anyLong(), any()))
+            given(reviewRepository.findAllByApplicantRecruitmentShelterShelterId(anyLong(), any()))
                 .willReturn(reviewPage);
 
             //then

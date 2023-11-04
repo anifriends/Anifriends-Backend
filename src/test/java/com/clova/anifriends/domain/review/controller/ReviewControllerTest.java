@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.review.controller;
 
-import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
+import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicantWithStatus;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.review.support.ReviewDtoFixture.findReviewResponse;
@@ -35,11 +35,9 @@ import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
-import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
-import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,7 +57,7 @@ class ReviewControllerTest extends BaseControllerTest {
         Shelter shelter = shelter();
         Volunteer volunteer = volunteer();
         Recruitment recruitment = recruitment(shelter);
-        Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+        Applicant applicant = applicantWithStatus(recruitment, volunteer, ATTENDANCE);
         long reviewId = 1L;
         Review review = review(applicant);
         ReflectionTestUtils.setField(review, "reviewId", reviewId);
@@ -103,7 +101,7 @@ class ReviewControllerTest extends BaseControllerTest {
         Volunteer volunteer = volunteer();
         VolunteerImage volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
         volunteer.updateVolunteerImage(volunteerImage);
-        Review review = review(recruitment, volunteer);
+        Review review = review(applicantWithStatus(recruitment, volunteer, ATTENDANCE));
         ReflectionTestUtils.setField(review, "reviewId", 1L);
         ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());
         PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
