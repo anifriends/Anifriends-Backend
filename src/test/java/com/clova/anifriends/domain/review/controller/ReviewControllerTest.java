@@ -33,9 +33,11 @@ import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsRespons
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
+import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
+import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -91,10 +93,12 @@ class ReviewControllerTest extends BaseControllerTest {
         //given
         Long shelterId = 1L;
         Shelter shelter = shelter();
-        ShelterImage shelterImage = ShelterFixture.shelterImage(shelter);
+        ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
+        shelter.updateShelterImage(shelterImage);
         Recruitment recruitment = recruitment(shelter);
         Volunteer volunteer = volunteer();
-        VolunteerImage volunteerImage = VolunteerFixture.volunteerImage(volunteer);
+        VolunteerImage volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
+        volunteer.updateVolunteerImage(volunteerImage);
         Review review = review(recruitment, volunteer);
         ReflectionTestUtils.setField(review, "reviewId", 1L);
         ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());

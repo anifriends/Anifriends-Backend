@@ -129,12 +129,16 @@ class RecruitmentControllerTest extends BaseControllerTest {
         // when
         ResultActions result = mockMvc.perform(
             get("/api/shelters/recruitments/{recruitmentId}", anyLong())
+                .header(AUTHORIZATION, shelterAccessToken)
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
         // then
         result.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("액세스 토큰")
+                ),
                 pathParameters(
                     parameterWithName("recruitmentId").description("봉사 모집글 ID")
                 ),
@@ -268,7 +272,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
         params.add("pageNumber", "0");
         params.add("pageSize", "10");
         Shelter shelter = shelter();
-        shelter.setShelterImage(new ShelterImage(shelter, "www.aws.s3.com/2"));
+        ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
+        shelter.updateShelterImage(shelterImage);
         Recruitment recruitment = recruitment(shelter);
         ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
         FindRecruitmentByVolunteerResponse findRecruitmentByVolunteerResponse

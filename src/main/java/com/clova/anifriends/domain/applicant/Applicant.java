@@ -77,6 +77,10 @@ public class Applicant extends BaseTimeEntity {
         }
     }
 
+    public boolean isAttendance() {
+        return this.status == ApplicantStatus.ATTENDANCE;
+    }
+
     public ApplicantStatus getStatus() {
         return status;
     }
@@ -87,5 +91,9 @@ public class Applicant extends BaseTimeEntity {
 
     public Volunteer getVolunteer() {
         return volunteer;
+    }
+
+    public Long getApplicantId() {
+        return applicantId;
     }
 }

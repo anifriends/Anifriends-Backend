@@ -213,6 +213,7 @@ class RecruitmentServiceTest {
         }
     }
 
+    @Nested
     @DisplayName("findRecruitmentsByVolunteer 실행 시")
     class FindRecruitmentsByVolunteerTest {
 

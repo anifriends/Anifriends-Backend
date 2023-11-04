@@ -102,7 +102,7 @@ public class Shelter extends BaseTimeEntity {
         return this.shelterImage == null ? null : this.shelterImage.getImageUrl();
     }
 
-    public void setShelterImage(ShelterImage shelterImage) {
+    public void updateShelterImage(ShelterImage shelterImage) {
         this.shelterImage = shelterImage;
     }
 
