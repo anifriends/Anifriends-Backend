@@ -1,0 +1,28 @@
+= API 문서
+:doctype: book
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+== #. Enum 문서화
+
+=== 1. 보호 동물 성격
+
+include::{snippets}/enum-documentation-test/animal-active/enum-response-fields.adoc[]
+
+=== 2. 보호 동물 성별
+
+include::{snippets}/enum-documentation-test/animal-gender/enum-response-fields.adoc[]
+
+=== 3. 보호 동물 종류
+
+include::{snippets}/enum-documentation-test/animal-type/enum-response-fields.adoc[]
+
+=== 4. 봉사 신청자 상태
+
+include::{snippets}/enum-documentation-test/animal-type/enum-response-fields.adoc[]
+
+=== 5. 봉사자 성별
+
+include::{snippets}/enum-documentation-test/animal-type/enum-response-fields.adoc[]
