@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,12 +22,14 @@ import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -35,6 +38,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceTest {
@@ -146,5 +151,35 @@ class ReviewServiceTest {
 
     }
 
+    @Nested
+    @DisplayName("findShelterReviews 메서드 실행 시")
+    class FindShelterReviewsTest {
 
+        @Test
+        @DisplayName("성공")
+        void findShelterReviews() {
+            //given
+            Long shelterId = 1L;
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            Volunteer volunteer = volunteer();
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+            Review review = review(applicant);
+            PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
+            FindShelterReviewsResponse expected = FindShelterReviewsResponse.from(reviewPage);
+
+            given(reviewRepository.findAllByShelterId(anyLong(), any()))
+                .willReturn(reviewPage);
+
+            //then
+            FindShelterReviewsResponse response
+                = reviewService.findShelterReviews(shelterId, pageRequest);
+
+            //then
+            assertThat(response).usingRecursiveComparison()
+                .ignoringFields("reviewId")
+                .isEqualTo(expected);
+        }
+    }
 }

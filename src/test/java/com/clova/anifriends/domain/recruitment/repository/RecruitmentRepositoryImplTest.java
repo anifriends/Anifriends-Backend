@@ -82,7 +82,7 @@ class RecruitmentRepositoryImplTest extends BaseRepositoryTest {
 
         @Test
         @DisplayName("성공: 모든 인자가 주어졌을 때")
-        void FindRecruitmentsByShelterOrderByCreatedAtTest() {
+        void FindRecruitmentsByShelterOrderByCreatedAt() {
             // given
             Shelter shelter = shelter();
             setField(shelter, "shelterId", 1L);
@@ -177,8 +177,7 @@ class RecruitmentRepositoryImplTest extends BaseRepositoryTest {
                 LocalDateTime.now().plusMonths(1),
                 List.of()
             );
-
-            setField(recruitment2.getInfo(), "isClosed", true);
+            recruitment2.closeRecruitment();
 
             Recruitment recruitment3 = new Recruitment(
                 shelter,

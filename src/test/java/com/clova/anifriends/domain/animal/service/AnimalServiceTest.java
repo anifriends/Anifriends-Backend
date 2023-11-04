@@ -103,7 +103,7 @@ class AnimalServiceTest {
         void findAnimalByIdByVolunteer() {
             // given
             Shelter shelter = shelter();
-            shelter.setShelterImage(shelterImage(shelter));
+            shelter.updateShelterImage(shelterImage(shelter));
             Animal animal = animal(shelter);
             FindAnimalByVolunteerResponse expected = FindAnimalByVolunteerResponse.from(animal);
 

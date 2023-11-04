@@ -3,9 +3,11 @@ package com.clova.anifriends.domain.review.controller;
 import com.clova.anifriends.domain.auth.resolver.LoginUser;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.service.ReviewService;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,5 +41,11 @@ public class ReviewController {
         return ResponseEntity.created(location).build();
     }
 
-
+    @GetMapping("/shelters/{shelterId}/reviews")
+    public ResponseEntity<FindShelterReviewsResponse> findShelterReviews(
+        @PathVariable("shelterId") Long shelterId,
+        Pageable pageable) {
+        FindShelterReviewsResponse response = reviewService.findShelterReviews(shelterId, pageable);
+        return ResponseEntity.ok(response);
+    }
 }
