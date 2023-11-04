@@ -32,11 +32,9 @@ import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
-import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
-import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -74,6 +72,9 @@ class ReviewControllerTest extends BaseControllerTest {
         //then
         result.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
                 pathParameters(
                     parameterWithName("reviewId").description("리뷰 ID")
                 ),

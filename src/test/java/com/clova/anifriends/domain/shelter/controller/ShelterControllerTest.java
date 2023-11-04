@@ -1,6 +1,8 @@
 package com.clova.anifriends.domain.shelter.controller;
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -51,6 +53,9 @@ class ShelterControllerTest extends BaseControllerTest {
         // then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
                 pathParameters(
                     parameterWithName("shelterId").description("보호소 ID")
                 ),
@@ -113,6 +118,9 @@ class ShelterControllerTest extends BaseControllerTest {
         // then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
                 responseFields(
                     fieldWithPath("shelterId").type(JsonFieldType.NUMBER)
                         .description("보호소 ID"),
