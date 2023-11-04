@@ -30,7 +30,7 @@ class VolunteerPhoneNumberTest {
         }
 
         @Test
-        @DisplayName("예외: 전화번호 형식이 잘못된 경ㅇ ")
+        @DisplayName("예외: 전화번호 형식이 잘못된 경우")
         void throwExceptionWhenPhoneNumberIsWrong() {
             // given
             phoneNumber = "01012345";
