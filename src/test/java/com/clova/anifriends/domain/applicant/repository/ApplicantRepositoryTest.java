@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.applicant.repository;
 
-import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicantWithStatus;
+import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.NO_SHOW;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.PENDING;
@@ -49,10 +49,10 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             Shelter shelter = shelter();
             Volunteer volunteer = volunteer();
             Recruitment recruitment = recruitment(shelter);
-            Applicant applicantAttendance = applicantWithStatus(recruitment, volunteer, ATTENDANCE);
-            Applicant applicantNoShow = applicantWithStatus(recruitment, volunteer, NO_SHOW);
-            Applicant applicantPending = applicantWithStatus(recruitment, volunteer, PENDING);
-            Applicant applicantRefused = applicantWithStatus(recruitment, volunteer, REFUSED);
+            Applicant applicantAttendance = applicant(recruitment, volunteer, ATTENDANCE);
+            Applicant applicantNoShow = applicant(recruitment, volunteer, NO_SHOW);
+            Applicant applicantPending = applicant(recruitment, volunteer, PENDING);
+            Applicant applicantRefused = applicant(recruitment, volunteer, REFUSED);
 
             shelterRepository.save(shelter);
             volunteerRepository.save(volunteer);
@@ -78,8 +78,8 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             Shelter shelter = shelter();
             Volunteer volunteer = volunteer();
             Recruitment recruitment = recruitment(shelter);
-            Applicant applicantPending = applicantWithStatus(recruitment, volunteer, PENDING);
-            Applicant applicantRefused = applicantWithStatus(recruitment, volunteer, REFUSED);
+            Applicant applicantPending = applicant(recruitment, volunteer, PENDING);
+            Applicant applicantRefused = applicant(recruitment, volunteer, REFUSED);
 
             shelterRepository.save(shelter);
             volunteerRepository.save(volunteer);

@@ -10,10 +10,17 @@ import org.springframework.data.repository.query.Param;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    @Query("select r from Review r where r.reviewId = :reviewId and r.volunteer.volunteerId = :userId")
+    @Query("select r from Review r "
+        + "join fetch r.applicant a "
+        + "where r.reviewId = :reviewId and a.volunteer.volunteerId = :volunteerId")
     Optional<Review> findByReviewIdAndVolunteerId(
         @Param("reviewId") Long reviewId,
-        @Param("userId") Long userId);
+        @Param("volunteerId") Long volunteerId
+    );
 
-    Page<Review> findAllByRecruitmentShelterShelterId(Long shelterId, Pageable pageable);
+    @Query("select r from Review r "
+        + "join fetch r.applicant a "
+        + "join fetch a.recruitment rc "
+        + "where rc.shelter.shelterId = :shelterId")
+    Page<Review> findAllByShelterId(Long shelterId, Pageable pageable);
 }

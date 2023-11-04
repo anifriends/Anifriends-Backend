@@ -1,5 +1,7 @@
 package com.clova.anifriends.domain.review.repository;
 
+import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
+import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.review.support.ReviewFixture.review;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
@@ -7,6 +9,8 @@ import static com.clova.anifriends.domain.volunteer.support.VolunteerFixture.vol
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.clova.anifriends.base.BaseRepositoryTest;
+import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.review.Review;
@@ -33,6 +37,9 @@ class ReviewRepositoryTest extends BaseRepositoryTest {
     @Autowired
     private VolunteerRepository volunteerRepository;
 
+    @Autowired
+    private ApplicantRepository applicantRepository;
+
     @Test
     @DisplayName("성공")
     void findByIdAndVolunteerId() {
@@ -40,11 +47,13 @@ class ReviewRepositoryTest extends BaseRepositoryTest {
         Shelter shelter = shelter();
         Volunteer volunteer = volunteer();
         Recruitment recruitment = recruitment(shelter);
-        Review review = review(recruitment, volunteer);
+        Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+        Review review = review(applicant);
 
         shelterRepository.save(shelter);
         volunteerRepository.save(volunteer);
         recruitmentRepository.save(recruitment);
+        applicantRepository.save(applicant);
         reviewRepository.save(review);
 
         //when
