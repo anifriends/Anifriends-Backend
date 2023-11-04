@@ -101,4 +101,8 @@ public class Applicant extends BaseTimeEntity {
             throw new ApplicantConflictException(ErrorCode.CONCURRENCY, "모집 인원이 초과되었습니다.");
         }
     }
+
+    public boolean isAttendance() {
+        return this.status == ApplicantStatus.ATTENDANCE;
+    }
 }

@@ -34,6 +34,7 @@ import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
@@ -114,6 +115,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
             ));
     }
 
+    @Test
     @DisplayName("findRecruitmentById 실행 시")
     void FindRecruitmentTest() throws Exception {
         // given
@@ -127,12 +129,16 @@ class RecruitmentControllerTest extends BaseControllerTest {
         // when
         ResultActions result = mockMvc.perform(
             get("/api/shelters/recruitments/{recruitmentId}", anyLong())
+                .header(AUTHORIZATION, shelterAccessToken)
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
         // then
         result.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("액세스 토큰")
+                ),
                 pathParameters(
                     parameterWithName("recruitmentId").description("봉사 모집글 ID")
                 ),
@@ -205,6 +211,53 @@ class RecruitmentControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @DisplayName("성공: 봉사자가 완료한 봉사 리스트 조회 API 호출 시")
+    void findCompletedRecruitments() throws Exception {
+        //given
+        Long volunteerId = 1L;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("pageNumber", "0");
+        params.add("pageSize", "10");
+        Shelter shelter = shelter();
+        Recruitment recruitment = recruitment(shelter);
+        ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+        PageImpl<Recruitment> recruitments = new PageImpl<>(List.of(recruitment));
+        FindCompletedRecruitmentsResponse response = FindCompletedRecruitmentsResponse.from(
+            recruitments);
+
+        given(recruitmentService.findCompletedRecruitments(anyLong(), any()))
+            .willReturn(response);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            get("/api/volunteers/{volunteerId}/recruitments/completed", volunteerId)
+                .params(params));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                pathParameters(
+                    parameterWithName("volunteerId").description("봉사자 ID")
+                ),
+                queryParameters(
+                    parameterWithName("pageNumber").description("페이지 번호"),
+                    parameterWithName("pageSize").description("페이지 사이즈")
+                ),
+                responseFields(
+                    fieldWithPath("recruitments").type(ARRAY).description("봉사 모집글 리스트"),
+                    fieldWithPath("recruitments[].recruitmentId").type(NUMBER)
+                        .description("봉사 모집글 ID"),
+                    fieldWithPath("recruitments[].title").type(STRING).description("봉사 모집글 제목"),
+                    fieldWithPath("recruitments[].volunteerDate").type(STRING).description("봉사 날짜"),
+                    fieldWithPath("recruitments[].name").type(STRING).description("보호소 이름"),
+                    fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
+                    fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
+                    fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부")
+                )
+            ));
+    }
+
+    @Test
     @DisplayName("성공: 봉사 모집글 조회, 검색(봉사자) API 호출")
     void findRecruitmentsByVolunteer() throws Exception {
         //given
@@ -219,7 +272,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
         params.add("pageNumber", "0");
         params.add("pageSize", "10");
         Shelter shelter = shelter();
-        shelter.setShelterImage(new ShelterImage(shelter, "www.aws.s3.com/2"));
+        ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
+        shelter.updateShelterImage(shelterImage);
         Recruitment recruitment = recruitment(shelter);
         ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
         FindRecruitmentByVolunteerResponse findRecruitmentByVolunteerResponse

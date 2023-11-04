@@ -86,4 +86,8 @@ public class Review extends BaseTimeEntity {
     public Applicant getApplicant() {
         return applicant;
     }
+
+    public Volunteer getVolunteer() {
+        return volunteer;
+    }
 }

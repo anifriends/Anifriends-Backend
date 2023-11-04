@@ -21,6 +21,16 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
             + "where a.volunteer = :volunteer"
     )
     List<Applicant> findApplyingVolunteers(
-        @Param("volunteer") Volunteer volunteer
+        @Param("volunteer") Volunteer volunteer);
+    
+    @Query("select a from Applicant a "
+        + "join fetch a.recruitment r "
+        + "join fetch r.shelter s "
+        + "where r.recruitmentId = :recruitmentId "
+        + "and s.shelterId = :shelterId "
+        + "and (a.status = 'ATTENDANCE' or a.status = 'NO_SHOW')")
+    List<Applicant> findApprovedByRecruitmentIdAndShelterId(
+        @Param("recruitmentId") Long recruitmentId,
+        @Param("shelterId") Long shelterId
     );
 }

@@ -19,6 +19,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -140,7 +141,7 @@ public class Recruitment extends BaseTimeEntity {
         info = new RecruitmentInfo(startTime, endTime, deadline, true, capacity);
     }
 
-    public RecruitmentInfo getInfo() {
-        return info;
+    public List<Applicant> getApplicants() {
+        return Collections.unmodifiableList(applicants);
     }
 }

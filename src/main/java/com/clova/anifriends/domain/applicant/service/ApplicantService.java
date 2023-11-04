@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.applicant.service;
 
 import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.applicant.dto.FindApplicantsApprovedResponse;
 import com.clova.anifriends.domain.applicant.dto.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
@@ -55,5 +56,12 @@ public class ApplicantService {
     private Volunteer getVolunteer(Long volunteerId) {
         return volunteerRepository.findById(volunteerId)
             .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
+    }
+
+    public FindApplicantsApprovedResponse findApplicantsApproved(Long shelterId,
+        Long recruitmentId) {
+        List<Applicant> applicantApproved = applicantRepository
+            .findApprovedByRecruitmentIdAndShelterId(recruitmentId, shelterId);
+        return FindApplicantsApprovedResponse.from(applicantApproved);
     }
 }

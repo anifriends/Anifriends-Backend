@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.applicant.service;
 
+import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicantWithStatus;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.PENDING;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
@@ -15,6 +16,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.applicant.dto.FindApplicantsApprovedResponse;
 import com.clova.anifriends.domain.applicant.dto.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
@@ -23,9 +25,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentInfo;
-import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
@@ -52,12 +52,6 @@ class ApplicantServiceTest {
 
     @Mock
     RecruitmentRepository recruitmentRepository;
-
-    @Mock
-    ReviewRepository reviewRepository;
-
-    @Mock
-    ShelterRepository shelterRepository;
 
     @Mock
     VolunteerRepository volunteerRepository;
@@ -124,6 +118,51 @@ class ApplicantServiceTest {
     }
 
     @Nested
+    @DisplayName("findApplicantsApproved 메서드 실행 시")
+    class FindApplicantsApprovedTest {
+
+        @Test
+        @DisplayName("성공: 봉사 승인자가 1명 이상인 경우")
+        void findApplicantsApproved1() {
+            // given
+            Recruitment recruitment = recruitment(shelter());
+            Volunteer volunteer = volunteer();
+            Applicant applicantApproved = applicantWithStatus(recruitment, volunteer, ATTENDANCE);
+
+            FindApplicantsApprovedResponse response = FindApplicantsApprovedResponse.from(
+                List.of(applicantApproved));
+
+            when(applicantRepository.findApprovedByRecruitmentIdAndShelterId(anyLong(), anyLong()))
+                .thenReturn(List.of(applicantApproved));
+
+            // when
+            FindApplicantsApprovedResponse result = applicantService.findApplicantsApproved(
+                anyLong(), anyLong());
+
+            // then
+            assertThat(result).isEqualTo(response);
+        }
+
+        @Test
+        @DisplayName("성공: 봉사 승인자가 0 명인 경우")
+        void findApplicantsApproved2() {
+            // given
+            FindApplicantsApprovedResponse response = FindApplicantsApprovedResponse.from(
+                List.of());
+
+            when(applicantRepository.findApprovedByRecruitmentIdAndShelterId(anyLong(), anyLong()))
+                .thenReturn(List.of());
+
+            // when
+            FindApplicantsApprovedResponse result = applicantService.findApplicantsApproved(
+                anyLong(), anyLong());
+
+            // then
+            assertThat(result).isEqualTo(response);
+        }
+    }
+
+    @Nested
     @DisplayName("findApplyingVolunteers 실행 시")
     class FindApplyingVolunteersTest {
 
@@ -134,9 +173,10 @@ class ApplicantServiceTest {
             Volunteer volunteer = VolunteerFixture.volunteer();
             Shelter shelter = ShelterFixture.shelter();
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-            Applicant applicantShouldWriteReview = ApplicantFixture.applicant(recruitment,
+            Applicant applicantShouldWriteReview = ApplicantFixture.applicantWithStatus(recruitment,
                 volunteer, ATTENDANCE);
-            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(recruitment,
+            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicantWithStatus(
+                recruitment,
                 volunteer, PENDING);
 
             FindApplyingVolunteersResponse findApplyingVolunteersResponse = FindApplyingVolunteersResponse.from(
@@ -170,9 +210,10 @@ class ApplicantServiceTest {
             Shelter shelter = ShelterFixture.shelter();
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
 
-            Applicant applicantShouldWriteReview = ApplicantFixture.applicant(recruitment,
+            Applicant applicantShouldWriteReview = ApplicantFixture.applicantWithStatus(recruitment,
                 volunteer, PENDING);
-            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(recruitment,
+            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicantWithStatus(
+                recruitment,
                 volunteer, PENDING);
 
             given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
