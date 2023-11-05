@@ -124,6 +124,19 @@ public class RecruitmentRepositoryImpl implements
         return new PageImpl<>(recruitments);
     }
 
+    @Override
+    public Page<Recruitment> findRecruitmentsByShelterId(long shelterId, Pageable pageable) {
+
+        List<Recruitment> recruitments = query.selectFrom(recruitment)
+            .where(recruitment.shelter.shelterId.eq(shelterId)
+                .and(recruitment.info.isClosed.eq(false)))
+            .orderBy(recruitment.createdAt.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+        return new PageImpl<>(recruitments);
+    }
+
     Predicate getDateCondition(LocalDate startDate, LocalDate endDate) {
         BooleanExpression predicate = recruitment.isNotNull();
         if (startDate != null) {

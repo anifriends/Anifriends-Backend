@@ -6,6 +6,7 @@ import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRe
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindShelterSimpleResponse;
@@ -61,6 +62,17 @@ public class RecruitmentService {
         );
 
         return FindRecruitmentsByShelterResponse.of(pagination.getContent(),
+            PageInfo.from(pagination));
+    }
+
+    @Transactional(readOnly = true)
+    public FindRecruitmentsByShelterIdResponse findShelterRecruitmentsByShelter(
+        long shelterId, Pageable pageable
+    ) {
+        Page<Recruitment> pagination = recruitmentRepository.findRecruitmentsByShelterId(
+            shelterId, pageable
+        );
+        return FindRecruitmentsByShelterIdResponse.of(pagination.getContent(),
             PageInfo.from(pagination));
     }
 
