@@ -168,12 +168,16 @@ class ReviewControllerTest extends BaseControllerTest {
         // when
         ResultActions resultActions
             = mockMvc.perform(get("/api/volunteers/{volunteerId}/reviews", volunteerId)
+                .header(AUTHORIZATION, shelterAccessToken)
             .param("pageNumber", "0")
             .param("pageSize", "10"));
 
         // then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("액세스 토큰")
+                ),
                 pathParameters(
                     parameterWithName("volunteerId").description("봉사자 ID")
                 ),
