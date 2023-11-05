@@ -97,11 +97,11 @@ public class RecruitmentController {
     }
 
     @GetMapping("/shelters/{shelterId}/recruitments")
-    public ResponseEntity<FindRecruitmentsByShelterIdResponse> findRecruitmentsByShelterId(
+    public ResponseEntity<FindRecruitmentsByShelterIdResponse> findShelterRecruitmentsByShelter(
         @PathVariable Long shelterId,
         Pageable pageable
     ) {
         return ResponseEntity.ok(
-            recruitmentService.findRecruitmentsByShelterId(shelterId, pageable));
+            recruitmentService.findShelterRecruitmentsByShelter(shelterId, pageable));
     }
 }

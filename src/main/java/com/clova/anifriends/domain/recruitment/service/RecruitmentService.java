@@ -65,7 +65,7 @@ public class RecruitmentService {
     }
 
     @Transactional(readOnly = true)
-    public FindRecruitmentsByShelterIdResponse findRecruitmentsByShelterId(
+    public FindRecruitmentsByShelterIdResponse findShelterRecruitmentsByShelter(
         long shelterId, Pageable pageable
     ) {
         Page<Recruitment> pagination = recruitmentRepository.findRecruitmentsByShelterId(

@@ -404,7 +404,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         FindRecruitmentsByShelterIdResponse response = findRecruitmentsByShelterIdResponse(
             pageResult);
 
-        when(recruitmentService.findRecruitmentsByShelterId(anyLong(), any()))
+        when(recruitmentService.findShelterRecruitmentsByShelter(anyLong(), any()))
             .thenReturn(response);
 
         // when

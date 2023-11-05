@@ -305,7 +305,7 @@ class RecruitmentServiceTest {
                 .thenReturn(pageResult);
 
             // when
-            FindRecruitmentsByShelterIdResponse result = recruitmentService.findRecruitmentsByShelterId(
+            FindRecruitmentsByShelterIdResponse result = recruitmentService.findShelterRecruitmentsByShelter(
                 anyLong(), any());
 
             // then
