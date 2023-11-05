@@ -23,4 +23,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         + "join fetch a.recruitment rc "
         + "where rc.shelter.shelterId = :shelterId")
     Page<Review> findAllByShelterId(Long shelterId, Pageable pageable);
+
+    @Query("select r from Review r "
+        + "join fetch r.applicant a "
+        + "where a.volunteer.volunteerId = :volunteerId")
+    Page<Review> findAllByVolunteerVolunteerIdOrderByCreatedAtDesc(@Param("volunteerId") Long volunteerId,
+        Pageable pageable);
 }
