@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.applicant.wrapper;
 
-import com.clova.anifriends.EnumType;
+import com.clova.anifriends.domain.common.EnumType;
 
 public enum ApplicantStatus implements EnumType {
 
@@ -12,11 +12,6 @@ public enum ApplicantStatus implements EnumType {
 
     @Override
     public String getName() {
-        return this.name();
-    }
-
-    @Override
-    public String getValue() {
         return this.name();
     }
 }

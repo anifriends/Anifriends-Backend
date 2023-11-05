@@ -4,14 +4,15 @@ import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestExcept
 import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.Getter;
 
 @Getter
 @Embeddable
 public class VolunteerPhoneNumber {
 
-    private static final int MIN_PHONE_NUMBER_LENGTH = 9;
-    private static final int MAX_PHONE_NUMBER_LENGTH = 11;
+    private static final String PHONE_NUMBER_REGEX = "^(\\d{2,3}-\\d{3,4}-\\d{4})$";
 
     @Column(name = "phone_number")
     private String phoneNumber;
@@ -25,10 +26,11 @@ public class VolunteerPhoneNumber {
     }
 
     private void validateVolunteerPhoneNumber(String phoneNumber) {
-        if (phoneNumber.length() < MIN_PHONE_NUMBER_LENGTH
-            || phoneNumber.length() > MAX_PHONE_NUMBER_LENGTH) {
+        Pattern pattern = Pattern.compile(PHONE_NUMBER_REGEX);
+        Matcher matcher = pattern.matcher(phoneNumber);
+        if (!matcher.matches()) {
             throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST,
-                "전화번호는 최소 9자, 최대 11자입니다.");
+                "전화번호 형식이 올바르지 않습니다.");
         }
     }
 }

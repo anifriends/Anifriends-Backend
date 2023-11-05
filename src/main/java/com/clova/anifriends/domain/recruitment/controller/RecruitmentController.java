@@ -10,6 +10,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetai
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
 import jakarta.validation.Valid;
@@ -52,6 +53,13 @@ public class RecruitmentController {
     public ResponseEntity<FindRecruitmentDetailByVolunteerResponse> findRecruitmentByIdByVolunteer(
         @PathVariable Long recruitmentId) {
         return ResponseEntity.ok(recruitmentService.findRecruitmentByIdByVolunteer(recruitmentId));
+    }
+
+    @GetMapping("/volunteers/recruitments/{recruitmentId}/shelters")
+    public ResponseEntity<FindShelterSimpleResponse> findShelterByVolunteerReview(
+        @PathVariable Long recruitmentId) {
+        return ResponseEntity.ok(recruitmentService.findShelterSimple(recruitmentId)
+        );
     }
 
     @GetMapping("/volunteers/{volunteerId}/recruitments/completed")

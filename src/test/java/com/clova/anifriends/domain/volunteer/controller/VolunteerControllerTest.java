@@ -38,7 +38,7 @@ class VolunteerControllerTest extends BaseControllerTest {
     void registerVolunteer() throws Exception {
         // given
         RegisterVolunteerRequest registerVolunteerRequest = VolunteerDtoFixture.registerVolunteerRequest();
-        given(volunteerService.registerVolunteer(any())).willReturn(1L);
+        given(volunteerService.registerVolunteer(any(), any(), any(), any(), any(), any())).willReturn(1L);
 
         // when
         ResultActions resultActions = mockMvc.perform(

@@ -42,6 +42,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsBySh
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -119,7 +120,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("findRecruitmentById 실행 시")
-    void FindRecruitmentTest() throws Exception {
+    void findRecruitment() throws Exception {
         // given
         Shelter shelter = shelter();
         Recruitment recruitment = recruitment(shelter);
@@ -163,8 +164,44 @@ class RecruitmentControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @DisplayName("findShelterByVolunteerReview 실행 시")
+    void findShelterByVolunteerReview() throws Exception {
+        // given
+        Long recruitmentId = 1L;
+        Shelter shelter = shelter();
+        Recruitment recruitment = recruitment(shelter);
+        ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
+        FindShelterSimpleResponse response = FindShelterSimpleResponse.from(
+            recruitment);
+
+        given(recruitmentService.findShelterSimple(recruitmentId)).willReturn(response);
+
+        // when
+        ResultActions result = mockMvc.perform(
+            get("/api/volunteers/recruitments/{recruitmentId}/shelters", recruitmentId)
+                .header(AUTHORIZATION, shelterAccessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                pathParameters(
+                    parameterWithName("recruitmentId").description("봉사 모집글 ID")
+                ),
+                responseFields(
+                    fieldWithPath("name").type(STRING).description("보호소 이름"),
+                    fieldWithPath("email").type(STRING).description("보호소 이메일"),
+                    fieldWithPath("address").type(STRING).description("보호소 주소"),
+                    fieldWithPath("imageUrl").type(STRING).description("보호소 이미지 url").optional()
+                )
+            ));
+
+    }
+
+    @Test
     @DisplayName("findRecruitmentByIdByVolunteer 실행 시")
-    void findRecruitmentByIdByVolunteerTest() throws Exception {
+    void findRecruitmentByIdByVolunteer() throws Exception {
         // given
         Shelter shelter = shelter();
         ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
