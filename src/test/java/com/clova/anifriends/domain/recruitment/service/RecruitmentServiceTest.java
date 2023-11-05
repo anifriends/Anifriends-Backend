@@ -117,11 +117,12 @@ class RecruitmentServiceTest {
             Recruitment recruitment = recruitment(shelter);
             FindRecruitmentByShelterResponse expected = findRecruitmentResponse(recruitment);
 
-            when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.of(recruitment));
+            when(recruitmentRepository.findByShelterIdAndRecruitmentId(anyLong(),
+                anyLong())).thenReturn(Optional.of(recruitment));
 
             // when
             FindRecruitmentByShelterResponse result = recruitmentService
-                .findRecruitmentByIdByShelter(anyLong());
+                .findRecruitByShelter(anyLong(), anyLong());
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
@@ -132,11 +133,13 @@ class RecruitmentServiceTest {
         @DisplayName("예외(RecruitmentNotFoundException): 존재하지 않는 모집글")
         void exceptionWhenRecruitmentIsNotExist() {
             // given
-            when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.empty());
+            when(recruitmentRepository.findByShelterIdAndRecruitmentId(anyLong(),
+                anyLong())).thenReturn(Optional.empty());
 
             // when
             Exception exception = catchException(
-                () -> recruitmentService.findRecruitmentByIdByShelter(anyLong()));
+                () -> recruitmentService.findRecruitByShelter(
+                    anyLong(), anyLong()));
 
             // then
             assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
