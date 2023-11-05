@@ -4,6 +4,7 @@ import com.clova.anifriends.domain.auth.resolver.LoginUser;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.service.ReviewService;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +48,14 @@ public class ReviewController {
         Pageable pageable) {
         FindShelterReviewsResponse response = reviewService.findShelterReviews(shelterId, pageable);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/volunteers/{volunteerId}/reviews")
+    public ResponseEntity<FindVolunteerReviewsResponse> findVolunteerReviews(
+        @PathVariable("volunteerId") Long volunteerId,
+        Pageable pageable,
+        @LoginUser Long userId
+    ) {
+        return ResponseEntity.ok(reviewService.findVolunteerReviews(volunteerId, pageable));
     }
 }
