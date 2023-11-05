@@ -126,7 +126,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
         FindRecruitmentByShelterResponse response = findRecruitmentResponse(recruitment);
 
-        when(recruitmentService.findRecruitmentByShelterIdAndRecruitmentIdByShelter(
+        when(recruitmentService.findRecruitByShelter(
             shelter.getShelterId(), recruitment.getRecruitmentId()))
             .thenReturn(response);
 

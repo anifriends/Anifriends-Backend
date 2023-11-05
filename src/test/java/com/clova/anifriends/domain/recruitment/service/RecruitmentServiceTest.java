@@ -122,7 +122,7 @@ class RecruitmentServiceTest {
 
             // when
             FindRecruitmentByShelterResponse result = recruitmentService
-                .findRecruitmentByShelterIdAndRecruitmentIdByShelter(anyLong(), anyLong());
+                .findRecruitByShelter(anyLong(), anyLong());
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
@@ -138,7 +138,7 @@ class RecruitmentServiceTest {
 
             // when
             Exception exception = catchException(
-                () -> recruitmentService.findRecruitmentByShelterIdAndRecruitmentIdByShelter(
+                () -> recruitmentService.findRecruitByShelter(
                     anyLong(), anyLong()));
 
             // then
