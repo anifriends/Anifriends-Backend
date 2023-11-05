@@ -95,6 +95,20 @@ public class Volunteer extends BaseTimeEntity {
         }
     }
 
+    public void addApplicant(Applicant applicant) {
+        applicants.add(applicant);
+    }
+
+    public void updateVolunteerImage(VolunteerImage volunteerImage) {
+        this.volunteerImage = volunteerImage;
+    }
+
+    public long getReviewCount() {
+        return applicants.stream()
+            .filter(applicant -> Objects.nonNull(applicant.getReview()))
+            .count();
+    }
+
     public Long getVolunteerId() {
         return volunteerId;
     }
@@ -133,19 +147,5 @@ public class Volunteer extends BaseTimeEntity {
 
     public List<Applicant> getApplicants() {
         return Collections.unmodifiableList(applicants);
-    }
-
-    public void updateVolunteerImage(VolunteerImage volunteerImage) {
-        this.volunteerImage = volunteerImage;
-    }
-
-    public long getReviewCount() {
-        return applicants.stream()
-            .filter(applicant -> Objects.nonNull(applicant.getReview()))
-            .count();
-    }
-
-    public void addApplicant(Applicant applicant) {
-        applicants.add(applicant);
     }
 }
