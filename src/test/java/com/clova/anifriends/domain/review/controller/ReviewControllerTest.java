@@ -82,6 +82,9 @@ class ReviewControllerTest extends BaseControllerTest {
         //then
         result.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
                 pathParameters(
                     parameterWithName("reviewId").description("리뷰 ID")
                 ),
