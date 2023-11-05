@@ -12,11 +12,11 @@ public class AnimalFixture {
 
     public static final String ANIMAL_NAME = "animalName";
     public static final LocalDate ANIMAL_BIRTH_DATE = LocalDate.now();
-    public static final String ANIMAL_TYPE = AnimalType.DOG.getValue();
+    public static final String ANIMAL_TYPE = AnimalType.DOG.getName();
     public static final String ANIMAL_BREED = "animalBreed";
-    public static final String ANIMAL_GENDER = AnimalGender.FEMALE.getValue();
+    public static final String ANIMAL_GENDER = AnimalGender.FEMALE.getName();
     public static final boolean IS_NEUTERED = true;
-    public static final String ANIMAL_ACTIVE = AnimalActive.NORMAL.getValue();
+    public static final String ANIMAL_ACTIVE = AnimalActive.NORMAL.getName();
     public static final double WEIGHT = 1.2;
     public static final String ANIMAL_INFORMATION = "animalInformation";
     private static final List<String> IMAGE_URLS = List.of("www.aws.s3.com/2", "www.aws.s3.com/2");

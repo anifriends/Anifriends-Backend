@@ -6,8 +6,10 @@ import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRe
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.mapper.RecruitmentMapper;
@@ -59,7 +61,19 @@ public class RecruitmentService {
             pageable
         );
 
-        return FindRecruitmentsByShelterResponse.of(pagination.getContent(), PageInfo.from(pagination));
+        return FindRecruitmentsByShelterResponse.of(pagination.getContent(),
+            PageInfo.from(pagination));
+    }
+
+    @Transactional(readOnly = true)
+    public FindRecruitmentsByShelterIdResponse findShelterRecruitmentsByShelter(
+        long shelterId, Pageable pageable
+    ) {
+        Page<Recruitment> pagination = recruitmentRepository.findRecruitmentsByShelterId(
+            shelterId, pageable
+        );
+        return FindRecruitmentsByShelterIdResponse.of(pagination.getContent(),
+            PageInfo.from(pagination));
     }
 
     private Shelter getShelterById(Long shelterId) {
@@ -75,6 +89,15 @@ public class RecruitmentService {
     public FindRecruitmentDetailByVolunteerResponse findRecruitmentByIdByVolunteer(long id) {
         Recruitment recruitment = getRecruitmentById(id);
         return FindRecruitmentDetailByVolunteerResponse.from(recruitment);
+    }
+
+    @Transactional(readOnly = true)
+    public FindShelterSimpleResponse findShelterSimple(
+        Long recruitmentId
+    ) {
+        Recruitment foundRecruitment = getRecruitmentById(recruitmentId);
+
+        return FindShelterSimpleResponse.from(foundRecruitment);
     }
 
     private Recruitment getRecruitmentById(long id) {
@@ -93,7 +116,8 @@ public class RecruitmentService {
 
     @Transactional(readOnly = true)
     public FindRecruitmentsByVolunteerResponse findRecruitmentsByVolunteer(
-        String keyword, LocalDate startDate, LocalDate endDate, Boolean isClosed, Boolean titleContains,
+        String keyword, LocalDate startDate, LocalDate endDate, Boolean isClosed,
+        Boolean titleContains,
         Boolean contentContains, Boolean shelterNameContains, Pageable pageable) {
         Page<Recruitment> recruitments = recruitmentRepository.findRecruitments(
             keyword,

@@ -17,7 +17,7 @@ class VolunteerTest {
         String email = "asdf@gmail.com";
         String password = "asdf1234";
         String birthDate;
-        String phoneNumber = "01012341234";
+        String phoneNumber = "010-1234-1234";
         String gender = "MALE";
         String name = "홍길동";
 

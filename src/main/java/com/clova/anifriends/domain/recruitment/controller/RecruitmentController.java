@@ -7,8 +7,10 @@ import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRe
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
 import jakarta.validation.Valid;
@@ -53,6 +55,13 @@ public class RecruitmentController {
         return ResponseEntity.ok(recruitmentService.findRecruitmentByIdByVolunteer(recruitmentId));
     }
 
+    @GetMapping("/volunteers/recruitments/{recruitmentId}/shelters")
+    public ResponseEntity<FindShelterSimpleResponse> findShelterByVolunteerReview(
+        @PathVariable Long recruitmentId) {
+        return ResponseEntity.ok(recruitmentService.findShelterSimple(recruitmentId)
+        );
+    }
+
     @GetMapping("/volunteers/{volunteerId}/recruitments/completed")
     public ResponseEntity<FindCompletedRecruitmentsResponse> findCompletedRecruitments(
         @PathVariable("volunteerId") Long volunteerId,
@@ -93,5 +102,14 @@ public class RecruitmentController {
             findRecruitmentsByShelterRequest.title(),
             pageable
         ));
+    }
+
+    @GetMapping("/shelters/{shelterId}/recruitments")
+    public ResponseEntity<FindRecruitmentsByShelterIdResponse> findShelterRecruitmentsByShelter(
+        @PathVariable Long shelterId,
+        Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+            recruitmentService.findShelterRecruitmentsByShelter(shelterId, pageable));
     }
 }

@@ -20,7 +20,7 @@ class VolunteerPhoneNumberTest {
         @DisplayName("성공")
         void success() {
             // given
-            phoneNumber = "01012345678";
+            phoneNumber = "010-1234-5678";
 
             // when
             VolunteerPhoneNumber volunteerPhoneNumber = new VolunteerPhoneNumber(phoneNumber);
@@ -30,22 +30,10 @@ class VolunteerPhoneNumberTest {
         }
 
         @Test
-        @DisplayName("예외: 전화번호가 9자 미만인 경우")
-        void throwExceptionWhenPhoneNumberIsLessThan9() {
+        @DisplayName("예외: 전화번호 형식이 잘못된 경우")
+        void throwExceptionWhenPhoneNumberIsWrong() {
             // given
             phoneNumber = "01012345";
-
-            // when
-            // then
-            assertThatThrownBy(() -> new VolunteerPhoneNumber(phoneNumber))
-                .isInstanceOf(VolunteerBadRequestException.class);
-        }
-
-        @Test
-        @DisplayName("예외: 전화번호가 12자 초과인 경우")
-        void throwExceptionWhenPhoneNumberIsMoreThan12() {
-            // given
-            phoneNumber = "010123456789";
 
             // when
             // then
