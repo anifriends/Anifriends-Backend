@@ -1,6 +1,11 @@
 package com.clova.anifriends.docs.enumtype;
 
-import com.clova.anifriends.EnumType;
+import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
+import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
+import com.clova.anifriends.domain.animal.wrapper.AnimalType;
+import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
+import com.clova.anifriends.domain.common.EnumType;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,8 +23,33 @@ public class EnumDocsController {
         return ResponseEntity.ok(getEnumTypes(TestEnum.values()));
     }
 
+    @GetMapping("/animal/active")
+    public ResponseEntity<Map<String, String>> getAnimalActive() {
+        return ResponseEntity.ok(getEnumTypes(AnimalActive.values()));
+    }
+
+    @GetMapping("/animal/gender")
+    public ResponseEntity<Map<String, String>> getAnimalGender() {
+        return ResponseEntity.ok(getEnumTypes(AnimalGender.values()));
+    }
+
+    @GetMapping("/animal/type")
+    public ResponseEntity<Map<String, String>> getAnimalType() {
+        return ResponseEntity.ok(getEnumTypes(AnimalType.values()));
+    }
+
+    @GetMapping("/applicant/status")
+    public ResponseEntity<Map<String, String>> getApplicantStatus() {
+        return ResponseEntity.ok(getEnumTypes(ApplicantStatus.values()));
+    }
+
+    @GetMapping("/volunteer/gender")
+    public ResponseEntity<Map<String, String>> getVolunteerGender() {
+        return ResponseEntity.ok(getEnumTypes(VolunteerGender.values()));
+    }
+
     private Map<String, String> getEnumTypes(EnumType[] enumTypes) {
         return Arrays.stream(enumTypes)
-            .collect(Collectors.toMap(EnumType::getName, EnumType::getValue));
+            .collect(Collectors.toMap(EnumType::getName, EnumType::getName));
     }
 }
