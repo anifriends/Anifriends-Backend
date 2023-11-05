@@ -5,6 +5,7 @@ import com.clova.anifriends.domain.applicant.exception.ApplicantConflictExceptio
 import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
@@ -17,6 +18,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -40,6 +42,9 @@ public class Applicant extends BaseTimeEntity {
     @JoinColumn(name = "volunteer_id")
     private Volunteer volunteer;
 
+    @OneToOne(mappedBy = "applicant", fetch = FetchType.LAZY)
+    private Review review;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ApplicantStatus status;
@@ -54,6 +59,22 @@ public class Applicant extends BaseTimeEntity {
         validateVolunteer(volunteer);
         this.volunteer = volunteer;
         this.status = ApplicantStatus.PENDING;
+    }
+
+    public ApplicantStatus getStatus() {
+        return status;
+    }
+
+    public Recruitment getRecruitment() {
+        return recruitment;
+    }
+
+    public Volunteer getVolunteer() {
+        return volunteer;
+    }
+
+    public Long getApplicantId() {
+        return applicantId;
     }
 
     private void validateRecruitment(Recruitment recruitment) {
@@ -81,19 +102,7 @@ public class Applicant extends BaseTimeEntity {
         return this.status == ApplicantStatus.ATTENDANCE;
     }
 
-    public ApplicantStatus getStatus() {
-        return status;
-    }
-
-    public Recruitment getRecruitment() {
-        return recruitment;
-    }
-
-    public Volunteer getVolunteer() {
-        return volunteer;
-    }
-
-    public Long getApplicantId() {
-        return applicantId;
+    public boolean hasReview() {
+        return review != null;
     }
 }

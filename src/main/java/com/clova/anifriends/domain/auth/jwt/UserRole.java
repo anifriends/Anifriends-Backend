@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.auth.jwt;
 
-import com.clova.anifriends.EnumType;
+import com.clova.anifriends.domain.common.EnumType;
 import java.util.List;
 
 public enum UserRole implements EnumType {
@@ -20,7 +20,6 @@ public enum UserRole implements EnumType {
         return name();
     }
 
-    @Override
     public String getValue() {
         return value;
     }
@@ -30,6 +29,7 @@ public enum UserRole implements EnumType {
     }
 
     private static class Constants {
+
         private static final String ROLE_VOLUNTEER = "ROLE_VOLUNTEER";
         private static final String ROLE_SHELTER = "ROLE_SHELTER";
     }

@@ -1,5 +1,7 @@
 package com.clova.anifriends.domain.review.repository;
 
+import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
+import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.review.support.ReviewFixture.review;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
@@ -8,6 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.base.BaseRepositoryTest;
+import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.review.Review;
@@ -35,6 +39,9 @@ class ReviewRepositoryTest extends BaseRepositoryTest {
     @Autowired
     private VolunteerRepository volunteerRepository;
 
+    @Autowired
+    private ApplicantRepository applicantRepository;
+
     @Test
     @DisplayName("성공")
     void findByIdAndVolunteerId() {
@@ -42,11 +49,13 @@ class ReviewRepositoryTest extends BaseRepositoryTest {
         Shelter shelter = shelter();
         Volunteer volunteer = volunteer();
         Recruitment recruitment = recruitment(shelter);
-        Review review = review(recruitment, volunteer);
+        Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+        Review review = review(applicant);
 
         shelterRepository.save(shelter);
         volunteerRepository.save(volunteer);
         recruitmentRepository.save(recruitment);
+        applicantRepository.save(applicant);
         reviewRepository.save(review);
 
         //when
@@ -67,8 +76,10 @@ class ReviewRepositoryTest extends BaseRepositoryTest {
         Volunteer volunteer2 = volunteer();
         setField(volunteer2, "volunteerId", 2L);
         Recruitment recruitment = recruitment(shelter);
-        Review review1 = review(recruitment, volunteer1);
-        Review review2 = review(recruitment, volunteer2);
+        Applicant applicant1 = applicant(recruitment, volunteer1, ATTENDANCE);
+        Applicant applicant2 = applicant(recruitment, volunteer2, ATTENDANCE);
+        Review review1 = review(applicant1);
+        Review review2 = review(applicant2);
 
         shelterRepository.save(shelter);
         volunteerRepository.save(volunteer1);
@@ -76,6 +87,8 @@ class ReviewRepositoryTest extends BaseRepositoryTest {
         recruitmentRepository.save(recruitment);
         reviewRepository.save(review1);
         reviewRepository.save(review2);
+        applicantRepository.save(applicant1);
+        applicantRepository.save(applicant2);
 
         //when
         List<Review> persistedReview = reviewRepository.findAllByVolunteerVolunteerIdOrderByCreatedAtDesc(

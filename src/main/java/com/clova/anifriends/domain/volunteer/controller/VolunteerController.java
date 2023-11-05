@@ -28,7 +28,14 @@ public class VolunteerController {
     public ResponseEntity<Void> registerVolunteer(
         @RequestBody @Valid RegisterVolunteerRequest registerVolunteerRequest
     ) {
-        Long registeredVolunteerID = volunteerService.registerVolunteer(registerVolunteerRequest);
+        Long registeredVolunteerID = volunteerService.registerVolunteer(
+            registerVolunteerRequest.email(),
+            registerVolunteerRequest.password(),
+            registerVolunteerRequest.name(),
+            registerVolunteerRequest.birthDate(),
+            registerVolunteerRequest.phoneNumber(),
+            registerVolunteerRequest.gender()
+        );
         URI location = URI.create(BASE_URI + registeredVolunteerID);
         return ResponseEntity.created(location).build();
     }

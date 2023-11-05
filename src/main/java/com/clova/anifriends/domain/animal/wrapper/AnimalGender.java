@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.animal.wrapper;
 
-import com.clova.anifriends.EnumType;
+import com.clova.anifriends.domain.common.EnumType;
 
 public enum AnimalGender implements EnumType {
 
@@ -10,11 +10,6 @@ public enum AnimalGender implements EnumType {
 
     @Override
     public String getName() {
-        return this.name();
-    }
-
-    @Override
-    public String getValue() {
         return this.name();
     }
 }

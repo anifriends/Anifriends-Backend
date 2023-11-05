@@ -21,7 +21,7 @@ public record FindVolunteerReviewsResponse(
         private static ReviewResponse from(Review review) {
             return new ReviewResponse(
                 review.getReviewId(),
-                review.getRecruitment().getShelter().getName(),
+                review.getApplicant().getRecruitment().getShelter().getName(),
                 review.getCreatedAt(),
                 review.getContent(),
                 review.getImageUrls()
