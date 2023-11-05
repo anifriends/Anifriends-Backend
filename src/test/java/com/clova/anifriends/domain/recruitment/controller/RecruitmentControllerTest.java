@@ -7,6 +7,8 @@ import static com.clova.anifriends.domain.recruitment.support.fixture.Recruitmen
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -81,7 +83,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
             title, startTime, endTime, deadline, capacity, content, imageUrls);
         RegisterRecruitmentResponse response = new RegisterRecruitmentResponse(1L);
 
-        given(recruitmentService.registerRecruitment(anyLong(), any())).willReturn(response);
+        given(recruitmentService.registerRecruitment(anyLong(), anyString(), any(), any(), any(),
+            anyInt(), anyString(), anyList())).willReturn(response);
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/shelters/recruitments")
