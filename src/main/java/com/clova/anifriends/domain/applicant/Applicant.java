@@ -56,8 +56,10 @@ public class Applicant extends BaseTimeEntity {
         validateRecruitment(recruitment);
         checkConcurrency(recruitment);
         this.recruitment = recruitment;
+        recruitment.addApplicant(this);
         validateVolunteer(volunteer);
         this.volunteer = volunteer;
+        volunteer.addApplicant(this);
         this.status = ApplicantStatus.PENDING;
     }
 
@@ -75,6 +77,10 @@ public class Applicant extends BaseTimeEntity {
 
     public Long getApplicantId() {
         return applicantId;
+    }
+
+    public Review getReview() {
+        return review;
     }
 
     private void validateRecruitment(Recruitment recruitment) {
@@ -104,5 +110,9 @@ public class Applicant extends BaseTimeEntity {
 
     public boolean hasReview() {
         return review != null;
+    }
+
+    public void registerReview(Review review) {
+        this.review = review;
     }
 }
