@@ -49,6 +49,7 @@ public class Review extends BaseTimeEntity {
         validateApplicant(applicant);
         validateImageUrlsSize(imageUrls);
         this.applicant = applicant;
+        this.applicant.registerReview(this);
         this.content = new ReviewContent(content);
         this.imageUrls = imageUrls == null ? null : imageUrls.stream()
             .map(url -> new ReviewImage(this, url))
