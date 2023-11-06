@@ -7,6 +7,8 @@ import static com.clova.anifriends.domain.recruitment.support.fixture.Recruitmen
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -81,7 +83,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
             title, startTime, endTime, deadline, capacity, content, imageUrls);
         RegisterRecruitmentResponse response = new RegisterRecruitmentResponse(1L);
 
-        given(recruitmentService.registerRecruitment(anyLong(), any())).willReturn(response);
+        given(recruitmentService.registerRecruitment(anyLong(), anyString(), any(), any(), any(),
+            anyInt(), anyString(), anyList())).willReturn(response);
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/shelters/recruitments")
@@ -123,15 +126,18 @@ class RecruitmentControllerTest extends BaseControllerTest {
     void findRecruitment() throws Exception {
         // given
         Shelter shelter = shelter();
+        ReflectionTestUtils.setField(shelter, "shelterId", 1L);
         Recruitment recruitment = recruitment(shelter);
+        ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
         FindRecruitmentByShelterResponse response = findRecruitmentResponse(recruitment);
 
-        when(recruitmentService.findRecruitmentByIdByShelter(anyLong()))
+        when(recruitmentService.findRecruitByShelter(
+            shelter.getShelterId(), recruitment.getRecruitmentId()))
             .thenReturn(response);
 
         // when
         ResultActions result = mockMvc.perform(
-            get("/api/shelters/recruitments/{recruitmentId}", anyLong())
+            get("/api/shelters/recruitments/{recruitmentId}", recruitment.getRecruitmentId())
                 .header(AUTHORIZATION, shelterAccessToken)
                 .contentType(MediaType.APPLICATION_JSON)
         );
@@ -179,13 +185,16 @@ class RecruitmentControllerTest extends BaseControllerTest {
         // when
         ResultActions result = mockMvc.perform(
             get("/api/volunteers/recruitments/{recruitmentId}/shelters", recruitmentId)
-                .header(AUTHORIZATION, shelterAccessToken)
+                .header(AUTHORIZATION, volunteerAccessToken)
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
         // then
         result.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
                 pathParameters(
                     parameterWithName("recruitmentId").description("봉사 모집글 ID")
                 ),

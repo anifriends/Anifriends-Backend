@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.recruitment;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
+import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentContent;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentInfo;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentTitle;
@@ -17,10 +18,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -31,6 +34,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 public class Recruitment extends BaseTimeEntity {
 
     public static final boolean IS_CLOSED_DEFAULT = false;
+    public static final int MAX_IMAGE_SIZE = 5;
 
     @Id
     @Column(name = "recruitment_id")
@@ -74,9 +78,19 @@ public class Recruitment extends BaseTimeEntity {
         this.title = new RecruitmentTitle(title);
         this.content = new RecruitmentContent(content);
         this.info = new RecruitmentInfo(startTime, endTime, deadline, IS_CLOSED_DEFAULT, capacity);
-        this.imageUrls = imageUrls.stream()
-            .map(url -> new RecruitmentImage(this, url))
-            .toList();
+        if(Objects.nonNull(imageUrls)) {
+            validateImageUrlsSize(imageUrls);
+            this.imageUrls = imageUrls.stream()
+                .map(url -> new RecruitmentImage(this, url))
+                .toList();
+        }
+    }
+
+    private void validateImageUrlsSize(List<String> imageUrls) {
+        if (imageUrls.size() > MAX_IMAGE_SIZE) {
+            throw new RecruitmentBadRequestException(MessageFormat.format("이미지는 {0}장 이하여야 합니다",
+                MAX_IMAGE_SIZE));
+        }
     }
 
     public Long getRecruitmentId() {
@@ -143,5 +157,9 @@ public class Recruitment extends BaseTimeEntity {
 
     public List<Applicant> getApplicants() {
         return Collections.unmodifiableList(applicants);
+    }
+
+    public void addApplicant(Applicant applicant) {
+        applicants.add(applicant);
     }
 }

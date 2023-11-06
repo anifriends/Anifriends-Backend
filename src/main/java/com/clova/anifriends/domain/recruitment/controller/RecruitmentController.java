@@ -37,16 +37,25 @@ public class RecruitmentController {
     public ResponseEntity<RegisterRecruitmentResponse> registerRecruitment(
         @LoginUser Long userId,
         @RequestBody @Valid RegisterRecruitmentRequest request) {
-        RegisterRecruitmentResponse response
-            = recruitmentService.registerRecruitment(userId, request);
+        RegisterRecruitmentResponse response = recruitmentService.registerRecruitment(
+            userId,
+            request.title(),
+            request.startTime(),
+            request.endTime(),
+            request.deadline(),
+            request.capacity(),
+            request.content(),
+            request.imageUrls());
         URI location = URI.create("/api/shelters/recruitments/" + response.recruitmentId());
         return ResponseEntity.created(location).build();
     }
 
     @GetMapping("/shelters/recruitments/{recruitmentId}")
     public ResponseEntity<FindRecruitmentByShelterResponse> findRecruitmentByIdByShelter(
+        @LoginUser Long shelterId,
         @PathVariable Long recruitmentId) {
-        return ResponseEntity.ok(recruitmentService.findRecruitmentByIdByShelter(recruitmentId));
+        return ResponseEntity.ok(recruitmentService
+            .findRecruitByShelter(shelterId, recruitmentId));
     }
 
     @GetMapping("/volunteers/recruitments/{recruitmentId}")

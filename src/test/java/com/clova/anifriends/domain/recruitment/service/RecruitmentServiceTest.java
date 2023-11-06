@@ -19,7 +19,6 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
@@ -76,9 +75,6 @@ class RecruitmentServiceTest {
         String content = "content";
         List<String> imageUrls = List.of();
 
-        RegisterRecruitmentRequest request = new RegisterRecruitmentRequest(
-            title, startTime, endTime, deadline, capacity, content, imageUrls);
-
         @Test
         @DisplayName("성공")
         void registerRecruitment() {
@@ -88,7 +84,8 @@ class RecruitmentServiceTest {
             given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
 
             //when
-            recruitmentService.registerRecruitment(shelterId, request);
+            recruitmentService.registerRecruitment(shelterId, title, startTime, endTime, deadline,
+                capacity, content, imageUrls);
 
             //then
             then(recruitmentRepository).should().save(any());
@@ -102,7 +99,8 @@ class RecruitmentServiceTest {
 
             //when
             //then
-            assertThatThrownBy(() -> recruitmentService.registerRecruitment(shelterId, request))
+            assertThatThrownBy(() -> recruitmentService.registerRecruitment(
+                shelterId, title, startTime, endTime, deadline, capacity, content, imageUrls))
                 .isInstanceOf(ShelterNotFoundException.class);
         }
     }
@@ -119,11 +117,12 @@ class RecruitmentServiceTest {
             Recruitment recruitment = recruitment(shelter);
             FindRecruitmentByShelterResponse expected = findRecruitmentResponse(recruitment);
 
-            when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.of(recruitment));
+            when(recruitmentRepository.findByShelterIdAndRecruitmentId(anyLong(),
+                anyLong())).thenReturn(Optional.of(recruitment));
 
             // when
             FindRecruitmentByShelterResponse result = recruitmentService
-                .findRecruitmentByIdByShelter(anyLong());
+                .findRecruitByShelter(anyLong(), anyLong());
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
@@ -134,11 +133,13 @@ class RecruitmentServiceTest {
         @DisplayName("예외(RecruitmentNotFoundException): 존재하지 않는 모집글")
         void exceptionWhenRecruitmentIsNotExist() {
             // given
-            when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.empty());
+            when(recruitmentRepository.findByShelterIdAndRecruitmentId(anyLong(),
+                anyLong())).thenReturn(Optional.empty());
 
             // when
             Exception exception = catchException(
-                () -> recruitmentService.findRecruitmentByIdByShelter(anyLong()));
+                () -> recruitmentService.findRecruitByShelter(
+                    anyLong(), anyLong()));
 
             // then
             assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);

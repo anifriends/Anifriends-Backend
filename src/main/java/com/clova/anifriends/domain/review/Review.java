@@ -6,6 +6,7 @@ import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.review.exception.ReviewAuthorizationException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import com.clova.anifriends.domain.review.wrapper.ReviewContent;
+import com.clova.anifriends.domain.volunteer.Volunteer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -49,6 +50,7 @@ public class Review extends BaseTimeEntity {
         validateApplicant(applicant);
         validateImageUrlsSize(imageUrls);
         this.applicant = applicant;
+        this.applicant.registerReview(this);
         this.content = new ReviewContent(content);
         this.imageUrls = imageUrls == null ? null : imageUrls.stream()
             .map(url -> new ReviewImage(this, url))
@@ -85,5 +87,9 @@ public class Review extends BaseTimeEntity {
 
     public Applicant getApplicant() {
         return applicant;
+    }
+
+    public Volunteer getVolunteer() {
+        return applicant.getVolunteer();
     }
 }

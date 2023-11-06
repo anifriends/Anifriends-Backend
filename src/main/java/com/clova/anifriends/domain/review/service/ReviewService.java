@@ -2,10 +2,12 @@ package com.clova.anifriends.domain.review.service;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByVolunteerResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
@@ -74,5 +76,13 @@ public class ReviewService {
         return applicantRepository.findByApplicantIdAndVolunteerId(
                 applicationId, userId)
             .orElseThrow(() -> new ApplicantNotFoundException("봉사 신청 내역이 존재하지 않습니다."));
+    }
+
+    @Transactional(readOnly = true)
+    public FindVolunteerReviewsResponse findVolunteerReviews(Long volunteerId, Pageable pageable) {
+        Page<Review> reviewPage
+            = reviewRepository.findAllByVolunteerVolunteerIdOrderByCreatedAtDesc(volunteerId,
+            pageable);
+        return FindVolunteerReviewsResponse.of(reviewPage.getContent(), PageInfo.from(reviewPage));
     }
 }

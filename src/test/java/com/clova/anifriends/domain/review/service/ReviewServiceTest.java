@@ -19,11 +19,13 @@ import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByVolunteerResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
@@ -178,6 +180,40 @@ class ReviewServiceTest {
                 = reviewService.findShelterReviews(shelterId, pageRequest);
 
             //then
+            assertThat(response).usingRecursiveComparison()
+                .ignoringFields("reviewId")
+                .isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("findVolunteerReviews 메서드 실행 시")
+    class FindVolunteerReviewsTest {
+
+        @Test
+        @DisplayName("성공")
+        void findVolunteerReviews() {
+            // given
+            Long volunteerId = 1L;
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            Volunteer volunteer = volunteer();
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+            Review review = review(applicant);
+            PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
+            FindVolunteerReviewsResponse expected = FindVolunteerReviewsResponse.of(
+                reviewPage.getContent(), PageInfo.from(reviewPage));
+
+            given(reviewRepository.findAllByVolunteerVolunteerIdOrderByCreatedAtDesc(anyLong(),
+                any()))
+                .willReturn(reviewPage);
+
+            // when
+            FindVolunteerReviewsResponse response
+                = reviewService.findVolunteerReviews(volunteerId, pageRequest);
+
+            // then
             assertThat(response).usingRecursiveComparison()
                 .ignoringFields("reviewId")
                 .isEqualTo(expected);

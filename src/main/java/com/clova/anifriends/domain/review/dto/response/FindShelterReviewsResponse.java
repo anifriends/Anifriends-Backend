@@ -19,7 +19,7 @@ public record FindShelterReviewsResponse(List<FindShelterReviewResponse> reviews
         String volunteerName,
         int temperature,
         String volunteerImageUrl,
-        int VolunteerReviewCount) {
+        long VolunteerReviewCount) {
 
         public static FindShelterReviewResponse from(Review review) {
             Volunteer volunteer = review.getApplicant().getVolunteer();
@@ -31,7 +31,7 @@ public record FindShelterReviewsResponse(List<FindShelterReviewResponse> reviews
                 volunteer.getName(),
                 volunteer.getTemperature(),
                 volunteer.getVolunteerImageUrl(),
-                volunteer.getApplications().size()
+                volunteer.getReviewCount()
             );
         }
     }

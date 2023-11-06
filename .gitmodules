@@ -1,0 +1,3 @@
+[submodule "src/main/resources/backend-config"]
+	path = src/main/resources/backend-config
+	url = https://github.com/Anifriends/backend-config.git

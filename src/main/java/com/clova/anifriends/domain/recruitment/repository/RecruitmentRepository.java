@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.recruitment.repository;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +19,10 @@ public interface RecruitmentRepository
     Page<Recruitment> findCompletedRecruitments(
         @Param("volunteerId") Long volunteerId,
         Pageable pageable);
+
+    @Query("select r from Recruitment r "
+        + "where r.shelter.shelterId = :shelterId "
+        + "and r.recruitmentId = :recruitmentId")
+    Optional<Recruitment> findByShelterIdAndRecruitmentId(
+        @Param("shelterId") long shelterId, @Param("recruitmentId") long recruitmentId);
 }
