@@ -1,8 +1,8 @@
 package com.clova.anifriends.domain.auth.controller;
 
 import com.clova.anifriends.domain.auth.controller.request.LoginRequest;
+import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
 import com.clova.anifriends.domain.auth.service.AuthService;
-import com.clova.anifriends.domain.auth.service.response.TokenResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

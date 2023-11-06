@@ -1,6 +1,9 @@
 package com.clova.anifriends.domain.auth;
 
+import com.clova.anifriends.domain.auth.jwt.UserRole;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,7 +24,14 @@ public class RefreshToken {
 
     private String tokenValue;
 
-    public RefreshToken(String value) {
+    private Long userId;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
+
+    public RefreshToken(String value, Long userId, UserRole userRole) {
         this.tokenValue = value;
+        this.userId = userId;
+        this.userRole = userRole;
     }
 }

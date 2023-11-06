@@ -7,7 +7,7 @@ import static org.mockito.BDDMockito.then;
 import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
-import com.clova.anifriends.domain.auth.jwt.response.UserToken;
+import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -57,8 +57,8 @@ class JwtAuthenticationFilterTest {
         @DisplayName("성공: 액세스 토큰이 요청에 포함된 경우")
         void doFilterWhenContainsToken() throws ServletException, IOException {
             //given
-            UserToken userToken = jwtProvider.createToken(1L, UserRole.ROLE_VOLUNTEER);
-            String accessToken = userToken.accessToken();
+            TokenResponse tokenResponse = jwtProvider.createToken(1L, UserRole.ROLE_VOLUNTEER);
+            String accessToken = tokenResponse.accessToken();
             mockRequest.addHeader("Authorization", accessToken);
 
             //when

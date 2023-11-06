@@ -4,7 +4,7 @@ import com.clova.anifriends.domain.auth.exception.ExpiredAccessTokenException;
 import com.clova.anifriends.domain.auth.exception.InvalidJwtException;
 import com.clova.anifriends.domain.auth.exception.ExpiredRefreshTokenException;
 import com.clova.anifriends.domain.auth.jwt.response.CustomClaims;
-import com.clova.anifriends.domain.auth.jwt.response.UserToken;
+import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
 import com.clova.anifriends.global.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -55,10 +55,10 @@ public class JJwtProvider implements JwtProvider {
     }
 
     @Override
-    public UserToken createToken(Long userId, UserRole userRole) {
+    public TokenResponse createToken(Long userId, UserRole userRole) {
         String accessToken = createAccessToken(userId, userRole);
         String refreshToken = createRefreshToken(userId, userRole);
-        return UserToken.of(accessToken, refreshToken);
+        return TokenResponse.of(userId, userRole, accessToken, refreshToken);
     }
 
     private String createAccessToken(Long userId, UserRole userRole) {
@@ -105,7 +105,7 @@ public class JJwtProvider implements JwtProvider {
     }
 
     @Override
-    public UserToken refreshAccessToken(String refreshToken) {
+    public TokenResponse refreshAccessToken(String refreshToken) {
         try {
             Claims claims = refreshTokenParser.parseSignedClaims(refreshToken).getPayload();
             Long userId = Long.valueOf(claims.getSubject());

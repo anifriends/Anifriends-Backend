@@ -3,7 +3,7 @@ package com.clova.anifriends.domain.auth.support;
 import com.clova.anifriends.domain.auth.jwt.JJwtProvider;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
-import com.clova.anifriends.domain.auth.jwt.response.UserToken;
+import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
 
 public final class AuthFixture {
 
@@ -24,16 +24,16 @@ public final class AuthFixture {
     }
 
     public static String shelterAccessToken() {
-        UserToken userToken = jwtProvider().createToken(USER_ID, UserRole.ROLE_SHELTER);
-        return userToken.accessToken();
+        TokenResponse tokenResponse = jwtProvider().createToken(USER_ID, UserRole.ROLE_SHELTER);
+        return tokenResponse.accessToken();
     }
 
     public static String volunteerAccessToken() {
-        UserToken userToken = jwtProvider().createToken(USER_ID, UserRole.ROLE_VOLUNTEER);
-        return userToken.accessToken();
+        TokenResponse tokenResponse = jwtProvider().createToken(USER_ID, UserRole.ROLE_VOLUNTEER);
+        return tokenResponse.accessToken();
     }
 
-    public static UserToken userToken() {
+    public static TokenResponse userToken() {
         return jwtProvider().createToken(USER_ID, UserRole.ROLE_VOLUNTEER);
     }
 }

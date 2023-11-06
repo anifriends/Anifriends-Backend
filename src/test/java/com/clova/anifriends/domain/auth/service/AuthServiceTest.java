@@ -8,8 +8,8 @@ import static org.mockito.BDDMockito.then;
 
 import com.clova.anifriends.domain.auth.exception.AuthAuthenticationException;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
+import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
 import com.clova.anifriends.domain.auth.repository.RefreshTokenRepository;
-import com.clova.anifriends.domain.auth.service.response.TokenResponse;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;

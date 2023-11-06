@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.auth.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -11,7 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.auth.controller.request.LoginRequest;
-import com.clova.anifriends.domain.auth.service.response.TokenResponse;
+import com.clova.anifriends.domain.auth.jwt.UserRole;
+import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,7 +31,8 @@ class AuthControllerTest extends BaseControllerTest {
         void volunteerLogin() throws Exception {
             //given
             LoginRequest request = new LoginRequest("email@email.com", "password123!");
-            TokenResponse response = new TokenResponse("accessToken", "refreshToken");
+            TokenResponse response = new TokenResponse(1L, UserRole.ROLE_VOLUNTEER, "accessToken",
+                "refreshToken");
 
             given(authService.volunteerLogin(any(), any())).willReturn(response);
 
@@ -46,6 +49,8 @@ class AuthControllerTest extends BaseControllerTest {
                         fieldWithPath("password").type(STRING).description("봉사자 패스워드")
                     ),
                     responseFields(
+                        fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
+                        fieldWithPath("role").type(STRING).description("사용자 역할"),
                         fieldWithPath("accessToken").type(STRING).description("액세스 토큰"),
                         fieldWithPath("refreshToken").type(STRING).description("리프레시 토큰")
                     )
@@ -61,7 +66,8 @@ class AuthControllerTest extends BaseControllerTest {
         void shelterLogin() throws Exception {
             //given
             LoginRequest request = new LoginRequest("email@email.com", "password123!");
-            TokenResponse response = new TokenResponse("accessToken", "refreshToken");
+            TokenResponse response = new TokenResponse(1L, UserRole.ROLE_VOLUNTEER, "accessToken",
+                "refreshToken");
 
             given(authService.shelterLogin(any(), any())).willReturn(response);
 
@@ -78,6 +84,8 @@ class AuthControllerTest extends BaseControllerTest {
                         fieldWithPath("password").type(STRING).description("보호소 패스워드")
                     ),
                     responseFields(
+                        fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
+                        fieldWithPath("role").type(STRING).description("사용자 역할"),
                         fieldWithPath("accessToken").type(STRING).description("액세스 토큰"),
                         fieldWithPath("refreshToken").type(STRING).description("리프레시 토큰")
                     )
