@@ -68,5 +68,4 @@ class ReviewContentTest {
             assertThat(exception).isInstanceOf(ReviewBadRequestException.class);
         }
     }
-
 }

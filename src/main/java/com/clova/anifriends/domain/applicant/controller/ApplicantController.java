@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.applicant.controller;
 
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsApprovedResponse;
+import com.clova.anifriends.domain.applicant.dto.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.service.ApplicantService;
 import com.clova.anifriends.domain.auth.resolver.LoginUser;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,13 @@ public class ApplicantController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/volunteers/applicants")
+    public ResponseEntity<FindApplyingVolunteersResponse> findApplyingVolunteers(
+        @LoginUser Long volunteerId
+    ) {
+        return ResponseEntity.ok(applicantService.findApplyingVolunteers(volunteerId));
+
+    }
 
     @GetMapping("/shelters/recruitments/{recruitmentId}/approval")
     public ResponseEntity<FindApplicantsApprovedResponse> findApplicantApproved(

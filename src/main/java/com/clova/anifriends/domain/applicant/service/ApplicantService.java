@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.applicant.service;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsApprovedResponse;
+import com.clova.anifriends.domain.applicant.dto.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
@@ -33,6 +34,18 @@ public class ApplicantService {
         }
         Applicant applicant = new Applicant(recruitment, volunteer);
         applicantRepository.save(applicant);
+    }
+
+    @Transactional(readOnly = true)
+    public FindApplyingVolunteersResponse findApplyingVolunteers(
+        Long volunteerId
+    ) {
+        Volunteer foundVolunteer = getVolunteer(volunteerId);
+
+        List<Applicant> applyingVolunteers = applicantRepository.findApplyingVolunteers(
+            foundVolunteer);
+
+        return FindApplyingVolunteersResponse.from(applyingVolunteers);
     }
 
     private Recruitment getRecruitment(Long recruitmentId) {

@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.review.controller;
 
+
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
@@ -227,7 +228,7 @@ class ReviewControllerTest extends BaseControllerTest {
         // when
         ResultActions resultActions
             = mockMvc.perform(get("/api/volunteers/{volunteerId}/reviews", volunteerId)
-                .header(AUTHORIZATION, shelterAccessToken)
+            .header(AUTHORIZATION, shelterAccessToken)
             .param("pageNumber", "0")
             .param("pageSize", "10"));
 

@@ -204,7 +204,8 @@ class ReviewServiceTest {
             FindVolunteerReviewsResponse expected = FindVolunteerReviewsResponse.of(
                 reviewPage.getContent(), PageInfo.from(reviewPage));
 
-            given(reviewRepository.findAllByVolunteerVolunteerIdOrderByCreatedAtDesc(anyLong(), any()))
+            given(reviewRepository.findAllByVolunteerVolunteerIdOrderByCreatedAtDesc(anyLong(),
+                any()))
                 .willReturn(reviewPage);
 
             // when
