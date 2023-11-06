@@ -23,6 +23,7 @@ import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByVolunteerResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
@@ -213,6 +214,39 @@ class ReviewServiceTest {
                 = reviewService.findVolunteerReviews(volunteerId, pageRequest);
 
             // then
+            assertThat(response).usingRecursiveComparison()
+                .ignoringFields("reviewId")
+                .isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("findShelterReviewsByVolunteer 메서드 실행 시")
+    class FindShelterReviewsByVolunteerTest {
+
+        @Test
+        @DisplayName("성공")
+        void findShelterReviewsByVolunteer() {
+            //given
+            Long shelterId = 1L;
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            Volunteer volunteer = volunteer();
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+            Review review = review(applicant);
+            PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
+            FindShelterReviewsByVolunteerResponse expected = FindShelterReviewsByVolunteerResponse.from(
+                reviewPage);
+
+            given(reviewRepository.findAllByShelterId(anyLong(), any()))
+                .willReturn(reviewPage);
+
+            //then
+            FindShelterReviewsByVolunteerResponse response
+                = reviewService.findShelterReviewsByVolunteer(shelterId, pageRequest);
+
+            //then
             assertThat(response).usingRecursiveComparison()
                 .ignoringFields("reviewId")
                 .isEqualTo(expected);
