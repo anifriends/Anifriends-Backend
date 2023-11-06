@@ -173,9 +173,9 @@ class ApplicantServiceTest {
             Volunteer volunteer = VolunteerFixture.volunteer();
             Shelter shelter = ShelterFixture.shelter();
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-            Applicant applicantShouldWriteReview = ApplicantFixture.applicantWithStatus(recruitment,
+            Applicant applicantShouldWriteReview = ApplicantFixture.applicant(recruitment,
                 volunteer, ATTENDANCE);
-            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicantWithStatus(
+            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(
                 recruitment,
                 volunteer, PENDING);
 
@@ -210,9 +210,9 @@ class ApplicantServiceTest {
             Shelter shelter = ShelterFixture.shelter();
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
 
-            Applicant applicantShouldWriteReview = ApplicantFixture.applicantWithStatus(recruitment,
+            Applicant applicantShouldWriteReview = ApplicantFixture.applicant(recruitment,
                 volunteer, PENDING);
-            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicantWithStatus(
+            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(
                 recruitment,
                 volunteer, PENDING);
 

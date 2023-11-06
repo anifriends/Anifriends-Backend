@@ -123,16 +123,18 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             volunteerRepository.save(volunteer);
             recruitmentRepository.save(recruitment);
 
-            Applicant applicantShouldWriteReview = ApplicantFixture.applicantWithStatus(recruitment,
-                volunteer, ATTENDANCE);
-            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicantWithStatus(
-                recruitment,
-                volunteer, PENDING);
-            Review review = ReviewFixture.review(applicantShouldWriteReview);
+            Applicant applicantShouldWriteReview = ApplicantFixture.applicant(
+                recruitment, volunteer, ATTENDANCE);
+            Applicant applicantShouldNotWriteReview1 = ApplicantFixture.applicant(
+                recruitment, volunteer, PENDING);
+            Applicant applicantShouldNotWriteReview2 = ApplicantFixture.applicant(
+                recruitment, volunteer, ATTENDANCE);
+            Review review = ReviewFixture.review(applicantShouldNotWriteReview2);
             setField(review, "reviewId", 1L);
 
             applicantRepository.save(applicantShouldWriteReview);
-            applicantRepository.save(applicantShouldNotWriteReview);
+            applicantRepository.save(applicantShouldNotWriteReview1);
+            applicantRepository.save(applicantShouldNotWriteReview2);
 
             // when
             List<Applicant> applyingVolunteers = applicantRepository.findApplyingVolunteers(
@@ -145,6 +147,8 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             assertThat(expected.findApplyingVolunteerResponses().get(0).isWritedReview()).isEqualTo(
                 true);
             assertThat(expected.findApplyingVolunteerResponses().get(1).isWritedReview()).isEqualTo(
+                false);
+            assertThat(expected.findApplyingVolunteerResponses().get(2).isWritedReview()).isEqualTo(
                 false);
         }
     }

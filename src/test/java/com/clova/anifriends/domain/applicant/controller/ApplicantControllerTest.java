@@ -78,9 +78,9 @@ class ApplicantControllerTest extends BaseControllerTest {
         Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
         setField(recruitment, "recruitmentId", recruitmentId);
 
-        Applicant applicantShouldWriteReview = ApplicantFixture.applicantWithStatus(recruitment,
+        Applicant applicantShouldWriteReview = ApplicantFixture.applicant(recruitment,
             volunteer, ATTENDANCE);
-        Applicant applicantShouldNotWriteReview = ApplicantFixture.applicantWithStatus(recruitment,
+        Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(recruitment,
             volunteer, PENDING);
 
         setField(applicantShouldWriteReview, "applicantId", applicantShouldWriteReviewId);
@@ -102,7 +102,7 @@ class ApplicantControllerTest extends BaseControllerTest {
         // when
         ResultActions resultActions = mockMvc.perform(
             get("/api/volunteers/applicants")
-                .header(AUTHORIZATION, shelterAccessToken)
+                .header(AUTHORIZATION, volunteerAccessToken)
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
