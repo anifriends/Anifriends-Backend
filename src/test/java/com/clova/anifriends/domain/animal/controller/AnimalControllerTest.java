@@ -97,6 +97,7 @@ class AnimalControllerTest extends BaseControllerTest {
             ));
     }
 
+    @Test
     @DisplayName("findAnimalByIdByVolunteer 실행 시")
     void FindAnimalTest() throws Exception {
         // given
@@ -111,12 +112,16 @@ class AnimalControllerTest extends BaseControllerTest {
         // when
         ResultActions result = mockMvc.perform(
             get("/api/volunteers/animals/{animalId}", shelterId)
+                .header(AUTHORIZATION, volunteerAccessToken)
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
         // then
         result.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
                 pathParameters(
                     parameterWithName("animalId").description("보호 동물 ID")
                 ),

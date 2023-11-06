@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.applicant.repository;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import java.util.Optional;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,6 +24,14 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
     List<Applicant> findApplyingVolunteers(
         @Param("volunteer") Volunteer volunteer);
     
+    @Query("select a from Applicant a "
+        + "where a.applicantId = :applicantId "
+        + "and a.volunteer.volunteerId = :volunteerId")
+    Optional<Applicant> findByApplicantIdAndVolunteerId(
+        @Param("applicantId") Long applicantId,
+        @Param("volunteerId") Long volunteerId
+    );
+
     @Query("select a from Applicant a "
         + "join fetch a.recruitment r "
         + "join fetch r.shelter s "

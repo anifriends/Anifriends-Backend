@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
 
-public record FindShelterReviewsResponse(List<FindShelterReviewResponse> reviews, PageInfo pageInfo) {
+public record FindShelterReviewsResponse(List<FindShelterReviewResponse> reviews,
+                                         PageInfo pageInfo) {
 
     public record FindShelterReviewResponse(
         Long reviewId,
@@ -18,10 +19,10 @@ public record FindShelterReviewsResponse(List<FindShelterReviewResponse> reviews
         String volunteerName,
         int temperature,
         String volunteerImageUrl,
-        int VolunteerReviewCount) {
+        long VolunteerReviewCount) {
 
         public static FindShelterReviewResponse from(Review review) {
-            Volunteer volunteer = review.getVolunteer();
+            Volunteer volunteer = review.getApplicant().getVolunteer();
             return new FindShelterReviewResponse(
                 review.getReviewId(),
                 review.getCreatedAt(),
@@ -30,7 +31,7 @@ public record FindShelterReviewsResponse(List<FindShelterReviewResponse> reviews
                 volunteer.getName(),
                 volunteer.getTemperature(),
                 volunteer.getVolunteerImageUrl(),
-                volunteer.getApplications().size()
+                volunteer.getReviewCount()
             );
         }
     }

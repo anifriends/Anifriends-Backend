@@ -1,20 +1,6 @@
-jwt:
-  issuer: clova
-  expiry-seconds: 3600
-  secret: ${ACCESS_TOKEN_SECRET}
-  refresh-expiry-seconds: 18000
-  refresh-secret: ${REFRESH_TOKEN_SECRET}
 spring:
-  datasource:
-    driver-class-name: org.h2.Driver
-    username: sa
-    url: jdbc:h2:mem:testdb
-  h2:
-    console:
-      path: /h2-console
-      enabled: true
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
+  config:
+    activate:
+      on-profile: dev
+    import:
+      - classpath:backend-config/application-dev.yml

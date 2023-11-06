@@ -1,7 +1,6 @@
 package com.clova.anifriends.domain.volunteer.service;
 
 import com.clova.anifriends.domain.volunteer.Volunteer;
-import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
@@ -17,15 +16,15 @@ public class VolunteerService {
     private final VolunteerRepository volunteerRepository;
 
     @Transactional
-    public Long registerVolunteer(RegisterVolunteerRequest registerVolunteerRequest) {
-        Volunteer volunteer = new Volunteer(
-            registerVolunteerRequest.email(),
-            registerVolunteerRequest.password(),
-            registerVolunteerRequest.birthDate(),
-            registerVolunteerRequest.phoneNumber(),
-            registerVolunteerRequest.gender(),
-            registerVolunteerRequest.name()
-        );
+    public Long registerVolunteer(
+        String email,
+        String password,
+        String name,
+        String birthDate,
+        String phoneNumber,
+        String gender
+    ) {
+        Volunteer volunteer = new Volunteer(email, password, birthDate, phoneNumber, gender, name);
 
         volunteerRepository.save(volunteer);
         return volunteer.getVolunteerId();

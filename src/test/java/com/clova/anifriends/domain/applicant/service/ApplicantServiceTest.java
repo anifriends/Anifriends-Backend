@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.applicant.service;
 
-import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicantWithStatus;
+import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.PENDING;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
@@ -127,7 +127,7 @@ class ApplicantServiceTest {
             // given
             Recruitment recruitment = recruitment(shelter());
             Volunteer volunteer = volunteer();
-            Applicant applicantApproved = applicantWithStatus(recruitment, volunteer, ATTENDANCE);
+            Applicant applicantApproved = applicant(recruitment, volunteer, ATTENDANCE);
 
             FindApplicantsApprovedResponse response = FindApplicantsApprovedResponse.from(
                 List.of(applicantApproved));

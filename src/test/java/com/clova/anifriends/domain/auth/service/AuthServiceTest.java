@@ -67,7 +67,7 @@ class AuthServiceTest {
         String email = "email@email.com";
         String password = "password123!";
         Volunteer volunteer = new Volunteer(email, passwordEncoder.encode(password),
-            LocalDate.now().toString(), "0212345678", "MALE", "name");
+            LocalDate.now().toString(), "010-1234-1234", "MALE", "name");
 
         @BeforeEach
         void setUp() {

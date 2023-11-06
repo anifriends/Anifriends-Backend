@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.review;
 
-import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicantWithStatus;
+import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.PENDING;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
@@ -31,7 +31,7 @@ class ReviewTest {
             //given
             Recruitment recruitment = recruitment(shelter());
             Volunteer volunteer = volunteer();
-            Applicant applicant = applicantWithStatus(recruitment, volunteer, ATTENDANCE);
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
             String content = "1234567890";
 
             //when
@@ -47,7 +47,7 @@ class ReviewTest {
             //given
             Recruitment recruitment = recruitment(shelter());
             Volunteer volunteer = volunteer();
-            Applicant applicant = applicantWithStatus(recruitment, volunteer, ATTENDANCE);
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
             String content = "1234567890";
             String imageUrl1 = "www.aws.s3.com/1";
             String imageUrl2 = "www.aws.s3.com/2";
@@ -72,7 +72,7 @@ class ReviewTest {
             //given
             Recruitment recruitment = recruitment(shelter());
             Volunteer volunteer = volunteer();
-            Applicant applicant = applicantWithStatus(recruitment, volunteer, PENDING);
+            Applicant applicant = applicant(recruitment, volunteer, PENDING);
             String content = "1234567890";
 
             //when

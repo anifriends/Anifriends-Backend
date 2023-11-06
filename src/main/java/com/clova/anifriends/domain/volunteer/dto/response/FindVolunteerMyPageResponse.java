@@ -21,7 +21,7 @@ public record FindVolunteerMyPageResponse(
             volunteer.getBirthDate(),
             volunteer.getPhoneNumber(),
             volunteer.getTemperature(),
-            volunteer.getApplications().stream()
+            volunteer.getApplicants().stream()
                 .filter(applicant -> applicant.getStatus().equals(ApplicantStatus.ATTENDANCE))
                 .count(),
             volunteer.getVolunteerImageUrl()

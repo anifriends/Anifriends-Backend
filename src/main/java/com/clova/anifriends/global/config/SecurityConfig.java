@@ -4,6 +4,7 @@ import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider
 import com.clova.anifriends.domain.auth.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,6 +18,9 @@ import org.springframework.security.web.context.SecurityContextHolderFilter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private static final String ROLE_SHELTER = "SHELTER";
+    private static final String ROLE_VOLUNTEER = "VOLUNTEER";
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -39,7 +43,20 @@ public class SecurityConfig {
             .addFilterAfter(new JwtAuthenticationFilter(jwtAuthenticationProvider),
                 SecurityContextHolderFilter.class)
             .headers(header -> header.frameOptions(
-                FrameOptionsConfig::disable));
+                FrameOptionsConfig::disable))
+            .authorizeHttpRequests(request ->
+                request
+                    .requestMatchers(HttpMethod.GET, "/api/volunteers/**/profile").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/volunteers/**/recruitments/completed").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/shelters/**/recruitments").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/volunteers/**/reviews").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/volunteers").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/shelters").permitAll()
+                    .requestMatchers("/api/shelters/**/profile").hasRole(ROLE_VOLUNTEER)
+                    .requestMatchers("/api/shelters/**/reviews").hasRole(ROLE_VOLUNTEER)
+                    .requestMatchers("/api/shelters/**").hasRole(ROLE_SHELTER)
+                    .requestMatchers("/api/volunteers/**").hasRole(ROLE_VOLUNTEER)
+                    .requestMatchers("/**").permitAll());
         return http.build();
     }
 }

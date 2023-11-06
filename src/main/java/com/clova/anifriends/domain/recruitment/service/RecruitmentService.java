@@ -2,20 +2,22 @@ package com.clova.anifriends.domain.recruitment.service;
 
 import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
-import com.clova.anifriends.domain.recruitment.mapper.RecruitmentMapper;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,9 +34,23 @@ public class RecruitmentService {
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
         Long shelterId,
-        RegisterRecruitmentRequest request) {
+        String title,
+        LocalDateTime startTime,
+        LocalDateTime endTime,
+        LocalDateTime deadline,
+        int capacity,
+        String content,
+        List<String> imageUrls) {
         Shelter shelter = getShelterById(shelterId);
-        Recruitment recruitment = RecruitmentMapper.toRecruitment(shelter, request);
+        Recruitment recruitment = new Recruitment(
+            shelter,
+            title,
+            capacity,
+            content,
+            startTime,
+            endTime,
+            deadline,
+            imageUrls);
         recruitmentRepository.save(recruitment);
         return RegisterRecruitmentResponse.from(recruitment);
     }
@@ -59,7 +75,19 @@ public class RecruitmentService {
             pageable
         );
 
-        return FindRecruitmentsByShelterResponse.of(pagination.getContent(), PageInfo.from(pagination));
+        return FindRecruitmentsByShelterResponse.of(pagination.getContent(),
+            PageInfo.from(pagination));
+    }
+
+    @Transactional(readOnly = true)
+    public FindRecruitmentsByShelterIdResponse findShelterRecruitmentsByShelter(
+        long shelterId, Pageable pageable
+    ) {
+        Page<Recruitment> pagination = recruitmentRepository.findRecruitmentsByShelterId(
+            shelterId, pageable
+        );
+        return FindRecruitmentsByShelterIdResponse.of(pagination.getContent(),
+            PageInfo.from(pagination));
     }
 
     private Shelter getShelterById(Long shelterId) {
@@ -67,14 +95,31 @@ public class RecruitmentService {
             .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
     }
 
-    public FindRecruitmentByShelterResponse findRecruitmentByIdByShelter(long id) {
-        Recruitment recruitment = getRecruitmentById(id);
+    public FindRecruitmentByShelterResponse findRecruitByShelter(
+        long shelterId, long recruitmentId) {
+        Recruitment recruitment = getRecruitmentByShelter(shelterId,
+            recruitmentId);
         return FindRecruitmentByShelterResponse.from(recruitment);
     }
 
     public FindRecruitmentDetailByVolunteerResponse findRecruitmentByIdByVolunteer(long id) {
         Recruitment recruitment = getRecruitmentById(id);
         return FindRecruitmentDetailByVolunteerResponse.from(recruitment);
+    }
+
+    @Transactional(readOnly = true)
+    public FindShelterSimpleResponse findShelterSimple(
+        Long recruitmentId
+    ) {
+        Recruitment foundRecruitment = getRecruitmentById(recruitmentId);
+
+        return FindShelterSimpleResponse.from(foundRecruitment);
+    }
+
+    private Recruitment getRecruitmentByShelter(long shelterId,
+        long recruitmentId) {
+        return recruitmentRepository.findByShelterIdAndRecruitmentId(shelterId, recruitmentId)
+            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글입니다."));
     }
 
     private Recruitment getRecruitmentById(long id) {
@@ -93,7 +138,8 @@ public class RecruitmentService {
 
     @Transactional(readOnly = true)
     public FindRecruitmentsByVolunteerResponse findRecruitmentsByVolunteer(
-        String keyword, LocalDate startDate, LocalDate endDate, Boolean isClosed, Boolean titleContains,
+        String keyword, LocalDate startDate, LocalDate endDate, Boolean isClosed,
+        Boolean titleContains,
         Boolean contentContains, Boolean shelterNameContains, Pageable pageable) {
         Page<Recruitment> recruitments = recruitmentRepository.findRecruitments(
             keyword,
