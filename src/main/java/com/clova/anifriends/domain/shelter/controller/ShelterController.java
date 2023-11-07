@@ -7,6 +7,7 @@ import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
 import jakarta.validation.Valid;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,22 @@ public class ShelterController {
         CheckDuplicateShelterResponse checkDuplicateShelterResponse
             = shelterService.checkDuplicateEmail(checkDuplicateShelterEmailRequest.email());
         return ResponseEntity.ok(checkDuplicateShelterResponse);
+    }
+
+    @PostMapping("/shelters")
+    public ResponseEntity<Void> registerShelter(
+        @RequestBody @Valid RegisterShelterRequest registerShelterRequest) {
+        Long shelterId = shelterService.registerShelter(
+            registerShelterRequest.email(),
+            registerShelterRequest.password(),
+            registerShelterRequest.name(),
+            registerShelterRequest.address(),
+            registerShelterRequest.addressDetail(),
+            registerShelterRequest.phoneNumber(),
+            registerShelterRequest.sparePhoneNumber(),
+            registerShelterRequest.isOpenedAddress());
+        URI location = URI.create("/api/shelters/" + shelterId);
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping("/volunteers/shelters/{shelterId}/profile")

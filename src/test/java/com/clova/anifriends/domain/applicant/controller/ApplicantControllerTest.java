@@ -166,7 +166,7 @@ class ApplicantControllerTest extends BaseControllerTest {
                         fieldWithPath("applicants[].applicantId").type(NUMBER).description("봉사 신청 ID"),
                         fieldWithPath("applicants[].volunteerId").type(NUMBER).description("봉사자 ID"),
                         fieldWithPath("applicants[].birthdate").type(STRING).description("봉사자 생일"),
-                        fieldWithPath("applicants[].gender").type(STRING).description("봉사 성별"),
+                        fieldWithPath("applicants[].animalGender").type(STRING).description("봉사 성별"),
                         fieldWithPath("applicants[].phoneNumber").type(STRING).description("봉사자 전화번호"),
                         fieldWithPath("applicants[].attendance").type(BOOLEAN).description("출석 현황")
                     )

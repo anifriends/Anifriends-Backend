@@ -4,7 +4,9 @@ import static com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixtur
 import static com.clova.anifriends.domain.animal.support.fixture.AnimalFixture.animal;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -15,12 +17,14 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
+import static org.springframework.restdocs.payload.JsonFieldType.OBJECT;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
@@ -29,11 +33,13 @@ import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
+import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
@@ -43,6 +49,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 class AnimalControllerTest extends BaseControllerTest {
 
@@ -184,6 +192,86 @@ class AnimalControllerTest extends BaseControllerTest {
                     fieldWithPath("information").type(STRING).description("기타 정보"),
                     fieldWithPath("isAdopted").type(BOOLEAN).description("입양 여부"),
                     fieldWithPath("imageUrls[]").type(ARRAY).description("이미지 url 리스트")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("보호 동물 조회 & 검색(보호소) api 호출 시")
+    void findAnimalsByShelter() throws Exception {
+        //given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("keyword", "검색어");
+        params.add("type", "DOG");
+        params.add("gender", "MALE");
+        params.add("isNeutered", "true");
+        params.add("active", "ACTIVE");
+        params.add("size", "SMALL");
+        params.add("age", "BABY");
+        params.add("pageNumber", "0");
+        params.add("pageSize", "10");
+
+        Long shelterId = 1L;
+        Shelter shelter = shelter();
+        ReflectionTestUtils.setField(shelter, "shelterId", shelterId);
+        Animal animal = animal(shelter);
+        ReflectionTestUtils.setField(animal, "animalId", 1L);
+
+        FindAnimalsByShelterResponse.FindAnimalByShelterResponse findAnimalByShelterResponse = FindAnimalsByShelterResponse.FindAnimalByShelterResponse.from(
+            animal);
+        PageInfo pageInfo = new PageInfo(1, false);
+        FindAnimalsByShelterResponse response = new FindAnimalsByShelterResponse(
+            List.of(findAnimalByShelterResponse), pageInfo);
+
+        given(animalService.findAnimalsByShelter(
+            any(), anyString(), any(), any(), anyBoolean(),
+            any(), any(), any(), any())).willReturn(response);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/api/shelters/animals")
+            .header(AUTHORIZATION, shelterAccessToken)
+            .params(params));
+
+        // then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("액세스 토큰")
+                ),
+                queryParameters(
+                    parameterWithName("keyword").description("검색어").optional(),
+                    parameterWithName("type").description("보호 동물 종류").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("DOG, CAT, ETC")),
+                    parameterWithName("gender").description("보호 동물 성별").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("MALE, FEMALE")),
+                    parameterWithName("isNeutered").description("보호 동물 중성화 여부").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("true, false")),
+                    parameterWithName("active").description("보호 동물 성격").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint(
+                            "QUIET, NORMAL, ACTIVE, VERY_ACTIVE")),
+                    parameterWithName("size").description("보호 동물 크기").optional()
+                        .attributes(
+                            DocumentationFormatGenerator.getConstraint("SMALL, MEDIUM, LARGE")),
+                    parameterWithName("age").description("보호 동물 나이").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint(
+                            "BABY, JUNIOR, ADULT, SENIOR")),
+                    parameterWithName("pageNumber").description("페이지 번호"),
+                    parameterWithName("pageSize").description("페이지 사이즈")
+                ),
+                responseFields(
+                    fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
+                    fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
+                    fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
+                    fieldWithPath("animals").type(ARRAY).description("보호 동물 리스트"),
+                    fieldWithPath("animals[].animalId").type(NUMBER).description("보호 동물 ID"),
+                    fieldWithPath("animals[].animalName").type(STRING).description("보호 동물 이름"),
+                    fieldWithPath("animals[].animalImageUrl").type(STRING).description("보호 동물 사진"),
+                    fieldWithPath("animals[].animalBirthDate").type(STRING).description("보호 동물 생일"),
+                    fieldWithPath("animals[].animalGender").type(STRING).description("보호 동물 성별"),
+                    fieldWithPath("animals[].animalIsAdopted").type(BOOLEAN)
+                        .description("보호 동물 입양 여부"),
+                    fieldWithPath("animals[].animalIsNeutered").type(BOOLEAN)
+                        .description("보호 동물 중성화 유무")
                 )
             ));
     }

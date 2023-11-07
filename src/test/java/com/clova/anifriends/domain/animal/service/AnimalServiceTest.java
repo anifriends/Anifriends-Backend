@@ -12,9 +12,12 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.animal.Animal;
+import com.clova.anifriends.domain.animal.AnimalAge;
+import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
@@ -34,6 +37,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -172,6 +178,44 @@ class AnimalServiceTest {
 
             //then
             assertThat(exception).isInstanceOf(AnimalNotFoundException.class);
+        }
+    }
+
+
+    @Nested
+    @DisplayName("findAnimalsByShelter 실행 시")
+    class FindAnimalsByShelterTest {
+
+        @Test
+        @DisplayName("성공")
+        void findAnimalsByShelter() {
+            // given
+            Long shelterId = 1L;
+            String keyword = "animalName";
+            AnimalType type = AnimalType.DOG;
+            AnimalGender gender = AnimalGender.MALE;
+            Boolean isNeutered = true;
+            AnimalActive active = AnimalActive.ACTIVE;
+            AnimalSize size = AnimalSize.SMALL;
+            AnimalAge age = AnimalAge.BABY;
+            Shelter shelter = shelter();
+            Animal animal = animal(shelter);
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            Page<Animal> pageResult = new PageImpl<>(List.of(animal));
+            FindAnimalsByShelterResponse expected = FindAnimalsByShelterResponse.from(pageResult);
+
+            given(
+                animalRepository.findAnimalsByShelter(shelterId, keyword, type, gender, isNeutered,
+                    active, size, age, pageRequest))
+                .willReturn(pageResult);
+
+            // when
+            FindAnimalsByShelterResponse animalsByShelter = animalService.findAnimalsByShelter(
+                shelterId, keyword, type, gender, isNeutered,
+                active, size, age, pageRequest);
+
+            // then
+            assertThat(expected).usingRecursiveComparison().isEqualTo(animalsByShelter);
         }
     }
 }

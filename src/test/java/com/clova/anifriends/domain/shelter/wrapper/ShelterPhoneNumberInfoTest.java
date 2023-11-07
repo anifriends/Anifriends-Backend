@@ -7,6 +7,8 @@ import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class ShelterPhoneNumberInfoTest {
 
@@ -14,16 +16,13 @@ class ShelterPhoneNumberInfoTest {
     @DisplayName("ShelterPhoneNumber 생성 시")
     class NewShelterPhoneNumberTest {
 
-        String phoneNumber;
-        String sparePhoneNumber;
+        String phoneNumber = "010-1234-1234";
+        String sparePhoneNumber = "010-1234-5678";
 
         @Test
         @DisplayName("성공")
         void newShelterPhoneNumber() {
             // given
-            phoneNumber = "010-1234-1234";
-            sparePhoneNumber = "010-1234-1253";
-
             // when
             ShelterPhoneNumberInfo shelterPhoneNumberInfo = new ShelterPhoneNumberInfo(phoneNumber,
                 sparePhoneNumber);
@@ -37,12 +36,11 @@ class ShelterPhoneNumberInfoTest {
         @DisplayName("예외(ShelterNotFoundException): 전화번호가 null")
         void throwExceptionWhenPhoneNumberIsNull() {
             // given
-            phoneNumber = null;
-            sparePhoneNumber = "010-1234-1253";
+            String nullPhoneNumber=  null;
 
             // when
             Exception exception = catchException(
-                () -> new ShelterPhoneNumberInfo(phoneNumber, sparePhoneNumber));
+                () -> new ShelterPhoneNumberInfo(nullPhoneNumber, sparePhoneNumber));
 
             // then
             assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
@@ -52,72 +50,41 @@ class ShelterPhoneNumberInfoTest {
         @DisplayName("예외(ShelterNotFoundException): 임시 전화번호가 null")
         void throwExceptionWhenSparePhoneNumberIsNull() {
             // given
-            phoneNumber = "010-1234-1253";
-            sparePhoneNumber = null;
+            String nullSparePhoneNumber = null;
 
             // when
             Exception exception = catchException(
-                () -> new ShelterPhoneNumberInfo(phoneNumber, sparePhoneNumber));
+                () -> new ShelterPhoneNumberInfo(phoneNumber, nullSparePhoneNumber));
 
             // then
             assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
         }
 
-        @Test
-        @DisplayName("예외(ShelterNotFoundException): 전화번호가 빈 칸")
-        void throwExceptionWhenPhoneNumberIsBlank() {
-            // given
-            phoneNumber = "";
-            sparePhoneNumber = "010-1243-1234";
-
-            // when
-            Exception exception = catchException(
-                () -> new ShelterPhoneNumberInfo(phoneNumber, sparePhoneNumber));
-
-            // then
-            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
-        }
-
-        @Test
-        @DisplayName("예외(ShelterNotFoundException): 임시 전화번호가 빈 칸")
-        void throwExceptionWhenSparePhoneNumberIsBlank() {
-            // given
-            phoneNumber = "010-1243-1234";
-            sparePhoneNumber = "";
-
-            // when
-            Exception exception = catchException(
-                () -> new ShelterPhoneNumberInfo(phoneNumber, sparePhoneNumber));
-
-            // then
-            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
-        }
-
-        @Test
+        @ParameterizedTest
+        @CsvSource({
+            "01000-1234-5678", "010-123456-1234", "012-1234-123"
+        })
         @DisplayName("예외(ShelterNotFoundException): 전화번호가 패턴에 맞지 않는 경우")
-        void throwExceptionWhenPhoneNumberIsNotPatternNumber() {
+        void throwExceptionWhenPhoneNumberIsNotPatternNumber(String invalidPhoneNumber) {
             // given
-            phoneNumber = "010-1243-12345";
-            sparePhoneNumber = "010-2312-1232";
-
             // when
             Exception exception = catchException(
-                () -> new ShelterPhoneNumberInfo(phoneNumber, sparePhoneNumber));
+                () -> new ShelterPhoneNumberInfo(invalidPhoneNumber, sparePhoneNumber));
 
             // then
             assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
         }
 
-        @Test
+        @ParameterizedTest
+        @CsvSource({
+            "01000-1234-5678", "010-123456-1234", "012-1234-123"
+        })
         @DisplayName("예외(ShelterNotFoundException): 임시 전화번호가 패턴에 맞지 않는 경우")
-        void throwExceptionWhenSparePhoneNumberIsNotPatternNumber() {
+        void throwExceptionWhenSparePhoneNumberIsNotPatternNumber(String invalidSparePhoneNumber) {
             // given
-            phoneNumber = "010-1243-1235";
-            sparePhoneNumber = "010-2312-12312";
-
             // when
             Exception exception = catchException(
-                () -> new ShelterPhoneNumberInfo(phoneNumber, sparePhoneNumber));
+                () -> new ShelterPhoneNumberInfo(phoneNumber, invalidSparePhoneNumber));
 
             // then
             assertThat(exception).isInstanceOf(ShelterBadRequestException.class);

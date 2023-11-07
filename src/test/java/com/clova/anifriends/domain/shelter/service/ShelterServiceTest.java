@@ -5,12 +5,14 @@ import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
+import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -20,9 +22,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 class ShelterServiceTest {
@@ -32,6 +38,19 @@ class ShelterServiceTest {
 
     @Mock
     private ShelterRepository shelterRepository;
+
+    @Spy
+    PasswordEncoder passwordEncoder = new PasswordEncoder() {
+        @Override
+        public String encode(CharSequence rawPassword) {
+            return new StringBuilder(rawPassword).reverse().toString();
+        }
+
+        @Override
+        public boolean matches(CharSequence rawPassword, String encodedPassword) {
+            return encode(rawPassword).equals(encodedPassword);
+        }
+    };
 
     Shelter givenShelter;
     ShelterImage givenShelterImage;
@@ -54,6 +73,66 @@ class ShelterServiceTest {
 
             //then
             assertThat(response.isDuplicated()).isTrue();
+        }
+
+    }
+
+    @Nested
+    @DisplayName("registerShelter 실행 시")
+    class RegisterShelterTest {
+
+        String email = "email@email.com";
+        String password = "12345678";
+        String name = "보호소";
+        String address = "주소1";
+        String addressDetail = "주소2";
+        String phoneNumber = "010-1234-5678";
+        String sparePhoneNumber = "010-1234-5678";
+        boolean isOpenedAddress = true;
+
+        @Test
+        @DisplayName("성공")
+        void registerShelter() {
+            //given
+            //when
+            shelterService.registerShelter(email, password, name, address, addressDetail,
+                phoneNumber, sparePhoneNumber, isOpenedAddress);
+
+            //then
+            then(shelterRepository).should().save(any());
+        }
+
+        @Test
+        @DisplayName("예외(ShelterBadRequestException): 패스워드가 null")
+        void exceptionWhenPasswordIsNull() {
+            //given
+            String nullPassword = null;
+
+            //when
+            Exception exception = catchException(
+                () -> shelterService.registerShelter(email, nullPassword, name, address,
+                    addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress));
+
+            //then
+            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+            "4", "5", "17", "18"
+        })
+        @DisplayName("예외(ShelterBadRequestException): 패스워드가 6자 미만, 16자 초과")
+        void exceptionWhenPasswordOutOfLength(String passwordLength) {
+            //given
+            String passwordOutOfLength = "a".repeat(Integer.parseInt(passwordLength));
+
+            //when
+            Exception exception = catchException(
+                () -> shelterService.registerShelter(email, passwordOutOfLength, name, address,
+                    addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress));
+
+            //then
+            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
         }
     }
 
