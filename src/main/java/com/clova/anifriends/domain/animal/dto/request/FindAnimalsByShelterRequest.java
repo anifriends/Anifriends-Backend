@@ -16,21 +16,4 @@ public record FindAnimalsByShelterRequest(
     AnimalAge age
 ) {
 
-    public FindAnimalsByShelterRequest(
-        String keyword,
-        AnimalType type,
-        AnimalGender gender,
-        Boolean isNeutered,
-        AnimalActive active,
-        AnimalSize size,
-        AnimalAge age
-    ) {
-        this.keyword = keyword;
-        this.type = type;
-        this.gender = gender;
-        this.isNeutered = isNeutered;
-        this.active = active;
-        this.size = size;
-        this.age = age;
-    }
 }
