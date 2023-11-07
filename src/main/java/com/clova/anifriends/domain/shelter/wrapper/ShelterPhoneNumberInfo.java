@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class ShelterPhoneNumberInfo {
 
     private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile(
-        "010-[0-9]{4}-[0-9]{4}|0[1-9]{1,2}-[0-9]{3,4}-[0-9]{4}");
+        "010-\\d{4}-\\d{4}|0[1-9]{1,2}-\\d{3,4}-\\d{4}");
 
     @Column(name = "phone_number")
     private String phoneNumber;
