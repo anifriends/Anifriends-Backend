@@ -11,6 +11,7 @@ import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
 import com.clova.anifriends.domain.auth.repository.RefreshTokenRepository;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
+import com.clova.anifriends.domain.auth.support.MockPasswordEncode;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.volunteer.Volunteer;
@@ -45,17 +46,7 @@ class AuthServiceTest {
     RefreshTokenRepository refreshTokenRepository;
 
     @Spy
-    PasswordEncoder passwordEncoder = new PasswordEncoder() {
-        @Override
-        public String encode(CharSequence rawPassword) {
-            return new StringBuilder(rawPassword).reverse().toString();
-        }
-
-        @Override
-        public boolean matches(CharSequence rawPassword, String encodedPassword) {
-            return encode(rawPassword).equals(encodedPassword);
-        }
-    };
+    PasswordEncoder passwordEncoder = new MockPasswordEncode();
 
     @Spy
     JwtProvider jwtProvider = AuthFixture.jwtProvider();
