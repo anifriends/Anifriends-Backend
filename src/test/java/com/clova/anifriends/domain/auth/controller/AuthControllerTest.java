@@ -2,6 +2,8 @@ package com.clova.anifriends.domain.auth.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
+import static org.springframework.restdocs.cookies.CookieDocumentation.responseCookies;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -48,11 +50,13 @@ class AuthControllerTest extends BaseControllerTest {
                         fieldWithPath("email").type(STRING).description("봉사자 이메일"),
                         fieldWithPath("password").type(STRING).description("봉사자 패스워드")
                     ),
+                    responseCookies(
+                        cookieWithName("refreshToken").description("리프레시 토큰")
+                    ),
                     responseFields(
                         fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
                         fieldWithPath("role").type(STRING).description("사용자 역할"),
-                        fieldWithPath("accessToken").type(STRING).description("액세스 토큰"),
-                        fieldWithPath("refreshToken").type(STRING).description("리프레시 토큰")
+                        fieldWithPath("accessToken").type(STRING).description("액세스 토큰")
                     )
                 ));
         }
@@ -83,11 +87,13 @@ class AuthControllerTest extends BaseControllerTest {
                         fieldWithPath("email").type(STRING).description("보호소 이메일"),
                         fieldWithPath("password").type(STRING).description("보호소 패스워드")
                     ),
+                    responseCookies(
+                        cookieWithName("refreshToken").description("리프레시 토큰")
+                    ),
                     responseFields(
                         fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
                         fieldWithPath("role").type(STRING).description("사용자 역할"),
-                        fieldWithPath("accessToken").type(STRING).description("액세스 토큰"),
-                        fieldWithPath("refreshToken").type(STRING).description("리프레시 토큰")
+                        fieldWithPath("accessToken").type(STRING).description("액세스 토큰")
                     )
                 ));
         }
