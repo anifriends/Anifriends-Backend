@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.volunteer.support;
 
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
+import com.clova.anifriends.domain.volunteer.dto.request.CheckDuplicateVolunteerEmailRequest;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
 
@@ -24,6 +25,10 @@ public class VolunteerDtoFixture {
     public static RegisterVolunteerRequest registerVolunteerRequest() {
         return new RegisterVolunteerRequest(EMAIL, PASSWORD, NAME, BIRTH_DATE, PHONE_NUMBER,
             GENDER);
+    }
+
+    public static CheckDuplicateVolunteerEmailRequest checkDuplicateVolunteerEmailRequest() {
+        return new CheckDuplicateVolunteerEmailRequest(EMAIL);
     }
 }
 
