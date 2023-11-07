@@ -2,11 +2,13 @@ package com.clova.anifriends.domain.shelter.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
+import com.clova.anifriends.domain.shelter.dto.CheckDuplicateEmailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
@@ -33,6 +35,27 @@ class ShelterServiceTest {
 
     Shelter givenShelter;
     ShelterImage givenShelterImage;
+
+    @Nested
+    @DisplayName("checkDuplicateEmail 실행 시")
+    class CheckDuplicateEmailTest {
+
+        @Test
+        @DisplayName("성공")
+        void checkDuplicateEmail() {
+            //given
+            String email = "email@email.com";
+
+            given(shelterRepository.existsByEmail(any())).willReturn(true);
+
+            //when
+            CheckDuplicateEmailResponse response
+                = shelterService.checkDuplicateEmail(email);
+
+            //then
+            assertThat(response.isDuplicated()).isTrue();
+        }
+    }
 
     @Nested
     @DisplayName("findShelterDetail 실행 시")

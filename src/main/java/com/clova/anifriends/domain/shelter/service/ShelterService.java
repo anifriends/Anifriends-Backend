@@ -1,10 +1,12 @@
 package com.clova.anifriends.domain.shelter.service;
 
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.dto.CheckDuplicateEmailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
+import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShelterService {
 
     private final ShelterRepository shelterRepository;
+
+    @Transactional(readOnly = true)
+    public CheckDuplicateEmailResponse checkDuplicateEmail(String email) {
+        boolean isDuplicated = shelterRepository.existsByEmail(new ShelterEmail(email));
+        return CheckDuplicateEmailResponse.from(isDuplicated);
+    }
 
     @Transactional(readOnly = true)
     public FindShelterDetailResponse findShelterDetail(
