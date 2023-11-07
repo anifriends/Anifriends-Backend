@@ -70,6 +70,47 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
         return new PageImpl<>(animals, pageable, count);
     }
 
+    @Override
+    public Page<Animal> findAnimalsByVolunteer(
+        AnimalType type,
+        AnimalActive active,
+        Boolean isNeutered,
+        AnimalAge age,
+        AnimalGender gender,
+        AnimalSize size,
+        Pageable pageable
+    ) {
+        List<Animal> animals = query.selectFrom(animal)
+            .join(animal.shelter)
+            .where(
+                animalTypeContains(type),
+                animalActiveContains(active),
+                animalIsNeutered(isNeutered),
+                animalAgeContains(age),
+                animalGenderContains(gender),
+                animalSizeContains(size)
+            )
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        int count = query.select(animal.count())
+            .from(animal)
+            .join(animal.shelter)
+            .where(
+                animalTypeContains(type),
+                animalActiveContains(active),
+                animalIsNeutered(isNeutered),
+                animalAgeContains(age),
+                animalGenderContains(gender),
+                animalSizeContains(size)
+            )
+            .fetch()
+            .size();
+
+        return new PageImpl<>(animals, pageable, count);
+    }
+
     private BooleanExpression animalNameContains(String keyword) {
         return keyword != null ? animal.name.name.contains(keyword) : null;
     }
@@ -77,25 +118,25 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     private BooleanExpression animalTypeContains(
         AnimalType type
     ) {
-        return type != null ? animal.type.stringValue().eq(type.getName()) : null;
+        return type != null ? animal.type.eq(type) : null;
     }
 
     private BooleanExpression animalGenderContains(
         AnimalGender gender
     ) {
-        return gender != null ? animal.gender.stringValue().eq(gender.getName()) : null;
+        return gender != null ? animal.gender.eq(gender) : null;
     }
 
     private BooleanExpression animalIsNeutered(
-        Boolean isNeuteredFilter
+        Boolean isNeutered
     ) {
-        return isNeuteredFilter != null ? animal.neutered.isNeutered.eq(isNeuteredFilter) : null;
+        return isNeutered != null ? animal.neutered.isNeutered.eq(isNeutered) : null;
     }
 
     private BooleanExpression animalActiveContains(
         AnimalActive active
     ) {
-        return active != null ? animal.active.stringValue().contains(active.getName()) : null;
+        return active != null ? animal.active.eq(active) : null;
     }
 
     private BooleanExpression animalSizeContains(
@@ -108,7 +149,8 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
         int minWeight = size.getMinWeight();
         int maxWeight = size.getMaxWeight();
 
-        return animal.weight.weight.between(minWeight, maxWeight);
+        return animal.weight.weight.goe(minWeight)
+            .and(animal.weight.weight.lt(maxWeight));
     }
 
     private BooleanExpression animalAgeContains(
@@ -125,6 +167,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
         LocalDate minDate = currentDate.minusMonths(minMonth);
         LocalDate maxDate = currentDate.minusMonths(maxMonth);
 
-        return animal.birthDate.between(maxDate, minDate);
+        return animal.birthDate.gt(maxDate)
+            .and(animal.birthDate.loe(minDate));
     }
 }
