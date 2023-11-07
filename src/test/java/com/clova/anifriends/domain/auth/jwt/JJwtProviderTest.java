@@ -8,7 +8,7 @@ import com.clova.anifriends.domain.auth.exception.ExpiredAccessTokenException;
 import com.clova.anifriends.domain.auth.exception.ExpiredRefreshTokenException;
 import com.clova.anifriends.domain.auth.exception.InvalidJwtException;
 import com.clova.anifriends.domain.auth.jwt.response.CustomClaims;
-import com.clova.anifriends.domain.auth.jwt.response.UserToken;
+import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +25,7 @@ class JJwtProviderTest {
     String testSecret = "}:ASV~lS,%!I:ba^GBR<Q@cJN~!,Y0=zx7Rqwum+remZ>ayhI3$4dX$jx~@9[1F";
     String testRefreshSecret = "~GWW.|?:\"#Rqmm^-nk#>#4Ngc}]3xz!hOQCXNF:8z-Mdn\"U!Vt</+/8;ATR*lc{";
     JJwtProvider jJwtProvider = AuthFixture.jJwtProvider();
-    UserToken userToken = AuthFixture.userToken();
+    TokenResponse tokenResponse = AuthFixture.userToken();
     Long userId = 1L;
     UserRole roleVolunteer = UserRole.ROLE_VOLUNTEER;
 
@@ -41,12 +41,12 @@ class JJwtProviderTest {
             UserRole volunteerRole = UserRole.ROLE_VOLUNTEER;
 
             //when
-            UserToken UserToken = jJwtProvider.createToken(userId, volunteerRole);
+            TokenResponse TokenResponse = jJwtProvider.createToken(userId, volunteerRole);
 
             //then
-            assertThat(UserToken.accessToken()).isNotBlank();
-            assertThat(UserToken.refreshToken()).isNotBlank();
-            assertThat(UserToken.accessToken()).isNotEqualTo(UserToken.refreshToken());
+            assertThat(TokenResponse.accessToken()).isNotBlank();
+            assertThat(TokenResponse.refreshToken()).isNotBlank();
+            assertThat(TokenResponse.accessToken()).isNotEqualTo(TokenResponse.refreshToken());
         }
     }
 
@@ -58,10 +58,10 @@ class JJwtProviderTest {
         @DisplayName("성공")
         void parseAccessToken() {
             //given
-            UserToken userToken = jJwtProvider.createToken(userId, roleVolunteer);
+            TokenResponse tokenResponse = jJwtProvider.createToken(userId, roleVolunteer);
 
             //when
-            CustomClaims claims = jJwtProvider.parseAccessToken(userToken.accessToken());
+            CustomClaims claims = jJwtProvider.parseAccessToken(tokenResponse.accessToken());
 
             //then
             Long findUserId = claims.memberId();
@@ -77,8 +77,8 @@ class JJwtProviderTest {
             String invalidSecret = testSecret + "invalid";
             JJwtProvider invalidJJwtProvider = new JJwtProvider(issuer, expirySeconds,
                 refreshExpirySeconds, invalidSecret, testRefreshSecret);
-            UserToken UserToken = invalidJJwtProvider.createToken(userId, roleVolunteer);
-            String invalidAccessToken = UserToken.accessToken();
+            TokenResponse TokenResponse = invalidJJwtProvider.createToken(userId, roleVolunteer);
+            String invalidAccessToken = TokenResponse.accessToken();
 
             //when
             Exception exception = catchException(
@@ -95,8 +95,8 @@ class JJwtProviderTest {
             int expirySeconds = -1;
             JJwtProvider expiredJJwtProvider = new JJwtProvider(issuer, expirySeconds,
                 refreshExpirySeconds, testSecret, testRefreshSecret);
-            UserToken userToken = expiredJJwtProvider.createToken(userId, roleVolunteer);
-            String expiredAccessToken = userToken.accessToken();
+            TokenResponse tokenResponse = expiredJJwtProvider.createToken(userId, roleVolunteer);
+            String expiredAccessToken = tokenResponse.accessToken();
 
             //when
             Exception exception = catchException(
@@ -110,7 +110,7 @@ class JJwtProviderTest {
         @DisplayName("예외(InvalidJwtException): 리프레시 토큰 사용 불가")
         void exceptionWhenUsingRefreshToken() {
             //given
-            String refreshToken = userToken.refreshToken();
+            String refreshToken = tokenResponse.refreshToken();
 
             //when
             Exception exception = catchException(() -> jJwtProvider.parseAccessToken(refreshToken));
@@ -128,13 +128,13 @@ class JJwtProviderTest {
         @DisplayName("성공")
         void refreshAccessToken() {
             //given
-            String refreshToken = userToken.refreshToken();
+            String refreshToken = tokenResponse.refreshToken();
 
             //when
             ThrowingRunnable runnable = () ->
             {
-                UserToken newUserToken = jJwtProvider.refreshAccessToken(refreshToken);
-                assertThat(newUserToken.accessToken()).isNotEqualTo(refreshToken);
+                TokenResponse newTokenResponse = jJwtProvider.refreshAccessToken(refreshToken);
+                assertThat(newTokenResponse.accessToken()).isNotEqualTo(refreshToken);
             };
 
             //then
@@ -145,7 +145,7 @@ class JJwtProviderTest {
         @DisplayName("예외(InvalidJwtException): 액세스 토큰 사용 불가")
         void exceptionWhenUsingAccessToken() {
             //given
-            String accessToken = userToken.accessToken();
+            String accessToken = tokenResponse.accessToken();
 
             //when
             Exception exception = catchException(
@@ -162,8 +162,8 @@ class JJwtProviderTest {
             int refreshExpirySeconds = -1;
             JJwtProvider expiredJJwtProvider = new JJwtProvider(issuer, expirySeconds,
                 refreshExpirySeconds, testSecret, testRefreshSecret);
-            UserToken userToken = expiredJJwtProvider.createToken(userId, roleVolunteer);
-            String expiredRefreshToken = userToken.refreshToken();
+            TokenResponse tokenResponse = expiredJJwtProvider.createToken(userId, roleVolunteer);
+            String expiredRefreshToken = tokenResponse.refreshToken();
 
             //when
             Exception exception = catchException(
