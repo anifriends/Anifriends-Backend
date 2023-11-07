@@ -8,13 +8,11 @@ import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -43,8 +41,13 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
             .from(animal)
             .where(
                 animal.shelter.shelterId.eq(shelterId),
-                keywordContains(keyword),
-                optionSearch(type, gender, isNeutered, active, size, age)
+                animalNameContains(keyword),
+                animalTypeContains(type),
+                animalGenderContains(gender),
+                animalIsNeutered(isNeutered),
+                animalActiveContains(active),
+                animalSizeContains(size),
+                animalAgeContains(age)
             )
             .limit(pageable.getPageSize())
             .offset(pageable.getOffset())
@@ -54,26 +57,27 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
             .from(animal)
             .where(
                 animal.shelter.shelterId.eq(shelterId),
-                keywordContains(keyword),
-                optionSearch(type, gender, isNeutered, active, size, age)
+                animalNameContains(keyword),
+                animalTypeContains(type),
+                animalGenderContains(gender),
+                animalIsNeutered(isNeutered),
+                animalActiveContains(active),
+                animalSizeContains(size),
+                animalAgeContains(age)
             )
             .fetchOne();
 
         return new PageImpl<>(animals, pageable, count);
     }
 
-    private BooleanBuilder keywordContains(String keyword) {
-        return nullSafeBuilder(() -> animalNameContains(keyword));
-    }
-
     private BooleanExpression animalNameContains(String keyword) {
-        return animal.name.name.contains(keyword);
+        return keyword != null ? animal.name.name.contains(keyword) : null;
     }
 
     private BooleanExpression animalTypeContains(
         AnimalType type
     ) {
-        return animal.type.stringValue().eq(type.getName());
+        return type != null ? animal.type.stringValue().eq(type.getName()) : null;
     }
 
     private BooleanExpression animalGenderContains(
@@ -122,30 +126,5 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
         LocalDate maxDate = currentDate.minusMonths(maxMonth);
 
         return animal.birthDate.between(minDate, maxDate);
-    }
-
-    private BooleanBuilder optionSearch(
-        AnimalType type,
-        AnimalGender gender,
-        Boolean isNeutered,
-        AnimalActive active,
-        AnimalSize size,
-        AnimalAge age
-    ) {
-        return nullSafeBuilder(() -> animalTypeContains(type))
-            .or(nullSafeBuilder(() -> animalIsNeutered(isNeutered)))
-            .or(nullSafeBuilder(() -> animalGenderContains(gender)))
-            .or(nullSafeBuilder(() -> animalActiveContains(active)))
-            .or(nullSafeBuilder(() -> animalSizeContains(size)))
-            .or(nullSafeBuilder(() -> animalAgeContains(age)))
-            ;
-    }
-
-    private BooleanBuilder nullSafeBuilder(Supplier<BooleanExpression> supplier) {
-        try {
-            return new BooleanBuilder(supplier.get());
-        } catch (IllegalArgumentException e) {
-            return new BooleanBuilder();
-        }
     }
 }

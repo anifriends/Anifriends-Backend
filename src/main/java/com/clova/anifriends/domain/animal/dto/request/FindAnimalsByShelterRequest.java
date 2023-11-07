@@ -28,7 +28,7 @@ public record FindAnimalsByShelterRequest(
         this.keyword = keyword;
         this.type = type;
         this.gender = gender;
-        this.isNeutered = isNeutered == null || isNeutered;
+        this.isNeutered = isNeutered;
         this.active = active;
         this.size = size;
         this.age = age;
