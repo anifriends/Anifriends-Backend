@@ -5,10 +5,11 @@ import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByVolunteerResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
-import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import java.util.List;
@@ -52,6 +53,17 @@ public class ReviewService {
         reviewRepository.save(review);
 
         return review.getReviewId();
+    }
+
+    @Transactional(readOnly = true)
+    public FindShelterReviewsByVolunteerResponse findShelterReviewsByVolunteer(
+        Long shelterId,
+        Pageable pageable
+    ) {
+        Page<Review> reviewPage
+            = reviewRepository.findAllByShelterId(shelterId, pageable);
+
+        return FindShelterReviewsByVolunteerResponse.from(reviewPage);
     }
 
     private void validateNotExistReview(Applicant applicant) {

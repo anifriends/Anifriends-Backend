@@ -13,6 +13,17 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
 
     boolean existsByRecruitmentAndVolunteer(Recruitment recruitment, Volunteer volunteer);
 
+    @Query(
+        "select a "
+            + "from Applicant a "
+            + "left join fetch a.recruitment "
+            + "left join fetch a.volunteer "
+            + "left join fetch a.review "
+            + "where a.volunteer = :volunteer"
+    )
+    List<Applicant> findApplyingVolunteers(
+        @Param("volunteer") Volunteer volunteer);
+    
     @Query("select a from Applicant a "
         + "where a.applicantId = :applicantId "
         + "and a.volunteer.volunteerId = :volunteerId")
