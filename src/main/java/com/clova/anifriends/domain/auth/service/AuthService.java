@@ -59,17 +59,20 @@ public class AuthService {
 
     public TokenResponse createToken(Long userId, UserRole userRole) {
         TokenResponse tokenResponse = jwtProvider.createToken(userId, userRole);
-        refreshTokenRepository.save(new RefreshToken(tokenResponse.refreshToken(), userId, userRole));
+        refreshTokenRepository.save(
+            new RefreshToken(tokenResponse.refreshToken(), userId, userRole));
         return tokenResponse;
     }
 
     @Transactional
-    public TokenResponse refreshAccessToken(String accessToken, String refreshToken) {
+    public TokenResponse refreshAccessToken(String refreshToken) {
         RefreshToken findRefreshToken = refreshTokenRepository.findByTokenValue(refreshToken)
             .orElseThrow(
                 () -> new InvalidJwtException(ErrorCode.TOKEN_EXPIRED, "토큰 정보가 유효하지 않습니다."));
         TokenResponse tokenResponse = jwtProvider.refreshAccessToken(refreshToken);
         refreshTokenRepository.delete(findRefreshToken);
+        refreshTokenRepository.save(new RefreshToken(tokenResponse.refreshToken(),
+            tokenResponse.userId(), tokenResponse.role()));
         return tokenResponse;
     }
 }
