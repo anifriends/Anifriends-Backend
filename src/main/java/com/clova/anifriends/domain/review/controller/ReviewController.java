@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.review.controller;
 import com.clova.anifriends.domain.auth.resolver.LoginUser;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByVolunteerResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.service.ReviewService;
@@ -57,5 +58,15 @@ public class ReviewController {
         @LoginUser Long userId
     ) {
         return ResponseEntity.ok(reviewService.findVolunteerReviews(volunteerId, pageable));
+    }
+
+    @GetMapping("/volunteers/shelters/{shelterId}/reviews")
+    public ResponseEntity<FindShelterReviewsByVolunteerResponse> findShelterReviewsByVolunteer(
+        @PathVariable("shelterId") Long shelterId,
+        Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+            reviewService.findShelterReviewsByVolunteer(shelterId, pageable)
+        );
     }
 }

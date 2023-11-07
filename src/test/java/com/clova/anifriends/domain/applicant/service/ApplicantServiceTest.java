@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.applicant.service;
 
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
+import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.PENDING;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static com.clova.anifriends.domain.volunteer.support.VolunteerFixture.volunteer;
@@ -16,14 +17,19 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsApprovedResponse;
+import com.clova.anifriends.domain.applicant.dto.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
+import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentInfo;
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
+import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -153,6 +159,85 @@ class ApplicantServiceTest {
 
             // then
             assertThat(result).isEqualTo(response);
+        }
+    }
+
+    @Nested
+    @DisplayName("findApplyingVolunteers 실행 시")
+    class FindApplyingVolunteersTest {
+
+        @Test
+        @DisplayName("성공 : 후기 작성자가 1명인 경우")
+        void findApplyingVolunteers1() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            Applicant applicantShouldWriteReview = ApplicantFixture.applicant(recruitment,
+                volunteer, ATTENDANCE);
+            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(
+                recruitment,
+                volunteer, PENDING);
+
+            FindApplyingVolunteersResponse findApplyingVolunteersResponse = FindApplyingVolunteersResponse.from(
+                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview)
+            );
+
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+            given(applicantRepository.findApplyingVolunteers(any())).willReturn(
+                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
+
+            // when
+            FindApplyingVolunteersResponse foundApplyingVolunteers = applicantService.findApplyingVolunteers(
+                anyLong());
+
+            // then
+            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(0)
+                .isWritedReview()).isEqualTo(
+                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(0)
+                    .isWritedReview());
+            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(1)
+                .isWritedReview()).isEqualTo(
+                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(1)
+                    .isWritedReview());
+        }
+
+        @Test
+        @DisplayName("성공 : 후기 작성자가 0명인 경우")
+        void findApplyingVolunteers2() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+
+            Applicant applicantShouldWriteReview = ApplicantFixture.applicant(recruitment,
+                volunteer, PENDING);
+            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(
+                recruitment,
+                volunteer, PENDING);
+
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+
+            FindApplyingVolunteersResponse findApplyingVolunteersResponse = FindApplyingVolunteersResponse.from(
+                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview)
+            );
+
+            given(applicantRepository.findApplyingVolunteers(any())).willReturn(
+                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
+
+            // when
+            FindApplyingVolunteersResponse foundApplyingVolunteers = applicantService.findApplyingVolunteers(
+                anyLong());
+
+            // then
+            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(0)
+                .isWritedReview()).isEqualTo(
+                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(0)
+                    .isWritedReview());
+            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(1)
+                .isWritedReview()).isEqualTo(
+                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(1)
+                    .isWritedReview());
         }
     }
 }

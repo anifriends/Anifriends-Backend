@@ -74,7 +74,7 @@ class VolunteerControllerTest extends BaseControllerTest {
             volunteer.getBirthDate(),
             volunteer.getPhoneNumber(),
             volunteer.getTemperature(),
-            volunteer.getApplications().stream()
+            volunteer.getApplicants().stream()
                 .filter(applicant -> applicant.getStatus().equals(ApplicantStatus.ATTENDANCE))
                 .count(),
             VolunteerImageFixture.volunteerImage(volunteer).getImageUrl());

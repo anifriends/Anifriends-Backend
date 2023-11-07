@@ -2,13 +2,13 @@ package com.clova.anifriends.domain.auth.jwt;
 
 
 import com.clova.anifriends.domain.auth.jwt.response.CustomClaims;
-import com.clova.anifriends.domain.auth.jwt.response.UserToken;
+import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
 
 public interface JwtProvider {
 
-    UserToken createToken(Long userId, UserRole userRole);
+    TokenResponse createToken(Long userId, UserRole userRole);
 
     CustomClaims parseAccessToken(String token);
 
-    UserToken refreshAccessToken(String refreshToken);
+    TokenResponse refreshAccessToken(String refreshToken);
 }

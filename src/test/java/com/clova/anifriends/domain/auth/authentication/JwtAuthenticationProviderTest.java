@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
-import com.clova.anifriends.domain.auth.jwt.response.UserToken;
+import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -26,11 +26,11 @@ class JwtAuthenticationProviderTest {
         @DisplayName("성공")
         void authenticate() {
             //given
-            UserToken userToken = jwtProvider.createToken(1L, UserRole.ROLE_VOLUNTEER);
+            TokenResponse tokenResponse = jwtProvider.createToken(1L, UserRole.ROLE_VOLUNTEER);
 
             //when
             Authentication authentication = authenticationProvider.authenticate(
-                userToken.accessToken());
+                tokenResponse.accessToken());
 
             //then
             Object principal = authentication.getPrincipal();

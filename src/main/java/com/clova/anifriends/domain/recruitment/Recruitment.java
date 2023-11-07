@@ -158,4 +158,8 @@ public class Recruitment extends BaseTimeEntity {
     public List<Applicant> getApplicants() {
         return Collections.unmodifiableList(applicants);
     }
+
+    public void addApplicant(Applicant applicant) {
+        applicants.add(applicant);
+    }
 }

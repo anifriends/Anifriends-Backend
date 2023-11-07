@@ -28,6 +28,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -64,7 +65,7 @@ public class Volunteer extends BaseTimeEntity {
     private VolunteerName name;
 
     @OneToMany(mappedBy = "volunteer", fetch = FetchType.LAZY)
-    private List<Applicant> applications = new ArrayList<>();
+    private List<Applicant> applicants = new ArrayList<>();
 
     @OneToOne(mappedBy = "volunteer")
     private VolunteerImage volunteerImage;
@@ -92,6 +93,20 @@ public class Volunteer extends BaseTimeEntity {
         } catch (DateTimeParseException e) {
             throw new VolunteerBadRequestException(BAD_REQUEST, "생년월일 형식이 맞지 않습니다.");
         }
+    }
+
+    public void addApplicant(Applicant applicant) {
+        applicants.add(applicant);
+    }
+
+    public void updateVolunteerImage(VolunteerImage volunteerImage) {
+        this.volunteerImage = volunteerImage;
+    }
+
+    public long getReviewCount() {
+        return applicants.stream()
+            .filter(applicant -> Objects.nonNull(applicant.getReview()))
+            .count();
     }
 
     public Long getVolunteerId() {
@@ -130,11 +145,7 @@ public class Volunteer extends BaseTimeEntity {
         return this.volunteerImage == null ? null : volunteerImage.getImageUrl();
     }
 
-    public List<Applicant> getApplications() {
-        return Collections.unmodifiableList(applications);
-    }
-
-    public void updateVolunteerImage(VolunteerImage volunteerImage) {
-        this.volunteerImage = volunteerImage;
+    public List<Applicant> getApplicants() {
+        return Collections.unmodifiableList(applicants);
     }
 }
