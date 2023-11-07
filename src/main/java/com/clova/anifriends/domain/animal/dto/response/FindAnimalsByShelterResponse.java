@@ -16,7 +16,7 @@ public record FindAnimalsByShelterResponse(
         String animalName,
         String animalImageUrl,
         LocalDate animalBirthDate,
-        String gender,
+        String animalGender,
         boolean animalIsAdopted,
         boolean animalIsNeutered
     ) {

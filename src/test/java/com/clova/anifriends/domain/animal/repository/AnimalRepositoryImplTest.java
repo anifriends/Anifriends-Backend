@@ -80,11 +80,13 @@ class AnimalRepositoryImplTest extends BaseRepositoryTest {
         void findAnimalsWhenNameAndAgeAreSame() {
             // given
             Shelter shelter = ShelterFixture.shelter();
-            ReflectionTestUtils.setField(shelter, "shelterId", 1L);
+            LocalDate animalBirthDate = LocalDate.now().minusMonths(1);
+            LocalDate animalNotFoundBirthDate = LocalDate.now().minusMonths(19);
+
             Animal animal = new Animal(
                 shelter,
                 "animalName",
-                LocalDate.now().minusMonths(1),
+                animalBirthDate,
                 AnimalType.DOG.getName(),
                 "animalBreed",
                 AnimalGender.MALE.getName(),
@@ -97,7 +99,7 @@ class AnimalRepositoryImplTest extends BaseRepositoryTest {
             Animal animalNotFound = new Animal(
                 shelter,
                 "animalName",
-                LocalDate.now().minusMonths(19),
+                animalNotFoundBirthDate,
                 AnimalType.DOG.getName(),
                 "animalBreed",
                 AnimalGender.MALE.getName(),
@@ -109,9 +111,9 @@ class AnimalRepositoryImplTest extends BaseRepositoryTest {
             );
             PageRequest pageRequest = PageRequest.of(0, 10);
 
-            shelterRepository.save(shelter);
-            animalRepository.save(animal);
-            animalRepository.save(animalNotFound);
+            entityManager.persist(shelter);
+            entityManager.persist(animal);
+            entityManager.persist(animalNotFound);
 
             // when
             Page<Animal> expected = customAnimalRepository.findAnimalsByShelter(
