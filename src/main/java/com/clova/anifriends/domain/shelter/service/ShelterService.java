@@ -6,6 +6,7 @@ import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
+import java.text.MessageFormat;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,7 +60,9 @@ public class ShelterService {
 
     private void validatePasswordLength(String password) {
         if(password.length() < MIN_PASSWORD_LENGTH || password.length() > MAX_PASSWORD_LENGTH) {
-            throw new ShelterBadRequestException("패스워드는 6자 이상, 16자 이하여야 합니다.");
+            throw new ShelterBadRequestException(
+                MessageFormat.format("패스워드는 {0}자 이상, {1}자 이하여야 합니다.",
+                    MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH));
         }
     }
 

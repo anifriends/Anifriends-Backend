@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.shelter.wrapper;
 import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import java.text.MessageFormat;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ShelterAddressInfo {
 
+    private static final int MIN_ADDRESS_LENGTH = 1;
+    private static final int MIN_ADDRESS_DETAIL_LENGTH = 1;
     private static final int MAX_ADDRESS_LENGTH = 100;
     private static final int MAX_ADDRESS_DETAIL_LENGTH = 100;
 
@@ -45,13 +48,17 @@ public class ShelterAddressInfo {
 
     private void validateAddress(String address) {
         if(address.isBlank() || address.length() > MAX_ADDRESS_LENGTH) {
-            throw new ShelterBadRequestException("보호소 주소는 1자 이상, 100자 이하여야 합니다.");
+            throw new ShelterBadRequestException(
+                MessageFormat.format("보호소 주소는 {0}자 이상, {1}자 이하여야 합니다.",
+                    MIN_ADDRESS_LENGTH, MAX_ADDRESS_LENGTH));
         }
     }
 
     private void validateAddressDetail(String addressDetail) {
         if(addressDetail.isBlank() || addressDetail.length() > MAX_ADDRESS_DETAIL_LENGTH) {
-            throw new ShelterBadRequestException("보호소 상세 주소는 1자 이상, 100자 이하여야 합니다.");
+            throw new ShelterBadRequestException(
+                MessageFormat.format("보호소 상세 주소는 {0}자 이상, {1}자 이하여야 합니다.",
+                    MIN_ADDRESS_DETAIL_LENGTH, MAX_ADDRESS_DETAIL_LENGTH));
         }
     }
 }
