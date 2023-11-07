@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface AnimalRepository extends JpaRepository<Animal, Long> {
+public interface AnimalRepository extends JpaRepository<Animal, Long>, AnimalRepositoryCustom {
 
     @Query("select a from Animal a"
         + " join fetch a.images"

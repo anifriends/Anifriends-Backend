@@ -1,17 +1,25 @@
 package com.clova.anifriends.domain.animal.service;
 
 import com.clova.anifriends.domain.animal.Animal;
+import com.clova.anifriends.domain.animal.AnimalAge;
+import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.mapper.AnimalMapper;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
+import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
+import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
+import com.clova.anifriends.domain.animal.wrapper.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +53,33 @@ public class AnimalService {
     public FindAnimalByShelterResponse findAnimalByShelter(Long animalId, Long shelterId) {
         return FindAnimalByShelterResponse.from(
             getAnimalByAnimalIdAndShelterIdWithImages(animalId, shelterId));
+    }
+
+    @Transactional(readOnly = true)
+    public FindAnimalsByShelterResponse findAnimalsByShelter(
+        Long shelterId,
+        String keyword,
+        AnimalType type,
+        AnimalGender gender,
+        Boolean isNeutered,
+        AnimalActive active,
+        AnimalSize size,
+        AnimalAge age,
+        Pageable pageable
+    ) {
+        Page<Animal> animals = animalRepository.findAnimalsByShelter(
+            shelterId,
+            keyword,
+            type,
+            gender,
+            isNeutered,
+            active,
+            size,
+            age,
+            pageable
+        );
+
+        return FindAnimalsByShelterResponse.from(animals);
     }
 
     private Animal getAnimalById(Long animalId) {
