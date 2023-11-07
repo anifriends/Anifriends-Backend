@@ -5,7 +5,7 @@ import com.clova.anifriends.global.exception.ErrorCode;
 
 public class ExpiredRefreshTokenException extends AuthorizationException {
 
-    public ExpiredRefreshTokenException(ErrorCode errorCode, String message) {
-        super(errorCode, message);
+    public ExpiredRefreshTokenException(String message) {
+        super(ErrorCode.REFRESH_TOKEN_EXPIRED, message);
     }
 }

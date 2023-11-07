@@ -97,7 +97,7 @@ public class JJwtProvider implements JwtProvider {
             return CustomClaims.of(userId, authorities);
         } catch (ExpiredJwtException ex) {
             log.info("[EX] {}: 만료된 JWT입니다.", ex.getClass().getSimpleName());
-            throw new ExpiredAccessTokenException(ErrorCode.ACCESS_TOKEN_EXPIRED, "만료된 액세스 토큰입니다.");
+            throw new ExpiredAccessTokenException("만료된 액세스 토큰입니다.");
         } catch (JwtException ex) {
             log.info("[EX] {}: 잘못된 JWT입니다.", ex.getClass().getSimpleName());
         }
@@ -113,7 +113,7 @@ public class JJwtProvider implements JwtProvider {
             return createToken(userId, userRole);
         } catch (ExpiredJwtException ex) {
             log.info("[EX] {}: 만료된 리프레시 토큰입니다.", ex.getClass().getSimpleName());
-            throw new ExpiredRefreshTokenException(ErrorCode.ACCESS_TOKEN_EXPIRED, "만료된 리프레시 토큰입니다.");
+            throw new ExpiredRefreshTokenException("만료된 리프레시 토큰입니다.");
         } catch (JwtException ex) {
             log.info("[EX] {}: 잘못된 리프레시 토큰입니다.", ex.getClass().getSimpleName());
         }
