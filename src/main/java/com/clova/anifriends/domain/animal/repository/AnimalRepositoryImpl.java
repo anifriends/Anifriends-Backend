@@ -125,6 +125,6 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
         LocalDate minDate = currentDate.minusMonths(minMonth);
         LocalDate maxDate = currentDate.minusMonths(maxMonth);
 
-        return animal.birthDate.between(minDate, maxDate);
+        return animal.birthDate.between(maxDate, minDate);
     }
 }
