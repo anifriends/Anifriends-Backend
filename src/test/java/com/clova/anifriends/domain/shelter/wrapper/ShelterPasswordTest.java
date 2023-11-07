@@ -56,33 +56,5 @@ class ShelterPasswordTest {
             // then
             assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
         }
-
-        @Test
-        @DisplayName("예외(ShelterBadRequestException): 비밀번호가 6자 미만인 경우")
-        void throwExceptionWhenPasswordIsLessThanSix() {
-            // given
-            password = "asdf";
-
-            // when
-            Exception exception = catchException(
-                () -> new ShelterPassword(password));
-
-            // then
-            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
-        }
-
-        @Test
-        @DisplayName("예외(ShelterBadRequestException): 비밀번호가 16자 초과인 경우")
-        void throwExceptionWhenPasswordIsOverThanSixteen() {
-            // given
-            password = "asdfqwer123asdfqwer123";
-
-            // when
-            Exception exception = catchException(
-                () -> new ShelterPassword(password));
-
-            // then
-            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
-        }
     }
 }

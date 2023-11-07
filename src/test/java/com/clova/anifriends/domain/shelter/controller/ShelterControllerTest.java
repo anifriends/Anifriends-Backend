@@ -1,16 +1,22 @@
 package com.clova.anifriends.domain.shelter.controller;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
+import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
@@ -23,6 +29,56 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 
 class ShelterControllerTest extends BaseControllerTest {
+
+    @Test
+    @DisplayName("보호소 회원가입 api 호출 시")
+    void registerShelter() throws Exception {
+        //given
+        String email = "email@email.com";
+        String password = "password123!";
+        String name = "보호소 이름";
+        String address = "보호소 주소";
+        String addressDetail = "보호소 상세 주소";
+        String phoneNumber = "보호소 전화번호";
+        String sparePhoneNumber = "보호소 임시 전화번호";
+        boolean isOpenedAddress = false;
+        RegisterShelterRequest registerShelterRequest = new RegisterShelterRequest(email, password,
+            name, address, addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress);
+
+        given(shelterService.registerShelter(anyString(), anyString(), anyString(), anyString(),
+            anyString(), anyString(), anyString(), anyBoolean()))
+            .willReturn(1L);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api/shelters")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(registerShelterRequest)));
+
+        //then
+        resultActions.andExpect(status().isCreated())
+            .andDo(restDocs.document(
+                requestFields(
+                    fieldWithPath("email").type(JsonFieldType.STRING).description("보호소 이메일")
+                        .attributes(DocumentationFormatGenerator.getConstraint("@ 포함")),
+                    fieldWithPath("password").type(JsonFieldType.STRING).description("보호소 패스워드")
+                        .attributes(DocumentationFormatGenerator.getConstraint("6자 이상, 16자 이하")),
+                    fieldWithPath("name").type(JsonFieldType.STRING).description("보호소 이름")
+                        .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 20자 이하")),
+                    fieldWithPath("address").type(JsonFieldType.STRING).description("보호소 주소")
+                        .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 100자 이하")),
+                    fieldWithPath("addressDetail").type(JsonFieldType.STRING).description("보호소 상세 주소")
+                        .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 100자 이하")),
+                    fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("보호소 전화번호")
+                        .attributes(DocumentationFormatGenerator.getConstraint("- 포함, 전화번호 형식 준수")),
+                    fieldWithPath("sparePhoneNumber").type(JsonFieldType.STRING).description("보호소 임시 전화번호")
+                        .attributes(DocumentationFormatGenerator.getConstraint("- 포함, 전화번호 형식 준수")),
+                    fieldWithPath("isOpenedAddress").type(JsonFieldType.BOOLEAN).description("보호소 주소 공개 여부")
+                ),
+                responseHeaders(
+                    headerWithName("Location").description("생성된 리소스 접근 가능 위치")
+                )
+            ));
+    }
 
     @Test
     @DisplayName("findShelterDetail 실행 시")
