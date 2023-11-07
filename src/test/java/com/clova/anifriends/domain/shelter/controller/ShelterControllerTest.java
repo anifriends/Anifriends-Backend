@@ -1,10 +1,13 @@
 package com.clova.anifriends.domain.shelter.controller;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -12,6 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterEmailRequest;
+import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -23,6 +28,36 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 
 class ShelterControllerTest extends BaseControllerTest {
+
+    @Test
+    @DisplayName("보호소 이메일 중복 확인 api 호출 시")
+    void checkDuplicateShelterEmail() throws Exception {
+        //given
+        CheckDuplicateShelterEmailRequest checkDuplicateShelterEmailRequest
+            = new CheckDuplicateShelterEmailRequest("email@email.com");
+        CheckDuplicateShelterResponse checkDuplicateShelterResponse
+            = new CheckDuplicateShelterResponse(true);
+
+        given(shelterService.checkDuplicateEmail(anyString())).willReturn(
+            checkDuplicateShelterResponse);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api/shelters/email")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(checkDuplicateShelterEmailRequest)));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestFields(
+                    fieldWithPath("email").type(JsonFieldType.STRING).description("보호소 이메일")
+                ),
+                responseFields(
+                    fieldWithPath("isDuplicated").type(JsonFieldType.BOOLEAN)
+                        .description("이메일 중복 여부")
+                )
+            ));
+    }
 
     @Test
     @DisplayName("findShelterDetail 실행 시")

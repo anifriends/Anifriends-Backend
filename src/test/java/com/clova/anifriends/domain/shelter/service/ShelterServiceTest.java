@@ -8,7 +8,7 @@ import static org.mockito.BDDMockito.given;
 
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
-import com.clova.anifriends.domain.shelter.dto.CheckDuplicateEmailResponse;
+import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
@@ -49,7 +49,7 @@ class ShelterServiceTest {
             given(shelterRepository.existsByEmail(any())).willReturn(true);
 
             //when
-            CheckDuplicateEmailResponse response
+            CheckDuplicateShelterResponse response
                 = shelterService.checkDuplicateEmail(email);
 
             //then

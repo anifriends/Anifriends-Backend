@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.shelter.service;
 
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.dto.CheckDuplicateEmailResponse;
+import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
@@ -18,9 +18,9 @@ public class ShelterService {
     private final ShelterRepository shelterRepository;
 
     @Transactional(readOnly = true)
-    public CheckDuplicateEmailResponse checkDuplicateEmail(String email) {
+    public CheckDuplicateShelterResponse checkDuplicateEmail(String email) {
         boolean isDuplicated = shelterRepository.existsByEmail(new ShelterEmail(email));
-        return CheckDuplicateEmailResponse.from(isDuplicated);
+        return CheckDuplicateShelterResponse.from(isDuplicated);
     }
 
     @Transactional(readOnly = true)
