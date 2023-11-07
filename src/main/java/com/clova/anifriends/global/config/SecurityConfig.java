@@ -52,8 +52,6 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/volunteers/*/reviews").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/volunteers").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/shelters").permitAll()
-                    .requestMatchers("/api/shelters/*/profile").hasRole(ROLE_VOLUNTEER)
-                    .requestMatchers("/api/shelters/*/reviews").hasRole(ROLE_VOLUNTEER)
                     .requestMatchers("/api/shelters/**").hasRole(ROLE_SHELTER)
                     .requestMatchers("/api/volunteers/**").hasRole(ROLE_VOLUNTEER)
                     .requestMatchers("/**").permitAll());

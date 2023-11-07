@@ -20,7 +20,7 @@ public class ExceptionController {
 
     @GetMapping("/authentication")
     public void authentication() {
-        throw new AuthenticationException(ErrorCode.TOKEN_EXPIRED, "authentication") {
+        throw new AuthenticationException(ErrorCode.ACCESS_TOKEN_EXPIRED, "authentication") {
             @Override
             public String getMessage() {
                 return super.getMessage();
