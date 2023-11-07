@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.image;
+package com.clova.anifriends.global.image;
 
 import static com.clova.anifriends.global.exception.ErrorCode.BAD_REQUEST;
 

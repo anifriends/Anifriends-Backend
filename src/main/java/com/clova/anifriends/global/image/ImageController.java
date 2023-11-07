@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.image;
+package com.clova.anifriends.global.image;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

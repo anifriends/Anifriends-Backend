@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.image;
+package com.clova.anifriends.global.image;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -35,10 +35,10 @@ public class S3Service {
 
             try (InputStream inputStream = multipartFile.getInputStream()) {
                 amazonS3.putObject(
-                    new PutObjectRequest(bucket + "/" + FOLDER + "/image", fileName, inputStream,
+                    new PutObjectRequest(bucket + "/" + FOLDER, fileName, inputStream,
                         objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
-                list.add(amazonS3.getUrl(bucket + "/" + FOLDER + "/image", fileName).toString());
+                list.add(amazonS3.getUrl(bucket + "/" + FOLDER, fileName).toString());
             } catch (IOException e) {
                 throw new S3BadRequestException("S3에 이미지를 업로드하는데 실패했습니다.");
             }
