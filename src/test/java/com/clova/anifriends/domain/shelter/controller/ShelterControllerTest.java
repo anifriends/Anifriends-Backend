@@ -103,14 +103,14 @@ class ShelterControllerTest extends BaseControllerTest {
         // when
         ResultActions resultActions = mockMvc.perform(
             get("/api/volunteers/shelters/{shelterId}/profile", shelterId)
-                .header(AUTHORIZATION, shelterAccessToken)
+                .header(AUTHORIZATION, volunteerAccessToken)
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
                 requestHeaders(
-                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
                 ),
                 pathParameters(
                     parameterWithName("shelterId").description("보호소 ID")

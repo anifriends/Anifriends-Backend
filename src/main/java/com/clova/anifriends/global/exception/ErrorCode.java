@@ -11,8 +11,9 @@ public enum ErrorCode implements EnumType {
     BAD_REQUEST("AF001"), // 잘못된 입력값
     INVALID_AUTH_INFO("AF002"), // 아이디 비밀번호 매치 안됨
     // 401
-    TOKEN_EXPIRED("AF101"), // 토큰 만료
+    ACCESS_TOKEN_EXPIRED("AF101"), // 액세스 토큰 만료
     UN_AUTHENTICATION("AF102"), // 인증 안됨
+    REFRESH_TOKEN_EXPIRED("AF103"), // 리프레시 토큰 만료
     // 403
     UN_AUTHORIZATION("AF301"), // 권한 없음
     // 404

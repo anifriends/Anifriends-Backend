@@ -4,7 +4,7 @@ import com.clova.anifriends.domain.auth.exception.ExpiredAccessTokenException;
 import com.clova.anifriends.domain.auth.exception.InvalidJwtException;
 import com.clova.anifriends.domain.auth.exception.ExpiredRefreshTokenException;
 import com.clova.anifriends.domain.auth.jwt.response.CustomClaims;
-import com.clova.anifriends.domain.auth.jwt.response.UserToken;
+import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
 import com.clova.anifriends.global.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -55,10 +55,10 @@ public class JJwtProvider implements JwtProvider {
     }
 
     @Override
-    public UserToken createToken(Long userId, UserRole userRole) {
+    public TokenResponse createToken(Long userId, UserRole userRole) {
         String accessToken = createAccessToken(userId, userRole);
         String refreshToken = createRefreshToken(userId, userRole);
-        return UserToken.of(accessToken, refreshToken);
+        return TokenResponse.of(userId, userRole, accessToken, refreshToken);
     }
 
     private String createAccessToken(Long userId, UserRole userRole) {
@@ -97,7 +97,7 @@ public class JJwtProvider implements JwtProvider {
             return CustomClaims.of(userId, authorities);
         } catch (ExpiredJwtException ex) {
             log.info("[EX] {}: 만료된 JWT입니다.", ex.getClass().getSimpleName());
-            throw new ExpiredAccessTokenException(ErrorCode.TOKEN_EXPIRED, "만료된 액세스 토큰입니다.");
+            throw new ExpiredAccessTokenException("만료된 액세스 토큰입니다.");
         } catch (JwtException ex) {
             log.info("[EX] {}: 잘못된 JWT입니다.", ex.getClass().getSimpleName());
         }
@@ -105,7 +105,7 @@ public class JJwtProvider implements JwtProvider {
     }
 
     @Override
-    public UserToken refreshAccessToken(String refreshToken) {
+    public TokenResponse refreshAccessToken(String refreshToken) {
         try {
             Claims claims = refreshTokenParser.parseSignedClaims(refreshToken).getPayload();
             Long userId = Long.valueOf(claims.getSubject());
@@ -113,7 +113,7 @@ public class JJwtProvider implements JwtProvider {
             return createToken(userId, userRole);
         } catch (ExpiredJwtException ex) {
             log.info("[EX] {}: 만료된 리프레시 토큰입니다.", ex.getClass().getSimpleName());
-            throw new ExpiredRefreshTokenException(ErrorCode.TOKEN_EXPIRED, "만료된 리프레시 토큰입니다.");
+            throw new ExpiredRefreshTokenException("만료된 리프레시 토큰입니다.");
         } catch (JwtException ex) {
             log.info("[EX] {}: 잘못된 리프레시 토큰입니다.", ex.getClass().getSimpleName());
         }
