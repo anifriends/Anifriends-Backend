@@ -1,10 +1,12 @@
 package com.clova.anifriends.domain.volunteer.service;
 
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
+
+    @Transactional(readOnly = true)
+    public CheckDuplicateVolunteerEmailResponse checkDuplicateVolunteerEmail(String email) {
+        boolean isDuplicated = volunteerRepository.existsByEmail(new VolunteerEmail(email));
+        return CheckDuplicateVolunteerEmailResponse.from(isDuplicated);
+    }
 
     @Transactional
     public Long registerVolunteer(

@@ -11,6 +11,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
+import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
@@ -33,6 +34,27 @@ class VolunteerServiceTest {
 
     @Mock
     VolunteerRepository volunteerRepository;
+
+    @Nested
+    @DisplayName("checkDuplicateVolunteerEmail 메서드 실행 시")
+    class CheckDuplicateVolunteerEmailTest {
+
+        @Test
+        @DisplayName("성공")
+        void checkDuplicateVolunteerEmail() {
+            //given
+            String email = "email@email.com";
+
+            given(volunteerRepository.existsByEmail(any())).willReturn(true);
+
+            //when
+            CheckDuplicateVolunteerEmailResponse response
+                = volunteerService.checkDuplicateVolunteerEmail(email);
+
+            //then
+            assertThat(response.isDuplicated()).isTrue();
+        }
+    }
 
     @Nested
     @DisplayName("registerVolunteer 메서드 실행 시")

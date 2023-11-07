@@ -9,6 +9,7 @@ import static org.mockito.BDDMockito.then;
 
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
+import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
@@ -53,6 +54,28 @@ class ShelterServiceTest {
 
     Shelter givenShelter;
     ShelterImage givenShelterImage;
+
+    @Nested
+    @DisplayName("checkDuplicateEmail 실행 시")
+    class CheckDuplicateEmailTest {
+
+        @Test
+        @DisplayName("성공")
+        void checkDuplicateEmail() {
+            //given
+            String email = "email@email.com";
+
+            given(shelterRepository.existsByEmail(any())).willReturn(true);
+
+            //when
+            CheckDuplicateShelterResponse response
+                = shelterService.checkDuplicateEmail(email);
+
+            //then
+            assertThat(response.isDuplicated()).isTrue();
+        }
+
+    }
 
     @Nested
     @DisplayName("registerShelter 실행 시")

@@ -18,6 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterEmailRequest;
+import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -29,6 +31,36 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 
 class ShelterControllerTest extends BaseControllerTest {
+
+    @Test
+    @DisplayName("보호소 이메일 중복 확인 api 호출 시")
+    void checkDuplicateShelterEmail() throws Exception {
+        //given
+        CheckDuplicateShelterEmailRequest checkDuplicateShelterEmailRequest
+            = new CheckDuplicateShelterEmailRequest("email@email.com");
+        CheckDuplicateShelterResponse checkDuplicateShelterResponse
+            = new CheckDuplicateShelterResponse(true);
+
+        given(shelterService.checkDuplicateEmail(anyString())).willReturn(
+            checkDuplicateShelterResponse);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api/shelters/email")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(checkDuplicateShelterEmailRequest)));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestFields(
+                    fieldWithPath("email").type(JsonFieldType.STRING).description("보호소 이메일")
+                ),
+                responseFields(
+                    fieldWithPath("isDuplicated").type(JsonFieldType.BOOLEAN)
+                        .description("이메일 중복 여부")
+                )
+            ));
+    }
 
     @Test
     @DisplayName("보호소 회원가입 api 호출 시")
@@ -66,13 +98,16 @@ class ShelterControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 20자 이하")),
                     fieldWithPath("address").type(JsonFieldType.STRING).description("보호소 주소")
                         .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 100자 이하")),
-                    fieldWithPath("addressDetail").type(JsonFieldType.STRING).description("보호소 상세 주소")
+                    fieldWithPath("addressDetail").type(JsonFieldType.STRING)
+                        .description("보호소 상세 주소")
                         .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 100자 이하")),
                     fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("보호소 전화번호")
                         .attributes(DocumentationFormatGenerator.getConstraint("- 포함, 전화번호 형식 준수")),
-                    fieldWithPath("sparePhoneNumber").type(JsonFieldType.STRING).description("보호소 임시 전화번호")
+                    fieldWithPath("sparePhoneNumber").type(JsonFieldType.STRING)
+                        .description("보호소 임시 전화번호")
                         .attributes(DocumentationFormatGenerator.getConstraint("- 포함, 전화번호 형식 준수")),
-                    fieldWithPath("isOpenedAddress").type(JsonFieldType.BOOLEAN).description("보호소 주소 공개 여부")
+                    fieldWithPath("isOpenedAddress").type(JsonFieldType.BOOLEAN)
+                        .description("보호소 주소 공개 여부")
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 리소스 접근 가능 위치")

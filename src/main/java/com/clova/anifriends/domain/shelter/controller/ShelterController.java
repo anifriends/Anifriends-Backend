@@ -1,6 +1,8 @@
 package com.clova.anifriends.domain.shelter.controller;
 
 import com.clova.anifriends.domain.auth.resolver.LoginUser;
+import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterEmailRequest;
+import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
@@ -21,6 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShelterController {
 
     private final ShelterService shelterService;
+
+    @PostMapping("/shelters/email")
+    public ResponseEntity<CheckDuplicateShelterResponse> checkDuplicateShelterEmail(
+        @RequestBody @Valid CheckDuplicateShelterEmailRequest checkDuplicateShelterEmailRequest) {
+        CheckDuplicateShelterResponse checkDuplicateShelterResponse
+            = shelterService.checkDuplicateEmail(checkDuplicateShelterEmailRequest.email());
+        return ResponseEntity.ok(checkDuplicateShelterResponse);
+    }
 
     @PostMapping("/shelters")
     public ResponseEntity<Void> registerShelter(

@@ -1,11 +1,13 @@
 package com.clova.anifriends.domain.shelter.service;
 
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
+import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
 import java.text.MessageFormat;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -53,17 +55,23 @@ public class ShelterService {
     }
 
     private void validatePasswordNotNull(String password) {
-        if(Objects.isNull(password)) {
+        if (Objects.isNull(password)) {
             throw new ShelterBadRequestException("패스워드는 필수값입니다.");
         }
     }
 
     private void validatePasswordLength(String password) {
-        if(password.length() < MIN_PASSWORD_LENGTH || password.length() > MAX_PASSWORD_LENGTH) {
+        if (password.length() < MIN_PASSWORD_LENGTH || password.length() > MAX_PASSWORD_LENGTH) {
             throw new ShelterBadRequestException(
                 MessageFormat.format("패스워드는 {0}자 이상, {1}자 이하여야 합니다.",
                     MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH));
         }
+    }
+
+    @Transactional(readOnly = true)
+    public CheckDuplicateShelterResponse checkDuplicateEmail(String email) {
+        boolean isDuplicated = shelterRepository.existsByEmail(new ShelterEmail(email));
+        return CheckDuplicateShelterResponse.from(isDuplicated);
     }
 
     @Transactional(readOnly = true)
