@@ -1,8 +1,6 @@
 package com.clova.anifriends.domain.recruitment.service;
 
-import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentByVolunteerResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentDetailResponse;
-import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentsByShelterIdResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentsByShelterResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
@@ -21,8 +19,6 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
@@ -32,11 +28,9 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindShelterSimpleRes
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
-import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -104,87 +98,6 @@ class RecruitmentServiceTest {
             assertThatThrownBy(() -> recruitmentService.registerRecruitment(
                 shelterId, title, startTime, endTime, deadline, capacity, content, imageUrls))
                 .isInstanceOf(ShelterNotFoundException.class);
-        }
-    }
-
-    @Nested
-    @DisplayName("findRecruitmentById 실행 시")
-    class FindRecruitmentTest {
-
-        @Test
-        @DisplayName("성공")
-        void findRecruitmentById() {
-            // given
-            Shelter shelter = shelter();
-            Recruitment recruitment = recruitment(shelter);
-            FindRecruitmentByShelterResponse expected = findRecruitmentResponse(recruitment);
-
-            when(recruitmentRepository.findByShelterIdAndRecruitmentId(anyLong(),
-                anyLong())).thenReturn(Optional.of(recruitment));
-
-            // when
-            FindRecruitmentByShelterResponse result = recruitmentService
-                .findRecruitByShelter(anyLong(), anyLong());
-
-            // then
-            assertThat(result).usingRecursiveComparison().isEqualTo(expected);
-
-        }
-
-        @Test
-        @DisplayName("예외(RecruitmentNotFoundException): 존재하지 않는 모집글")
-        void exceptionWhenRecruitmentIsNotExist() {
-            // given
-            when(recruitmentRepository.findByShelterIdAndRecruitmentId(anyLong(),
-                anyLong())).thenReturn(Optional.empty());
-
-            // when
-            Exception exception = catchException(
-                () -> recruitmentService.findRecruitByShelter(
-                    anyLong(), anyLong()));
-
-            // then
-            assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
-        }
-    }
-
-    @Nested
-    @DisplayName("findRecruitmentByIdByVolunteer 메서드 실행 시")
-    class FindRecruitmentByIdByVolunteerTest {
-
-        @Test
-        @DisplayName("성공")
-        void findRecruitmentByIdByVolunteer() {
-            // given
-            Shelter shelter = shelter();
-            ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
-            setField(shelter, "shelterImage", shelterImage);
-            Recruitment recruitment = recruitment(shelter);
-            FindRecruitmentDetailByVolunteerResponse expected = findRecruitmentByVolunteerResponse(
-                recruitment);
-
-            when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.of(recruitment));
-
-            // when
-            FindRecruitmentDetailByVolunteerResponse result = recruitmentService
-                .findRecruitmentByIdByVolunteer(anyLong());
-
-            // then
-            assertThat(result).usingRecursiveComparison().isEqualTo(expected);
-        }
-
-        @Test
-        @DisplayName("예외(RecruitmentNotFoundException): 존재하지 않는 모집글")
-        void exceptionWhenRecruitmentIsNotExist() {
-            // given
-            when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-            // when
-            Exception exception = catchException(
-                () -> recruitmentService.findRecruitmentByIdByVolunteer(anyLong()));
-
-            // then
-            assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
         }
     }
 

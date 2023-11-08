@@ -1,7 +1,5 @@
 package com.clova.anifriends.domain.recruitment.controller;
 
-import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentByVolunteerResponse;
-import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentsByShelterIdResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
@@ -38,8 +36,6 @@ import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
@@ -123,54 +119,6 @@ class RecruitmentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("findRecruitmentById 실행 시")
-    void findRecruitment() throws Exception {
-        // given
-        Shelter shelter = shelter();
-        ReflectionTestUtils.setField(shelter, "shelterId", 1L);
-        Recruitment recruitment = recruitment(shelter);
-        ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
-        FindRecruitmentByShelterResponse response = findRecruitmentResponse(recruitment);
-
-        when(recruitmentService.findRecruitByShelter(
-            shelter.getShelterId(), recruitment.getRecruitmentId()))
-            .thenReturn(response);
-
-        // when
-        ResultActions result = mockMvc.perform(
-            get("/api/shelters/recruitments/{recruitmentId}", recruitment.getRecruitmentId())
-                .header(AUTHORIZATION, shelterAccessToken)
-                .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        result.andExpect(status().isOk())
-            .andDo(restDocs.document(
-                requestHeaders(
-                    headerWithName(AUTHORIZATION).description("액세스 토큰")
-                ),
-                pathParameters(
-                    parameterWithName("recruitmentId").description("봉사 모집글 ID")
-                ),
-                responseFields(
-                    fieldWithPath("title").type(STRING).description("제목"),
-                    fieldWithPath("capacity").type(NUMBER).description("정원"),
-                    fieldWithPath("applicantCount").type(NUMBER).description("봉사 신청 인원"),
-                    fieldWithPath("content").type(STRING).description("내용"),
-                    fieldWithPath("startTime").type(STRING).description("봉사 시작 시간"),
-                    fieldWithPath("endTime").type(STRING).description("봉사 종료 시간"),
-                    fieldWithPath("isClosed").type(BOOLEAN).description("마감 여부"),
-                    fieldWithPath("deadline").type(STRING).description("마감 시간"),
-                    fieldWithPath("deadline").type(STRING).description("마감 날짜와 시간"),
-                    fieldWithPath("createdAt").type(STRING).description("게시글 생성 시간").optional(),
-                    fieldWithPath("updatedAt").type(STRING).description("게시글 수정 시간").optional(),
-                    fieldWithPath("imageUrls[]").type(ARRAY).description("이미지 url 리스트")
-                )
-            ));
-
-    }
-
-    @Test
     @DisplayName("findShelterByVolunteerReview 실행 시")
     void findShelterByVolunteerReview() throws Exception {
         // given
@@ -207,56 +155,6 @@ class RecruitmentControllerTest extends BaseControllerTest {
                 )
             ));
 
-    }
-
-    @Test
-    @DisplayName("findRecruitmentByIdByVolunteer 실행 시")
-    void findRecruitmentByIdByVolunteer() throws Exception {
-        // given
-        Shelter shelter = shelter();
-        ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
-        setField(shelter, "shelterImage", shelterImage);
-        Recruitment recruitment = recruitment(shelter);
-        FindRecruitmentDetailByVolunteerResponse response = findRecruitmentByVolunteerResponse(
-            recruitment);
-
-        when(recruitmentService.findRecruitmentByIdByVolunteer(anyLong()))
-            .thenReturn(response);
-
-        // when
-        ResultActions result = mockMvc.perform(
-            get("/api/volunteers/recruitments/{recruitmentId}", anyLong())
-                .header(AUTHORIZATION, volunteerAccessToken)
-                .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        result.andExpect(status().isOk())
-            .andDo(restDocs.document(
-                requestHeaders(headerWithName(AUTHORIZATION).description("액세스 토큰")),
-                pathParameters(
-                    parameterWithName("recruitmentId").description("봉사 모집글 ID")
-                ),
-                responseFields(
-                    fieldWithPath("title").type(STRING).description("제목"),
-                    fieldWithPath("capacity").type(NUMBER).description("정원"),
-                    fieldWithPath("applicantCount").type(NUMBER).description("봉사 신청 인원"),
-                    fieldWithPath("content").type(STRING).description("내용"),
-                    fieldWithPath("startTime").type(STRING).description("봉사 시작 시간"),
-                    fieldWithPath("endTime").type(STRING).description("봉사 종료 시간"),
-                    fieldWithPath("isClosed").type(BOOLEAN).description("마감 여부"),
-                    fieldWithPath("deadline").type(STRING).description("마감 시간"),
-                    fieldWithPath("deadline").type(STRING).description("마감 날짜와 시간"),
-                    fieldWithPath("createdAt").type(STRING).description("게시글 생성 시간").optional(),
-                    fieldWithPath("updatedAt").type(STRING).description("게시글 수정 시간").optional(),
-                    fieldWithPath("imageUrls[]").type(ARRAY).description("이미지 url 리스트"),
-                    fieldWithPath("shelterInfo.shelterName").type(STRING).description("보호소 이름"),
-                    fieldWithPath("shelterInfo.address").type(STRING).description("보호소 주소"),
-                    fieldWithPath("shelterInfo.imageUrl").type(STRING).description("보호소 이미지 url")
-                        .optional(),
-                    fieldWithPath("shelterInfo.email").type(STRING).description("보호소 이메일")
-                )
-            ));
     }
 
     @Test
