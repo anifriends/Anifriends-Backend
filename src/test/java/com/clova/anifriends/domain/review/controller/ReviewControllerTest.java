@@ -42,7 +42,7 @@ import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByVolunteerResponse;
-import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
@@ -104,7 +104,7 @@ class ReviewControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("성공: 보호소가 받은 봉사자 리뷰 목록 조회 api 호출")
-    void findShelterReviewsByShelter() throws Exception {
+    void findShelterReviews() throws Exception {
         //given
         Long shelterId = 1L;
         Shelter shelter = shelter();
@@ -119,9 +119,9 @@ class ReviewControllerTest extends BaseControllerTest {
         ReflectionTestUtils.setField(review, "reviewId", 1L);
         ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());
         PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
-        FindShelterReviewsByShelterResponse response = FindShelterReviewsByShelterResponse.from(reviewPage);
+        FindShelterReviewsResponse response = FindShelterReviewsResponse.from(reviewPage);
 
-        given(reviewService.findShelterReviewsByShelter(anyLong(), any())).willReturn(response);
+        given(reviewService.findShelterReviews(anyLong(), any())).willReturn(response);
 
         //when
         ResultActions resultActions
@@ -146,12 +146,12 @@ class ReviewControllerTest extends BaseControllerTest {
                 responseFields(
                     fieldWithPath("reviews").type(ARRAY).description("리뷰 리스트"),
                     fieldWithPath("reviews[].reviewId").type(NUMBER).description("리뷰 ID"),
-                    fieldWithPath("reviews[].reviewCreatedAt").type(STRING).description("리뷰 생성일"),
-                    fieldWithPath("reviews[].reviewContent").type(STRING).description("리뷰 내용"),
+                    fieldWithPath("reviews[].createdAt").type(STRING).description("리뷰 생성일"),
+                    fieldWithPath("reviews[].content").type(STRING).description("리뷰 내용"),
                     fieldWithPath("reviews[].reviewImageUrls").type(ARRAY)
                         .description("리뷰 이미지 url 리스트"),
                     fieldWithPath("reviews[].volunteerName").type(STRING).description("봉사자 이름"),
-                    fieldWithPath("reviews[].volunteerTemperature").type(NUMBER).description("봉사자 온도"),
+                    fieldWithPath("reviews[].temperature").type(NUMBER).description("봉사자 온도"),
                     fieldWithPath("reviews[].volunteerImageUrl").type(STRING)
                         .description("봉사자 프로필 이미지 url"),
                     fieldWithPath("reviews[].VolunteerReviewCount").type(NUMBER)
