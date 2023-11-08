@@ -12,11 +12,11 @@ public record FindApplyingVolunteersResponse(
     public record FindApplyingVolunteerResponse(
         Long recruitmentId,
         Long applicantId,
-        String title,
+        String recruitmentTitle,
         String shelterName,
-        ApplicantStatus status,
-        boolean isWritedReview,
-        LocalDateTime volunteerDate
+        ApplicantStatus applicantStatus,
+        boolean applicantIsWritedReview,
+        LocalDateTime recruitmentStartTime
     ) {
 
         public static FindApplyingVolunteerResponse from(

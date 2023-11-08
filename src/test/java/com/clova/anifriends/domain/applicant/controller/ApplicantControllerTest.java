@@ -117,19 +117,19 @@ class ApplicantControllerTest extends BaseControllerTest {
                     fieldWithPath("findApplyingVolunteerResponses[].applicantId").type(
                             JsonFieldType.NUMBER)
                         .description("봉사 신청자 ID"),
-                    fieldWithPath("findApplyingVolunteerResponses[].title").type(
+                    fieldWithPath("findApplyingVolunteerResponses[].recruitmentTitle").type(
                             JsonFieldType.STRING)
                         .description("모집글 제목"),
                     fieldWithPath("findApplyingVolunteerResponses[].shelterName").type(
                             JsonFieldType.STRING)
                         .description("보호소 이름"),
-                    fieldWithPath("findApplyingVolunteerResponses[].status").type(
+                    fieldWithPath("findApplyingVolunteerResponses[].applicantStatus").type(
                             JsonFieldType.STRING)
                         .description("승인 상태"),
-                    fieldWithPath("findApplyingVolunteerResponses[].isWritedReview").type(
+                    fieldWithPath("findApplyingVolunteerResponses[].applicantIsWritedReview").type(
                             JsonFieldType.BOOLEAN)
                         .description("후기 작성 가능 여부"),
-                    fieldWithPath("findApplyingVolunteerResponses[].volunteerDate").type(
+                    fieldWithPath("findApplyingVolunteerResponses[].recruitmentStartTime").type(
                             JsonFieldType.STRING)
                         .description("봉사 날짜")
                 )
