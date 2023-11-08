@@ -289,11 +289,11 @@ class RecruitmentServiceTest {
             assertThat(pageInfo.totalElements()).isEqualTo(recruitments.getSize());
             FindRecruitmentByVolunteerResponse findRecruitment = recruitmentsByVolunteer.recruitments()
                 .get(0);
-            assertThat(findRecruitment.title()).isEqualTo(recruitment.getTitle());
-            assertThat(findRecruitment.startTime()).isEqualTo(recruitment.getStartTime());
-            assertThat(findRecruitment.endTime()).isEqualTo(recruitment.getEndTime());
-            assertThat(findRecruitment.applicantCount()).isEqualTo(recruitment.getApplicantCount());
-            assertThat(findRecruitment.capacity()).isEqualTo(recruitment.getCapacity());
+            assertThat(findRecruitment.recruitmentTitle()).isEqualTo(recruitment.getTitle());
+            assertThat(findRecruitment.recruitmentStartTime()).isEqualTo(recruitment.getStartTime());
+            assertThat(findRecruitment.recruitmentEndTime()).isEqualTo(recruitment.getEndTime());
+            assertThat(findRecruitment.recruitmentApplicantCount()).isEqualTo(recruitment.getApplicantCount());
+            assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
             assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
             assertThat(findRecruitment.shelterImageUrl())
                 .isEqualTo(recruitment.getShelter().getShelterImageUrl());

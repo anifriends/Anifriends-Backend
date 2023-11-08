@@ -23,6 +23,14 @@ operation::recruitment-controller-test/find-completed-recruitments[snippets='htt
 
 == 1. 봉사자
 
+=== 1) 봉사 모집글 조회 & 검색
+
+==== Request
+operation::recruitment-controller-test/find-recruitments-by-volunteer[snippets='http-request,request-headers,query-parameters']
+
+==== Response
+operation::recruitment-controller-test/find-recruitments-by-volunteer[snippets='http-response,response-fields']
+
 == 2. 보호소
 
 == 3. 봉사 모집
