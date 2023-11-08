@@ -65,7 +65,7 @@ class AuthControllerTest extends BaseControllerTest {
     void shelterLogin() throws Exception {
         //given
         LoginRequest request = new LoginRequest("email@email.com", "password123!");
-        TokenResponse response = new TokenResponse(1L, UserRole.ROLE_VOLUNTEER, "accessToken",
+        TokenResponse response = new TokenResponse(1L, UserRole.ROLE_SHELTER, "accessToken",
             "refreshToken");
 
         given(authService.shelterLogin(any(), any())).willReturn(response);
