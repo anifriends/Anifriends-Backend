@@ -12,11 +12,12 @@ public record FindRecruitmentsByVolunteerResponse(
 
     public record FindRecruitmentByVolunteerResponse(
         Long recruitmentId,
-        String title,
-        LocalDateTime startTime,
-        LocalDateTime endTime,
-        int applicantCount,
-        int capacity,
+        String recruitmentTitle,
+        LocalDateTime recruitmentStartTime,
+        LocalDateTime recruitmentEndTime,
+        boolean recruitmentIsClosed,
+        int recruitmentApplicantCount,
+        int recruitmentCapacity,
         String shelterName,
         String shelterImageUrl) {
 
@@ -26,6 +27,7 @@ public record FindRecruitmentsByVolunteerResponse(
                 recruitment.getTitle(),
                 recruitment.getStartTime(),
                 recruitment.getEndTime(),
+                recruitment.isClosed(),
                 recruitment.getApplicantCount(),
                 recruitment.getCapacity(),
                 recruitment.getShelter().getName(),

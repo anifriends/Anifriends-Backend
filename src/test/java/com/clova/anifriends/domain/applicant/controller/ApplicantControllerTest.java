@@ -165,10 +165,14 @@ class ApplicantControllerTest extends BaseControllerTest {
                         fieldWithPath("applicants[]").type(ARRAY).description("봉사 신청자 리스트").optional(),
                         fieldWithPath("applicants[].applicantId").type(NUMBER).description("봉사 신청 ID"),
                         fieldWithPath("applicants[].volunteerId").type(NUMBER).description("봉사자 ID"),
-                        fieldWithPath("applicants[].birthdate").type(STRING).description("봉사자 생일"),
-                        fieldWithPath("applicants[].animalGender").type(STRING).description("봉사 성별"),
-                        fieldWithPath("applicants[].phoneNumber").type(STRING).description("봉사자 전화번호"),
-                        fieldWithPath("applicants[].attendance").type(BOOLEAN).description("출석 현황")
+                        fieldWithPath("applicants[].volunteerBirthdate").type(STRING)
+                            .description("봉사자 생일"),
+                        fieldWithPath("applicants[].volunteerGender").type(STRING)
+                            .description("봉사자 성별"),
+                        fieldWithPath("applicants[].volunteerPhoneNumber").type(STRING)
+                            .description("봉사자 전화번호"),
+                        fieldWithPath("applicants[].volunteerAttendance").type(BOOLEAN)
+                            .description("출석 현황")
                     )
                 )
             );
