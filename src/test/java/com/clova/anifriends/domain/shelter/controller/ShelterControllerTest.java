@@ -259,16 +259,12 @@ class ShelterControllerTest extends BaseControllerTest {
         // when
         ResultActions result = mockMvc.perform(
             get("/api/volunteers/shelters/{shelterId}/profile/simple", shelterId)
-                .header(AUTHORIZATION, volunteerAccessToken)
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
         // then
         result.andExpect(status().isOk())
             .andDo(restDocs.document(
-                requestHeaders(
-                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
-                ),
                 pathParameters(
                     parameterWithName("shelterId").description("보호소 ID")
                 ),
