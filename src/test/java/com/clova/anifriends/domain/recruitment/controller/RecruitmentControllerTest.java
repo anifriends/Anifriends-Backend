@@ -40,6 +40,7 @@ import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRe
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
@@ -479,6 +480,46 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("recruitments[].deadline").type(STRING).description("모집 마감 시간"),
                     fieldWithPath("recruitments[].capacity").type(NUMBER).description("모집 정원"),
                     fieldWithPath("recruitments[].applicantCount").type(NUMBER).description("현재 지원자 수")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("findRecruitmentDetail 메서드 실행 시")
+    void findRecruitmentDetail() throws Exception {
+        // given
+        Shelter shelter = shelter();
+        setField(shelter, "shelterId", 1L);
+        Recruitment recruitment = recruitment(shelter);
+        setField(recruitment, "recruitmentId", 1L);
+        FindRecruitmentDetailResponse response = RecruitmentDtoFixture.findRecruitmentDetailResponse(recruitment);
+
+        when(recruitmentService.findRecruitmentDetail(recruitment.getRecruitmentId())).thenReturn(response);
+
+        // when
+        ResultActions result = mockMvc.perform(
+            get("/api/recruitments/{recruitmentId}", recruitment.getRecruitmentId())
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                pathParameters(
+                    parameterWithName("recruitmentId").description("봉사 모집글 ID")
+                ),
+                responseFields(
+                    fieldWithPath("recruitmentTitle").type(STRING).description("모집글 제목"),
+                    fieldWithPath("recruitmentApplicantCount").type(NUMBER).description("모집글 지원자 수"),
+                    fieldWithPath("recruitmentCapacity").type(NUMBER).description("모집글 정원"),
+                    fieldWithPath("recruitmentContent").type(STRING).description("모집글 내용"),
+                    fieldWithPath("recruitmentStartTime").type(STRING).description("봉사 시작 시간"),
+                    fieldWithPath("recruitmentEndTime").type(STRING).description("봉사 종료 시간"),
+                    fieldWithPath("recruitmentIsClosed").type(BOOLEAN).description("마감 여부"),
+                    fieldWithPath("recruitmentDeadline").type(STRING).description("마감 시간"),
+                    fieldWithPath("recruitmentCreatedAt").type(STRING).description("모집글 생성 시간").optional(),
+                    fieldWithPath("recruitmentUpdatedAt").type(STRING).description("모집글 업데이트 시간").optional(),
+                    fieldWithPath("recruitmentImageUrls").type(ARRAY).description("모집글 이미지 url 리스트")
                 )
             ));
     }

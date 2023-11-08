@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.recruitment.service;
 
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentByVolunteerResponse;
+import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentDetailResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentsByShelterIdResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentsByShelterResponse;
@@ -22,6 +23,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
@@ -351,6 +353,42 @@ class RecruitmentServiceTest {
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("findRecruitmentDetail 메서드 실행 시")
+    class FindRecruitmentDetail {
+
+        @Test
+        @DisplayName("성공")
+        void findRecruitmentDetail() {
+            // given
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            FindRecruitmentDetailResponse expected = findRecruitmentDetailResponse(recruitment);
+
+            when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.of(recruitment));
+
+            // when
+            FindRecruitmentDetailResponse result = recruitmentService.findRecruitmentDetail(anyLong());
+
+            // then
+            assertThat(result).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("예외(RecruitmentNotFoundException): 존재하지 않는 모집글")
+        void throwExceptionWhenRecruitmentIsNotExist() {
+            // given
+            when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+            // when
+            Exception exception = catchException(
+                () -> recruitmentService.findRecruitmentDetail(anyLong()));
+
+            // then
+            assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
         }
     }
 }
