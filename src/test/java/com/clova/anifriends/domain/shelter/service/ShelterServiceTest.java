@@ -251,7 +251,7 @@ class ShelterServiceTest {
 
         @Test
         @DisplayName("예외(ShelterNotFoundException): 존재하지 않는 모집글")
-        void throwExceptionWhenRecruitmentIsNotExist() {
+        void throwExceptionWhenShelterIsNotExist() {
             // given
             when(shelterRepository.findById(anyLong())).thenReturn(Optional.empty());
 
