@@ -5,6 +5,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
@@ -88,6 +89,12 @@ public class RecruitmentService {
         );
         return FindRecruitmentsByShelterIdResponse.of(pagination.getContent(),
             PageInfo.from(pagination));
+    }
+
+    @Transactional(readOnly = true)
+    public FindRecruitmentDetailResponse findRecruitmentDetail(long recruitmentId) {
+        Recruitment recruitment = getRecruitmentById(recruitmentId);
+        return FindRecruitmentDetailResponse.from(recruitment);
     }
 
     private Shelter getShelterById(Long shelterId) {
