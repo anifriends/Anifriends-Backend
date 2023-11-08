@@ -251,9 +251,9 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("reviews").type(ARRAY).description("리뷰 리스트"),
                     fieldWithPath("reviews[].reviewId").type(NUMBER).description("리뷰 ID"),
                     fieldWithPath("reviews[].shelterName").type(STRING).description("보호소 이름"),
-                    fieldWithPath("reviews[].createdAt").type(STRING).description("리뷰 생성일"),
-                    fieldWithPath("reviews[].content").type(STRING).description("리뷰 내용"),
-                    fieldWithPath("reviews[].imageUrls").type(ARRAY).description("리뷰 이미지 url 리스트")
+                    fieldWithPath("reviews[].reviewCreatedAt").type(STRING).description("리뷰 생성일"),
+                    fieldWithPath("reviews[].reviewContent").type(STRING).description("리뷰 내용"),
+                    fieldWithPath("reviews[].reviewImageUrls").type(ARRAY).description("리뷰 이미지 url 리스트")
                 )
             ));
     }
