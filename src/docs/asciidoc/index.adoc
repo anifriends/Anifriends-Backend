@@ -9,6 +9,16 @@
 
 == 1. 인증
 
+== 보호 동물
+
+=== 보호 동물 상세 조회
+
+==== Request
+operation::animal-controller-test/find-animal-detail-test[snippets='http-request,path-parameters']
+
+==== Response
+operation::animal-controller-test/find-animal-detail-test[snippets='http-response,response-fields']
+
 = 보호소
 
 == 1. 봉사자
