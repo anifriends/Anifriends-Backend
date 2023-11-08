@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.shelter.controller;
 
+import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -8,6 +9,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -22,6 +24,8 @@ import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterEmailRequest
 import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
+import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
+import com.clova.anifriends.domain.shelter.dto.RegisterShelterRequest;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -236,6 +240,40 @@ class ShelterControllerTest extends BaseControllerTest {
                     fieldWithPath("imageUrl").type(
                             JsonFieldType.STRING).optional()
                         .description("보호소 이미지 Url")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("findShelterSimpleByVolunteer 실행 시")
+    void findShelterSimpleByVolunteer() throws Exception {
+        // given
+        Long shelterId = 1L;
+        Shelter shelter = shelter();
+        ReflectionTestUtils.setField(shelter, "shelterId", shelterId);
+        FindShelterSimpleByVolunteerResponse response = FindShelterSimpleByVolunteerResponse.from(
+            shelter);
+
+        given(shelterService.findShelterSimpleByVolunteer(shelterId)).willReturn(response);
+
+        // when
+        ResultActions result = mockMvc.perform(
+            get("/api/volunteers/shelters/{shelterId}/profile/simple", shelterId)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                pathParameters(
+                    parameterWithName("shelterId").description("보호소 ID")
+                ),
+                responseFields(
+                    fieldWithPath("shelterName").type(STRING).description("보호소 이름"),
+                    fieldWithPath("shelterEmail").type(STRING).description("보호소 이메일"),
+                    fieldWithPath("shelterAddress").type(STRING).description("보호소 주소"),
+                    fieldWithPath("shelterImageUrl").type(STRING).description("보호소 이미지 url")
+                        .optional()
                 )
             ));
     }

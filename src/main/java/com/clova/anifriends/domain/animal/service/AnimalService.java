@@ -4,9 +4,9 @@ import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
-import com.clova.anifriends.domain.animal.dto.response.FindAnimalByShelterResponse;
-import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByVolunteerResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.mapper.AnimalMapper;
@@ -45,14 +45,8 @@ public class AnimalService {
     }
 
     @Transactional(readOnly = true)
-    public FindAnimalByVolunteerResponse findAnimalByIdByVolunteer(Long animalId) {
-        return FindAnimalByVolunteerResponse.from(getAnimalById(animalId));
-    }
-
-    @Transactional(readOnly = true)
-    public FindAnimalByShelterResponse findAnimalByShelter(Long animalId, Long shelterId) {
-        return FindAnimalByShelterResponse.from(
-            getAnimalByAnimalIdAndShelterIdWithImages(animalId, shelterId));
+    public FindAnimalDetail findAnimalDetail(Long animalId) {
+        return FindAnimalDetail.from(getAnimalById(animalId));
     }
 
     @Transactional(readOnly = true)
@@ -80,6 +74,29 @@ public class AnimalService {
         );
 
         return FindAnimalsByShelterResponse.from(animals);
+    }
+
+
+    public FindAnimalsByVolunteerResponse findAnimalsByVolunteer(
+        AnimalType type,
+        AnimalActive active,
+        Boolean isNeutered,
+        AnimalAge age,
+        AnimalGender gender,
+        AnimalSize size,
+        Pageable pageable
+    ) {
+        Page<Animal> animalsWithPagination = animalRepository.findAnimalsByVolunteer(
+            type,
+            active,
+            isNeutered,
+            age,
+            gender,
+            size,
+            pageable
+        );
+
+        return FindAnimalsByVolunteerResponse.from(animalsWithPagination);
     }
 
     private Animal getAnimalById(Long animalId) {

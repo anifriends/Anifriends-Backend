@@ -15,9 +15,9 @@ import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
-import com.clova.anifriends.domain.animal.dto.response.FindAnimalByShelterResponse;
-import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByVolunteerResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
@@ -40,7 +40,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class AnimalServiceTest {
@@ -101,22 +100,22 @@ class AnimalServiceTest {
     }
 
     @Nested
-    @DisplayName("findAnimalByIdByVolunteer 실행 시")
-    class FindAnimalTest {
+    @DisplayName("findAnimalDetail 실행 시")
+    class FindAnimalDetailTest {
 
         @Test
         @DisplayName("성공")
-        void findAnimalByIdByVolunteer() {
+        void findAnimalDetail() {
             // given
             Shelter shelter = shelter();
             shelter.updateShelterImage(shelterImage(shelter));
             Animal animal = animal(shelter);
-            FindAnimalByVolunteerResponse expected = FindAnimalByVolunteerResponse.from(animal);
+            FindAnimalDetail expected = FindAnimalDetail.from(animal);
 
             when(animalRepository.findById(anyLong())).thenReturn(Optional.of(animal));
 
             // when
-            FindAnimalByVolunteerResponse result = animalService.findAnimalByIdByVolunteer(
+            FindAnimalDetail result = animalService.findAnimalDetail(
                 anyLong());
 
             // then
@@ -131,56 +130,12 @@ class AnimalServiceTest {
 
             // when
             Exception exception = catchException(
-                () -> animalService.findAnimalByIdByVolunteer(anyLong()));
+                () -> animalService.findAnimalDetail(anyLong()));
 
             // then
             assertThat(exception).isInstanceOf(AnimalNotFoundException.class);
         }
     }
-
-    @Nested
-    @DisplayName("findAnimalByShelter 메서드 실행 시")
-    class FindAnimalByShelterTest {
-
-        Long animalId = 1L;
-        Long shelterId = 1L;
-        Shelter shelter = ShelterFixture.shelter();
-        Animal animal = animal(shelter);
-
-        @Test
-        @DisplayName("성공")
-        void findAnimalByShelter() {
-            //given
-            ReflectionTestUtils.setField(animal, "animalId", animalId);
-            FindAnimalByShelterResponse expected = FindAnimalByShelterResponse.from(animal);
-
-            given(animalRepository.findByAnimalIdAndShelterIdWithImages(anyLong(),
-                anyLong())).willReturn(Optional.of(animal));
-
-            //when
-            FindAnimalByShelterResponse response = animalService.findAnimalByShelter(
-                animalId, shelterId);
-
-            //then
-            assertThat(response).usingRecursiveComparison().isEqualTo(expected);
-        }
-
-        @Test
-        @DisplayName("예외(AnimalNotFoundException): 존재하지 않는 보호 동물")
-        void exceptionWhenShelterNotFound() {
-            //given
-            given(animalRepository.findByAnimalIdAndShelterIdWithImages(anyLong(),
-                anyLong())).willReturn(Optional.empty());
-
-            //when
-            Exception exception = catchException(() -> animalService.findAnimalByShelter(animalId,
-                shelterId));
-
-            //then
-            assertThat(exception).isInstanceOf(AnimalNotFoundException.class);
-        }
-    }
-
 
     @Nested
     @DisplayName("findAnimalsByShelter 실행 시")
@@ -216,6 +171,63 @@ class AnimalServiceTest {
 
             // then
             assertThat(expected).usingRecursiveComparison().isEqualTo(animalsByShelter);
+        }
+    }
+
+    @Nested
+    @DisplayName("findAnimalsByVolunteer 실행 시")
+    class FindAnimalsByVolunteer {
+
+        @Test
+        @DisplayName("성공")
+        void findAnimalsByVolunteer() {
+            // given
+            String mockName = "animalName";
+            String mockInformation = "animalInformation";
+            String mockBreed = "animalBreed";
+            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
+
+            AnimalType typeFilter = AnimalType.DOG;
+            AnimalActive activeFilter = AnimalActive.ACTIVE;
+            Boolean isNeuteredFilter = true;
+            AnimalAge ageFilter = AnimalAge.ADULT;
+            AnimalGender genderFilter = AnimalGender.MALE;
+            AnimalSize sizeFilter = AnimalSize.MEDIUM;
+
+            Shelter shelter = ShelterFixture.shelter();
+
+            Animal matchAnimal = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now().minusMonths(ageFilter.getMinMonth()),
+                typeFilter.getName(),
+                mockBreed,
+                genderFilter.getName(),
+                isNeuteredFilter,
+                activeFilter.getName(),
+                sizeFilter.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            Page<Animal> pageResult = new PageImpl<>(List.of(matchAnimal), pageRequest, 1);
+
+            FindAnimalsByVolunteerResponse expected = FindAnimalsByVolunteerResponse.from(
+                pageResult);
+
+            when(animalRepository.findAnimalsByVolunteer(typeFilter, activeFilter, isNeuteredFilter,
+                ageFilter, genderFilter, sizeFilter, pageRequest))
+                .thenReturn(pageResult);
+
+            // when
+            FindAnimalsByVolunteerResponse result = animalService.findAnimalsByVolunteer(
+                typeFilter, activeFilter, isNeuteredFilter,
+                ageFilter, genderFilter, sizeFilter, pageRequest);
+
+            // then
+            assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+
         }
     }
 }

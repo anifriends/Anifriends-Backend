@@ -11,11 +11,11 @@ public record FindApplicantsApprovedResponse(
     private record FindApplicant(
         Long volunteerId,
         Long applicantId,
-        String name,
-        LocalDate birthDate,
-        String gender,
-        String phoneNumber,
-        boolean attendance
+        String volunteerName,
+        LocalDate volunteerBirthDate,
+        String volunteerGender,
+        String volunteerPhoneNumber,
+        boolean volunteerAttendance
     ) {
 
         private static FindApplicant from(Applicant applicant) {

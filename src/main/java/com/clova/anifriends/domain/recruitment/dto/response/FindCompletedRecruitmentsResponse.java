@@ -12,9 +12,9 @@ public record FindCompletedRecruitmentsResponse(
 
     public record FindCompletedRecruitmentResponse(
         Long recruitmentId,
-        String title,
-        LocalDateTime volunteerDate,
-        String name) {
+        String recruitmentTitle,
+        LocalDateTime recruitmentStartTime,
+        String shelterName) {
 
         public static FindCompletedRecruitmentResponse from(Recruitment recruitment) {
             return new FindCompletedRecruitmentResponse(

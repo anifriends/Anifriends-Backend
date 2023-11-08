@@ -3,10 +3,10 @@ package com.clova.anifriends.domain.animal;
 import com.clova.anifriends.domain.common.EnumType;
 
 public enum AnimalAge implements EnumType {
-    BABY(0, 6),
-    JUNIOR(7, 35),
-    ADULT(36, 83),
-    SENIOR(84, Integer.MAX_VALUE);
+    BABY(0, 7),
+    JUNIOR(7, 36),
+    ADULT(36, 108),
+    SENIOR(108, Integer.MAX_VALUE);
 
     private final int minMonth;
     private final int maxMonth;
