@@ -10,6 +10,7 @@ public record FindApplyingVolunteersResponse(
 ) {
 
     public record FindApplyingVolunteerResponse(
+        Long shelterId,
         Long recruitmentId,
         Long applicantId,
         String recruitmentTitle,
@@ -23,6 +24,7 @@ public record FindApplyingVolunteersResponse(
             Applicant applicant
         ) {
             return new FindApplyingVolunteerResponse(
+                applicant.getRecruitment().getShelter().getShelterId(),
                 applicant.getRecruitment().getRecruitmentId(),
                 applicant.getApplicantId(),
                 applicant.getRecruitment().getTitle(),
