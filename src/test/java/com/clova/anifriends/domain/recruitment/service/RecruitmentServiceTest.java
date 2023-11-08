@@ -134,7 +134,7 @@ class RecruitmentServiceTest {
 
             // when
             Exception exception = catchException(
-                () -> recruitmentService.findRecruitmentByIdByVolunteer(anyLong()));
+                () -> recruitmentService.findShelterSimple(anyLong()));
 
             // then
             assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
