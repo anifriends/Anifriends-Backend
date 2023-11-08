@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.review.repository;
 
+
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
@@ -26,9 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class ReviewRepositoryTest extends BaseRepositoryTest {
-
-    @Autowired
-    private ReviewRepository reviewRepository;
 
     @Autowired
     private ShelterRepository shelterRepository;

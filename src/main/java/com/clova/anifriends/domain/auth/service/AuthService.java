@@ -4,19 +4,17 @@ import static com.clova.anifriends.global.exception.ErrorCode.INVALID_AUTH_INFO;
 
 import com.clova.anifriends.domain.auth.RefreshToken;
 import com.clova.anifriends.domain.auth.exception.AuthAuthenticationException;
-import com.clova.anifriends.domain.auth.exception.InvalidJwtException;
+import com.clova.anifriends.domain.auth.exception.AuthNotFoundException;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
-import com.clova.anifriends.domain.auth.jwt.response.UserToken;
+import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
 import com.clova.anifriends.domain.auth.repository.RefreshTokenRepository;
-import com.clova.anifriends.domain.auth.service.response.TokenResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
-import com.clova.anifriends.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -59,18 +57,20 @@ public class AuthService {
     }
 
     public TokenResponse createToken(Long userId, UserRole userRole) {
-        UserToken userToken = jwtProvider.createToken(userId, userRole);
-        refreshTokenRepository.save(new RefreshToken(userToken.refreshToken()));
-        return TokenResponse.from(userToken);
+        TokenResponse tokenResponse = jwtProvider.createToken(userId, userRole);
+        refreshTokenRepository.save(
+            new RefreshToken(tokenResponse.refreshToken(), userId, userRole));
+        return tokenResponse;
     }
 
     @Transactional
-    public TokenResponse refreshAccessToken(String accessToken, String refreshToken) {
+    public TokenResponse refreshAccessToken(String refreshToken) {
         RefreshToken findRefreshToken = refreshTokenRepository.findByTokenValue(refreshToken)
-            .orElseThrow(
-                () -> new InvalidJwtException(ErrorCode.TOKEN_EXPIRED, "토큰 정보가 유효하지 않습니다."));
-        UserToken memberToken = jwtProvider.refreshAccessToken(refreshToken);
+            .orElseThrow(() -> new AuthNotFoundException("토큰 정보가 유효하지 않습니다."));
+        TokenResponse tokenResponse = jwtProvider.refreshAccessToken(refreshToken);
         refreshTokenRepository.delete(findRefreshToken);
-        return TokenResponse.from(memberToken);
+        refreshTokenRepository.save(new RefreshToken(tokenResponse.refreshToken(),
+            tokenResponse.userId(), tokenResponse.role()));
+        return tokenResponse;
     }
 }

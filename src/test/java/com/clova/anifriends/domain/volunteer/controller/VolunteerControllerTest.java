@@ -2,11 +2,13 @@ package com.clova.anifriends.domain.volunteer.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -18,9 +20,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
+import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.domain.volunteer.dto.request.CheckDuplicateVolunteerEmailRequest;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
+import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
@@ -34,11 +39,42 @@ import org.springframework.test.web.servlet.ResultActions;
 class VolunteerControllerTest extends BaseControllerTest {
 
     @Test
+    @DisplayName("봉사자 이메일 중복 확인 API 호출 시")
+    void checkDuplicateVolunteerEmail() throws Exception {
+        //given
+        CheckDuplicateVolunteerEmailRequest checkDuplicateVolunteerEmailRequest
+            = VolunteerDtoFixture.checkDuplicateVolunteerEmailRequest();
+        CheckDuplicateVolunteerEmailResponse checkDuplicateVolunteerEmailResponse
+            = new CheckDuplicateVolunteerEmailResponse(false);
+
+        given(volunteerService.checkDuplicateVolunteerEmail(anyString()))
+            .willReturn(checkDuplicateVolunteerEmailResponse);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api/volunteers/email")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(checkDuplicateVolunteerEmailRequest)));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestFields(
+                    fieldWithPath("email").type(STRING).description("사용자 이메일")
+                        .attributes(DocumentationFormatGenerator.getConstraint("@를 포함한 이메일 형식"))
+                ),
+                responseFields(
+                    fieldWithPath("isDuplicated").type(BOOLEAN).description("이메일 중복 여부")
+                )
+            ));
+    }
+
+    @Test
     @DisplayName("봉사자 회원가입 API 호출 시")
     void registerVolunteer() throws Exception {
         // given
         RegisterVolunteerRequest registerVolunteerRequest = VolunteerDtoFixture.registerVolunteerRequest();
-        given(volunteerService.registerVolunteer(any(), any(), any(), any(), any(), any())).willReturn(1L);
+        given(volunteerService.registerVolunteer(any(), any(), any(), any(), any(),
+            any())).willReturn(1L);
 
         // when
         ResultActions resultActions = mockMvc.perform(

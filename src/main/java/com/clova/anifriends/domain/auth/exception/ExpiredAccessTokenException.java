@@ -5,7 +5,7 @@ import com.clova.anifriends.global.exception.ErrorCode;
 
 public class ExpiredAccessTokenException extends AuthenticationException {
 
-    public ExpiredAccessTokenException(ErrorCode errorCode, String message) {
-        super(errorCode, message);
+    public ExpiredAccessTokenException(String message) {
+        super(ErrorCode.ACCESS_TOKEN_EXPIRED, message);
     }
 }

@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ShelterRepository extends JpaRepository<Shelter, Long> {
 
     Optional<Shelter> findByEmail(ShelterEmail email);
+
+    boolean existsByEmail(ShelterEmail email);
 }

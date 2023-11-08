@@ -1,7 +1,9 @@
 package com.clova.anifriends.domain.volunteer.controller;
 
 import com.clova.anifriends.domain.auth.resolver.LoginUser;
+import com.clova.anifriends.domain.volunteer.dto.request.CheckDuplicateVolunteerEmailRequest;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
+import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
 import com.clova.anifriends.domain.volunteer.service.VolunteerService;
@@ -23,6 +25,15 @@ public class VolunteerController {
 
     private final VolunteerService volunteerService;
     private static final String BASE_URI = "/api/volunteers/";
+
+    @PostMapping("/volunteers/email")
+    public ResponseEntity<CheckDuplicateVolunteerEmailResponse> checkDuplicateVolunteerEmail(
+        @RequestBody @Valid CheckDuplicateVolunteerEmailRequest checkDuplicateVolunteerEmailRequest) {
+        String targetEmail = checkDuplicateVolunteerEmailRequest.email();
+        CheckDuplicateVolunteerEmailResponse checkDuplicateVolunteerEmailResponse
+            = volunteerService.checkDuplicateVolunteerEmail(targetEmail);
+        return ResponseEntity.ok(checkDuplicateVolunteerEmailResponse);
+    }
 
     @PostMapping("/volunteers")
     public ResponseEntity<Void> registerVolunteer(

@@ -21,6 +21,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -110,6 +111,10 @@ public class Applicant extends BaseTimeEntity {
 
     public boolean hasReview() {
         return review != null;
+    }
+
+    public boolean hasNotReview() {
+        return getStatus().equals(ApplicantStatus.ATTENDANCE) && Objects.isNull(review);
     }
 
     public void registerReview(Review review) {
