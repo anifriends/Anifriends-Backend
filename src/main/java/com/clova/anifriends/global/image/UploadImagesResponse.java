@@ -5,7 +5,7 @@ import java.util.List;
 public record UploadImagesResponse(
     List<String> imageUrls
 ) {
-    public static UploadImagesResponse of(List<String> imageUrls) {
+    public static UploadImagesResponse from(List<String> imageUrls) {
         return new UploadImagesResponse(imageUrls);
     }
 }

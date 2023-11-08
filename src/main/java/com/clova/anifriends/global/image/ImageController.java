@@ -21,6 +21,6 @@ public class ImageController {
         @ModelAttribute @Valid UploadImagesRequest uploadImagesRequest
     ) {
         return ResponseEntity.ok(
-            new UploadImagesResponse(s3Service.uploadImages(uploadImagesRequest.images())));
+            UploadImagesResponse.from(s3Service.uploadImages(uploadImagesRequest.images())));
     }
 }
