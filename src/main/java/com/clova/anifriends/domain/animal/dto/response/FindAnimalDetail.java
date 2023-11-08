@@ -1,51 +1,41 @@
 package com.clova.anifriends.domain.animal.dto.response;
 
 import com.clova.anifriends.domain.animal.Animal;
+import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
+import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
+import com.clova.anifriends.domain.animal.wrapper.AnimalType;
 import java.time.LocalDate;
 import java.util.List;
 
 public record FindAnimalDetail(
-    String name,
-    LocalDate birthDate,
-    String breed,
-    String gender,
-    boolean isNeutered,
-    String active,
-    double weight,
-    String information,
-    List<String> imageUrls,
-    ShelterResponse shelter
+    Long animalId,
+    String animalName,
+    LocalDate animalBirthDate,
+    AnimalType animalType,
+    String animalBreed,
+    AnimalGender animalGender,
+    boolean animalIsNeutered,
+    AnimalActive animalActive,
+    double animalWeight,
+    String animalInformation,
+    List<String> animalImageUrls,
+    boolean animalIsAdopted
 ) {
-
-    private record ShelterResponse(
-        Long shelterId,
-        String name,
-        String imageUrl,
-        String email,
-        String address
-    ) {
-
-    }
 
     public static FindAnimalDetail from(Animal animal) {
         return new FindAnimalDetail(
+            animal.getAnimalId(),
             animal.getName(),
             animal.getBirthDate(),
+            animal.getType(),
             animal.getBreed(),
-            animal.getGender().getName(),
+            animal.getGender(),
             animal.isNeutered(),
-            animal.getActive().getName(),
+            animal.getActive(),
             animal.getWeight(),
             animal.getInformation(),
             animal.getImageUrls(),
-            new ShelterResponse(
-                animal.getShelter().getShelterId(),
-                animal.getShelter().getName(),
-                animal.getShelter().getImageUrl(),
-                animal.getShelter().getEmail(),
-                animal.getShelter().getAddress()
-            )
-        );
+            animal.isAdopted());
     }
 
 }

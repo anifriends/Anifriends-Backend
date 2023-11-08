@@ -109,13 +109,14 @@ class AnimalControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("findAnimalDetail 실행 시")
+    @DisplayName("성공: 보호 동물 상세 조회 api 호출 시")
     void FindAnimalDetailTest() throws Exception {
         // given
         long shelterId = 1L;
         Shelter shelter = shelter();
         ReflectionTestUtils.setField(shelter, "shelterId", shelterId);
         Animal animal = animal(shelter);
+        ReflectionTestUtils.setField(animal, "animalId", 1L);
         FindAnimalDetail response = findAnimalDetail(animal);
 
         when(animalService.findAnimalDetail(shelterId)).thenReturn(response);
@@ -137,21 +138,18 @@ class AnimalControllerTest extends BaseControllerTest {
                     parameterWithName("animalId").description("보호 동물 ID")
                 ),
                 responseFields(
-                    fieldWithPath("name").type(STRING).description("보호 동물 이름"),
-                    fieldWithPath("birthDate").type(STRING).description("출생 날짜"),
-                    fieldWithPath("breed").type(STRING).description("품종"),
-                    fieldWithPath("gender").type(STRING).description("성별"),
-                    fieldWithPath("isNeutered").type(BOOLEAN).description("중성화 유무"),
-                    fieldWithPath("active").type(STRING).description("활동성"),
-                    fieldWithPath("weight").type(NUMBER).description("몸무게"),
-                    fieldWithPath("information").type(STRING).description("기타 정보"),
-                    fieldWithPath("imageUrls[]").type(ARRAY).description("이미지 url 리스트"),
-                    fieldWithPath("shelter.shelterId").type(NUMBER).description("보호소 ID"),
-                    fieldWithPath("shelter.name").type(STRING).description("보호소 이름"),
-                    fieldWithPath("shelter.imageUrl").type(STRING).description("보호소 이미지 url")
-                        .optional(),
-                    fieldWithPath("shelter.email").type(STRING).description("보호소 이메일"),
-                    fieldWithPath("shelter.address").type(STRING).description("보호소 주소")
+                    fieldWithPath("animalId").type(NUMBER).description("보호 동물 ID"),
+                    fieldWithPath("animalName").type(STRING).description("보호 동물 이름"),
+                    fieldWithPath("animalBirthDate").type(STRING).description("보호 동물 출생 날짜"),
+                    fieldWithPath("animalType").type(STRING).description("보호 동물 종류"),
+                    fieldWithPath("animalBreed").type(STRING).description("보호 동물 품종"),
+                    fieldWithPath("animalGender").type(STRING).description("보호 동물 성별"),
+                    fieldWithPath("animalIsNeutered").type(BOOLEAN).description("보호 동물 중성화 유무"),
+                    fieldWithPath("animalActive").type(STRING).description("보호 동물 활동성"),
+                    fieldWithPath("animalWeight").type(NUMBER).description("보호 동물 몸무게"),
+                    fieldWithPath("animalInformation").type(STRING).description("보호 동물 기타 정보"),
+                    fieldWithPath("animalImageUrls[]").type(ARRAY).description("보호 동물 이미지 url 리스트"),
+                    fieldWithPath("animalIsAdopted").type(BOOLEAN).description("보호 동물 입양 여부")
                 )
             ));
     }
