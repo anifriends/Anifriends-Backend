@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.recruitment.controller;
 
-import com.clova.anifriends.domain.auth.resolver.LoginUser;
+import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByShelterRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByVolunteerRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;

@@ -1,10 +1,12 @@
-package com.clova.anifriends.domain.auth.jwt;
+package com.clova.anifriends.global.jwt;
 
 import com.clova.anifriends.domain.auth.exception.ExpiredAccessTokenException;
 import com.clova.anifriends.domain.auth.exception.InvalidJwtException;
 import com.clova.anifriends.domain.auth.exception.ExpiredRefreshTokenException;
-import com.clova.anifriends.domain.auth.jwt.response.CustomClaims;
-import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
+import com.clova.anifriends.domain.auth.jwt.JwtProvider;
+import com.clova.anifriends.domain.auth.jwt.UserRole;
+import com.clova.anifriends.domain.auth.dto.response.CustomClaims;
+import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
 import com.clova.anifriends.global.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

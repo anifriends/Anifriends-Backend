@@ -1,7 +1,7 @@
 package com.clova.anifriends.global.config;
 
 import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider;
-import com.clova.anifriends.domain.auth.filter.JwtAuthenticationFilter;
+import com.clova.anifriends.global.web.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

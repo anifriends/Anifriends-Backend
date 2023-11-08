@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.auth.filter;
+package com.clova.anifriends.global.web.filter;
 
 import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider;
 import jakarta.servlet.FilterChain;

@@ -1,6 +1,6 @@
 package com.clova.anifriends.global.config;
 
-import com.clova.anifriends.domain.auth.resolver.LoginUserArgumentResolver;
+import com.clova.anifriends.global.web.argumentresolver.LoginUserArgumentResolver;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

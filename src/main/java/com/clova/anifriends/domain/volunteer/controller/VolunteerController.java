@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.volunteer.controller;
 
-import com.clova.anifriends.domain.auth.resolver.LoginUser;
+import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.volunteer.dto.request.CheckDuplicateVolunteerEmailRequest;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
 import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;

@@ -9,7 +9,7 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterRespo
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByVolunteerResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.service.AnimalService;
-import com.clova.anifriends.domain.auth.resolver.LoginUser;
+import com.clova.anifriends.domain.auth.LoginUser;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;

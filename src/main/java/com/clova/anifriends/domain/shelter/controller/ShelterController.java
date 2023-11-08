@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.shelter.controller;
 
-import com.clova.anifriends.domain.auth.resolver.LoginUser;
+import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterEmailRequest;
 import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
