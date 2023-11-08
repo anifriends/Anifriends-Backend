@@ -4,6 +4,7 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
+import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -90,6 +91,15 @@ public class ShelterService {
         Shelter foundShelter = getShelter(shelterId);
 
         return FindShelterMyPageResponse.from(foundShelter);
+    }
+
+    @Transactional(readOnly = true)
+    public FindShelterSimpleByVolunteerResponse findShelterSimpleByVolunteer(
+        Long shelterId
+    ) {
+        Shelter foundShelter = getShelter(shelterId);
+
+        return FindShelterSimpleByVolunteerResponse.from(foundShelter);
     }
 
     private Shelter getShelter(Long shelterId) {

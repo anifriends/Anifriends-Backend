@@ -303,12 +303,13 @@ class ReviewControllerTest extends BaseControllerTest {
                 responseFields(
                     fieldWithPath("reviews").type(ARRAY).description("리뷰 리스트"),
                     fieldWithPath("reviews[].reviewId").type(NUMBER).description("리뷰 ID"),
-                    fieldWithPath("reviews[].createdAt").type(STRING).description("리뷰 생성일"),
-                    fieldWithPath("reviews[].content").type(STRING).description("리뷰 내용"),
+                    fieldWithPath("reviews[].reviewCreatedAt").type(STRING).description("리뷰 생성일"),
+                    fieldWithPath("reviews[].reviewContent").type(STRING).description("리뷰 내용"),
                     fieldWithPath("reviews[].reviewImageUrls").type(ARRAY)
                         .description("리뷰 이미지 url 리스트"),
-                    fieldWithPath("reviews[].email").type(STRING).description("봉사자 이메일"),
-                    fieldWithPath("reviews[].temperature").type(NUMBER).description("봉사자 온도"),
+                    fieldWithPath("reviews[].volunteerEmail").type(STRING).description("봉사자 이메일"),
+                    fieldWithPath("reviews[].volunteerTemperature").type(NUMBER)
+                        .description("봉사자 온도"),
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
                     fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부")

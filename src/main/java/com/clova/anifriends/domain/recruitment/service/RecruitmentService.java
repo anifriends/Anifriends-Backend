@@ -7,7 +7,6 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetai
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -98,15 +97,6 @@ public class RecruitmentService {
     private Shelter getShelterById(Long shelterId) {
         return shelterRepository.findById(shelterId)
             .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
-    }
-
-    @Transactional(readOnly = true)
-    public FindShelterSimpleResponse findShelterSimple(
-        Long recruitmentId
-    ) {
-        Recruitment foundRecruitment = getRecruitmentById(recruitmentId);
-
-        return FindShelterSimpleResponse.from(foundRecruitment);
     }
 
     private Recruitment getRecruitmentByShelter(long shelterId,

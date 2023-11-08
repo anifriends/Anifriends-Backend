@@ -1,17 +1,20 @@
 package com.clova.anifriends.domain.shelter.service;
 
+import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
+import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -216,6 +219,45 @@ class ShelterServiceTest {
             // when
             Exception exception = catchException(
                 () -> shelterService.findShelterMyPage(shelterId));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("findShelterSimpleByVolunteer 실행 시")
+    class FindShelterSimpleByVolunteerTest {
+
+        @Test
+        @DisplayName("성공")
+        void findShelterSimpleByVolunteer() {
+            // given
+            Shelter shelter = shelter();
+            FindShelterSimpleByVolunteerResponse expected = FindShelterSimpleByVolunteerResponse.from(
+                shelter);
+
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
+
+            // when
+            FindShelterSimpleByVolunteerResponse foundShelterByVolunteerReview = shelterService.findShelterSimpleByVolunteer(
+                anyLong());
+
+            // then
+            assertThat(foundShelterByVolunteerReview).usingRecursiveComparison()
+                .ignoringFields("recruitmentId")
+                .isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("예외(ShelterNotFoundException): 존재하지 않는 모집글")
+        void throwExceptionWhenShelterIsNotExist() {
+            // given
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+            // when
+            Exception exception = catchException(
+                () -> shelterService.findShelterSimpleByVolunteer(anyLong()));
 
             // then
             assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
