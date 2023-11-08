@@ -446,15 +446,37 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel0">
+<li><a href="#_공통_권한">공통 권한</a>
+<ul class="sectlevel1">
+<li><a href="#_1_인증">1. 인증</a></li>
+</ul>
+</li>
 <li><a href="#_보호소">보호소</a>
 <ul class="sectlevel1">
-<li><a href="#_봉사_모집">봉사 모집</a>
+<li><a href="#_1_봉사자">1. 봉사자</a></li>
+<li><a href="#_2_보호소">2. 보호소</a></li>
+<li><a href="#_3_봉사_모집">3. 봉사 모집</a>
 <ul class="sectlevel2">
 <li><a href="#_1_봉사_모집글_등록">1) 봉사 모집글 등록</a></li>
 </ul>
 </li>
-<li><a href="#_enum_문서화">#. Enum 문서화</a>
-<ul class="sectlevel2">
+<li><a href="#_4_봉사_신청">4. 봉사 신청</a></li>
+<li><a href="#_5_봉사_후기">5. 봉사 후기</a></li>
+<li><a href="#_6_보호_동물">6. 보호 동물</a></li>
+</ul>
+</li>
+<li><a href="#_봉사자">봉사자</a>
+<ul class="sectlevel1">
+<li><a href="#_1_봉사자_2">1. 봉사자</a></li>
+<li><a href="#_2_보호소_2">2. 보호소</a></li>
+<li><a href="#_3_봉사_모집글">3. 봉사 모집글</a></li>
+<li><a href="#_4_봉사_신청_2">4. 봉사 신청</a></li>
+<li><a href="#_5_봉사_후기_2">5. 봉사 후기</a></li>
+<li><a href="#_6_보호_동물_2">6. 보호 동물</a></li>
+</ul>
+</li>
+<li><a href="#_enum_문서화">Enum 문서화</a>
+<ul class="sectlevel1">
 <li><a href="#_1_보호_동물_성격">1. 보호 동물 성격</a></li>
 <li><a href="#_2_보호_동물_성별">2. 보호 동물 성별</a></li>
 <li><a href="#_3_보호_동물_종류">3. 보호 동물 종류</a></li>
@@ -463,14 +485,31 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 </ul>
-</li>
-</ul>
 </div>
 </div>
 <div id="content">
+<h1 id="_공통_권한" class="sect0"><a class="link" href="#_공통_권한">공통 권한</a></h1>
+<div class="sect1">
+<h2 id="_1_인증"><a class="link" href="#_1_인증">1. 인증</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
 <h1 id="_보호소" class="sect0"><a class="link" href="#_보호소">보호소</a></h1>
 <div class="sect1">
-<h2 id="_봉사_모집"><a class="link" href="#_봉사_모집">봉사 모집</a></h2>
+<h2 id="_1_봉사자"><a class="link" href="#_1_봉사자">1. 봉사자</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_보호소"><a class="link" href="#_2_보호소">2. 보호소</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_봉사_모집"><a class="link" href="#_3_봉사_모집">3. 봉사 모집</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_1_봉사_모집글_등록"><a class="link" href="#_1_봉사_모집글_등록">1) 봉사 모집글 등록</a></h3>
@@ -482,16 +521,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/shelters/recruitments HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk0MjI4ODksInN1YiI6IjEiLCJleHAiOjE2OTk0MjM4ODksInJvbGUiOiJST0xFX1NIRUxURVIifQ.i7UL7T8ZgWUqi0taaKtNDI2sEr8RlEjEc_986LPZPL3TXUaziaf9nCXayAp-ZBuh
+Authorization: eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk0MjUxOTksInN1YiI6IjEiLCJleHAiOjE2OTk0MjYxOTksInJvbGUiOiJST0xFX1NIRUxURVIifQ.2jgC4mwng5tuZ3g_8-Kne83B-kzNZG-PRTMw5XalcyhJ2IczRKBhY2f8G-06yMLp
 Content-Length: 223
-X-CSRF-TOKEN: QqG05c6Lh8ubpbYMSWF6t0On3GHwOPkUq-5rF52APdcrzeYPcJXV1Kq85P62w480eUxO1CGW8QPCWZg5ndpTJqrjDLZI9Nc7
+X-CSRF-TOKEN: Oqv0fn5W4K_Fw0P6g2LLO9P_NgVhn0jYUGfwVebTlKEDaOWkAsiXRxs10svo8yLK4E__AuKbGzwDriv1MQHHYoCy9sI6UYTC
 Host: localhost:8080
 
 {
   "title" : "title",
-  "startTime" : "2023-11-09T14:54:49.251388",
-  "endTime" : "2023-11-09T15:54:49.251388",
-  "deadline" : "2023-11-08T19:54:49.251388",
+  "startTime" : "2023-11-09T15:33:19.239711",
+  "endTime" : "2023-11-09T16:33:19.239711",
+  "deadline" : "2023-11-08T20:33:19.239711",
   "capacity" : 10,
   "content" : "content",
   "imageUrls" : [ ]
@@ -635,10 +674,64 @@ Expires: 0</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_enum_문서화"><a class="link" href="#_enum_문서화">#. Enum 문서화</a></h2>
+<h2 id="_4_봉사_신청"><a class="link" href="#_4_봉사_신청">4. 봉사 신청</a></h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_1_보호_동물_성격"><a class="link" href="#_1_보호_동물_성격">1. 보호 동물 성격</a></h3>
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_봉사_후기"><a class="link" href="#_5_봉사_후기">5. 봉사 후기</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_6_보호_동물"><a class="link" href="#_6_보호_동물">6. 보호 동물</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<h1 id="_봉사자" class="sect0"><a class="link" href="#_봉사자">봉사자</a></h1>
+<div class="sect1">
+<h2 id="_1_봉사자_2"><a class="link" href="#_1_봉사자_2">1. 봉사자</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_보호소_2"><a class="link" href="#_2_보호소_2">2. 보호소</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_봉사_모집글"><a class="link" href="#_3_봉사_모집글">3. 봉사 모집글</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_봉사_신청_2"><a class="link" href="#_4_봉사_신청_2">4. 봉사 신청</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_봉사_후기_2"><a class="link" href="#_5_봉사_후기_2">5. 봉사 후기</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_6_보호_동물_2"><a class="link" href="#_6_보호_동물_2">6. 보호 동물</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<h1 id="_enum_문서화" class="sect0"><a class="link" href="#_enum_문서화">Enum 문서화</a></h1>
+<div class="sect1">
+<h2 id="_1_보호_동물_성격"><a class="link" href="#_1_보호_동물_성격">1. 보호 동물 성격</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>|보호 동물 성격</p>
 </div>
@@ -673,8 +766,10 @@ Expires: 0</code></pre>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="_2_보호_동물_성별"><a class="link" href="#_2_보호_동물_성별">2. 보호 동물 성별</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_2_보호_동물_성별"><a class="link" href="#_2_보호_동물_성별">2. 보호 동물 성별</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>|보호 동물 성별</p>
 </div>
@@ -701,8 +796,10 @@ Expires: 0</code></pre>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="_3_보호_동물_종류"><a class="link" href="#_3_보호_동물_종류">3. 보호 동물 종류</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_3_보호_동물_종류"><a class="link" href="#_3_보호_동물_종류">3. 보호 동물 종류</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>|보호 동물 종류</p>
 </div>
@@ -733,8 +830,10 @@ Expires: 0</code></pre>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="_4_봉사_신청자_상태"><a class="link" href="#_4_봉사_신청자_상태">4. 봉사 신청자 상태</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_4_봉사_신청자_상태"><a class="link" href="#_4_봉사_신청자_상태">4. 봉사 신청자 상태</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>|보호 동물 종류</p>
 </div>
@@ -765,8 +864,10 @@ Expires: 0</code></pre>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="_5_봉사자_성별"><a class="link" href="#_5_봉사자_성별">5. 봉사자 성별</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_5_봉사자_성별"><a class="link" href="#_5_봉사자_성별">5. 봉사자 성별</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>|보호 동물 종류</p>
 </div>
@@ -796,14 +897,13 @@ Expires: 0</code></pre>
 </tr>
 </tbody>
 </table>
-</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-11-08 14:35:15 +0900
+Last updated 2023-11-08 15:32:00 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
