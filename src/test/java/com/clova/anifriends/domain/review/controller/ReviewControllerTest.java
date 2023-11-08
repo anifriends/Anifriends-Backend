@@ -95,11 +95,9 @@ class ReviewControllerTest extends BaseControllerTest {
                     parameterWithName("reviewId").description("리뷰 ID")
                 ),
                 responseFields(
-                    fieldWithPath("content").type(STRING).description("리뷰 내용"),
-                    fieldWithPath("shelterName").type(STRING).description("보호소 이름"),
-                    fieldWithPath("shelterImageUrl").type(STRING).description("보호소 이미지 url")
-                        .optional(),
-                    fieldWithPath("imageUrls[]").type(ARRAY).description("리뷰 이미지 url 리스트")
+                    fieldWithPath("reviewId").type(NUMBER).description("리뷰 ID"),
+                    fieldWithPath("reviewContent").type(STRING).description("리뷰 내용"),
+                    fieldWithPath("reviewImageUrls[]").type(ARRAY).description("리뷰 이미지 url 리스트")
                 )
             ));
     }
