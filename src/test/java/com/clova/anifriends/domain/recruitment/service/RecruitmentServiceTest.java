@@ -44,6 +44,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class RecruitmentServiceTest {
@@ -213,6 +214,7 @@ class RecruitmentServiceTest {
             // given
             Shelter shelter = shelter();
             Recruitment recruitment = recruitment(shelter);
+            ReflectionTestUtils.setField(recruitment, "recruitmentId", 4L);
             Page<Recruitment> pageResult = new PageImpl<>(List.of(recruitment));
             FindRecruitmentsByShelterIdResponse expected = findRecruitmentsByShelterIdResponse(
                 pageResult);

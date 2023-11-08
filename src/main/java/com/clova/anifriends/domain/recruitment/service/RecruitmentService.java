@@ -84,8 +84,7 @@ public class RecruitmentService {
         Page<Recruitment> pagination = recruitmentRepository.findRecruitmentsByShelterId(
             shelterId, pageable
         );
-        return FindRecruitmentsByShelterIdResponse.of(pagination.getContent(),
-            PageInfo.from(pagination));
+        return FindRecruitmentsByShelterIdResponse.from(pagination);
     }
 
     @Transactional(readOnly = true)
