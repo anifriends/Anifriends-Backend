@@ -148,4 +148,10 @@ public class Volunteer extends BaseTimeEntity {
     public List<Applicant> getApplicants() {
         return Collections.unmodifiableList(applicants);
     }
+
+    public Integer getApplicantCompletedCount() {
+        return Math.toIntExact(applicants.stream()
+            .filter(Applicant::isCompleted)
+            .count());
+    }
 }

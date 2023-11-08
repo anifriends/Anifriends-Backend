@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.applicant.service;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsApprovedResponse;
+import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
@@ -60,8 +61,15 @@ public class ApplicantService {
 
     public FindApplicantsApprovedResponse findApplicantsApproved(Long shelterId,
         Long recruitmentId) {
-        List<Applicant> applicantApproved = applicantRepository
+        List<Applicant> applicantsApproved = applicantRepository
             .findApprovedByRecruitmentIdAndShelterId(recruitmentId, shelterId);
-        return FindApplicantsApprovedResponse.from(applicantApproved);
+        return FindApplicantsApprovedResponse.from(applicantsApproved);
+    }
+
+    public FindApplicantsResponse findApplicants(Long shelterId, Long recruitmentId) {
+        Recruitment recruitment = getRecruitment(recruitmentId);
+        List<Applicant> applicants = applicantRepository
+            .findByRecruitmentIdAndShelterId(recruitmentId, shelterId);
+        return FindApplicantsResponse.from(applicants, recruitment);
     }
 }
