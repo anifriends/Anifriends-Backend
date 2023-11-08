@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
+import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,7 @@ class ImageControllerTest extends BaseControllerTest {
             .andDo(restDocs.document(
                 requestParts(
                     partWithName("images").description("이미지 파일")
+                        .attributes(DocumentationFormatGenerator.getConstraint("이미지 파일은 1 이상 5이하"))
                 ),
                 responseFields(
                     fieldWithPath("imageUrls").type(ARRAY).description("이미지 URL 목록")
