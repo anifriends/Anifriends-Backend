@@ -14,6 +14,7 @@ public final class AuthFixture {
     private static final String TEST_REFRESH_SECRET = "~GWW.|?:\"#Rqmm^-nk#>#4Ngc}]3xz!hOQCXNF:8z-Mdn\"U!Vt</+/8;ATR*lc{";
     public static final Long USER_ID = 1L;
     public static final UserRole USER_ROLE = UserRole.ROLE_VOLUNTEER;
+    private static final String BEARER = "Bearer ";
 
     public static JwtProvider jwtProvider() {
         return jJwtProvider();
@@ -26,12 +27,12 @@ public final class AuthFixture {
 
     public static String shelterAccessToken() {
         TokenResponse tokenResponse = jwtProvider().createToken(USER_ID, UserRole.ROLE_SHELTER);
-        return tokenResponse.accessToken();
+        return BEARER + tokenResponse.accessToken();
     }
 
     public static String volunteerAccessToken() {
         TokenResponse tokenResponse = jwtProvider().createToken(USER_ID, USER_ROLE);
-        return tokenResponse.accessToken();
+        return BEARER + tokenResponse.accessToken();
     }
 
     public static TokenResponse userToken() {
