@@ -49,6 +49,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
                 animalSizeContains(size),
                 animalAgeContains(age)
             )
+            .orderBy(animal.createdAt.desc())
             .limit(pageable.getPageSize())
             .offset(pageable.getOffset())
             .fetch();
@@ -90,6 +91,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
                 animalGenderContains(gender),
                 animalSizeContains(size)
             )
+            .orderBy(animal.createdAt.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
