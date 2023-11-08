@@ -21,6 +21,7 @@ import com.clova.anifriends.domain.shelter.service.ShelterService;
 import com.clova.anifriends.domain.volunteer.service.VolunteerService;
 import com.clova.anifriends.global.config.SecurityConfig;
 import com.clova.anifriends.global.config.WebMvcConfig;
+import com.clova.anifriends.global.image.S3Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Properties;
 import org.junit.jupiter.api.BeforeAll;
@@ -99,6 +100,9 @@ public abstract class BaseControllerTest {
 
     @MockBean
     protected ReviewService reviewService;
+
+    @MockBean
+    protected S3Service s3Service;
 
     protected final String volunteerAccessToken = AuthFixture.volunteerAccessToken();
     protected String shelterAccessToken = AuthFixture.shelterAccessToken();
