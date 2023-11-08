@@ -66,12 +66,14 @@ class ApplicantControllerTest extends BaseControllerTest {
     @DisplayName("findApplyingVolunteers 실행 시")
     void findApplyingVolunteers() throws Exception {
         // given
+        Long shelterId = 1L;
         Long volunteerId = 1L;
         Long recruitmentId = 1L;
         Long applicantShouldWriteReviewId = 1L;
         Long applicantShouldNotWriteReviewId = 2L;
 
         Shelter shelter = ShelterFixture.shelter();
+        setField(shelter, "shelterId", shelterId);
         Volunteer volunteer = VolunteerFixture.volunteer();
         setField(volunteer, "volunteerId", volunteerId);
 
@@ -111,25 +113,28 @@ class ApplicantControllerTest extends BaseControllerTest {
                 responseFields(
                     fieldWithPath("findApplyingVolunteerResponses").type(JsonFieldType.ARRAY)
                         .description("신청한 봉사 리스트"),
+                    fieldWithPath("findApplyingVolunteerResponses[].shelterId").type(
+                            JsonFieldType.NUMBER)
+                        .description("보호소 ID"),
                     fieldWithPath("findApplyingVolunteerResponses[].recruitmentId").type(
                             JsonFieldType.NUMBER)
                         .description("봉사 모집글 ID"),
                     fieldWithPath("findApplyingVolunteerResponses[].applicantId").type(
                             JsonFieldType.NUMBER)
                         .description("봉사 신청자 ID"),
-                    fieldWithPath("findApplyingVolunteerResponses[].title").type(
+                    fieldWithPath("findApplyingVolunteerResponses[].recruitmentTitle").type(
                             JsonFieldType.STRING)
                         .description("모집글 제목"),
                     fieldWithPath("findApplyingVolunteerResponses[].shelterName").type(
                             JsonFieldType.STRING)
                         .description("보호소 이름"),
-                    fieldWithPath("findApplyingVolunteerResponses[].status").type(
+                    fieldWithPath("findApplyingVolunteerResponses[].applicantStatus").type(
                             JsonFieldType.STRING)
                         .description("승인 상태"),
-                    fieldWithPath("findApplyingVolunteerResponses[].isWritedReview").type(
+                    fieldWithPath("findApplyingVolunteerResponses[].applicantIsWritedReview").type(
                             JsonFieldType.BOOLEAN)
                         .description("후기 작성 가능 여부"),
-                    fieldWithPath("findApplyingVolunteerResponses[].volunteerDate").type(
+                    fieldWithPath("findApplyingVolunteerResponses[].recruitmentStartTime").type(
                             JsonFieldType.STRING)
                         .description("봉사 날짜")
                 )

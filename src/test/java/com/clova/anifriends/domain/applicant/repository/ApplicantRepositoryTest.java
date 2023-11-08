@@ -144,12 +144,12 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
                 applyingVolunteers);
 
             // then
-            assertThat(expected.findApplyingVolunteerResponses().get(0).isWritedReview()).isEqualTo(
-                true);
-            assertThat(expected.findApplyingVolunteerResponses().get(1).isWritedReview()).isEqualTo(
-                false);
-            assertThat(expected.findApplyingVolunteerResponses().get(2).isWritedReview()).isEqualTo(
-                false);
+            assertThat(expected.findApplyingVolunteerResponses().get(0)
+                .applicantIsWritedReview()).isTrue();
+            assertThat(expected.findApplyingVolunteerResponses().get(1)
+                .applicantIsWritedReview()).isFalse();
+            assertThat(expected.findApplyingVolunteerResponses().get(2)
+                .applicantIsWritedReview()).isFalse();
         }
     }
 }

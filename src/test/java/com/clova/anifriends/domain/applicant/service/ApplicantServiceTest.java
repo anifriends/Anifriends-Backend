@@ -193,13 +193,13 @@ class ApplicantServiceTest {
 
             // then
             assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(0)
-                .isWritedReview()).isEqualTo(
+                .applicantIsWritedReview()).isEqualTo(
                 findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(0)
-                    .isWritedReview());
+                    .applicantIsWritedReview());
             assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(1)
-                .isWritedReview()).isEqualTo(
+                .applicantIsWritedReview()).isEqualTo(
                 findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(1)
-                    .isWritedReview());
+                    .applicantIsWritedReview());
         }
 
         @Test
@@ -231,13 +231,13 @@ class ApplicantServiceTest {
 
             // then
             assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(0)
-                .isWritedReview()).isEqualTo(
+                .applicantIsWritedReview()).isEqualTo(
                 findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(0)
-                    .isWritedReview());
+                    .applicantIsWritedReview());
             assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(1)
-                .isWritedReview()).isEqualTo(
+                .applicantIsWritedReview()).isEqualTo(
                 findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(1)
-                    .isWritedReview());
+                    .applicantIsWritedReview());
         }
     }
 }
