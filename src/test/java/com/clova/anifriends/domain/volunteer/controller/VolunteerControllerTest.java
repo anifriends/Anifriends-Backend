@@ -166,11 +166,12 @@ class VolunteerControllerTest extends BaseControllerTest {
                     parameterWithName("volunteerId").description("봉사자 ID")
                 ),
                 responseFields(
-                    fieldWithPath("email").type(STRING).description("이메일"),
-                    fieldWithPath("name").type(STRING).description("이름"),
-                    fieldWithPath("temperature").type(NUMBER).description("온도"),
-                    fieldWithPath("phoneNumber").type(STRING).description("전화번호"),
-                    fieldWithPath("imageUrl").type(STRING).description("프로필 이미지 URL").optional()
+                    fieldWithPath("volunteerEmail").type(STRING).description("이메일"),
+                    fieldWithPath("volunteerName").type(STRING).description("이름"),
+                    fieldWithPath("volunteerTemperature").type(NUMBER).description("온도"),
+                    fieldWithPath("volunteerPhoneNumber").type(STRING).description("전화번호"),
+                    fieldWithPath("volunteerImageUrl").type(STRING).description("프로필 이미지 URL")
+                        .optional()
                 )
             ));
     }

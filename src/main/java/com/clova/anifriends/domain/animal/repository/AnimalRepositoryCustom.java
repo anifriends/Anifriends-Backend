@@ -22,4 +22,14 @@ public interface AnimalRepositoryCustom {
         AnimalAge age,
         Pageable pageable
     );
+
+    Page<Animal> findAnimalsByVolunteer(
+        AnimalType type,
+        AnimalActive active,
+        Boolean isNeutered,
+        AnimalAge age,
+        AnimalGender gender,
+        AnimalSize size,
+        Pageable pageable
+    );
 }

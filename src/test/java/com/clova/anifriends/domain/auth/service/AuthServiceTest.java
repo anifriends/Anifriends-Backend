@@ -225,7 +225,8 @@ class AuthServiceTest {
             //when
             //then
             Awaitility.await().atMost(2, TimeUnit.SECONDS).untilAsserted(() -> {
-                TokenResponse resultTokenResponse = authService.refreshAccessToken(refreshTokenValue);
+                TokenResponse resultTokenResponse = authService.refreshAccessToken(
+                    refreshTokenValue);
 
                 assertThat(resultTokenResponse.refreshToken()).isNotEqualTo(refreshTokenValue);
                 assertThat(resultTokenResponse.accessToken()).isNotBlank();

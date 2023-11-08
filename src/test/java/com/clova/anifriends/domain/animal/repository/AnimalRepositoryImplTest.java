@@ -175,5 +175,296 @@ class AnimalRepositoryImplTest extends BaseRepositoryTest {
             // then
             assertThat(expected.getTotalElements()).isEqualTo(1);
         }
+
+        @Test
+        @DisplayName("성공: 이름 일치, 크기는 최소 경계값")
+        void findAnimalsWhenNameIsSameAndSizeIsMinBoundary() {
+            // given
+            String mockInformation = "animalInformation";
+            String mockBreed = "animalBreed";
+            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
+
+            String keyword = "animalName";
+            AnimalSize sizeFilter = AnimalSize.MEDIUM;
+
+            AnimalType nullTypeFilter = null;
+            AnimalActive nullActiveFilter = null;
+            Boolean nullIsNeuteredFilter = null;
+            AnimalAge nullAgeFilter = null;
+            AnimalGender nullGenderFilter = null;
+
+            Shelter shelter = ShelterFixture.shelter();
+
+            Animal matchAnimal1 = new Animal(
+                shelter,
+                keyword,
+                LocalDate.now(),
+                AnimalType.DOG.getName(),
+                mockBreed,
+                AnimalGender.MALE.getName(),
+                true,
+                AnimalActive.ACTIVE.getName(),
+                AnimalSize.MEDIUM.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            Animal misMatchAnimal1 = new Animal(
+                shelter,
+                keyword,
+                LocalDate.now(),
+                AnimalType.DOG.getName(),
+                mockBreed,
+                AnimalGender.MALE.getName(),
+                true,
+                AnimalActive.ACTIVE.getName(),
+                AnimalSize.MEDIUM.getMinWeight() - 1,
+                mockInformation,
+                mockImageUrls
+            );
+
+            shelterRepository.save(shelter);
+            animalRepository.saveAll(List.of(matchAnimal1, misMatchAnimal1));
+
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
+            // when
+            Page<Animal> result = customAnimalRepository.findAnimalsByShelter(
+                shelter.getShelterId(),
+                keyword,
+                nullTypeFilter,
+                nullGenderFilter,
+                nullIsNeuteredFilter,
+                nullActiveFilter,
+                sizeFilter,
+                nullAgeFilter,
+                pageRequest
+            );
+
+            // then
+            assertThat(result.getContent()).containsExactlyInAnyOrder(matchAnimal1);
+        }
+
+        @Test
+        @DisplayName("성공: 이름 일치, 크기는 최대 경계값")
+        void findAnimalsWhenNameIsSameAndSizeIsMaxBoundary() {
+            // given
+            String mockInformation = "animalInformation";
+            String mockBreed = "animalBreed";
+            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
+
+            String keyword = "animalName";
+            AnimalSize sizeFilter = AnimalSize.MEDIUM;
+
+            AnimalType nullTypeFilter = null;
+            AnimalActive nullActiveFilter = null;
+            Boolean nullIsNeuteredFilter = null;
+            AnimalAge nullAgeFilter = null;
+            AnimalGender nullGenderFilter = null;
+
+            Shelter shelter = ShelterFixture.shelter();
+
+            Animal matchAnimal1 = new Animal(
+                shelter,
+                keyword,
+                LocalDate.now(),
+                AnimalType.DOG.getName(),
+                mockBreed,
+                AnimalGender.MALE.getName(),
+                true,
+                AnimalActive.ACTIVE.getName(),
+                AnimalSize.MEDIUM.getMaxWeight() - 1,
+                mockInformation,
+                mockImageUrls
+            );
+
+            Animal misMatchAnimal1 = new Animal(
+                shelter,
+                keyword,
+                LocalDate.now(),
+                AnimalType.DOG.getName(),
+                mockBreed,
+                AnimalGender.MALE.getName(),
+                true,
+                AnimalActive.ACTIVE.getName(),
+                AnimalSize.MEDIUM.getMaxWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            shelterRepository.save(shelter);
+            animalRepository.saveAll(List.of(matchAnimal1, misMatchAnimal1));
+
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
+            // when
+            Page<Animal> result = customAnimalRepository.findAnimalsByShelter(
+                shelter.getShelterId(),
+                keyword,
+                nullTypeFilter,
+                nullGenderFilter,
+                nullIsNeuteredFilter,
+                nullActiveFilter,
+                sizeFilter,
+                nullAgeFilter,
+                pageRequest
+            );
+
+            // then
+            assertThat(result.getContent()).containsExactlyInAnyOrder(matchAnimal1);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("findAnimalsByVolunteer 실행 시")
+    class FindAnimalsByVolunteerTest {
+
+        @Test
+        @DisplayName("성공: 모든 필터링이 존재")
+        void allFilterExist() {
+            // given
+            String mockName = "animalName";
+            String mockInformation = "animalInformation";
+            String mockBreed = "animalBreed";
+            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
+
+            AnimalType typeFilter = AnimalType.DOG;
+            AnimalActive activeFilter = AnimalActive.ACTIVE;
+            Boolean isNeuteredFilter = true;
+            AnimalAge ageFilter = AnimalAge.ADULT;
+            AnimalGender genderFilter = AnimalGender.MALE;
+            AnimalSize sizeFilter = AnimalSize.MEDIUM;
+
+            Shelter shelter = ShelterFixture.shelter();
+
+            Animal matchAnimal1 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now().minusMonths(ageFilter.getMinMonth()),
+                typeFilter.getName(),
+                mockBreed,
+                genderFilter.getName(),
+                isNeuteredFilter,
+                activeFilter.getName(),
+                sizeFilter.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            Animal matchAnimal2 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now().minusMonths(ageFilter.getMinMonth()),
+                typeFilter.getName(),
+                mockBreed,
+                genderFilter.getName(),
+                isNeuteredFilter,
+                activeFilter.getName(),
+                sizeFilter.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            Animal disMatchAnimal1 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now().minusMonths(ageFilter.getMinMonth()),
+                typeFilter.getName(),
+                mockBreed,
+                genderFilter.getName(),
+                isNeuteredFilter ? false : true,
+                activeFilter.getName(),
+                sizeFilter.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            shelterRepository.save(shelter);
+            animalRepository.saveAll(List.of(matchAnimal1, matchAnimal2, disMatchAnimal1));
+
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
+            // when
+            Page<Animal> result = customAnimalRepository.findAnimalsByVolunteer(
+                typeFilter,
+                activeFilter,
+                isNeuteredFilter,
+                ageFilter,
+                genderFilter,
+                sizeFilter,
+                pageRequest
+            );
+
+            // then
+            assertThat(result.getContent()).containsExactlyInAnyOrder(matchAnimal1, matchAnimal2);
+        }
+
+        @Test
+        @DisplayName("성공: 모든 필터링이 존재하지 않음")
+        void allFilterNotExist() {
+            // given
+            String mockName = "animalName";
+            String mockInformation = "animalInformation";
+            String mockBreed = "animalBreed";
+            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
+
+            AnimalType nullTypeFilter = null;
+            AnimalActive nullActiveFilter = null;
+            Boolean nullIsNeuteredFilter = null;
+            AnimalAge nullAgeFilter = null;
+            AnimalGender nullGenderFilter = null;
+            AnimalSize nullSizeFilter = null;
+
+            Shelter shelter = ShelterFixture.shelter();
+
+            Animal matchAnimal1 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now(),
+                AnimalType.DOG.getName(),
+                mockBreed,
+                AnimalGender.MALE.getName(),
+                true,
+                AnimalActive.ACTIVE.getName(),
+                AnimalSize.LARGE.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            Animal matchAnimal2 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now(),
+                AnimalType.ETC.getName(),
+                mockBreed,
+                AnimalGender.FEMALE.getName(),
+                true,
+                AnimalActive.NORMAL.getName(),
+                AnimalSize.MEDIUM.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            shelterRepository.save(shelter);
+            animalRepository.saveAll(List.of(matchAnimal1, matchAnimal2));
+
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
+            // when
+            Page<Animal> result = customAnimalRepository.findAnimalsByVolunteer(
+                nullTypeFilter,
+                nullActiveFilter,
+                nullIsNeuteredFilter,
+                nullAgeFilter,
+                nullGenderFilter,
+                nullSizeFilter,
+                pageRequest
+            );
+
+            // then
+            assertThat(result.getContent()).containsExactlyInAnyOrder(matchAnimal1, matchAnimal2);
+        }
+
     }
 }

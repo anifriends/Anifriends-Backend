@@ -7,6 +7,7 @@ import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByVolunteerResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.mapper.AnimalMapper;
@@ -80,6 +81,29 @@ public class AnimalService {
         );
 
         return FindAnimalsByShelterResponse.from(animals);
+    }
+
+
+    public FindAnimalsByVolunteerResponse findAnimalsByVolunteer(
+        AnimalType type,
+        AnimalActive active,
+        Boolean isNeutered,
+        AnimalAge age,
+        AnimalGender gender,
+        AnimalSize size,
+        Pageable pageable
+    ) {
+        Page<Animal> animalsWithPagination = animalRepository.findAnimalsByVolunteer(
+            type,
+            active,
+            isNeutered,
+            age,
+            gender,
+            size,
+            pageable
+        );
+
+        return FindAnimalsByVolunteerResponse.from(animalsWithPagination);
     }
 
     private Animal getAnimalById(Long animalId) {
