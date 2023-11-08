@@ -14,10 +14,22 @@
 === 봉사자가 완료한 봉사 모집글 리스트 조회
 
 ==== Request
+
 operation::recruitment-controller-test/find-completed-recruitments[snippets='http-request,path-parameters,query-parameters']
 
 ==== Response
+
 operation::recruitment-controller-test/find-completed-recruitments[snippets='http-response,response-fields']
+
+=== 보호소에 달린 후기 리스트 조회
+
+==== Request
+
+operation::review-controller-test/find-shelter-reviews-by-volunteer[snippets='http-request,path-parameters,query-parameters']
+
+==== Response
+
+operation::review-controller-test/find-shelter-reviews-by-volunteer[snippets='http-response,response-fields']
 
 = 보호소
 
@@ -26,9 +38,11 @@ operation::recruitment-controller-test/find-completed-recruitments[snippets='htt
 === 1) 봉사 모집글 조회 & 검색
 
 ==== Request
+
 operation::recruitment-controller-test/find-recruitments-by-volunteer[snippets='http-request,request-headers,query-parameters']
 
 ==== Response
+
 operation::recruitment-controller-test/find-recruitments-by-volunteer[snippets='http-response,response-fields']
 
 == 2. 보호소
@@ -38,9 +52,11 @@ operation::recruitment-controller-test/find-recruitments-by-volunteer[snippets='
 === 1) 봉사 모집글 등록
 
 ==== Request
+
 operation::recruitment-controller-test/register-recruitment[snippets='http-request,request-headers,request-fields']
 
 ==== Response
+
 operation::recruitment-controller-test/register-recruitment[snippets='http-response,response-headers']
 
 == 4. 봉사 신청
