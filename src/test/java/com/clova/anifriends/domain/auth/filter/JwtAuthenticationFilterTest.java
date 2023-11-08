@@ -1,14 +1,15 @@
 package com.clova.anifriends.domain.auth.filter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 
 import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider;
+import com.clova.anifriends.domain.auth.exception.InvalidJwtException;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
-import com.clova.anifriends.domain.auth.jwt.UserRole;
-import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
+import com.clova.anifriends.global.web.filter.JwtAuthenticationFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
@@ -57,8 +58,7 @@ class JwtAuthenticationFilterTest {
         @DisplayName("성공: 액세스 토큰이 요청에 포함된 경우")
         void doFilterWhenContainsToken() throws ServletException, IOException {
             //given
-            TokenResponse tokenResponse = jwtProvider.createToken(1L, UserRole.ROLE_VOLUNTEER);
-            String accessToken = tokenResponse.accessToken();
+            String accessToken = AuthFixture.shelterAccessToken();
             mockRequest.addHeader("Authorization", accessToken);
 
             //when
@@ -79,6 +79,22 @@ class JwtAuthenticationFilterTest {
             //then
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             assertThat(authentication).isNull();
+        }
+
+        @Test
+        @DisplayName("예외: 액세스 토큰이 Bearer 형식이 아닌 경우")
+        void exceptionWhenTokenIsNotBearer() {
+            //given
+            String bearerAccessToken = AuthFixture.volunteerAccessToken();
+            String accessToken = bearerAccessToken.replace("Bearer ", "");
+            mockRequest.addHeader("Authorization", accessToken);
+
+            //when
+            Exception exception = catchException(
+                () -> jwtAuthenticationFilter.doFilter(mockRequest, mockResponse, filterChain));
+
+            //then
+            assertThat(exception).isInstanceOf(InvalidJwtException.class);
         }
     }
 }
