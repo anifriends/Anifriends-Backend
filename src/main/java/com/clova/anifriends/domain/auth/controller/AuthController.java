@@ -1,8 +1,8 @@
 package com.clova.anifriends.domain.auth.controller;
 
-import com.clova.anifriends.domain.auth.controller.request.LoginRequest;
-import com.clova.anifriends.domain.auth.controller.response.LoginResponse;
-import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
+import com.clova.anifriends.domain.auth.dto.request.LoginRequest;
+import com.clova.anifriends.domain.auth.dto.response.LoginResponse;
+import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
 import com.clova.anifriends.domain.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
