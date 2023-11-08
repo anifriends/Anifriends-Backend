@@ -4,7 +4,7 @@ import com.clova.anifriends.domain.animal.Animal;
 import java.time.LocalDate;
 import java.util.List;
 
-public record FindAnimalByVolunteerResponse(
+public record FindAnimalDetail(
     String name,
     LocalDate birthDate,
     String breed,
@@ -27,8 +27,8 @@ public record FindAnimalByVolunteerResponse(
 
     }
 
-    public static FindAnimalByVolunteerResponse from(Animal animal) {
-        return new FindAnimalByVolunteerResponse(
+    public static FindAnimalDetail from(Animal animal) {
+        return new FindAnimalDetail(
             animal.getName(),
             animal.getBirthDate(),
             animal.getBreed(),

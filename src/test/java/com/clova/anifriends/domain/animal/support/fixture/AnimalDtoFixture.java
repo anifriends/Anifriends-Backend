@@ -1,12 +1,12 @@
 package com.clova.anifriends.domain.animal.support.fixture;
 
 import com.clova.anifriends.domain.animal.Animal;
-import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 
 public class AnimalDtoFixture {
 
-    public static FindAnimalByVolunteerResponse findAnimalByVolunteerResponse(Animal animal) {
-        return FindAnimalByVolunteerResponse.from(animal);
+    public static FindAnimalDetail findAnimalDetail(Animal animal) {
+        return FindAnimalDetail.from(animal);
     }
 
 }
