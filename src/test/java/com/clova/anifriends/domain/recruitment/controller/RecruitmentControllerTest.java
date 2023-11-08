@@ -295,9 +295,9 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("recruitments").type(ARRAY).description("봉사 모집글 리스트"),
                     fieldWithPath("recruitments[].recruitmentId").type(NUMBER)
                         .description("봉사 모집글 ID"),
-                    fieldWithPath("recruitments[].title").type(STRING).description("봉사 모집글 제목"),
-                    fieldWithPath("recruitments[].volunteerDate").type(STRING).description("봉사 날짜"),
-                    fieldWithPath("recruitments[].name").type(STRING).description("보호소 이름"),
+                    fieldWithPath("recruitments[].recruitmentTitle").type(STRING).description("봉사 모집글 제목"),
+                    fieldWithPath("recruitments[].recruitmentStartTime").type(STRING).description("봉사 날짜"),
+                    fieldWithPath("recruitments[].shelterName").type(STRING).description("보호소 이름"),
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
                     fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부")
