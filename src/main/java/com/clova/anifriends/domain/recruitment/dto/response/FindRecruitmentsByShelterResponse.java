@@ -4,6 +4,7 @@ import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 public record FindRecruitmentsByShelterResponse(
     PageInfo pageInfo,
@@ -12,13 +13,13 @@ public record FindRecruitmentsByShelterResponse(
 ) {
     private record RecruitmentResponse(
        long recruitmentId,
-        String title,
-        LocalDateTime startTime,
-        LocalDateTime endTime,
-        LocalDateTime deadline,
-        boolean isClosed,
-        int applicantCount,
-        int capacity
+        String recruitmentTitle,
+        LocalDateTime recruitmentStartTime,
+        LocalDateTime recruitmentEndTime,
+        LocalDateTime recruitmentDeadline,
+        boolean recruitmentIsClosed,
+        int recruitmentApplicantCount,
+        int recruitmentCapacity
     ) {
         private static RecruitmentResponse from(Recruitment recruitment){
             return new RecruitmentResponse(
@@ -34,9 +35,9 @@ public record FindRecruitmentsByShelterResponse(
         }
     }
 
-    public static FindRecruitmentsByShelterResponse of(List<Recruitment> recruitments, PageInfo pageInfo){
+    public static FindRecruitmentsByShelterResponse from(Page<Recruitment> recruitments){
         return new FindRecruitmentsByShelterResponse(
-            pageInfo,
+            PageInfo.from(recruitments),
             recruitments.stream()
                 .map(RecruitmentResponse::from)
                 .toList()
