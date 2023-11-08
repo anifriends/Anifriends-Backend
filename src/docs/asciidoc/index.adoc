@@ -5,9 +5,17 @@
 :toclevels: 2
 :sectlinks:
 
+= 공통 권한
+
+== 1. 인증
+
 = 보호소
 
-== 봉사 모집
+== 1. 봉사자
+
+== 2. 보호소
+
+== 3. 봉사 모집
 
 === 1) 봉사 모집글 등록
 
@@ -17,24 +25,44 @@ operation::recruitment-controller-test/register-recruitment[snippets='http-reque
 ==== Response
 operation::recruitment-controller-test/register-recruitment[snippets='http-response,response-headers']
 
-== #. Enum 문서화
+== 4. 봉사 신청
 
-=== 1. 보호 동물 성격
+== 5. 봉사 후기
+
+== 6. 보호 동물
+
+= 봉사자
+
+== 1. 봉사자
+
+== 2. 보호소
+
+== 3. 봉사 모집글
+
+== 4. 봉사 신청
+
+== 5. 봉사 후기
+
+== 6. 보호 동물
+
+= Enum 문서화
+
+== 1. 보호 동물 성격
 
 include::{snippets}/enum-documentation-test/animal-active/enum-response-fields.adoc[]
 
-=== 2. 보호 동물 성별
+== 2. 보호 동물 성별
 
 include::{snippets}/enum-documentation-test/animal-gender/enum-response-fields.adoc[]
 
-=== 3. 보호 동물 종류
+== 3. 보호 동물 종류
 
 include::{snippets}/enum-documentation-test/animal-type/enum-response-fields.adoc[]
 
-=== 4. 봉사 신청자 상태
+== 4. 봉사 신청자 상태
 
 include::{snippets}/enum-documentation-test/animal-type/enum-response-fields.adoc[]
 
-=== 5. 봉사자 성별
+== 5. 봉사자 성별
 
 include::{snippets}/enum-documentation-test/animal-type/enum-response-fields.adoc[]
