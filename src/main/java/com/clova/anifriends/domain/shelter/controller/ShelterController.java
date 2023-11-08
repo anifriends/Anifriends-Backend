@@ -68,12 +68,7 @@ public class ShelterController {
     }
 
     @GetMapping("/shelters/me")
-    public ResponseEntity<FindShelterMyPageResponse> findShelterMyPage(
-        @LoginUser Long shelterId
-    ) {
-        return ResponseEntity.ok()
-            .body(shelterService.findShelterMyPage(
-                shelterId
-            ));
+    public ResponseEntity<FindShelterMyPageResponse> findShelterMyPage(@LoginUser Long shelterId) {
+        return ResponseEntity.ok(shelterService.findShelterMyPage(shelterId));
     }
 }
