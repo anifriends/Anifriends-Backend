@@ -94,6 +94,10 @@ ext {
 	snippetsDir = file('build/generated-snippets')
 }
 
+test {
+	outputs.dir snippetsDir
+}
+
 asciidoctor.doFirst {
 	delete file('src/main/resources/static/docs')
 }
