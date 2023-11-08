@@ -13,10 +13,10 @@ public record FindShelterReviewsByVolunteerResponse(
 
     public record FindShelterReviewByVolunteerResponse(
         Long reviewId,
-        Integer temperature,
-        LocalDateTime createdAt,
-        String content,
-        String email,
+        Integer volunteerTemperature,
+        LocalDateTime reviewCreatedAt,
+        String reviewContent,
+        String volunteerEmail,
         List<String> reviewImageUrls
     ) {
 
