@@ -16,7 +16,7 @@ public class RecruitmentDtoFixture {
 
     public static FindRecruitmentsByShelterIdResponse findRecruitmentsByShelterIdResponse(
         Page<Recruitment> pageResult) {
-        return FindRecruitmentsByShelterIdResponse.of(pageResult.getContent(), PageInfo.from(pageResult));
+        return FindRecruitmentsByShelterIdResponse.from(pageResult);
     }
 
     public static FindRecruitmentDetailResponse findRecruitmentDetailResponse(
