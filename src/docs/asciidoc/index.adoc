@@ -9,6 +9,30 @@
 
 == 0. 인증
 
+=== 보호소 로그인
+
+==== Request
+operation::auth-controller-test/shelter-login[snippets='http-request,request-fields']
+
+==== Response
+operation::auth-controller-test/shelter-login[snippets='http-response,response-fields,response-cookies']
+
+=== 봉사자 로그인
+
+==== Request
+operation::auth-controller-test/volunteer-login[snippets='http-request,request-fields']
+
+==== Response
+operation::auth-controller-test/volunteer-login[snippets='http-response,response-fields,response-cookies']
+
+=== 액세스 토큰 갱신
+
+==== Request
+operation::auth-controller-test/refresh-access-token[snippets='http-request,request-cookies']
+
+==== Response
+operation::auth-controller-test/refresh-access-token[snippets='http-response,response-fields,response-cookies']
+
 == 1. 봉사자
 
 === 봉사자가 완료한 봉사 모집글 리스트 조회
@@ -82,6 +106,14 @@ operation::recruitment-controller-test/register-recruitment[snippets='http-respo
 == 4. 봉사 신청
 
 == 5. 봉사 후기
+
+=== 보호소의 후기 리스트 조회
+
+==== Request
+operation::review-controller-test/find-shelter-reviews-by-shelter[snippets='http-request,request-headers,path-parameters,query-parameters']
+
+==== Response
+operation::review-controller-test/find-shelter-reviews-by-shelter[snippets='http-response,response-fields']
 
 == 6. 보호 동물
 

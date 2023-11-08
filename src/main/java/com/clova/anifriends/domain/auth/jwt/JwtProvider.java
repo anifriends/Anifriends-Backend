@@ -1,8 +1,8 @@
 package com.clova.anifriends.domain.auth.jwt;
 
 
-import com.clova.anifriends.domain.auth.jwt.response.CustomClaims;
-import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
+import com.clova.anifriends.domain.auth.dto.response.CustomClaims;
+import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
 
 public interface JwtProvider {
 
