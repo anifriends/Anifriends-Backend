@@ -59,6 +59,14 @@ operation::review-controller-test/find-shelter-reviews-by-volunteer[snippets='ht
 
 == 2. 보호소
 
+=== 보호소 마이 페이지 조회
+
+==== Request
+operation::shelter-controller-test/find-shelter-my-page[snippets='http-request,request-headers']
+
+==== Response
+operation::shelter-controller-test/find-shelter-my-page[snippets='http-response,response-fields']
+
 == 3. 봉사 모집
 
 === 1) 봉사 모집글 등록
