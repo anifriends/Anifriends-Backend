@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.auth.jwt.response;
+package com.clova.anifriends.domain.auth.dto.response;
 
 import java.util.List;
 

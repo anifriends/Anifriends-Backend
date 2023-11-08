@@ -15,9 +15,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
-import com.clova.anifriends.domain.auth.controller.request.LoginRequest;
+import com.clova.anifriends.domain.auth.dto.request.LoginRequest;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
-import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
+import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,7 +65,7 @@ class AuthControllerTest extends BaseControllerTest {
     void shelterLogin() throws Exception {
         //given
         LoginRequest request = new LoginRequest("email@email.com", "password123!");
-        TokenResponse response = new TokenResponse(1L, UserRole.ROLE_VOLUNTEER, "accessToken",
+        TokenResponse response = new TokenResponse(1L, UserRole.ROLE_SHELTER, "accessToken",
             "refreshToken");
 
         given(authService.shelterLogin(any(), any())).willReturn(response);

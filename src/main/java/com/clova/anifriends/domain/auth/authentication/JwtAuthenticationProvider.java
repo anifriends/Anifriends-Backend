@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.auth.authentication;
 
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
-import com.clova.anifriends.domain.auth.jwt.response.CustomClaims;
+import com.clova.anifriends.domain.auth.dto.response.CustomClaims;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

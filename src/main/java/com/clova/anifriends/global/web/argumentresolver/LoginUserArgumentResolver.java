@@ -1,9 +1,10 @@
-package com.clova.anifriends.domain.auth.resolver;
+package com.clova.anifriends.global.web.argumentresolver;
 
 import static com.clova.anifriends.global.exception.ErrorCode.UN_AUTHENTICATION;
 
 import com.clova.anifriends.domain.auth.authentication.JwtAuthentication;
 import com.clova.anifriends.domain.auth.exception.AuthAuthenticationException;
+import com.clova.anifriends.domain.auth.LoginUser;
 import java.util.Objects;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
