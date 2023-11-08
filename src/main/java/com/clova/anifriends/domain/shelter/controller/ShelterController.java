@@ -5,6 +5,7 @@ import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterEmailRequest
 import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
+import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
 import com.clova.anifriends.domain.shelter.dto.RegisterShelterRequest;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
 import jakarta.validation.Valid;
@@ -57,6 +58,13 @@ public class ShelterController {
             .body(shelterService.findShelterDetail(
                 shelterId
             ));
+    }
+
+    @GetMapping("/volunteers/shelters/{shelterId}/profile/simple")
+    public ResponseEntity<FindShelterSimpleByVolunteerResponse> findShelterSimpleByVolunteer(
+        @PathVariable Long shelterId
+    ) {
+        return ResponseEntity.ok(shelterService.findShelterSimpleByVolunteer(shelterId));
     }
 
     @GetMapping("/shelters/me")
