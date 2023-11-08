@@ -36,17 +36,17 @@ public class RecruitmentController {
     @PostMapping("/shelters/recruitments")
     public ResponseEntity<RegisterRecruitmentResponse> registerRecruitment(
         @LoginUser Long userId,
-        @RequestBody @Valid RegisterRecruitmentRequest request) {
+        @RequestBody @Valid RegisterRecruitmentRequest registerRecruitmentRequest) {
         RegisterRecruitmentResponse response = recruitmentService.registerRecruitment(
             userId,
-            request.title(),
-            request.startTime(),
-            request.endTime(),
-            request.deadline(),
-            request.capacity(),
-            request.content(),
-            request.imageUrls());
-        URI location = URI.create("/api/shelters/recruitments/" + response.recruitmentId());
+            registerRecruitmentRequest.title(),
+            registerRecruitmentRequest.startTime(),
+            registerRecruitmentRequest.endTime(),
+            registerRecruitmentRequest.deadline(),
+            registerRecruitmentRequest.capacity(),
+            registerRecruitmentRequest.content(),
+            registerRecruitmentRequest.imageUrls());
+        URI location = URI.create("/api/recruitments/" + response.recruitmentId());
         return ResponseEntity.created(location).build();
     }
 

@@ -5,6 +5,18 @@
 :toclevels: 2
 :sectlinks:
 
+= 보호소
+
+== 봉사 모집
+
+=== 1) 봉사 모집글 등록
+
+==== Request
+operation::recruitment-controller-test/register-recruitment[snippets='http-request,request-headers,request-fields']
+
+==== Response
+operation::recruitment-controller-test/register-recruitment[snippets='http-response,response-headers']
+
 == #. Enum 문서화
 
 === 1. 보호 동물 성격

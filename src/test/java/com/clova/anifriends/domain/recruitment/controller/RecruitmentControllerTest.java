@@ -108,11 +108,11 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("deadline").type(JsonFieldType.STRING).description("봉사 모집 마감 시간")
                         .attributes(DocumentationFormatGenerator.getDatetimeConstraint()),
                     fieldWithPath("capacity").type(JsonFieldType.NUMBER).description("봉사 모집 정원")
-                        .description(DocumentationFormatGenerator.getConstraint("1명 이상, 99명 이하")),
+                        .attributes(DocumentationFormatGenerator.getConstraint("1명 이상, 99명 이하")),
                     fieldWithPath("content").type(JsonFieldType.STRING).description("봉사 모집글 본문")
-                        .description(DocumentationFormatGenerator.getConstraint("1자 이상, 1000자 이하")),
+                        .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 1000자 이하")),
                     fieldWithPath("imageUrls").type(JsonFieldType.ARRAY).description("봉사 모집글 이미지")
-                        .description(DocumentationFormatGenerator.getConstraint("0장 이상, 5장 이하"))
+                        .attributes(DocumentationFormatGenerator.getConstraint("0장 이상, 5장 이하"))
                         .optional()
                 ),
                 responseHeaders(
