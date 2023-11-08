@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.shelter.controller;
+package com.clova.anifriends.domain.shelter.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

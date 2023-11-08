@@ -5,6 +5,7 @@ import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterEmailRequest
 import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
+import com.clova.anifriends.domain.shelter.dto.RegisterShelterRequest;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
 import jakarta.validation.Valid;
 import java.net.URI;
