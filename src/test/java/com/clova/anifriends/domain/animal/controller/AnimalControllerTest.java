@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.animal.controller;
 
-import static com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture.findAnimalByVolunteerResponse;
+import static com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture.findAnimalDetail;
 import static com.clova.anifriends.domain.animal.support.fixture.AnimalFixture.animal;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,18 +33,15 @@ import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
-import com.clova.anifriends.domain.animal.dto.response.FindAnimalByShelterResponse;
-import com.clova.anifriends.domain.animal.dto.response.FindAnimalByVolunteerResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByVolunteerResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
-import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -112,20 +109,21 @@ class AnimalControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("findAnimalByIdByVolunteer 실행 시")
-    void FindAnimalTest() throws Exception {
+    @DisplayName("성공: 보호 동물 상세 조회 api 호출 시")
+    void FindAnimalDetailTest() throws Exception {
         // given
         long shelterId = 1L;
         Shelter shelter = shelter();
         ReflectionTestUtils.setField(shelter, "shelterId", shelterId);
         Animal animal = animal(shelter);
-        FindAnimalByVolunteerResponse response = findAnimalByVolunteerResponse(animal);
+        ReflectionTestUtils.setField(animal, "animalId", 1L);
+        FindAnimalDetail response = findAnimalDetail(animal);
 
-        when(animalService.findAnimalByIdByVolunteer(shelterId)).thenReturn(response);
+        when(animalService.findAnimalDetail(shelterId)).thenReturn(response);
 
         // when
         ResultActions result = mockMvc.perform(
-            get("/api/volunteers/animals/{animalId}", shelterId)
+            get("/api/animals/{animalId}", shelterId)
                 .header(AUTHORIZATION, volunteerAccessToken)
                 .contentType(MediaType.APPLICATION_JSON)
         );
@@ -140,64 +138,18 @@ class AnimalControllerTest extends BaseControllerTest {
                     parameterWithName("animalId").description("보호 동물 ID")
                 ),
                 responseFields(
-                    fieldWithPath("name").type(STRING).description("보호 동물 이름"),
-                    fieldWithPath("birthDate").type(STRING).description("출생 날짜"),
-                    fieldWithPath("breed").type(STRING).description("품종"),
-                    fieldWithPath("gender").type(STRING).description("성별"),
-                    fieldWithPath("isNeutered").type(BOOLEAN).description("중성화 유무"),
-                    fieldWithPath("active").type(STRING).description("활동성"),
-                    fieldWithPath("weight").type(NUMBER).description("몸무게"),
-                    fieldWithPath("information").type(STRING).description("기타 정보"),
-                    fieldWithPath("imageUrls[]").type(ARRAY).description("이미지 url 리스트"),
-                    fieldWithPath("shelter.shelterId").type(NUMBER).description("보호소 ID"),
-                    fieldWithPath("shelter.name").type(STRING).description("보호소 이름"),
-                    fieldWithPath("shelter.imageUrl").type(STRING).description("보호소 이미지 url")
-                        .optional(),
-                    fieldWithPath("shelter.email").type(STRING).description("보호소 이메일"),
-                    fieldWithPath("shelter.address").type(STRING).description("보호소 주소")
-                )
-            ));
-    }
-
-    @Test
-    @DisplayName("보호 동물 상세 조회(보호소) api 호출 시")
-    void findAnimalByShelter() throws Exception {
-        //given
-        Long animalId = 1L;
-        Shelter shelter = ShelterFixture.shelter();
-        Animal animal = AnimalFixture.animal(shelter);
-        ReflectionTestUtils.setField(animal, "animalId", animalId);
-        FindAnimalByShelterResponse response = FindAnimalByShelterResponse.from(animal);
-
-        given(animalService.findAnimalByShelter(anyLong(), anyLong())).willReturn(response);
-
-        //when
-        ResultActions resultActions = mockMvc.perform(
-            get("/api/shelters/animals/{animalId}", animalId)
-                .header(AUTHORIZATION, shelterAccessToken));
-
-        //then
-        resultActions.andExpect(status().isOk())
-            .andDo(restDocs.document(
-                requestHeaders(
-                    headerWithName(AUTHORIZATION).description("액세스 토큰")
-                ),
-                pathParameters(
-                    parameterWithName("animalId").description("보호 동물 ID")
-                ),
-                responseFields(
                     fieldWithPath("animalId").type(NUMBER).description("보호 동물 ID"),
-                    fieldWithPath("name").type(STRING).description("보호 동물 이름"),
-                    fieldWithPath("birthDate").type(STRING).description("출생 날짜"),
-                    fieldWithPath("type").type(STRING).description("종류"),
-                    fieldWithPath("breed").type(STRING).description("품종"),
-                    fieldWithPath("gender").type(STRING).description("성별"),
-                    fieldWithPath("isNeutered").type(BOOLEAN).description("중성화 유무"),
-                    fieldWithPath("active").type(STRING).description("활동성"),
-                    fieldWithPath("weight").type(NUMBER).description("몸무게"),
-                    fieldWithPath("information").type(STRING).description("기타 정보"),
-                    fieldWithPath("isAdopted").type(BOOLEAN).description("입양 여부"),
-                    fieldWithPath("imageUrls[]").type(ARRAY).description("이미지 url 리스트")
+                    fieldWithPath("animalName").type(STRING).description("보호 동물 이름"),
+                    fieldWithPath("animalBirthDate").type(STRING).description("보호 동물 출생 날짜"),
+                    fieldWithPath("animalType").type(STRING).description("보호 동물 종류"),
+                    fieldWithPath("animalBreed").type(STRING).description("보호 동물 품종"),
+                    fieldWithPath("animalGender").type(STRING).description("보호 동물 성별"),
+                    fieldWithPath("animalIsNeutered").type(BOOLEAN).description("보호 동물 중성화 유무"),
+                    fieldWithPath("animalActive").type(STRING).description("보호 동물 활동성"),
+                    fieldWithPath("animalWeight").type(NUMBER).description("보호 동물 몸무게"),
+                    fieldWithPath("animalInformation").type(STRING).description("보호 동물 기타 정보"),
+                    fieldWithPath("animalImageUrls[]").type(ARRAY).description("보호 동물 이미지 url 리스트"),
+                    fieldWithPath("animalIsAdopted").type(BOOLEAN).description("보호 동물 입양 여부")
                 )
             ));
     }
