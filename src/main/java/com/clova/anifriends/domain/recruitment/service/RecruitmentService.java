@@ -3,8 +3,7 @@ package com.clova.anifriends.domain.recruitment.service;
 import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
@@ -89,21 +88,15 @@ public class RecruitmentService {
             PageInfo.from(pagination));
     }
 
+    @Transactional(readOnly = true)
+    public FindRecruitmentDetailResponse findRecruitmentDetail(long recruitmentId) {
+        Recruitment recruitment = getRecruitmentById(recruitmentId);
+        return FindRecruitmentDetailResponse.from(recruitment);
+    }
+
     private Shelter getShelterById(Long shelterId) {
         return shelterRepository.findById(shelterId)
             .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
-    }
-
-    public FindRecruitmentByShelterResponse findRecruitByShelter(
-        long shelterId, long recruitmentId) {
-        Recruitment recruitment = getRecruitmentByShelter(shelterId,
-            recruitmentId);
-        return FindRecruitmentByShelterResponse.from(recruitment);
-    }
-
-    public FindRecruitmentDetailByVolunteerResponse findRecruitmentByIdByVolunteer(long id) {
-        Recruitment recruitment = getRecruitmentById(id);
-        return FindRecruitmentDetailByVolunteerResponse.from(recruitment);
     }
 
     private Recruitment getRecruitmentByShelter(long shelterId,

@@ -5,8 +5,7 @@ import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByShe
 import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByVolunteerRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
@@ -49,18 +48,11 @@ public class RecruitmentController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping("/shelters/recruitments/{recruitmentId}")
-    public ResponseEntity<FindRecruitmentByShelterResponse> findRecruitmentByIdByShelter(
-        @LoginUser Long shelterId,
-        @PathVariable Long recruitmentId) {
-        return ResponseEntity.ok(recruitmentService
-            .findRecruitByShelter(shelterId, recruitmentId));
-    }
-
-    @GetMapping("/volunteers/recruitments/{recruitmentId}")
-    public ResponseEntity<FindRecruitmentDetailByVolunteerResponse> findRecruitmentByIdByVolunteer(
-        @PathVariable Long recruitmentId) {
-        return ResponseEntity.ok(recruitmentService.findRecruitmentByIdByVolunteer(recruitmentId));
+    @GetMapping("/recruitments/{recruitmentId}")
+    public ResponseEntity<FindRecruitmentDetailResponse> findRecruitmentDetail(
+        @PathVariable Long recruitmentId
+    ) {
+        return ResponseEntity.ok(recruitmentService.findRecruitmentDetail(recruitmentId));
     }
 
     @GetMapping("/volunteers/{volunteerId}/recruitments/completed")
