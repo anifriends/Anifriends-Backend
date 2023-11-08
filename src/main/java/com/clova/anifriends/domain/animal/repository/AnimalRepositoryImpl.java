@@ -68,7 +68,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
             )
             .fetchOne();
 
-        return new PageImpl<>(animals, pageable, count);
+        return new PageImpl<>(animals, pageable, count == null ? 0 : count);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
             .limit(pageable.getPageSize())
             .fetch();
 
-        int count = query.select(animal.count())
+        Long count = query.select(animal.count())
             .from(animal)
             .join(animal.shelter)
             .where(
@@ -107,10 +107,9 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
                 animalGenderContains(gender),
                 animalSizeContains(size)
             )
-            .fetch()
-            .size();
+            .fetchOne();
 
-        return new PageImpl<>(animals, pageable, count);
+        return new PageImpl<>(animals, pageable, count == null ? 0 : count);
     }
 
     private BooleanExpression animalNameContains(String keyword) {
