@@ -121,7 +121,13 @@ public class RecruitmentRepositoryImpl implements
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
-        return new PageImpl<>(recruitments);
+
+        Long count = query.select(recruitment.count())
+            .from(recruitment)
+            .where(predicate)
+            .fetchOne();
+
+        return new PageImpl<>(recruitments, pageable, count == null ? 0 : count);
     }
 
     @Override
@@ -134,7 +140,14 @@ public class RecruitmentRepositoryImpl implements
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
-        return new PageImpl<>(recruitments);
+
+        Long count = query.select(recruitment.count())
+            .from(recruitment)
+            .where(recruitment.shelter.shelterId.eq(shelterId)
+                .and(recruitment.info.isClosed.eq(false)))
+            .fetchOne();
+
+        return new PageImpl<>(recruitments, pageable, count == null ? 0 : count);
     }
 
     Predicate getDateCondition(LocalDate startDate, LocalDate endDate) {

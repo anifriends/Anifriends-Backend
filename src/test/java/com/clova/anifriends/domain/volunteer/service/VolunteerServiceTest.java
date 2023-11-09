@@ -25,6 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class VolunteerServiceTest {
@@ -96,6 +97,7 @@ class VolunteerServiceTest {
         void success() {
             // given
             volunteer = VolunteerFixture.volunteer();
+            ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
             volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
             setField(volunteer, "volunteerImage", volunteerImage);
             FindVolunteerMyPageResponse expected = FindVolunteerMyPageResponse.from(volunteer);

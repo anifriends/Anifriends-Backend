@@ -2,7 +2,9 @@ package com.clova.anifriends.domain.applicant.service;
 
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
+import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.NO_SHOW;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.PENDING;
+import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.REFUSED;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static com.clova.anifriends.domain.volunteer.support.VolunteerFixture.volunteer;
@@ -17,6 +19,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsApprovedResponse;
+import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
@@ -40,6 +43,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class ApplicantServiceTest {
@@ -238,6 +242,45 @@ class ApplicantServiceTest {
                 .applicantIsWritedReview()).isEqualTo(
                 findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(1)
                     .applicantIsWritedReview());
+        }
+    }
+
+    @Nested
+    @DisplayName("findApplicants 메서드 실행 시")
+    class FindApplicantsTest {
+
+        @Test
+        @DisplayName("성공")
+        void findApplicants() {
+            // given
+            Shelter shelter = shelter();
+            ReflectionTestUtils.setField(shelter, "shelterId", 1L);
+            Recruitment recruitment = recruitment(shelter);
+            ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+            Volunteer volunteer = volunteer();
+            Applicant applicantAttended = ApplicantFixture.applicant(recruitment, volunteer,
+                ATTENDANCE);
+            Applicant applicantRefused = ApplicantFixture.applicant(recruitment, volunteer,
+                REFUSED);
+            Applicant applicantPended = ApplicantFixture.applicant(recruitment, volunteer, PENDING);
+            Applicant applicantNoShow = ApplicantFixture.applicant(recruitment, volunteer, NO_SHOW);
+
+            FindApplicantsResponse response = FindApplicantsResponse.from(
+                List.of(applicantAttended, applicantRefused, applicantPended, applicantNoShow),
+                recruitment
+            );
+
+            when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.of(recruitment));
+            when(applicantRepository.findByRecruitmentIdAndShelterId(anyLong(), anyLong()))
+                .thenReturn(
+                    List.of(applicantAttended, applicantRefused, applicantPended, applicantNoShow));
+
+            // when
+            FindApplicantsResponse result = applicantService.findApplicants(
+                shelter.getShelterId(), recruitment.getRecruitmentId());
+
+            // then
+            assertThat(result).isEqualTo(response);
         }
     }
 }
