@@ -1,6 +1,5 @@
 package com.clova.anifriends.domain.recruitment.support.fixture;
 
-import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
@@ -11,7 +10,7 @@ public class RecruitmentDtoFixture {
 
     public static FindRecruitmentsByShelterResponse findRecruitmentsByShelterResponse(
         Page<Recruitment> pageResult) {
-        return FindRecruitmentsByShelterResponse.of(pageResult.getContent(), PageInfo.from(pageResult));
+        return FindRecruitmentsByShelterResponse.from(pageResult);
     }
 
     public static FindRecruitmentsByShelterIdResponse findRecruitmentsByShelterIdResponse(
