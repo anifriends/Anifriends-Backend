@@ -5,17 +5,20 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.time.LocalDate;
 
 public record FindVolunteerMyPageResponse(
-    String email,
-    String name,
-    LocalDate birthDate,
-    String phoneNumber,
-    int temperature,
-    long volunteerCount,
-    String imageUrl
+    long volunteerId,
+    String volunteerEmail,
+    String volunteerName,
+    LocalDate volunteerBirthDate,
+    String volunteerPhoneNumber,
+    int volunteerTemperature,
+    long completedVolunteerCount,
+    String volunteerImageUrl,
+    String volunteerGender
 ) {
 
     public static FindVolunteerMyPageResponse from(Volunteer volunteer) {
         return new FindVolunteerMyPageResponse(
+            volunteer.getVolunteerId(),
             volunteer.getEmail(),
             volunteer.getName(),
             volunteer.getBirthDate(),
@@ -24,7 +27,8 @@ public record FindVolunteerMyPageResponse(
             volunteer.getApplicants().stream()
                 .filter(applicant -> applicant.getStatus().equals(ApplicantStatus.ATTENDANCE))
                 .count(),
-            volunteer.getVolunteerImageUrl()
+            volunteer.getVolunteerImageUrl(),
+            volunteer.getGender()
         );
     }
 }
