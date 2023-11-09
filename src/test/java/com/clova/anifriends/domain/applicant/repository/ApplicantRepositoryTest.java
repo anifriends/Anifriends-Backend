@@ -13,7 +13,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.applicant.dto.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -27,6 +27,7 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -150,6 +151,63 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
                 .applicantIsWritedReview()).isFalse();
             assertThat(expected.findApplyingVolunteerResponses().get(2)
                 .applicantIsWritedReview()).isFalse();
+        }
+    }
+
+    @Nested
+    @DisplayName("updateAttendance 실행 시")
+    class UpdateAttendanceTest {
+
+        @Test
+        @DisplayName("성공")
+        void updateAttendance() {
+            // given
+            Shelter shelter = shelter();
+            Volunteer volunteer = volunteer();
+            Recruitment recruitment = recruitment(shelter);
+            Applicant applicantAttendanceToNoShow = applicant(recruitment, volunteer, ATTENDANCE);
+            Applicant applicantNoShowToAttendance = applicant(recruitment, volunteer, NO_SHOW);
+            Applicant applicantPending = applicant(recruitment, volunteer, PENDING);
+            Applicant applicantRefused = applicant(recruitment, volunteer, REFUSED);
+
+            shelterRepository.save(shelter);
+            volunteerRepository.save(volunteer);
+            recruitmentRepository.save(recruitment);
+            applicantRepository.saveAll(List.of(
+                    applicantAttendanceToNoShow,
+                    applicantNoShowToAttendance,
+                    applicantPending,
+                    applicantRefused
+                )
+            );
+
+            List<Long> attendedIds = List.of(applicantNoShowToAttendance.getApplicantId());
+
+            // when
+            applicantRepository.updateBulkAttendance(shelter.getShelterId(),
+                recruitment.getRecruitmentId(), attendedIds);
+
+            // then
+            Optional<Applicant> persistedApplicantNoShowToAttendance = applicantRepository.findById(
+                applicantNoShowToAttendance.getApplicantId());
+            assertThat(persistedApplicantNoShowToAttendance).isNotEmpty();
+            assertThat(persistedApplicantNoShowToAttendance.get().getStatus()).isEqualTo(
+                ATTENDANCE);
+
+            Optional<Applicant> persistedApplicantAttendanceToNoShow = applicantRepository.findById(
+                applicantAttendanceToNoShow.getApplicantId());
+            assertThat(persistedApplicantAttendanceToNoShow).isNotEmpty();
+            assertThat(persistedApplicantAttendanceToNoShow.get().getStatus()).isEqualTo(NO_SHOW);
+
+            Optional<Applicant> persistedApplicantPending = applicantRepository.findById(
+                applicantPending.getApplicantId());
+            assertThat(persistedApplicantPending).isNotEmpty();
+            assertThat(persistedApplicantPending.get().getStatus()).isEqualTo(PENDING);
+
+            Optional<Applicant> persistedApplicantRefused = applicantRepository.findById(
+                applicantRefused.getApplicantId());
+            assertThat(persistedApplicantRefused).isNotEmpty();
+            assertThat(persistedApplicantRefused.get().getStatus()).isEqualTo(REFUSED);
         }
     }
 }
