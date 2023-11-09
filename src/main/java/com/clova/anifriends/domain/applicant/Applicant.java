@@ -23,11 +23,13 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "applicant")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Applicant extends BaseTimeEntity {
 
     @Id
@@ -48,7 +50,7 @@ public class Applicant extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private ApplicantStatus status;
+    private ApplicantStatus status = ApplicantStatus.PENDING;
 
     public Applicant(
         Recruitment recruitment,
@@ -61,7 +63,6 @@ public class Applicant extends BaseTimeEntity {
         validateVolunteer(volunteer);
         this.volunteer = volunteer;
         volunteer.addApplicant(this);
-        this.status = ApplicantStatus.PENDING;
     }
 
     public ApplicantStatus getStatus() {

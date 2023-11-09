@@ -1,10 +1,11 @@
 package com.clova.anifriends.domain.applicant.service;
 
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.applicant.dto.FindApplicantsApprovedResponse;
-import com.clova.anifriends.domain.applicant.dto.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -58,10 +59,22 @@ public class ApplicantService {
             .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
     }
 
+    @Transactional(readOnly = true)
     public FindApplicantsApprovedResponse findApplicantsApproved(Long shelterId,
         Long recruitmentId) {
-        List<Applicant> applicantApproved = applicantRepository
+        List<Applicant> applicantsApproved = applicantRepository
             .findApprovedByRecruitmentIdAndShelterId(recruitmentId, shelterId);
-        return FindApplicantsApprovedResponse.from(applicantApproved);
+        return FindApplicantsApprovedResponse.from(applicantsApproved);
+    }
+
+    @Transactional
+    public void updateApplicantAttendance(Long shelterId, Long recruitmentId,
+        List<UpdateApplicantAttendanceCommand> applicantsCommand) {
+        List<Long> attendedIds = applicantsCommand.stream()
+            .filter(UpdateApplicantAttendanceCommand::isAttended)
+            .map(UpdateApplicantAttendanceCommand::applicantId)
+            .toList();
+
+        applicantRepository.updateBulkAttendance(shelterId, recruitmentId, attendedIds);
     }
 }

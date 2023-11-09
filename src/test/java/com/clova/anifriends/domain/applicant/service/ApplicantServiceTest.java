@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.applicant.service;
 
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
+import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.NO_SHOW;
 import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.PENDING;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
@@ -12,14 +13,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.applicant.dto.FindApplicantsApprovedResponse;
-import com.clova.anifriends.domain.applicant.dto.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -238,6 +242,56 @@ class ApplicantServiceTest {
                 .applicantIsWritedReview()).isEqualTo(
                 findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(1)
                     .applicantIsWritedReview());
+        }
+    }
+
+    @Nested
+    @DisplayName("updateApplicantAttendance 실행 시")
+    class UpdateApplicantAttendance {
+
+        @Test
+        @DisplayName("성공")
+        void updateApplicantAttendance() {
+            // given
+            Volunteer volunteer1 = VolunteerFixture.volunteer();
+            Volunteer volunteer2 = VolunteerFixture.volunteer();
+            Volunteer volunteer3 = VolunteerFixture.volunteer();
+            Volunteer volunteer4 = VolunteerFixture.volunteer();
+
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+
+            Applicant applicantAttendance = ApplicantFixture.applicant(recruitment, volunteer1,
+                ATTENDANCE, 1L);
+            Applicant applicantAttendanceToNoShow = ApplicantFixture.applicant(recruitment,
+                volunteer2, ATTENDANCE, 2L);
+            Applicant applicantNoShowToAttendance = ApplicantFixture.applicant(recruitment,
+                volunteer3, NO_SHOW, 3L);
+            Applicant applicantNoShow = ApplicantFixture.applicant(recruitment, volunteer4,
+                NO_SHOW, 4L);
+
+            UpdateApplicantAttendanceCommand command1 = new UpdateApplicantAttendanceCommand(
+                applicantAttendance.getApplicantId(), true);
+            UpdateApplicantAttendanceCommand command2 = new UpdateApplicantAttendanceCommand(
+                applicantAttendanceToNoShow.getApplicantId(), false);
+            UpdateApplicantAttendanceCommand command3 = new UpdateApplicantAttendanceCommand(
+                applicantNoShowToAttendance.getApplicantId(), true);
+            UpdateApplicantAttendanceCommand command4 = new UpdateApplicantAttendanceCommand(
+                applicantNoShow.getApplicantId(), false);
+
+            List<UpdateApplicantAttendanceCommand> commands = List.of(command1, command2, command3,
+                command4);
+
+            // when
+            applicantService.updateApplicantAttendance(shelter.getShelterId(),
+                recruitment.getRecruitmentId(), commands);
+
+            // then
+            verify(applicantRepository, times(1))
+                .updateBulkAttendance(shelter.getShelterId(), recruitment.getRecruitmentId(),
+                    List.of(applicantAttendance.getApplicantId(),
+                        applicantNoShowToAttendance.getApplicantId()));
+
         }
     }
 }
