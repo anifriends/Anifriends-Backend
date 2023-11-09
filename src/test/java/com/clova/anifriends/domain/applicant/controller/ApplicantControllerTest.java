@@ -9,11 +9,13 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -23,8 +25,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.applicant.dto.FindApplicantsApprovedResponse;
-import com.clova.anifriends.domain.applicant.dto.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest;
+import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest.UpdateApplicantAttendanceRequest;
+import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
@@ -39,6 +43,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 
 class ApplicantControllerTest extends BaseControllerTest {
@@ -181,5 +186,50 @@ class ApplicantControllerTest extends BaseControllerTest {
                     )
                 )
             );
+    }
+
+    @Test
+    @DisplayName("봉사자 출석 상태 수정 API 호출 시")
+    void updateApplicantAttendance() throws Exception {
+        // given
+        Shelter shelter = ShelterFixture.shelter();
+        Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+        ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+        Volunteer volunteer = VolunteerFixture.volunteer();
+        Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer, ATTENDANCE, 1L);
+
+        UpdateApplicantAttendanceRequest updateApplicantAttendanceRequest = new UpdateApplicantAttendanceRequest(
+            applicant.getApplicantId(),
+            true
+        );
+
+        UpdateApplicantsAttendanceRequest updateApplicantsAttendanceRequest = new UpdateApplicantsAttendanceRequest(
+            List.of(updateApplicantAttendanceRequest));
+
+        // when
+        ResultActions result = mockMvc.perform(
+            patch("/api/shelters/recruitments/{recruitmentId}/approval",
+                recruitment.getRecruitmentId())
+                .header(AUTHORIZATION, shelterAccessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateApplicantsAttendanceRequest))
+        );
+
+        // then
+        result.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName("Authorization").description("액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("recruitmentId").description("모집글 ID")
+                ),
+                requestFields(
+                    fieldWithPath("applicants[]").type(ARRAY).description("봉사 승인자 출석 리스트"),
+                    fieldWithPath("applicants[].applicantId").type(NUMBER).description("봉사 신청 ID"),
+                    fieldWithPath("applicants[].isAttended").type(BOOLEAN).description("출석 상태")
+                )
+            ));
+
     }
 }
