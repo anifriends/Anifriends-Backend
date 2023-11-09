@@ -8,10 +8,18 @@ public enum ApplicantStatus implements EnumType {
     REFUSED,
     ATTENDANCE,
     NO_SHOW,
+    APPROVED,
     ;
 
     @Override
     public String getName() {
         return this.name();
+    }
+
+    public ApplicantStatus convertToApprovalStatus() {
+        if (this == ApplicantStatus.ATTENDANCE || this == ApplicantStatus.NO_SHOW) {
+            return ApplicantStatus.APPROVED;
+        }
+        return this;
     }
 }

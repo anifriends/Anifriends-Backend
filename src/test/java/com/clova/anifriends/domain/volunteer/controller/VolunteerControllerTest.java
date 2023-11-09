@@ -21,7 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.request.CheckDuplicateVolunteerEmailRequest;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
@@ -30,10 +29,10 @@ import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageRes
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
-import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 
 class VolunteerControllerTest extends BaseControllerTest {
@@ -104,16 +103,9 @@ class VolunteerControllerTest extends BaseControllerTest {
     void findVolunteerMyPage() throws Exception {
         // given
         Volunteer volunteer = VolunteerFixture.volunteer();
-        FindVolunteerMyPageResponse findVolunteerMyPageResponse = new FindVolunteerMyPageResponse(
-            volunteer.getEmail(),
-            volunteer.getName(),
-            volunteer.getBirthDate(),
-            volunteer.getPhoneNumber(),
-            volunteer.getTemperature(),
-            volunteer.getApplicants().stream()
-                .filter(applicant -> applicant.getStatus().equals(ApplicantStatus.ATTENDANCE))
-                .count(),
-            VolunteerImageFixture.volunteerImage(volunteer).getImageUrl());
+        ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
+        FindVolunteerMyPageResponse findVolunteerMyPageResponse = VolunteerDtoFixture.findVolunteerMyPageResponse(volunteer);
+
         given(volunteerService.findVolunteerMyPage(anyLong())).willReturn(
             findVolunteerMyPageResponse);
 
@@ -128,13 +120,15 @@ class VolunteerControllerTest extends BaseControllerTest {
             .andDo(restDocs.document(
                 requestHeaders(headerWithName("Authorization").description("액세스 토큰")),
                 responseFields(
-                    fieldWithPath("email").type(STRING).description("이메일"),
-                    fieldWithPath("name").type(STRING).description("이름"),
-                    fieldWithPath("birthDate").type(STRING).description("생년월일"),
-                    fieldWithPath("phoneNumber").type(STRING).description("전화번호"),
-                    fieldWithPath("temperature").type(NUMBER).description("온도"),
-                    fieldWithPath("volunteerCount").type(NUMBER).description("봉사 횟수"),
-                    fieldWithPath("imageUrl").type(STRING).description("프로필 이미지 URL").optional()
+                    fieldWithPath("volunteerId").type(NUMBER).description("봉사자 ID"),
+                    fieldWithPath("volunteerEmail").type(STRING).description("이메일"),
+                    fieldWithPath("volunteerName").type(STRING).description("이름"),
+                    fieldWithPath("volunteerBirthDate").type(STRING).description("생년월일"),
+                    fieldWithPath("volunteerPhoneNumber").type(STRING).description("전화번호"),
+                    fieldWithPath("volunteerTemperature").type(NUMBER).description("온도"),
+                    fieldWithPath("completedVolunteerCount").type(NUMBER).description("봉사 횟수"),
+                    fieldWithPath("volunteerImageUrl").type(STRING).description("프로필 이미지 URL").optional(),
+                    fieldWithPath("volunteerGender").type(STRING).description("성별")
                 )
             ));
     }

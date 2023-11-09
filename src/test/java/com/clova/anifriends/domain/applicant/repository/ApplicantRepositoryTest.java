@@ -155,6 +155,43 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
     }
 
     @Nested
+    @DisplayName("findByRecruitmentIdAndShelterId")
+    class FindRecruitmentIdAndShelterIdTest {
+
+        @Test
+        @DisplayName("성공")
+        void findByRecruitmentIdAndShelterId() {
+            // given
+            Shelter shelter = shelter();
+            Volunteer volunteer = volunteer();
+            Recruitment recruitment = recruitment(shelter);
+
+            Applicant applicantAttendance = applicant(recruitment, volunteer, ATTENDANCE);
+            Applicant applicantNoShow = applicant(recruitment, volunteer, NO_SHOW);
+            Applicant applicantPending = applicant(recruitment, volunteer, PENDING);
+            Applicant applicantRefused = applicant(recruitment, volunteer, REFUSED);
+
+            shelterRepository.save(shelter);
+            volunteerRepository.save(volunteer);
+            recruitmentRepository.save(recruitment);
+            applicantRepository.saveAll(
+                List.of(applicantAttendance, applicantNoShow, applicantPending, applicantRefused)
+            );
+            List<Applicant> expected = List.of(applicantAttendance, applicantNoShow,
+                applicantPending, applicantRefused);
+
+            // when
+            List<Applicant> result = applicantRepository
+                .findByRecruitmentIdAndShelterId(recruitment.getRecruitmentId(),
+                    shelter.getShelterId());
+
+            // then
+            assertThat(result).isEqualTo(expected);
+        }
+
+    }
+
+    @Nested
     @DisplayName("updateAttendance 실행 시")
     class UpdateAttendanceTest {
 

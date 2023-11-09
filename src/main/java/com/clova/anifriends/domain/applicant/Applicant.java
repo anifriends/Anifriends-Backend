@@ -119,4 +119,8 @@ public class Applicant extends BaseTimeEntity {
     public void registerReview(Review review) {
         this.review = review;
     }
+
+    public boolean isCompleted() {
+        return this.status == ApplicantStatus.ATTENDANCE;
+    }
 }

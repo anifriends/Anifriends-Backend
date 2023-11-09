@@ -44,6 +44,16 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         @Param("shelterId") Long shelterId
     );
 
+    @Query("select a from Applicant a "
+        + "join fetch a.recruitment r "
+        + "join fetch r.shelter s "
+        + "where r.recruitmentId = :recruitmentId "
+        + "and s.shelterId = :shelterId ")
+    List<Applicant> findByRecruitmentIdAndShelterId(
+        @Param("recruitmentId") Long recruitmentId,
+        @Param("shelterId") Long shelterId
+    );
+
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("update Applicant a set a.status = "
         + "case when a.applicantId in :attendedIds "
