@@ -1,16 +1,16 @@
 package com.clova.anifriends.domain.auth.support;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 
-public class MockPasswordEncode implements PasswordEncoder {
+public class MockPasswordEncode implements CustomPasswordEncoder {
 
     @Override
-    public String encode(CharSequence rawPassword) {
+    public String encodePassword(String rawPassword) {
         return new StringBuilder(rawPassword).reverse().toString();
     }
 
     @Override
-    public boolean matches(CharSequence rawPassword, String encodedPassword) {
-        return encode(rawPassword).equals(encodedPassword);
+    public boolean matchesPassword(String rawPassword, String encodedPassword) {
+        return encodePassword(rawPassword).equals(encodedPassword);
     }
 }

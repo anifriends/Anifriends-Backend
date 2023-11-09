@@ -1,15 +1,18 @@
 package com.clova.anifriends.base;
 
+import com.clova.anifriends.global.config.SecurityConfig;
 import jakarta.persistence.EntityManager;
 import java.util.Properties;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("dev")
+@Import({SecurityConfig.class})
 public abstract class BaseIntegrationTest {
 
     @BeforeAll

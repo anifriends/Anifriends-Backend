@@ -9,6 +9,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.when;
 
+import com.clova.anifriends.domain.auth.support.MockPasswordEncode;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
@@ -31,7 +33,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 class ShelterServiceTest {
@@ -43,17 +44,7 @@ class ShelterServiceTest {
     private ShelterRepository shelterRepository;
 
     @Spy
-    PasswordEncoder passwordEncoder = new PasswordEncoder() {
-        @Override
-        public String encode(CharSequence rawPassword) {
-            return new StringBuilder(rawPassword).reverse().toString();
-        }
-
-        @Override
-        public boolean matches(CharSequence rawPassword, String encodedPassword) {
-            return encode(rawPassword).equals(encodedPassword);
-        }
-    };
+    CustomPasswordEncoder passwordEncoder = new MockPasswordEncode();
 
     Shelter givenShelter;
     ShelterImage givenShelterImage;

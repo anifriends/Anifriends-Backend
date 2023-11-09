@@ -8,14 +8,15 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import com.clova.anifriends.domain.auth.RefreshToken;
+import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
 import com.clova.anifriends.domain.auth.exception.AuthAuthenticationException;
 import com.clova.anifriends.domain.auth.exception.AuthNotFoundException;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
-import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
 import com.clova.anifriends.domain.auth.repository.RefreshTokenRepository;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
 import com.clova.anifriends.domain.auth.support.MockPasswordEncode;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.volunteer.Volunteer;
@@ -33,7 +34,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,7 +52,7 @@ class AuthServiceTest {
     RefreshTokenRepository refreshTokenRepository;
 
     @Spy
-    PasswordEncoder passwordEncoder = new MockPasswordEncode();
+    CustomPasswordEncoder passwordEncoder = new MockPasswordEncode();
 
     @Spy
     JwtProvider jwtProvider = AuthFixture.jwtProvider();
@@ -63,7 +63,7 @@ class AuthServiceTest {
 
         String email = "email@email.com";
         String password = "password123!";
-        Volunteer volunteer = new Volunteer(email, passwordEncoder.encode(password),
+        Volunteer volunteer = new Volunteer(email, passwordEncoder.encodePassword(password),
             LocalDate.now().toString(), "010-1234-1234", "MALE", "name");
 
         @BeforeEach
@@ -137,7 +137,7 @@ class AuthServiceTest {
 
         String email = "email@email.com";
         String password = "password123!";
-        Shelter shelter = new Shelter(email, passwordEncoder.encode(password), "address",
+        Shelter shelter = new Shelter(email, passwordEncoder.encodePassword(password), "address",
             "addressDetail", "name", "02-1234-5678", "02-1234-5678", false);
 
         @BeforeEach
