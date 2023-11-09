@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.auth.controller.request;
+package com.clova.anifriends.domain.auth.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 

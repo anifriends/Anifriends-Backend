@@ -1,11 +1,12 @@
-package com.clova.anifriends.domain.auth.jwt;
+package com.clova.anifriends.global.jwt;
 
+import com.clova.anifriends.domain.auth.dto.response.CustomClaims;
+import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
 import com.clova.anifriends.domain.auth.exception.ExpiredAccessTokenException;
-import com.clova.anifriends.domain.auth.exception.InvalidJwtException;
 import com.clova.anifriends.domain.auth.exception.ExpiredRefreshTokenException;
-import com.clova.anifriends.domain.auth.jwt.response.CustomClaims;
-import com.clova.anifriends.domain.auth.jwt.response.TokenResponse;
-import com.clova.anifriends.global.exception.ErrorCode;
+import com.clova.anifriends.domain.auth.exception.InvalidJwtException;
+import com.clova.anifriends.domain.auth.jwt.JwtProvider;
+import com.clova.anifriends.domain.auth.jwt.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -101,7 +102,7 @@ public class JJwtProvider implements JwtProvider {
         } catch (JwtException ex) {
             log.info("[EX] {}: 잘못된 JWT입니다.", ex.getClass().getSimpleName());
         }
-        throw new InvalidJwtException(ErrorCode.UN_AUTHENTICATION, "유효하지 않은 JWT입니다.");
+        throw new InvalidJwtException("유효하지 않은 JWT입니다.");
     }
 
     @Override
@@ -117,6 +118,6 @@ public class JJwtProvider implements JwtProvider {
         } catch (JwtException ex) {
             log.info("[EX] {}: 잘못된 리프레시 토큰입니다.", ex.getClass().getSimpleName());
         }
-        throw new InvalidJwtException(ErrorCode.UN_AUTHENTICATION, "유효하지 않은 리프레시 토큰입니다.");
+        throw new InvalidJwtException("유효하지 않은 리프레시 토큰입니다.");
     }
 }

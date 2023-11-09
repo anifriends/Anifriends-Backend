@@ -286,14 +286,14 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
                     fieldWithPath("recruitments[]").type(ARRAY).description("모집 게시글 리스트"),
                     fieldWithPath("recruitments[].recruitmentId").type(NUMBER).description("모집 ID"),
-                    fieldWithPath("recruitments[].title").type(STRING).description("모집 제목"),
-                    fieldWithPath("recruitments[].startTime").type(STRING).description("봉사 시작 시간"),
-                    fieldWithPath("recruitments[].endTime").type(STRING).description("봉사 끝난 시간"),
-                    fieldWithPath("recruitments[].deadline").type(STRING).description("모집 마감 시간"),
-                    fieldWithPath("recruitments[].isClosed").type(BOOLEAN).description("모집 마감 여부"),
-                    fieldWithPath("recruitments[].applicantCount").type(NUMBER)
+                    fieldWithPath("recruitments[].recruitmentTitle").type(STRING).description("모집 제목"),
+                    fieldWithPath("recruitments[].recruitmentStartTime").type(STRING).description("봉사 시작 시간"),
+                    fieldWithPath("recruitments[].recruitmentEndTime").type(STRING).description("봉사 끝난 시간"),
+                    fieldWithPath("recruitments[].recruitmentDeadline").type(STRING).description("모집 마감 시간"),
+                    fieldWithPath("recruitments[].recruitmentIsClosed").type(BOOLEAN).description("모집 마감 여부"),
+                    fieldWithPath("recruitments[].recruitmentApplicantCount").type(NUMBER)
                         .description("현재 지원자 수"),
-                    fieldWithPath("recruitments[].capacity").type(NUMBER).description("모집 정원")
+                    fieldWithPath("recruitments[].recruitmentCapacity").type(NUMBER).description("모집 정원")
                 )
             ));
     }
@@ -333,12 +333,13 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 게시글 수"),
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
                     fieldWithPath("recruitments[]").type(ARRAY).description("모집 게시글 리스트"),
-                    fieldWithPath("recruitments[].title").type(STRING).description("모집 제목"),
-                    fieldWithPath("recruitments[].volunteerDate").type(STRING)
+                    fieldWithPath("recruitments[].recruitmentId").type(NUMBER).description("모집 ID"),
+                    fieldWithPath("recruitments[].recruitmentTitle").type(STRING).description("모집 제목"),
+                    fieldWithPath("recruitments[].recruitmentStartTime").type(STRING)
                         .description("봉사 시작 시간"),
-                    fieldWithPath("recruitments[].deadline").type(STRING).description("모집 마감 시간"),
-                    fieldWithPath("recruitments[].capacity").type(NUMBER).description("모집 정원"),
-                    fieldWithPath("recruitments[].applicantCount").type(NUMBER)
+                    fieldWithPath("recruitments[].recruitmentDeadline").type(STRING).description("모집 마감 시간"),
+                    fieldWithPath("recruitments[].recruitmentCapacity").type(NUMBER).description("모집 정원"),
+                    fieldWithPath("recruitments[].recruitmentApplicantCount").type(NUMBER)
                         .description("현재 지원자 수")
                 )
             ));

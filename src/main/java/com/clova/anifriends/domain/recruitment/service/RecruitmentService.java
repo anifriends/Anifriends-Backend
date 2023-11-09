@@ -1,6 +1,5 @@
 package com.clova.anifriends.domain.recruitment.service;
 
-import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
@@ -73,8 +72,7 @@ public class RecruitmentService {
             pageable
         );
 
-        return FindRecruitmentsByShelterResponse.of(pagination.getContent(),
-            PageInfo.from(pagination));
+        return FindRecruitmentsByShelterResponse.from(pagination);
     }
 
     @Transactional(readOnly = true)
@@ -84,8 +82,7 @@ public class RecruitmentService {
         Page<Recruitment> pagination = recruitmentRepository.findRecruitmentsByShelterId(
             shelterId, pageable
         );
-        return FindRecruitmentsByShelterIdResponse.of(pagination.getContent(),
-            PageInfo.from(pagination));
+        return FindRecruitmentsByShelterIdResponse.from(pagination);
     }
 
     @Transactional(readOnly = true)

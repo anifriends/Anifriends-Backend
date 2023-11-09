@@ -10,19 +10,21 @@ public record FindApplyingVolunteersResponse(
 ) {
 
     public record FindApplyingVolunteerResponse(
+        Long shelterId,
         Long recruitmentId,
         Long applicantId,
-        String title,
+        String recruitmentTitle,
         String shelterName,
-        ApplicantStatus status,
-        boolean isWritedReview,
-        LocalDateTime volunteerDate
+        ApplicantStatus applicantStatus,
+        boolean applicantIsWritedReview,
+        LocalDateTime recruitmentStartTime
     ) {
 
         public static FindApplyingVolunteerResponse from(
             Applicant applicant
         ) {
             return new FindApplyingVolunteerResponse(
+                applicant.getRecruitment().getShelter().getShelterId(),
                 applicant.getRecruitment().getRecruitmentId(),
                 applicant.getApplicantId(),
                 applicant.getRecruitment().getTitle(),
