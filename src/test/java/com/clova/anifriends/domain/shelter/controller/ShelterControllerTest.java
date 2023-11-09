@@ -193,6 +193,7 @@ class ShelterControllerTest extends BaseControllerTest {
         FindShelterMyPageResponse findShelterMyPageResponse = new FindShelterMyPageResponse(
             shelter.getShelterId(),
             shelter.getName(),
+            shelter.getEmail(),
             shelter.getAddress(),
             shelter.getAddressDetail(),
             shelter.isOpenedAddress(),
@@ -219,26 +220,21 @@ class ShelterControllerTest extends BaseControllerTest {
                 responseFields(
                     fieldWithPath("shelterId").type(JsonFieldType.NUMBER)
                         .description("보호소 ID"),
-                    fieldWithPath("name").type(
-                            JsonFieldType.STRING)
+                    fieldWithPath("shelterName").type(JsonFieldType.STRING)
                         .description("보호소 이름"),
-                    fieldWithPath("address").type(
-                            JsonFieldType.STRING)
+                    fieldWithPath("shelterEmail").type(JsonFieldType.STRING)
+                            .description("보호소 이메일"),
+                    fieldWithPath("shelterAddress").type(JsonFieldType.STRING)
                         .description("보호소 주소"),
-                    fieldWithPath("addressDetail").type(
-                            JsonFieldType.STRING)
+                    fieldWithPath("shelterAddressDetail").type(JsonFieldType.STRING)
                         .description("보호소 상세주소"),
-                    fieldWithPath("isOpenedAddress").type(
-                            JsonFieldType.BOOLEAN)
-                        .description("상세 주소 공개 여부"),
-                    fieldWithPath("phoneNumber").type(
-                            JsonFieldType.STRING)
+                    fieldWithPath("shelterIsOpenedAddress").type(JsonFieldType.BOOLEAN)
+                        .description("보호소 상세 주소 공개 여부"),
+                    fieldWithPath("shelterPhoneNumber").type(JsonFieldType.STRING)
                         .description("보호소 전화번호"),
-                    fieldWithPath("sparePhoneNumber").type(
-                            JsonFieldType.STRING)
+                    fieldWithPath("shelterSparePhoneNumber").type(JsonFieldType.STRING)
                         .description("보호소 임시 전화번호"),
-                    fieldWithPath("imageUrl").type(
-                            JsonFieldType.STRING).optional()
+                    fieldWithPath("shelterImageUrl").type(JsonFieldType.STRING).optional()
                         .description("보호소 이미지 Url")
                 )
             ));

@@ -4,13 +4,14 @@ import com.clova.anifriends.domain.shelter.Shelter;
 
 public record FindShelterMyPageResponse(
     Long shelterId,
-    String name,
-    String address,
-    String addressDetail,
-    boolean isOpenedAddress,
-    String phoneNumber,
-    String sparePhoneNumber,
-    String imageUrl
+    String shelterName,
+    String shelterEmail,
+    String shelterAddress,
+    String shelterAddressDetail,
+    boolean shelterIsOpenedAddress,
+    String shelterPhoneNumber,
+    String shelterSparePhoneNumber,
+    String shelterImageUrl
 ) {
 
     public static FindShelterMyPageResponse from(
@@ -19,6 +20,7 @@ public record FindShelterMyPageResponse(
         return new FindShelterMyPageResponse(
             shelter.getShelterId(),
             shelter.getName(),
+            shelter.getEmail(),
             shelter.getAddress(),
             shelter.getAddressDetail(),
             shelter.isOpenedAddress(),
