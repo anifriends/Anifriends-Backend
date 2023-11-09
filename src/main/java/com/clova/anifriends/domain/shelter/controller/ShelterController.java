@@ -7,12 +7,14 @@ import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
 import com.clova.anifriends.domain.shelter.dto.RegisterShelterRequest;
+import com.clova.anifriends.domain.shelter.dto.UpdateShelterPasswordRequest;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,5 +77,16 @@ public class ShelterController {
             .body(shelterService.findShelterMyPage(
                 shelterId
             ));
+    }
+
+    @PatchMapping("/shelters/me/passwords")
+    public ResponseEntity<Void> updatePassword(
+        @LoginUser Long shelterId,
+        @RequestBody @Valid UpdateShelterPasswordRequest updateShelterPasswordRequest) {
+        shelterService.updatePassword(
+            shelterId,
+            updateShelterPasswordRequest.oldPassword(),
+            updateShelterPasswordRequest.newPassword());
+        return ResponseEntity.noContent().build();
     }
 }

@@ -8,6 +8,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -26,6 +27,7 @@ import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
 import com.clova.anifriends.domain.shelter.dto.RegisterShelterRequest;
+import com.clova.anifriends.domain.shelter.dto.UpdateShelterPasswordRequest;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -274,6 +276,34 @@ class ShelterControllerTest extends BaseControllerTest {
                     fieldWithPath("shelterAddress").type(STRING).description("보호소 주소"),
                     fieldWithPath("shelterImageUrl").type(STRING).description("보호소 이미지 url")
                         .optional()
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("보호소 비밀번호 변경 api 호출 시")
+    void updatePassword() throws Exception {
+        //given
+        UpdateShelterPasswordRequest updateShelterPasswordRequest = new UpdateShelterPasswordRequest(
+            "oldPassword123!", "newPassword123!");
+
+        //when
+        ResultActions resultActions = mockMvc.perform(patch("/api/shelters/me/passwords")
+            .header(AUTHORIZATION, shelterAccessToken)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(updateShelterPasswordRequest)));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
+                requestFields(
+                    fieldWithPath("oldPassword").type(STRING).description("현재 비밀번호")
+                        .attributes(DocumentationFormatGenerator.getConstraint("6자 이상, 16자 이하")),
+                    fieldWithPath("newPassword").type(STRING).description("변경할 비밀번호")
+                        .attributes(DocumentationFormatGenerator.getConstraint("6자 이상, 16자 이하"))
                 )
             ));
     }
