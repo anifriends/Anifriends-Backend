@@ -91,6 +91,14 @@ operation::shelter-controller-test/update-password[snippets='http-request,reques
 ==== Response
 operation::shelter-controller-test/update-password[snippets='http-response']
 
+=== 보호소 마이 페이지 조회
+
+==== Request
+operation::shelter-controller-test/find-shelter-my-page[snippets='http-request,request-headers']
+
+==== Response
+operation::shelter-controller-test/find-shelter-my-page[snippets='http-response,response-fields']
+
 == 3. 봉사 모집
 
 === 1) 봉사 모집글 등록
@@ -106,14 +114,6 @@ operation::recruitment-controller-test/register-recruitment[snippets='http-respo
 == 4. 봉사 신청
 
 == 5. 봉사 후기
-
-=== 보호소의 후기 리스트 조회
-
-==== Request
-operation::review-controller-test/find-shelter-reviews-by-shelter[snippets='http-request,request-headers,path-parameters,query-parameters']
-
-==== Response
-operation::review-controller-test/find-shelter-reviews-by-shelter[snippets='http-response,response-fields']
 
 == 6. 보호 동물
 

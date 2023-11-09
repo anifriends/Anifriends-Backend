@@ -4,6 +4,7 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.dto.request.CheckDuplicateVolunteerEmailRequest;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
+import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
 
 public class VolunteerDtoFixture {
@@ -29,6 +30,10 @@ public class VolunteerDtoFixture {
 
     public static CheckDuplicateVolunteerEmailRequest checkDuplicateVolunteerEmailRequest() {
         return new CheckDuplicateVolunteerEmailRequest(EMAIL);
+    }
+
+    public static FindVolunteerMyPageResponse findVolunteerMyPageResponse(Volunteer volunteer) {
+        return FindVolunteerMyPageResponse.from(volunteer);
     }
 }
 
