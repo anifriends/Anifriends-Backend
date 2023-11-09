@@ -87,4 +87,43 @@ class BCryptCustomPasswordEncoderTest {
             assertThat(isPasswordEquals).isFalse();
         }
     }
+
+    @Nested
+    @DisplayName("noneMatchesPassword 메서드 호출 시")
+    class noneMatchesPasswordTest {
+
+        @Test
+        @DisplayName("성공: 입력값으로 주어진 패스워드와 암호화된 패스워드와 다름")
+        void noneMatchesPasswordTrue() {
+            //given
+            String passwordForEncoded = "abcd123!";
+            String encodedPassword = customPasswordEncoder.encodePassword(passwordForEncoded);
+            String rawPassword = passwordForEncoded + "a";
+
+            //when
+            boolean isPasswordEquals = customPasswordEncoder.noneMatchesPassword(
+                rawPassword,
+                encodedPassword);
+
+            //then
+            assertThat(isPasswordEquals).isTrue();
+        }
+
+        @Test
+        @DisplayName("성공: 입력값으로 주어진 패스워드와 암호화된 패스워드와 같음")
+        void noneMatchesPasswordFalse() {
+            //given
+            String passwordForEncoded = "abcd123!";
+            String encodedPassword = customPasswordEncoder.encodePassword(passwordForEncoded);
+            String rawPassword = passwordForEncoded;
+
+            //when
+            boolean isPasswordEquals = customPasswordEncoder.noneMatchesPassword(
+                rawPassword,
+                encodedPassword);
+
+            //then
+            assertThat(isPasswordEquals).isFalse();
+        }
+    }
 }

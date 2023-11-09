@@ -18,4 +18,9 @@ public class BCryptCustomPasswordEncoder implements CustomPasswordEncoder {
     public boolean matchesPassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
+
+    @Override
+    public boolean noneMatchesPassword(String rawPassword, String encodedPassword) {
+        return !matchesPassword(rawPassword, encodedPassword);
+    }
 }

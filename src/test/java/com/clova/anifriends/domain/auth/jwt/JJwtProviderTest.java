@@ -10,7 +10,7 @@ import com.clova.anifriends.domain.auth.exception.InvalidJwtException;
 import com.clova.anifriends.domain.auth.dto.response.CustomClaims;
 import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
-import com.clova.anifriends.global.jwt.JJwtProvider;
+import com.clova.anifriends.global.security.jwt.JJwtProvider;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.core.ThrowingRunnable;

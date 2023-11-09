@@ -1,4 +1,4 @@
-package com.clova.anifriends.global.jwt;
+package com.clova.anifriends.global.security.jwt;
 
 import com.clova.anifriends.domain.auth.dto.response.CustomClaims;
 import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
