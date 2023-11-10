@@ -1,6 +1,5 @@
-package com.clova.anifriends.domain.common.dto;
+package com.clova.anifriends.domain.common;
 
-import com.clova.anifriends.domain.common.ImageRemover;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
