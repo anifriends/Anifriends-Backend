@@ -111,9 +111,20 @@ public class ShelterService {
 
         return FindShelterSimpleByVolunteerResponse.from(foundShelter);
     }
-    
+
     private Shelter getShelter(Long shelterId) {
         return shelterRepository.findById(shelterId)
             .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
+    }
+
+    @Transactional
+    public void updateAddressStatus(
+        Long shelterId,
+        Boolean isOpenedAddress
+    ) {
+        Shelter foundShelter = getShelter(shelterId);
+        Shelter updatedShelter = foundShelter.updateAddressStatus(isOpenedAddress);
+
+        shelterRepository.save(updatedShelter);
     }
 }
