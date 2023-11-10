@@ -7,6 +7,7 @@ import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
 import com.clova.anifriends.domain.shelter.dto.RegisterShelterRequest;
+import com.clova.anifriends.domain.shelter.dto.UpdateAddressStatusRequest;
 import com.clova.anifriends.domain.shelter.dto.UpdateShelterPasswordRequest;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
 import jakarta.validation.Valid;
@@ -85,5 +86,13 @@ public class ShelterController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/shelters/me/address/status")
+    public ResponseEntity<Void> updateShelterAddressStatus(
+        @LoginUser Long shelterId,
+        @RequestBody @Valid UpdateAddressStatusRequest updateAddressStatusRequest
+    ) {
+        shelterService.updateAddressStatus(shelterId, updateAddressStatusRequest.isOpenedAddress());
 
+        return ResponseEntity.noContent().build();
+    }
 }
