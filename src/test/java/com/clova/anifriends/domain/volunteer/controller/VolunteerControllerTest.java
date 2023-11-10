@@ -16,6 +16,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,11 +25,14 @@ import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.request.CheckDuplicateVolunteerEmailRequest;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
+import com.clova.anifriends.domain.volunteer.dto.request.UpdateVolunteerInfoRequest;
 import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -104,7 +108,8 @@ class VolunteerControllerTest extends BaseControllerTest {
         // given
         Volunteer volunteer = VolunteerFixture.volunteer();
         ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
-        FindVolunteerMyPageResponse findVolunteerMyPageResponse = VolunteerDtoFixture.findVolunteerMyPageResponse(volunteer);
+        FindVolunteerMyPageResponse findVolunteerMyPageResponse = VolunteerDtoFixture.findVolunteerMyPageResponse(
+            volunteer);
 
         given(volunteerService.findVolunteerMyPage(anyLong())).willReturn(
             findVolunteerMyPageResponse);
@@ -127,7 +132,8 @@ class VolunteerControllerTest extends BaseControllerTest {
                     fieldWithPath("volunteerPhoneNumber").type(STRING).description("전화번호"),
                     fieldWithPath("volunteerTemperature").type(NUMBER).description("온도"),
                     fieldWithPath("completedVolunteerCount").type(NUMBER).description("봉사 횟수"),
-                    fieldWithPath("volunteerImageUrl").type(STRING).description("프로필 이미지 URL").optional(),
+                    fieldWithPath("volunteerImageUrl").type(STRING).description("프로필 이미지 URL")
+                        .optional(),
                     fieldWithPath("volunteerGender").type(STRING).description("성별")
                 )
             ));
@@ -166,6 +172,40 @@ class VolunteerControllerTest extends BaseControllerTest {
                     fieldWithPath("volunteerPhoneNumber").type(STRING).description("전화번호"),
                     fieldWithPath("volunteerImageUrl").type(STRING).description("프로필 이미지 URL")
                         .optional()
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("봉사자 계정 정보 업데이트 api 호출 시")
+    void updateVolunteerInfo() throws Exception {
+        //given
+        UpdateVolunteerInfoRequest updateVolunteerInfoRequest
+            = new UpdateVolunteerInfoRequest("새로운이름", VolunteerGender.MALE, LocalDate.now(),
+            "010-9999-9999", "www.aws.s3.com/2");
+
+        //when
+        ResultActions resultActions = mockMvc.perform(patch("/api/volunteers/me")
+            .header(AUTHORIZATION, volunteerAccessToken)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(updateVolunteerInfoRequest)));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
+                requestFields(
+                    fieldWithPath("name").type(STRING).description("변경할 봉사자 이름")
+                        .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 10자 이하")),
+                    fieldWithPath("gender").type(STRING).description("변경할 봉사자 성별")
+                        .attributes(DocumentationFormatGenerator.getConstraint("MALE, FEMALE")),
+                    fieldWithPath("birthDate").type(STRING).description("변경할 봉사자 생년월일")
+                        .attributes(DocumentationFormatGenerator.getDateConstraint()),
+                    fieldWithPath("phoneNumber").type(STRING).description("변경할 봉사자 전화번호")
+                        .attributes(DocumentationFormatGenerator.getConstraint("-을 포함한 전화번호 형식")),
+                    fieldWithPath("imageUrl").type(STRING).description("변경할 봉사자 이미지 url")
                 )
             ));
     }
