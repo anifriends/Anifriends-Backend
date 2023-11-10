@@ -170,14 +170,13 @@ public class Volunteer extends BaseTimeEntity {
     }
 
     private VolunteerImage updateVolunteerImage(String imageUrl, ImageRemover imageRemover) {
-        if (Objects.isNull(imageUrl)) {
-            clearVolunteerImageIfExists(imageRemover);
-            return null;
-        }
         if (Objects.nonNull(volunteerImage) && volunteerImage.isEqualImageUrl(imageUrl)) {
             return this.volunteerImage;
         }
         clearVolunteerImageIfExists(imageRemover);
+        if (Objects.isNull(imageUrl)) {
+            return null;
+        }
         return new VolunteerImage(this, imageUrl);
     }
 
