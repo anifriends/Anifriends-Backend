@@ -492,7 +492,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_봉사자">봉사자</a>
 <ul class="sectlevel1">
-<li><a href="#_1_봉사자_3">1. 봉사자</a></li>
+<li><a href="#_1_봉사자_3">1. 봉사자</a>
+<ul class="sectlevel2">
+<li><a href="#_봉사자_계정_정보_수정">봉사자 계정 정보 수정</a></li>
+</ul>
+</li>
 <li><a href="#_2_보호소_2">2. 보호소</a></li>
 <li><a href="#_3_봉사_모집글">3. 봉사 모집글</a></li>
 <li><a href="#_4_봉사_신청_2">4. 봉사 신청</a></li>
@@ -528,7 +532,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/shelters/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 64
-X-CSRF-TOKEN: A5xJQPLZ1uY-JBhpGQ-GIepe2eAZDp9TO_gq7qe5wICbLixkNah8I8a94tUTRytYfSKyQ9xv9IEhO_5-WZpJjJDf-eWrGRkF
+X-CSRF-TOKEN: Y236PhxsCq5UWl-mg76X3pmrzlFhzqBF3Q1s0c2mOuFyJeBTAVvOXSUIa5x5PGvEsZOj7q-e4zAEq8Zo6G9c4auSDdFLEoNh
 Host: localhost:8080
 
 {
@@ -668,7 +672,7 @@ Content-Length: 78
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/volunteers/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 64
-X-CSRF-TOKEN: yxDJ3FeXIyr3qDPW5E5gIUweMhQO9EO9TL2xCXWNmJLvir78-iGr5WHxEUvaywLugGNUQnUtHy0-xXGQLouEOke4oaaLuIfL
+X-CSRF-TOKEN: i906HagZXhj0DP5X_PRtUa_UcNORbMysgOrKnJCFuadNeLSBvbsCeckuO33ZPZpmxNlZM8q1Xer0VfiBsd34rKOwj5V4TYO0
 Host: localhost:8080
 
 {
@@ -806,9 +810,9 @@ Content-Length: 80
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/refresh HTTP/1.1
-X-CSRF-TOKEN: ZpHrcqTCXUq5SP_fI4JmD-2j9qbw9sQYNr3bDKUOO_9ZRIX6UqfZSsfzbn6UeMa5Gq9SatSb28eSz_I1Aoq_P8BtD8hhcraY
+X-CSRF-TOKEN: DiO7AkuuuNJvOLSydZsb3BzCTn3DINV8AE-9xJPIpeOgZHL8ORCKZnOc3bRCDNbUELYv7C6kY0XwFuxRNC3f96Pxk4fGUUuf
 Host: localhost:8080
-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk1MTgxMjUsInN1YiI6IjEiLCJleHAiOjE2OTk1MjgxMjUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.2hTDkjRYZBzjaebFGhwRvGyVOzmx6LKjY-td7qxhVDrsDF80pTM40SYKcV1iKWQ6
+Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk2MDc4MjEsInN1YiI6IjEiLCJleHAiOjE2OTk2MTc4MjEsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.dqawVCFZ71Yfhvu-yWIoQcnkmVFPszJsl2qKSwzMhvEuVsb330wHKBFTzYkegjJ_
 Content-Type: application/x-www-form-urlencoded</code></pre>
 </div>
 </div>
@@ -842,7 +846,7 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk1MTgxMjUsInN1YiI6IjEiLCJleHAiOjE2OTk1MjgxMjUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.2hTDkjRYZBzjaebFGhwRvGyVOzmx6LKjY-td7qxhVDrsDF80pTM40SYKcV1iKWQ6; Path=/api/auth; Domain=localhost; HttpOnly; SameSite=None
+Set-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk2MDc4MjEsInN1YiI6IjEiLCJleHAiOjE2OTk2MTc4MjEsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.dqawVCFZ71Yfhvu-yWIoQcnkmVFPszJsl2qKSwzMhvEuVsb330wHKBFTzYkegjJ_; Path=/api/auth; Domain=localhost; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
@@ -854,7 +858,7 @@ Content-Length: 267
 {
   "userId" : 1,
   "role" : "ROLE_VOLUNTEER",
-  "accessToken" : "eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk1MTgxMjUsInN1YiI6IjEiLCJleHAiOjE2OTk1MTkxMjUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.TVam2ZmZu5HnZQPusGn7Oh463V9axx2g-Lt7P7C-F4C6jG5vCwxXK6zlqWB2qzAu"
+  "accessToken" : "eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk2MDc4MjEsInN1YiI6IjEiLCJleHAiOjE2OTk2MDg4MjEsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.Jojvm3i7932svho6eeJ4rIIIxc-5fljaOHjaGHEeT0odQbzASeFcxvTzUmi6oAMh"
 }</code></pre>
 </div>
 </div>
@@ -930,7 +934,7 @@ Content-Length: 267
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/1/recruitments/completed?pageNumber=0&amp;pageSize=10 HTTP/1.1
-X-CSRF-TOKEN: TrqvH7c3uuKmjH0GFINogY7B-HQb1_ISjHRL--rHeoycm0a-KIycedNVidCLux5nIa5cteik1RUutcU_vEQund7yGO_--nOL
+X-CSRF-TOKEN: ZpExQ-9rNJ38DztJ8bSIOpzZBSuw11Ob995Z04NvpDIrnlFTV6YGJthcDKnRNlgtwpm8DfjvKBPS5mu2xbw7trVawFQfqjRl
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1010,7 +1014,7 @@ Content-Length: 264
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-11-10T17:22:04.671642",
+    "recruitmentStartTime" : "2023-11-11T18:17:00.968605",
     "shelterName" : "shelterName"
   } ],
   "pageInfo" : {
@@ -1097,8 +1101,8 @@ Content-Length: 264
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/animals/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk1MTgxMjIsInN1YiI6IjEiLCJleHAiOjE2OTk1MTkxMjIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.4EexAANZf8_YVsHF_-ge3yOfr3DCK4ovOqmxu07rlaNg9aEdLqAuxp6BxSPGm8Pi
-X-CSRF-TOKEN: uF0p4nCBOnfw3H3trdBg3vY06gpFXt7tlb5TORSs54G3pCPRjj4c0xbkXEfd7k2Im_1Uus4Ax2snaefAoIhlWCOV0-eHwRvo
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk2MDc4MTgsInN1YiI6IjEiLCJleHAiOjE2OTk2MDg4MTgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.v_1zlSa4G_Aa8QnUM4cXE8deKvjoBscVLC1tmrQFUWdefI8xEgT3Ckir4H79z3ju
+X-CSRF-TOKEN: FKBAm8SFBkAZ-LkGaFyYuFxdlOwrKKOJSfC9atigbnqv--MQJsF4rPO8P3U0wN1gX3Gs2m04udROTJakfJLbWOrGCx-ZyoIg
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1144,7 +1148,7 @@ Content-Length: 395
 {
   "animalId" : 1,
   "animalName" : "animalName",
-  "animalBirthDate" : "2023-11-09",
+  "animalBirthDate" : "2023-11-10",
   "animalType" : "DOG",
   "animalBreed" : "animalBreed",
   "animalGender" : "FEMALE",
@@ -1253,9 +1257,9 @@ Content-Length: 395
 <h5 id="_request_6_http_request"><a class="link" href="#_request_6_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-11-09&amp;endDate=2023-11-09&amp;isClosed=false&amp;title=true&amp;content=false&amp;shelterName=false&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk1MTgxMjYsInN1YiI6IjEiLCJleHAiOjE2OTk1MTkxMjYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.i81tSkYawd7N6Kqk7bGY_Jtb3gIZGZXlAuS-KJnse14d1lQsGmxhTAEnI_Kd2S0r
-X-CSRF-TOKEN: AsnXdal1CvQAVk-RypPAD9zG7bBMSDIekmSMxJso9zm6iunqN6u1F8wTa8ItZ3n0-b70OO2nwNF7fwYzolK0pv0QkV2C6YrZ
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-11-10&amp;endDate=2023-11-10&amp;isClosed=false&amp;title=true&amp;content=false&amp;shelterName=false&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk2MDc4MjIsInN1YiI6IjEiLCJleHAiOjE2OTk2MDg4MjIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.5yP0sHVDPtJ3LTq5in-ZRurhJ_3q2pr4WVTC5jOomVk_U-IBFtb0tulD7BS4AjUz
+X-CSRF-TOKEN: CSdt0fsLzrwQHy-MrBd5CWHyyUPY_ko82bgDeVJW6CxQuMy6a0Zd6Jgy_N89LBq0lDpNPQLF5CHgznwRuN4yGmFg2Bwz2a3Z
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1376,8 +1380,8 @@ Content-Length: 469
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-11-10T17:22:04.671642",
-    "recruitmentEndTime" : "2023-11-10T19:22:04.671642",
+    "recruitmentStartTime" : "2023-11-11T18:17:00.968605",
+    "recruitmentEndTime" : "2023-11-11T20:17:00.968605",
     "recruitmentIsClosed" : false,
     "recruitmentApplicantCount" : 0,
     "recruitmentCapacity" : 10,
@@ -1487,8 +1491,8 @@ Content-Length: 469
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/shelters/1/reviews?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk1MTgxMjYsInN1YiI6IjEiLCJleHAiOjE2OTk1MTkxMjYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.i81tSkYawd7N6Kqk7bGY_Jtb3gIZGZXlAuS-KJnse14d1lQsGmxhTAEnI_Kd2S0r
-X-CSRF-TOKEN: foV4pQdDuj4hPL2txEToOQds1a9qoXiMSIth0sMQCqmFvmPVRrRNkWYg2AoMWdnPp2ncDTQP-M5cxUGhLbpQtPtzOZ7j2Fq3
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk2MDc4MjIsInN1YiI6IjEiLCJleHAiOjE2OTk2MDg4MjIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.5yP0sHVDPtJ3LTq5in-ZRurhJ_3q2pr4WVTC5jOomVk_U-IBFtb0tulD7BS4AjUz
+X-CSRF-TOKEN: a19oL7zNC2kR83BL9NwIQhRwdqVxX6U0etYdF7nwektFOI-xDmxeTY7-O148wUR5zfE8eyVEW5xAbcMZSrcodtvFHip3D-mH
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1562,13 +1566,13 @@ X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
-Content-Length: 335
+Content-Length: 336
 
 {
   "reviews" : [ {
     "reviewId" : 1,
     "volunteerTemperature" : 36,
-    "reviewCreatedAt" : "2023-11-09T17:22:06.58976",
+    "reviewCreatedAt" : "2023-11-10T18:17:02.586426",
     "reviewContent" : "reviewContent",
     "volunteerEmail" : "asdf@gmail.com",
     "reviewImageUrls" : [ "imageUrl1", "imageUrl2" ]
@@ -1667,8 +1671,8 @@ Content-Length: 335
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/me HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk1MTgxMjYsInN1YiI6IjEiLCJleHAiOjE2OTk1MTkxMjYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.btjnyyW5xiSbfmQFdq1aD1TEDNJkvPDgA5OQdoEeKiYqeUa22kIYzh96jHUoo5E8
-X-CSRF-TOKEN: L5rVcPcjN4ke_dLScpmiWR3KhdA16ekPoJ648E26Hc4im3HJFq63EsAVDuwzn7TiRLSWbn6pqLIE2Nwilvzdw3mNeP5AqBT9
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk2MDc4MjIsInN1YiI6IjEiLCJleHAiOjE2OTk2MDg4MjIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.FxPp5YC2JNNZx-v5d35epa6JDcYEfrTaKrDiyjyGnKmk3_GFuho83pRLBD05qkpV
+X-CSRF-TOKEN: c9wRXc1KeRiXUf5TYOAVTiI42Dmj1GX1I0ufK1_HKnBkXhvEEuonPqxyS3q6YZ9hWM0hehEP9QGQtVzYRiqoHmqhT0dXbinz
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1805,16 +1809,16 @@ Content-Length: 341
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/shelters/recruitments HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk1MTgxMjYsInN1YiI6IjEiLCJleHAiOjE2OTk1MTkxMjYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.btjnyyW5xiSbfmQFdq1aD1TEDNJkvPDgA5OQdoEeKiYqeUa22kIYzh96jHUoo5E8
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk2MDc4MjIsInN1YiI6IjEiLCJleHAiOjE2OTk2MDg4MjIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.FxPp5YC2JNNZx-v5d35epa6JDcYEfrTaKrDiyjyGnKmk3_GFuho83pRLBD05qkpV
 Content-Length: 223
-X-CSRF-TOKEN: CgdcQ5ZcC72nzlwPK5haQq3Rcm0MWM4DDNNwvDUdwyDa_2lWOmJsIPRpb4WK_24-GrVuJ5_hXw9tO_guP-tGhFcs9RTvzApu
+X-CSRF-TOKEN: OMAkGEJG3DYXOcncaNGetvX8Yetd6juqE3d49JSfPoYlH8AZCfQUK3Yi5FI6DfztWvyq15CdTIlk2VqHcRZMwqGpDrZAevIq
 Host: localhost:8080
 
 {
   "title" : "title",
-  "startTime" : "2023-11-10T17:22:06.192548",
-  "endTime" : "2023-11-10T18:22:06.192548",
-  "deadline" : "2023-11-09T22:22:06.192548",
+  "startTime" : "2023-11-11T18:17:02.185109",
+  "endTime" : "2023-11-11T19:17:02.185109",
+  "deadline" : "2023-11-10T23:17:02.185109",
   "capacity" : 10,
   "content" : "content",
   "imageUrls" : [ ]
@@ -1979,7 +1983,128 @@ Expires: 0</code></pre>
 <div class="sect1">
 <h2 id="_1_봉사자_3"><a class="link" href="#_1_봉사자_3">1. 봉사자</a></h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_봉사자_계정_정보_수정"><a class="link" href="#_봉사자_계정_정보_수정">봉사자 계정 정보 수정</a></h3>
+<div class="sect3">
+<h4 id="_request_10"><a class="link" href="#_request_10">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_10_http_request"><a class="link" href="#_request_10_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/volunteers/me HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE2OTk2MDc4MjMsInN1YiI6IjEiLCJleHAiOjE2OTk2MDg4MjMsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.ml3fDOx8sBnEfIpJvH88qXtpuZQXAA_yfawF0eJvcvMYaokfEtn550IHToerzGdo
+Content-Length: 153
+X-CSRF-TOKEN: zrF_UTHoxsCI5nhE_EivTV--tAmGYjrnTthpKQW2mmUbQGM9q9MeNAaM8vOl1kx9z2WbdG2LmTGzAVjKLeAPGmGD-V1_dFpZ
+Host: localhost:8080
 
+{
+  "name" : "새로운이름",
+  "gender" : "MALE",
+  "birthDate" : "2023-11-10",
+  "phoneNumber" : "010-9999-9999",
+  "imageUrl" : "www.aws.s3.com/2"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_10_request_headers"><a class="link" href="#_request_10_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사자 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_request_10_request_fields"><a class="link" href="#_request_10_request_fields">Request fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">제약</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1자 이상, 10자 이하</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">변경할 봉사자 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gender</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MALE, FEMALE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">변경할 봉사자 성별</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>birthDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">변경할 봉사자 생년월일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>phoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-을 포함한 전화번호 형식</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">변경할 봉사자 전화번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">변경할 봉사자 이미지 url</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_10"><a class="link" href="#_response_10">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_10_http_response"><a class="link" href="#_response_10_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2187,7 +2312,7 @@ Expires: 0</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-11-09 17:21:42 +0900
+Last updated 2023-11-10 20:27:20 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

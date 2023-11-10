@@ -113,6 +113,14 @@ operation::recruitment-controller-test/register-recruitment[snippets='http-respo
 
 == 1. 봉사자
 
+=== 봉사자 계정 정보 수정
+
+==== Request
+operation::volunteer-controller-test/update-volunteer-info[snippets='http-request,request-headers,request-fields']
+
+==== Response
+operation::volunteer-controller-test/update-volunteer-info[snippets='http-response']
+
 == 2. 보호소
 
 == 3. 봉사 모집글
