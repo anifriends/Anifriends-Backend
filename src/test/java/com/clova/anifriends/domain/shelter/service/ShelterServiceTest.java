@@ -277,4 +277,25 @@ class ShelterServiceTest {
             then(shelterRepository).should().save(any(Shelter.class));
         }
     }
+
+    @Nested
+    @DisplayName("updateAddressStatus 메서드 호출 시")
+    class UpdateAddressStatusTest {
+
+        @Test
+        @DisplayName("성공")
+        void updateAddressStatus() {
+            //given
+            Shelter shelter = shelter();
+            boolean updateAddressStatus = false;
+
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
+
+            //when
+            shelterService.updateAddressStatus(1L, updateAddressStatus);
+
+            //then
+            then(shelterRepository).should().save(any(Shelter.class));
+        }
+    }
 }
