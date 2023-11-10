@@ -8,6 +8,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -26,6 +27,7 @@ import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
 import com.clova.anifriends.domain.shelter.dto.RegisterShelterRequest;
+import com.clova.anifriends.domain.shelter.dto.UpdateShelterPasswordRequest;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -193,6 +195,7 @@ class ShelterControllerTest extends BaseControllerTest {
         FindShelterMyPageResponse findShelterMyPageResponse = new FindShelterMyPageResponse(
             shelter.getShelterId(),
             shelter.getName(),
+            shelter.getEmail(),
             shelter.getAddress(),
             shelter.getAddressDetail(),
             shelter.isOpenedAddress(),
@@ -219,26 +222,21 @@ class ShelterControllerTest extends BaseControllerTest {
                 responseFields(
                     fieldWithPath("shelterId").type(JsonFieldType.NUMBER)
                         .description("보호소 ID"),
-                    fieldWithPath("name").type(
-                            JsonFieldType.STRING)
+                    fieldWithPath("shelterName").type(JsonFieldType.STRING)
                         .description("보호소 이름"),
-                    fieldWithPath("address").type(
-                            JsonFieldType.STRING)
+                    fieldWithPath("shelterEmail").type(JsonFieldType.STRING)
+                            .description("보호소 이메일"),
+                    fieldWithPath("shelterAddress").type(JsonFieldType.STRING)
                         .description("보호소 주소"),
-                    fieldWithPath("addressDetail").type(
-                            JsonFieldType.STRING)
+                    fieldWithPath("shelterAddressDetail").type(JsonFieldType.STRING)
                         .description("보호소 상세주소"),
-                    fieldWithPath("isOpenedAddress").type(
-                            JsonFieldType.BOOLEAN)
-                        .description("상세 주소 공개 여부"),
-                    fieldWithPath("phoneNumber").type(
-                            JsonFieldType.STRING)
+                    fieldWithPath("shelterIsOpenedAddress").type(JsonFieldType.BOOLEAN)
+                        .description("보호소 상세 주소 공개 여부"),
+                    fieldWithPath("shelterPhoneNumber").type(JsonFieldType.STRING)
                         .description("보호소 전화번호"),
-                    fieldWithPath("sparePhoneNumber").type(
-                            JsonFieldType.STRING)
+                    fieldWithPath("shelterSparePhoneNumber").type(JsonFieldType.STRING)
                         .description("보호소 임시 전화번호"),
-                    fieldWithPath("imageUrl").type(
-                            JsonFieldType.STRING).optional()
+                    fieldWithPath("shelterImageUrl").type(JsonFieldType.STRING).optional()
                         .description("보호소 이미지 Url")
                 )
             ));
@@ -274,6 +272,34 @@ class ShelterControllerTest extends BaseControllerTest {
                     fieldWithPath("shelterAddress").type(STRING).description("보호소 주소"),
                     fieldWithPath("shelterImageUrl").type(STRING).description("보호소 이미지 url")
                         .optional()
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("보호소 비밀번호 변경 api 호출 시")
+    void updatePassword() throws Exception {
+        //given
+        UpdateShelterPasswordRequest updateShelterPasswordRequest = new UpdateShelterPasswordRequest(
+            "oldPassword123!", "newPassword123!");
+
+        //when
+        ResultActions resultActions = mockMvc.perform(patch("/api/shelters/me/passwords")
+            .header(AUTHORIZATION, shelterAccessToken)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(updateShelterPasswordRequest)));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
+                requestFields(
+                    fieldWithPath("oldPassword").type(STRING).description("현재 비밀번호")
+                        .attributes(DocumentationFormatGenerator.getConstraint("6자 이상, 16자 이하")),
+                    fieldWithPath("newPassword").type(STRING).description("변경할 비밀번호")
+                        .attributes(DocumentationFormatGenerator.getConstraint("6자 이상, 16자 이하"))
                 )
             ));
     }

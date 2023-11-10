@@ -13,9 +13,9 @@ public record FindVolunteerReviewsResponse(
     private record ReviewResponse(
         Long reviewId,
         String shelterName,
-        LocalDateTime createdAt,
-        String content,
-        List<String> imageUrls
+        LocalDateTime reviewCreatedAt,
+        String reviewContent,
+        List<String> reviewImageUrls
     ) {
 
         private static ReviewResponse from(Review review) {

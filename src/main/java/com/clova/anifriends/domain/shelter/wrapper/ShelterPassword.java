@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.shelter.wrapper;
 
 import static java.util.Objects.isNull;
 
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -32,6 +33,20 @@ public class ShelterPassword {
     private void validateNotBlank(String password) {
         if (password.isBlank()) {
             throw new ShelterBadRequestException("비밀번호는 필수 항목입니다.");
+        }
+    }
+
+    public void checkOldPasswordEquals(CustomPasswordEncoder passwordEncoder, String rawPassword) {
+        if(passwordEncoder.noneMatchesPassword(rawPassword, password)) {
+            throw new ShelterBadRequestException("비밀번호가 일치하지 않습니다.");
+        }
+    }
+
+    public void checkNewPasswordNotEquals(
+        CustomPasswordEncoder passwordEncoder,
+        String rawNewPassword) {
+        if (passwordEncoder.matchesPassword(rawNewPassword, password)) {
+            throw new ShelterBadRequestException("변경하려는 패스워드와 기존 패스워드가 동일합니다.");
         }
     }
 }
