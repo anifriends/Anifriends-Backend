@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.applicant.dto.response;
 
 import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public record FindApplicantsApprovedResponse(
         Long applicantId,
         String volunteerName,
         LocalDate volunteerBirthDate,
-        String volunteerGender,
+        VolunteerGender volunteerGender,
         String volunteerPhoneNumber,
         boolean volunteerAttendance
     ) {

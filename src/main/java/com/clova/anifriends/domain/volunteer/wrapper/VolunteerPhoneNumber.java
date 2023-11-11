@@ -33,4 +33,8 @@ public class VolunteerPhoneNumber {
                 "전화번호 형식이 올바르지 않습니다.");
         }
     }
+
+    public VolunteerPhoneNumber updatePhoneNumber(String phoneNumber) {
+        return phoneNumber != null ? new VolunteerPhoneNumber(phoneNumber) : this;
+    }
 }
