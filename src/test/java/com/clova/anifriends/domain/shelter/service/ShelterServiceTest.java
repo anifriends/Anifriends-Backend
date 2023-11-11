@@ -264,17 +264,18 @@ class ShelterServiceTest {
         void updatePassword() {
             //given
             Shelter shelter = shelter();
-            String encodedOldPassword = shelter.getPassword();
-            String rawShelterPassword = ShelterFixture.RAW_SHELTER_PASSWORD;
-            String rawNewPassword = rawShelterPassword + "a";
+            String rawOldPassword = ShelterFixture.RAW_SHELTER_PASSWORD;
+            String rawNewPassword = rawOldPassword + "a";
 
             given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
 
             //when
-            shelterService.updatePassword(1L, rawShelterPassword, rawNewPassword);
+            shelterService.updatePassword(1L, rawOldPassword, rawNewPassword);
 
             //then
-            then(shelterRepository).should().save(any(Shelter.class));
+            String encodedUpdatePassword = shelter.getPassword();
+            boolean match = passwordEncoder.matchesPassword(encodedUpdatePassword, rawNewPassword);
+            assertThat(match).isTrue();
         }
     }
 }

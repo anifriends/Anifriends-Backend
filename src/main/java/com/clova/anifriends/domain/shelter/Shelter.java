@@ -80,22 +80,11 @@ public class Shelter extends BaseTimeEntity {
         this.addressInfo = new ShelterAddressInfo(address, addressDetail, isOpenedAddress);
     }
 
-    public Shelter updatePassword(
+    public void updatePassword(
         CustomPasswordEncoder passwordEncoder,
         String rawOldPassword,
         String rawNewPassword) {
-        this.password.checkOldPasswordEquals(passwordEncoder, rawOldPassword);
-        this.password.checkNewPasswordNotEquals(passwordEncoder, rawNewPassword);
-        return new Shelter(
-            this.shelterId,
-            this.email.getEmail(),
-            passwordEncoder.encodePassword(rawNewPassword),
-            this.addressInfo.getAddress(),
-            this.addressInfo.getAddressDetail(),
-            this.name.getName(),
-            this.phoneNumberInfo.getPhoneNumber(),
-            this.phoneNumberInfo.getSparePhoneNumber(),
-            this.addressInfo.isOpenedAddress());
+        password = password.updatePassword(passwordEncoder, rawOldPassword, rawNewPassword);
     }
 
     public Long getShelterId() {

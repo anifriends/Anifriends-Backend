@@ -36,13 +36,22 @@ public class ShelterPassword {
         }
     }
 
-    public void checkOldPasswordEquals(CustomPasswordEncoder passwordEncoder, String rawPassword) {
+    public ShelterPassword updatePassword(
+        CustomPasswordEncoder passwordEncoder,
+        String rawOldPassword,
+        String rawNewPassword) {
+        checkOldPasswordEquals(passwordEncoder, rawOldPassword);
+        checkNewPasswordNotEquals(passwordEncoder, rawNewPassword);
+        return new ShelterPassword(passwordEncoder.encodePassword(rawNewPassword));
+    }
+
+    private void checkOldPasswordEquals(CustomPasswordEncoder passwordEncoder, String rawPassword) {
         if(passwordEncoder.noneMatchesPassword(rawPassword, password)) {
             throw new ShelterBadRequestException("비밀번호가 일치하지 않습니다.");
         }
     }
 
-    public void checkNewPasswordNotEquals(
+    private void checkNewPasswordNotEquals(
         CustomPasswordEncoder passwordEncoder,
         String rawNewPassword) {
         if (passwordEncoder.matchesPassword(rawNewPassword, password)) {

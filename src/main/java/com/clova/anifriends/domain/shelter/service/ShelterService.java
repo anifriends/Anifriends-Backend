@@ -58,11 +58,7 @@ public class ShelterService {
     @Transactional
     public void updatePassword(Long shelterId, String rawOldPassword, String rawNewPassword) {
         Shelter shelter = getShelter(shelterId);
-        Shelter updatedShelter = shelter.updatePassword(
-            passwordEncoder,
-            rawOldPassword,
-            rawNewPassword);
-        shelterRepository.save(updatedShelter);
+        shelter.updatePassword(passwordEncoder, rawOldPassword, rawNewPassword);
     }
 
     private void validatePasswordNotNull(String password) {
