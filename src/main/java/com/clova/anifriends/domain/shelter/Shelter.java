@@ -1,7 +1,10 @@
 package com.clova.anifriends.domain.shelter;
 
+import static java.util.Objects.nonNull;
+
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterAddressInfo;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterName;
@@ -64,6 +67,32 @@ public class Shelter extends BaseTimeEntity {
         this.addressInfo = new ShelterAddressInfo(address, addressDetail, isOpenedAddress);
     }
 
+    public void updateShelter(
+        String name,
+        String imageUrl,
+        String address,
+        String addressDetail,
+        String phoneNumber,
+        String sparePhoneNumber,
+        Boolean isOpenedAddress,
+        ImageRemover imageRemover
+    ) {
+        this.name = this.name.update(name);
+        this.image = updateImage(imageUrl, imageRemover);
+        this.addressInfo = this.addressInfo.update(address, addressDetail, isOpenedAddress);
+        this.phoneNumberInfo = this.phoneNumberInfo.update(phoneNumber, sparePhoneNumber);
+    }
+
+    private ShelterImage updateImage(String imageUrl, ImageRemover imageRemover) {
+        if (nonNull(this.image) && this.image.isDifferentFrom(imageUrl)) {
+            imageRemover.removeImage(this.image.getImageUrl());
+        }
+        if (nonNull(imageUrl)) {
+            return new ShelterImage(this, imageUrl);
+        }
+        return null;
+    }
+
     public void updatePassword(
         CustomPasswordEncoder passwordEncoder,
         String rawOldPassword,
@@ -111,14 +140,6 @@ public class Shelter extends BaseTimeEntity {
 
     public String getSparePhoneNumber() {
         return this.phoneNumberInfo.getSparePhoneNumber();
-    }
-
-    public String getShelterImageUrl() {
-        return this.image == null ? null : this.image.getImageUrl();
-    }
-
-    public void updateShelterImage(ShelterImage shelterImage) {
-        this.image = shelterImage;
     }
 
     public String getImage() {
