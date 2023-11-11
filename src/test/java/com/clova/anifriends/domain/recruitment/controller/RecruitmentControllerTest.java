@@ -479,6 +479,5 @@ class RecruitmentControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint("5장 이하"))
                 )
             ));
-
     }
 }
