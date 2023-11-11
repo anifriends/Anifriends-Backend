@@ -127,7 +127,7 @@ class VolunteerTest {
             volunteer.updateVolunteerInfo(volunteer.getName(),
                 volunteer.getGender(), volunteer.getBirthDate(), volunteer.getPhoneNumber(),
                 equalsImageUrl, imageRemover);
-            Object beforeVolunteerImage = ReflectionTestUtils.getField(volunteer, "volunteerImage");
+            Object beforeVolunteerImage = ReflectionTestUtils.getField(volunteer, "image");
 
             //when
             volunteer.updateVolunteerInfo(
@@ -135,7 +135,7 @@ class VolunteerTest {
                 volunteer.getPhoneNumber(), equalsImageUrl, imageRemover);
 
             //then
-            Object afterVolunteerImage = ReflectionTestUtils.getField(volunteer, "volunteerImage");
+            Object afterVolunteerImage = ReflectionTestUtils.getField(volunteer, "image");
             assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(equalsImageUrl);
             assertThat(beforeVolunteerImage).isEqualTo(afterVolunteerImage);
         }

@@ -2,7 +2,6 @@ package com.clova.anifriends.domain.animal.service;
 
 import static com.clova.anifriends.domain.animal.support.fixture.AnimalFixture.animal;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
-import static com.clova.anifriends.domain.shelter.support.ShelterImageFixture.shelterImage;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
@@ -108,7 +107,6 @@ class AnimalServiceTest {
         void findAnimalDetail() {
             // given
             Shelter shelter = shelter();
-            shelter.updateShelterImage(shelterImage(shelter));
             Animal animal = animal(shelter);
             FindAnimalDetail expected = FindAnimalDetail.from(animal);
 

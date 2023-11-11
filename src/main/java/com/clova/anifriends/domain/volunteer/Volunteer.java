@@ -101,10 +101,6 @@ public class Volunteer extends BaseTimeEntity {
         applicants.add(applicant);
     }
 
-    public void updateVolunteerImage(VolunteerImage volunteerImage) {
-        this.image = volunteerImage;
-    }
-
     public void updateVolunteerInfo(
         String name,
         VolunteerGender gender,

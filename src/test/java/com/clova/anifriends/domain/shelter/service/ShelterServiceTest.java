@@ -146,7 +146,6 @@ class ShelterServiceTest {
             //given
             givenShelter = ShelterFixture.shelter();
             givenShelterImage = ShelterImageFixture.shelterImage(givenShelter);
-            givenShelter.updateShelterImage(givenShelterImage);
 
             given(shelterRepository.findById(anyLong())).willReturn(
                 Optional.ofNullable(givenShelter));

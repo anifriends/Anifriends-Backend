@@ -175,7 +175,7 @@ class RecruitmentServiceTest {
             assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
             assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
             assertThat(findRecruitment.shelterImageUrl())
-                .isEqualTo(recruitment.getShelter().getShelterImageUrl());
+                .isEqualTo(recruitment.getShelter().getImage());
 
         }
     }

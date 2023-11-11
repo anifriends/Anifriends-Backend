@@ -101,7 +101,7 @@ class VolunteerServiceTest {
             volunteer = VolunteerFixture.volunteer();
             ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
             volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
-            setField(volunteer, "volunteerImage", volunteerImage);
+            setField(volunteer, "image", volunteerImage);
             FindVolunteerMyPageResponse expected = FindVolunteerMyPageResponse.from(volunteer);
 
             given(volunteerRepository.findById(anyLong())).willReturn(ofNullable(volunteer));
@@ -127,7 +127,7 @@ class VolunteerServiceTest {
             // given
             volunteer = VolunteerFixture.volunteer();
             volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
-            setField(volunteer, "volunteerImage", volunteerImage);
+            setField(volunteer, "image", volunteerImage);
             FindVolunteerProfileResponse expectedFindVolunteerProfileResponse = FindVolunteerProfileResponse.from(
                 volunteer);
 
