@@ -1,7 +1,6 @@
 package com.clova.anifriends.domain.volunteer.wrapper;
 
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
@@ -31,7 +30,7 @@ public class VolunteerPassword {
 
     private void validateNotNull(String password) {
         if (Objects.isNull(password)) {
-            throw new ShelterBadRequestException("패스워드는 필수값입니다.");
+            throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST, "패스워드는 필수값입니다.");
         }
     }
 

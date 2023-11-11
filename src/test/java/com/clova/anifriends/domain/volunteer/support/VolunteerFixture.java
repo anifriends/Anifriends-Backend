@@ -1,5 +1,7 @@
 package com.clova.anifriends.domain.volunteer.support;
 
+import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
@@ -15,9 +17,10 @@ public class VolunteerFixture {
     private static final Integer TEMPERATURE = 36;
     private static final String NAME = "김봉사";
     private static final String IMAGE_URL = "www.aws.s3.com/2";
+    private static final CustomPasswordEncoder PASSWORD_ENCODER = new MockPasswordEncoder();
 
     public static Volunteer volunteer() {
-        return new Volunteer(EMAIL, PASSWORD, BIRTH_DATE, PHONE_NUMBER, GENDER, NAME);
+        return new Volunteer(EMAIL, PASSWORD, BIRTH_DATE, PHONE_NUMBER, GENDER, NAME, PASSWORD_ENCODER);
     }
 
     public static VolunteerImage volunteerImage(Volunteer volunteer) {
