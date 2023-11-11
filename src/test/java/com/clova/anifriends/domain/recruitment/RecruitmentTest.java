@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
+import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDateTime;
@@ -59,6 +60,25 @@ class RecruitmentTest {
 
             //then
             assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("closeRecruitment 메서드 호출 시")
+    class CloseRecruitmentTest {
+
+        @Test
+        @DisplayName("성공")
+        void closeRecruitment() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+
+            //when
+            recruitment.closeRecruitment();
+
+            //
+            assertThat(recruitment.isClosed()).isTrue();
         }
     }
 }

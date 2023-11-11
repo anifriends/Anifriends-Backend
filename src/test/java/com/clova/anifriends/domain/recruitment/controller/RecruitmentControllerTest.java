@@ -15,6 +15,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
@@ -154,8 +155,10 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("recruitments").type(ARRAY).description("봉사 모집글 리스트"),
                     fieldWithPath("recruitments[].recruitmentId").type(NUMBER)
                         .description("봉사 모집글 ID"),
-                    fieldWithPath("recruitments[].recruitmentTitle").type(STRING).description("봉사 모집글 제목"),
-                    fieldWithPath("recruitments[].recruitmentStartTime").type(STRING).description("봉사 날짜"),
+                    fieldWithPath("recruitments[].recruitmentTitle").type(STRING)
+                        .description("봉사 모집글 제목"),
+                    fieldWithPath("recruitments[].recruitmentStartTime").type(STRING)
+                        .description("봉사 날짜"),
                     fieldWithPath("recruitments[].shelterName").type(STRING).description("보호소 이름"),
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
                     fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
@@ -225,13 +228,18 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("recruitments").type(ARRAY).description("봉사 모집글 리스트"),
                     fieldWithPath("recruitments[].recruitmentId").type(NUMBER)
                         .description("봉사 모집글 ID"),
-                    fieldWithPath("recruitments[].recruitmentTitle").type(STRING).description("봉사 모집글 제목"),
-                    fieldWithPath("recruitments[].recruitmentStartTime").type(STRING).description("봉사 시작 시간"),
-                    fieldWithPath("recruitments[].recruitmentEndTime").type(STRING).description("봉사 종료 시간"),
-                    fieldWithPath("recruitments[].recruitmentIsClosed").type(BOOLEAN).description("봉사 모집 마감 여부"),
+                    fieldWithPath("recruitments[].recruitmentTitle").type(STRING)
+                        .description("봉사 모집글 제목"),
+                    fieldWithPath("recruitments[].recruitmentStartTime").type(STRING)
+                        .description("봉사 시작 시간"),
+                    fieldWithPath("recruitments[].recruitmentEndTime").type(STRING)
+                        .description("봉사 종료 시간"),
+                    fieldWithPath("recruitments[].recruitmentIsClosed").type(BOOLEAN)
+                        .description("봉사 모집 마감 여부"),
                     fieldWithPath("recruitments[].recruitmentApplicantCount").type(NUMBER)
                         .description("봉사 신청 인원"),
-                    fieldWithPath("recruitments[].recruitmentCapacity").type(NUMBER).description("봉사 정원"),
+                    fieldWithPath("recruitments[].recruitmentCapacity").type(NUMBER)
+                        .description("봉사 정원"),
                     fieldWithPath("recruitments[].shelterName").type(STRING).description("보호소 이름"),
                     fieldWithPath("recruitments[].shelterImageUrl").type(STRING)
                         .description("보호소 이미지 url"),
@@ -286,14 +294,20 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
                     fieldWithPath("recruitments[]").type(ARRAY).description("모집 게시글 리스트"),
                     fieldWithPath("recruitments[].recruitmentId").type(NUMBER).description("모집 ID"),
-                    fieldWithPath("recruitments[].recruitmentTitle").type(STRING).description("모집 제목"),
-                    fieldWithPath("recruitments[].recruitmentStartTime").type(STRING).description("봉사 시작 시간"),
-                    fieldWithPath("recruitments[].recruitmentEndTime").type(STRING).description("봉사 끝난 시간"),
-                    fieldWithPath("recruitments[].recruitmentDeadline").type(STRING).description("모집 마감 시간"),
-                    fieldWithPath("recruitments[].recruitmentIsClosed").type(BOOLEAN).description("모집 마감 여부"),
+                    fieldWithPath("recruitments[].recruitmentTitle").type(STRING)
+                        .description("모집 제목"),
+                    fieldWithPath("recruitments[].recruitmentStartTime").type(STRING)
+                        .description("봉사 시작 시간"),
+                    fieldWithPath("recruitments[].recruitmentEndTime").type(STRING)
+                        .description("봉사 끝난 시간"),
+                    fieldWithPath("recruitments[].recruitmentDeadline").type(STRING)
+                        .description("모집 마감 시간"),
+                    fieldWithPath("recruitments[].recruitmentIsClosed").type(BOOLEAN)
+                        .description("모집 마감 여부"),
                     fieldWithPath("recruitments[].recruitmentApplicantCount").type(NUMBER)
                         .description("현재 지원자 수"),
-                    fieldWithPath("recruitments[].recruitmentCapacity").type(NUMBER).description("모집 정원")
+                    fieldWithPath("recruitments[].recruitmentCapacity").type(NUMBER)
+                        .description("모집 정원")
                 )
             ));
     }
@@ -334,11 +348,14 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
                     fieldWithPath("recruitments[]").type(ARRAY).description("모집 게시글 리스트"),
                     fieldWithPath("recruitments[].recruitmentId").type(NUMBER).description("모집 ID"),
-                    fieldWithPath("recruitments[].recruitmentTitle").type(STRING).description("모집 제목"),
+                    fieldWithPath("recruitments[].recruitmentTitle").type(STRING)
+                        .description("모집 제목"),
                     fieldWithPath("recruitments[].recruitmentStartTime").type(STRING)
                         .description("봉사 시작 시간"),
-                    fieldWithPath("recruitments[].recruitmentDeadline").type(STRING).description("모집 마감 시간"),
-                    fieldWithPath("recruitments[].recruitmentCapacity").type(NUMBER).description("모집 정원"),
+                    fieldWithPath("recruitments[].recruitmentDeadline").type(STRING)
+                        .description("모집 마감 시간"),
+                    fieldWithPath("recruitments[].recruitmentCapacity").type(NUMBER)
+                        .description("모집 정원"),
                     fieldWithPath("recruitments[].recruitmentApplicantCount").type(NUMBER)
                         .description("현재 지원자 수")
                 )
@@ -353,9 +370,11 @@ class RecruitmentControllerTest extends BaseControllerTest {
         setField(shelter, "shelterId", 1L);
         Recruitment recruitment = recruitment(shelter);
         setField(recruitment, "recruitmentId", 1L);
-        FindRecruitmentDetailResponse response = RecruitmentDtoFixture.findRecruitmentDetailResponse(recruitment);
+        FindRecruitmentDetailResponse response = RecruitmentDtoFixture.findRecruitmentDetailResponse(
+            recruitment);
 
-        when(recruitmentService.findRecruitmentDetail(recruitment.getRecruitmentId())).thenReturn(response);
+        when(recruitmentService.findRecruitmentDetail(recruitment.getRecruitmentId())).thenReturn(
+            response);
 
         // when
         ResultActions result = mockMvc.perform(
@@ -371,16 +390,42 @@ class RecruitmentControllerTest extends BaseControllerTest {
                 ),
                 responseFields(
                     fieldWithPath("recruitmentTitle").type(STRING).description("모집글 제목"),
-                    fieldWithPath("recruitmentApplicantCount").type(NUMBER).description("모집글 지원자 수"),
+                    fieldWithPath("recruitmentApplicantCount").type(NUMBER)
+                        .description("모집글 지원자 수"),
                     fieldWithPath("recruitmentCapacity").type(NUMBER).description("모집글 정원"),
                     fieldWithPath("recruitmentContent").type(STRING).description("모집글 내용"),
                     fieldWithPath("recruitmentStartTime").type(STRING).description("봉사 시작 시간"),
                     fieldWithPath("recruitmentEndTime").type(STRING).description("봉사 종료 시간"),
                     fieldWithPath("recruitmentIsClosed").type(BOOLEAN).description("마감 여부"),
                     fieldWithPath("recruitmentDeadline").type(STRING).description("마감 시간"),
-                    fieldWithPath("recruitmentCreatedAt").type(STRING).description("모집글 생성 시간").optional(),
-                    fieldWithPath("recruitmentUpdatedAt").type(STRING).description("모집글 업데이트 시간").optional(),
+                    fieldWithPath("recruitmentCreatedAt").type(STRING).description("모집글 생성 시간")
+                        .optional(),
+                    fieldWithPath("recruitmentUpdatedAt").type(STRING).description("모집글 업데이트 시간")
+                        .optional(),
                     fieldWithPath("recruitmentImageUrls").type(ARRAY).description("모집글 이미지 url 리스트")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 봉사 모집글 마감(보호소) api 호출 시")
+    void closeRecruitment() throws Exception {
+        //given
+        long recruitmentId = 1L;
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            patch("/api/shelters/recruitments/{recruitmentId}/close", recruitmentId)
+                .header(AUTHORIZATION, shelterAccessToken));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("recruitmentId").description("봉사 모집글 ID")
                 )
             ));
     }
