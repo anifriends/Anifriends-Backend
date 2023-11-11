@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.auth.support;
 
-import com.clova.anifriends.global.jwt.JJwtProvider;
+import com.clova.anifriends.global.security.jwt.JJwtProvider;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.auth.dto.response.TokenResponse;

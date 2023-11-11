@@ -37,6 +37,26 @@ public class ShelterAddressInfo {
         this.isOpenedAddress = isOpenedAddress;
     }
 
+    public ShelterAddressInfo updateAddressStatus(
+        Boolean isOpenedAddress
+    ) {
+        validateAddressStatusNotNull(isOpenedAddress);
+
+        return new ShelterAddressInfo(
+            this.address,
+            this.addressDetail,
+            isOpenedAddress
+        );
+    }
+
+    private void validateAddressStatusNotNull(
+        Boolean isOpenedAddress
+    ) {
+        if (Objects.isNull(isOpenedAddress)) {
+            throw new ShelterBadRequestException("보호소 상세 주소 공개 여부는 필수값입니다.");
+        }
+    }
+
     private void validateNotNull(String address, String addressDetail) {
         if (Objects.isNull(address)) {
             throw new ShelterBadRequestException("보호소 주소는 필수값입니다.");
@@ -47,7 +67,7 @@ public class ShelterAddressInfo {
     }
 
     private void validateAddress(String address) {
-        if(address.isBlank() || address.length() > MAX_ADDRESS_LENGTH) {
+        if (address.isBlank() || address.length() > MAX_ADDRESS_LENGTH) {
             throw new ShelterBadRequestException(
                 MessageFormat.format("보호소 주소는 {0}자 이상, {1}자 이하여야 합니다.",
                     MIN_ADDRESS_LENGTH, MAX_ADDRESS_LENGTH));
@@ -55,7 +75,7 @@ public class ShelterAddressInfo {
     }
 
     private void validateAddressDetail(String addressDetail) {
-        if(addressDetail.isBlank() || addressDetail.length() > MAX_ADDRESS_DETAIL_LENGTH) {
+        if (addressDetail.isBlank() || addressDetail.length() > MAX_ADDRESS_DETAIL_LENGTH) {
             throw new ShelterBadRequestException(
                 MessageFormat.format("보호소 상세 주소는 {0}자 이상, {1}자 이하여야 합니다.",
                     MIN_ADDRESS_DETAIL_LENGTH, MAX_ADDRESS_DETAIL_LENGTH));

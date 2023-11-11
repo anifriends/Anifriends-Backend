@@ -12,25 +12,31 @@
 === 보호소 로그인
 
 ==== Request
+
 operation::auth-controller-test/shelter-login[snippets='http-request,request-fields']
 
 ==== Response
+
 operation::auth-controller-test/shelter-login[snippets='http-response,response-fields,response-cookies']
 
 === 봉사자 로그인
 
 ==== Request
+
 operation::auth-controller-test/volunteer-login[snippets='http-request,request-fields']
 
 ==== Response
+
 operation::auth-controller-test/volunteer-login[snippets='http-response,response-fields,response-cookies']
 
 === 액세스 토큰 갱신
 
 ==== Request
+
 operation::auth-controller-test/refresh-access-token[snippets='http-request,request-cookies']
 
 ==== Response
+
 operation::auth-controller-test/refresh-access-token[snippets='http-response,response-fields,response-cookies']
 
 == 1. 봉사자
@@ -83,12 +89,22 @@ operation::review-controller-test/find-shelter-reviews-by-volunteer[snippets='ht
 
 == 2. 보호소
 
+=== 보호소 비밀번호 변경
+
+==== Request
+operation::shelter-controller-test/update-password[snippets='http-request,request-headers,request-fields']
+
+==== Response
+operation::shelter-controller-test/update-password[snippets='http-response']
+
 === 보호소 마이 페이지 조회
 
 ==== Request
+
 operation::shelter-controller-test/find-shelter-my-page[snippets='http-request,request-headers']
 
 ==== Response
+
 operation::shelter-controller-test/find-shelter-my-page[snippets='http-response,response-fields']
 
 == 3. 봉사 모집

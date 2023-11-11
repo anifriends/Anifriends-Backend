@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.shelter;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterAddressInfo;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterName;
@@ -53,13 +54,27 @@ public class Shelter extends BaseTimeEntity {
         String name,
         String phoneNumber,
         String sparePhoneNumber,
-        boolean isOpenedAddress
+        boolean isOpenedAddress,
+        CustomPasswordEncoder passwordEncoder
     ) {
         this.email = new ShelterEmail(email);
-        this.password = new ShelterPassword(password);
+        this.password = new ShelterPassword(password, passwordEncoder);
         this.name = new ShelterName(name);
         this.phoneNumberInfo = new ShelterPhoneNumberInfo(phoneNumber, sparePhoneNumber);
         this.addressInfo = new ShelterAddressInfo(address, addressDetail, isOpenedAddress);
+    }
+
+    public void updatePassword(
+        CustomPasswordEncoder passwordEncoder,
+        String rawOldPassword,
+        String rawNewPassword) {
+        password = password.updatePassword(passwordEncoder, rawOldPassword, rawNewPassword);
+    }
+
+    public void updateAddressStatus(
+        Boolean updatedAddressStatus
+    ) {
+        addressInfo = addressInfo.updateAddressStatus(updatedAddressStatus);
     }
 
     public Long getShelterId() {
