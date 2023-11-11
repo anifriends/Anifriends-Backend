@@ -15,7 +15,7 @@ public record FindShelterSimpleByVolunteerResponse(
             shelter.getName(),
             shelter.getEmail(),
             shelter.getAddress(),
-            shelter.getImageUrl()
+            shelter.getImage()
         );
     }
 }

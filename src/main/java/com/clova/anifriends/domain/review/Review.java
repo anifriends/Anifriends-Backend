@@ -37,7 +37,7 @@ public class Review extends BaseTimeEntity {
     private Applicant applicant;
 
     @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<ReviewImage> imageUrls = new ArrayList<>();
+    private List<ReviewImage> images = new ArrayList<>();
 
     @Embedded
     private ReviewContent content;
@@ -45,14 +45,14 @@ public class Review extends BaseTimeEntity {
     public Review(
         Applicant applicant,
         String content,
-        List<String> imageUrls
+        List<String> images
     ) {
         validateApplicant(applicant);
-        validateImageUrlsSize(imageUrls);
+        validateImageUrlsSize(images);
         this.applicant = applicant;
         this.applicant.registerReview(this);
         this.content = new ReviewContent(content);
-        this.imageUrls = imageUrls == null ? null : imageUrls.stream()
+        this.images = images == null ? null : images.stream()
             .map(url -> new ReviewImage(this, url))
             .toList();
     }
@@ -75,8 +75,8 @@ public class Review extends BaseTimeEntity {
         return content.getContent();
     }
 
-    public List<String> getImageUrls() {
-        return imageUrls.stream()
+    public List<String> getImages() {
+        return images.stream()
             .map(ReviewImage::getImageUrl)
             .toList();
     }

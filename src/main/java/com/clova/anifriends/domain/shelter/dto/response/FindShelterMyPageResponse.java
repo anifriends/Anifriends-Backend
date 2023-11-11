@@ -26,7 +26,7 @@ public record FindShelterMyPageResponse(
             shelter.isOpenedAddress(),
             shelter.getPhoneNumber(),
             shelter.getSparePhoneNumber(),
-            shelter.getShelterImageUrl()
+            shelter.getImage()
         );
     }
 }

@@ -70,7 +70,7 @@ public class Volunteer extends BaseTimeEntity {
     private List<Applicant> applicants = new ArrayList<>();
 
     @OneToOne(mappedBy = "volunteer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private VolunteerImage volunteerImage;
+    private VolunteerImage image;
 
     public Volunteer(
         String email,
@@ -102,7 +102,7 @@ public class Volunteer extends BaseTimeEntity {
     }
 
     public void updateVolunteerImage(VolunteerImage volunteerImage) {
-        this.volunteerImage = volunteerImage;
+        this.image = volunteerImage;
     }
 
     public void updateVolunteerInfo(
@@ -116,7 +116,7 @@ public class Volunteer extends BaseTimeEntity {
         this.gender = updateGender(gender);
         this.birthDate = updateBirthDate(birthDate);
         this.phoneNumber = this.phoneNumber.updatePhoneNumber(phoneNumber);
-        this.volunteerImage = updateVolunteerImage(imageUrl, imageRemover);
+        this.image = updateVolunteerImage(imageUrl, imageRemover);
     }
 
     private LocalDate updateBirthDate(LocalDate birthDate) {
@@ -128,19 +128,19 @@ public class Volunteer extends BaseTimeEntity {
     }
 
     private VolunteerImage updateVolunteerImage(String imageUrl, ImageRemover imageRemover) {
-        if (Objects.nonNull(volunteerImage) && volunteerImage.isEqualImageUrl(imageUrl)) {
-            return this.volunteerImage;
+        if (Objects.nonNull(image) && image.isEqualImageUrl(imageUrl)) {
+            return this.image;
         }
         clearVolunteerImageIfExists(imageRemover);
-        if(Objects.isNull(imageUrl)) {
+        if (Objects.isNull(imageUrl)) {
             return null;
         }
         return new VolunteerImage(this, imageUrl);
     }
 
     private void clearVolunteerImageIfExists(ImageRemover imageRemover) {
-        if (Objects.nonNull(volunteerImage)) {
-            volunteerImage.removeImage(imageRemover);
+        if (Objects.nonNull(image)) {
+            image.removeImage(imageRemover);
         }
     }
 
@@ -183,7 +183,7 @@ public class Volunteer extends BaseTimeEntity {
     }
 
     public String getVolunteerImageUrl() {
-        return this.volunteerImage == null ? null : volunteerImage.getImageUrl();
+        return this.image == null ? null : image.getImageUrl();
     }
 
     public List<Applicant> getApplicants() {

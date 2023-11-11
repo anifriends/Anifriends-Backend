@@ -44,7 +44,7 @@ public class Shelter extends BaseTimeEntity {
     private ShelterAddressInfo addressInfo;
 
     @OneToOne(mappedBy = "shelter")
-    private ShelterImage shelterImage;
+    private ShelterImage image;
 
     public Shelter(
         String email,
@@ -114,14 +114,14 @@ public class Shelter extends BaseTimeEntity {
     }
 
     public String getShelterImageUrl() {
-        return this.shelterImage == null ? null : this.shelterImage.getImageUrl();
+        return this.image == null ? null : this.image.getImageUrl();
     }
 
     public void updateShelterImage(ShelterImage shelterImage) {
-        this.shelterImage = shelterImage;
+        this.image = shelterImage;
     }
 
-    public String getImageUrl() {
-        return this.shelterImage == null ? null : this.shelterImage.getImageUrl();
+    public String getImage() {
+        return this.image == null ? null : this.image.getImageUrl();
     }
 }

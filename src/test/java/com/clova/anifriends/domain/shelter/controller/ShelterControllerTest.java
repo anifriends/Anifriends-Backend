@@ -138,7 +138,7 @@ class ShelterControllerTest extends BaseControllerTest {
             shelter.getAddressDetail(),
             shelter.getPhoneNumber(),
             shelter.getSparePhoneNumber(),
-            shelter.getShelterImageUrl()
+            shelter.getImage()
         );
 
         given(shelterService.findShelterDetail(shelterId)).willReturn(findShelterDetailResponse);
@@ -203,7 +203,7 @@ class ShelterControllerTest extends BaseControllerTest {
             shelter.isOpenedAddress(),
             shelter.getPhoneNumber(),
             shelter.getSparePhoneNumber(),
-            shelter.getShelterImageUrl()
+            shelter.getImage()
         );
 
         given(shelterService.findShelterMyPage(shelterId)).willReturn(

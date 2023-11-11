@@ -174,7 +174,7 @@ class ReviewControllerTest extends BaseControllerTest {
         RegisterReviewRequest request = registerReviewRequest(review(applicant));
 
         when(reviewService.registerReview(anyLong(), eq(applicant.getApplicantId()),
-            eq(review.getContent()), eq(review.getImageUrls())))
+            eq(review.getContent()), eq(review.getImages())))
             .thenReturn(review.getReviewId());
 
         //when
@@ -253,7 +253,8 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("reviews[].shelterName").type(STRING).description("보호소 이름"),
                     fieldWithPath("reviews[].reviewCreatedAt").type(STRING).description("리뷰 생성일"),
                     fieldWithPath("reviews[].reviewContent").type(STRING).description("리뷰 내용"),
-                    fieldWithPath("reviews[].reviewImageUrls").type(ARRAY).description("리뷰 이미지 url 리스트")
+                    fieldWithPath("reviews[].reviewImageUrls").type(ARRAY)
+                        .description("리뷰 이미지 url 리스트")
                 )
             ));
     }

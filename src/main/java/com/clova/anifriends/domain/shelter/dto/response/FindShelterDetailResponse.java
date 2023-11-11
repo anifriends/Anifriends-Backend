@@ -31,7 +31,7 @@ public record FindShelterDetailResponse(
             addressDetail,
             shelter.getPhoneNumber(),
             shelter.getSparePhoneNumber(),
-            shelter.getShelterImageUrl()
+            shelter.getImage()
         );
     }
 }
