@@ -22,6 +22,34 @@ public class VolunteerPassword {
     @Column(name = "password")
     private String password;
 
+    public VolunteerPassword updatePassword(
+        CustomPasswordEncoder passwordEncoder,
+        String rawOldPassword,
+        String rawNewPassword
+    ) {
+        checkOldPasswordEquals(rawOldPassword, passwordEncoder);
+        checkNewPasswordNotEquals(rawNewPassword, passwordEncoder);
+
+        return new VolunteerPassword(rawNewPassword, passwordEncoder);
+    }
+
+    private void checkOldPasswordEquals(
+        String rawOldPassword,
+        CustomPasswordEncoder passwordEncoder) {
+        if (passwordEncoder.noneMatchesPassword(rawOldPassword, password)) {
+            throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
+        }
+    }
+
+    private void checkNewPasswordNotEquals(
+        String rawNewPassword,
+        CustomPasswordEncoder passwordEncoder) {
+        if (passwordEncoder.matchesPassword(rawNewPassword, password)) {
+            throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST,
+                "변경하려는 패스워드와 기존 패스워드가 동일합니다.");
+        }
+    }
+
     public VolunteerPassword(String rawPassword, CustomPasswordEncoder passwordEncoder) {
         validateNotNull(rawPassword);
         validateVolunteerPasswordLength(rawPassword);

@@ -4,8 +4,8 @@ import static com.clova.anifriends.global.exception.ErrorCode.BAD_REQUEST;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
@@ -91,6 +91,14 @@ public class Volunteer extends BaseTimeEntity {
         this.name = new VolunteerName(name);
     }
 
+    public void updatePassword(
+        CustomPasswordEncoder passwordEncoder,
+        String rawOldPassword,
+        String rawNewPassword
+    ) {
+        password = password.updatePassword(passwordEncoder, rawOldPassword, rawNewPassword);
+    }
+
     private LocalDate validateBirthDate(String birthDate) {
         try {
             return LocalDate.parse(birthDate);
@@ -134,7 +142,7 @@ public class Volunteer extends BaseTimeEntity {
             return this.volunteerImage;
         }
         clearVolunteerImageIfExists(imageRemover);
-        if(Objects.isNull(imageUrl)) {
+        if (Objects.isNull(imageUrl)) {
             return null;
         }
         return new VolunteerImage(this, imageUrl);
