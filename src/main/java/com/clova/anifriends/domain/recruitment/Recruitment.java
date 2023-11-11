@@ -2,11 +2,13 @@ package com.clova.anifriends.domain.recruitment;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentContent;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentInfo;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentTitle;
 import com.clova.anifriends.domain.shelter.Shelter;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -45,8 +47,9 @@ public class Recruitment extends BaseTimeEntity {
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
 
-    @OneToMany(mappedBy = "recruitment", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<RecruitmentImage> imageUrls = new ArrayList<>();
+    @OneToMany(mappedBy = "recruitment", fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecruitmentImage> recruitmentImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitment", fetch = FetchType.LAZY)
     private List<Applicant> applicants = new ArrayList<>();
@@ -78,11 +81,12 @@ public class Recruitment extends BaseTimeEntity {
         this.title = new RecruitmentTitle(title);
         this.content = new RecruitmentContent(content);
         this.info = new RecruitmentInfo(startTime, endTime, deadline, IS_CLOSED_DEFAULT, capacity);
-        if(Objects.nonNull(imageUrls)) {
+        if (Objects.nonNull(imageUrls)) {
             validateImageUrlsSize(imageUrls);
-            this.imageUrls = imageUrls.stream()
+            List<RecruitmentImage> newImages = imageUrls.stream()
                 .map(url -> new RecruitmentImage(this, url))
                 .toList();
+            this.recruitmentImages.addAll(newImages);
         }
     }
 
@@ -138,7 +142,7 @@ public class Recruitment extends BaseTimeEntity {
     }
 
     public List<String> getImageUrls() {
-        return imageUrls.stream()
+        return recruitmentImages.stream()
             .map(RecruitmentImage::getImageUrl)
             .toList();
     }
@@ -157,5 +161,61 @@ public class Recruitment extends BaseTimeEntity {
 
     public void addApplicant(Applicant applicant) {
         applicants.add(applicant);
+    }
+
+    public void updateRecruitment(
+        String title,
+        LocalDateTime startTime,
+        LocalDateTime endTime,
+        LocalDateTime deadline,
+        Integer capacity,
+        String content,
+        List<String> imageUrls,
+        ImageRemover imageRemover) {
+        this.title = this.title.updateTitle(title);
+        this.content = this.content.updateContent(content);
+        this.info = this.info.updateRecruitmentInfo(startTime, endTime, deadline, capacity);
+        addNewImageUrls(imageUrls, imageRemover);
+    }
+
+    private void addNewImageUrls(
+        List<String> updateImageUrls,
+        ImageRemover imageRemover) {
+        if(Objects.nonNull(updateImageUrls)) {
+            validateImageUrlsSize(updateImageUrls);
+            deleteNotContainsImageUrls(updateImageUrls, imageRemover);
+            addNewImageUrls(updateImageUrls);
+        }
+    }
+
+    private void deleteNotContainsImageUrls(List<String> updateImageUrls, ImageRemover imageRemover) {
+        List<String> deleteImageUrls = this.recruitmentImages.stream()
+            .map(RecruitmentImage::getImageUrl)
+            .filter(existsImageUrl -> !updateImageUrls.contains(existsImageUrl))
+            .toList();
+        imageRemover.removeImages(deleteImageUrls);
+    }
+
+    private void addNewImageUrls(List<String> updateImageUrls) {
+        List<RecruitmentImage> existsVolunteerImages = filterRemainImages(updateImageUrls);
+        List<RecruitmentImage> newVolunteerImages = filterNewImages(updateImageUrls);
+        this.recruitmentImages.clear();
+        this.recruitmentImages.addAll(existsVolunteerImages);
+        this.recruitmentImages.addAll(newVolunteerImages);
+    }
+
+    private List<RecruitmentImage> filterRemainImages(List<String> updateImageUrls) {
+        return this.recruitmentImages.stream()
+            .filter(recruitmentImage -> updateImageUrls.contains(recruitmentImage.getImageUrl()))
+            .toList();
+    }
+
+    private List<RecruitmentImage> filterNewImages(
+        List<String> updateImageUrls) {
+        List<String> existsImageUrls = getImageUrls();
+        return updateImageUrls.stream()
+            .filter(imageUrl -> !existsImageUrls.contains(imageUrl))
+            .map(imageUrl -> new RecruitmentImage(this, imageUrl))
+            .toList();
     }
 }

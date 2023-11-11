@@ -85,4 +85,66 @@ public class RecruitmentInfo {
     public RecruitmentInfo closeRecruitment() {
         return new RecruitmentInfo(startTime, endTime, deadline, true, capacity);
     }
+
+    public RecruitmentInfo updateRecruitmentInfo(
+        LocalDateTime startTime,
+        LocalDateTime endTime,
+        LocalDateTime deadline,
+        Integer capacity) {
+        if(isNullArguments(startTime, endTime, deadline, capacity)) {
+            return this;
+        }
+        return new RecruitmentInfo(
+            updateStartTime(startTime),
+            updateEndTime(endTime),
+            updateDeadline(deadline),
+            isClosed,
+            updateCapacity(capacity));
+    }
+
+    private boolean isNullArguments(
+        LocalDateTime startTime,
+        LocalDateTime endTime,
+        LocalDateTime deadline,
+        Integer capacity) {
+        return Objects.isNull(startTime)
+            && Objects.isNull(endTime)
+            && Objects.isNull(deadline)
+            && Objects.isNull(capacity);
+    }
+
+    private LocalDateTime updateStartTime(LocalDateTime startTime) {
+        return startTime != null ? startTime : this.startTime;
+    }
+
+    private LocalDateTime updateEndTime(LocalDateTime endTime) {
+        return endTime != null ? endTime : this.endTime;
+    }
+
+    private LocalDateTime updateDeadline(LocalDateTime deadline) {
+        return deadline != null ? deadline : this.deadline;
+    }
+
+    private int updateCapacity(Integer capacity) {
+        return capacity != null ? capacity : this.capacity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        RecruitmentInfo that = (RecruitmentInfo) o;
+        return isClosed == that.isClosed && capacity == that.capacity && Objects.equals(
+            startTime, that.startTime) && Objects.equals(endTime, that.endTime)
+            && Objects.equals(deadline, that.deadline);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startTime, endTime, deadline, isClosed, capacity);
+    }
 }

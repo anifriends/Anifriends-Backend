@@ -38,4 +38,8 @@ public class RecruitmentTitle {
             throw new RecruitmentBadRequestException("제목은 필수입니다.");
         }
     }
+
+    public RecruitmentTitle updateTitle(String title) {
+        return title != null ? new RecruitmentTitle(title) : this;
+    }
 }
