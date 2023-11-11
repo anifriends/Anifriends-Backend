@@ -1,5 +1,7 @@
 package com.clova.anifriends.domain.shelter.wrapper;
 
+import static java.util.Objects.isNull;
+
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import jakarta.persistence.Column;

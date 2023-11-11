@@ -128,5 +128,4 @@ class ShelterPasswordTest {
             assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
         }
     }
-
 }

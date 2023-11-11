@@ -71,6 +71,12 @@ public class Shelter extends BaseTimeEntity {
         password = password.updatePassword(passwordEncoder, rawOldPassword, rawNewPassword);
     }
 
+    public void updateAddressStatus(
+        Boolean updatedAddressStatus
+    ) {
+        addressInfo = addressInfo.updateAddressStatus(updatedAddressStatus);
+    }
+
     public Long getShelterId() {
         return shelterId;
     }

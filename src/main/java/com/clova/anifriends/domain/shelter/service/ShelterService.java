@@ -17,9 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ShelterService {
 
-    private static final int MIN_PASSWORD_LENGTH = 6;
-    private static final int MAX_PASSWORD_LENGTH = 16;
-
     private final ShelterRepository shelterRepository;
     private final CustomPasswordEncoder passwordEncoder;
 
@@ -89,5 +86,14 @@ public class ShelterService {
     private Shelter getShelter(Long shelterId) {
         return shelterRepository.findById(shelterId)
             .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
+    }
+
+    @Transactional
+    public void updateAddressStatus(
+        Long shelterId,
+        Boolean isOpenedAddress
+    ) {
+        Shelter foundShelter = getShelter(shelterId);
+        foundShelter.updateAddressStatus(isOpenedAddress);
     }
 }

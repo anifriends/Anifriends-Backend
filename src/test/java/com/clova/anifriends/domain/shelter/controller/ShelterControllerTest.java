@@ -10,6 +10,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.responseH
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -27,6 +28,7 @@ import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
 import com.clova.anifriends.domain.shelter.dto.RegisterShelterRequest;
+import com.clova.anifriends.domain.shelter.dto.UpdateAddressStatusRequest;
 import com.clova.anifriends.domain.shelter.dto.UpdateShelterPasswordRequest;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import org.junit.jupiter.api.DisplayName;
@@ -225,7 +227,7 @@ class ShelterControllerTest extends BaseControllerTest {
                     fieldWithPath("shelterName").type(JsonFieldType.STRING)
                         .description("보호소 이름"),
                     fieldWithPath("shelterEmail").type(JsonFieldType.STRING)
-                            .description("보호소 이메일"),
+                        .description("보호소 이메일"),
                     fieldWithPath("shelterAddress").type(JsonFieldType.STRING)
                         .description("보호소 주소"),
                     fieldWithPath("shelterAddressDetail").type(JsonFieldType.STRING)
@@ -300,6 +302,32 @@ class ShelterControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint("6자 이상, 16자 이하")),
                     fieldWithPath("newPassword").type(STRING).description("변경할 비밀번호")
                         .attributes(DocumentationFormatGenerator.getConstraint("6자 이상, 16자 이하"))
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("보호소 상세 주소 상태 수정 api 호출 시")
+    void updateAddressStatus() throws Exception {
+        //given
+        UpdateAddressStatusRequest updateAddressStatusRequest = new UpdateAddressStatusRequest(
+            false);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(patch("/api/shelters/me/address/status")
+            .header(AUTHORIZATION, shelterAccessToken)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(updateAddressStatusRequest)));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
+                requestFields(
+                    fieldWithPath("isOpenedAddress").type(BOOLEAN).description("보호소 상세 주소 공개 여부")
+
                 )
             ));
     }
