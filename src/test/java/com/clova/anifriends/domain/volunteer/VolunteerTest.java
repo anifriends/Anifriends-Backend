@@ -3,10 +3,17 @@ package com.clova.anifriends.domain.volunteer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.clova.anifriends.base.MockImageRemover;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
+import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import java.time.LocalDate;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class VolunteerTest {
 
@@ -49,4 +56,107 @@ class VolunteerTest {
         }
     }
 
+    @Nested
+    @DisplayName("volunteerUpdate 메서드 호출 시")
+    class UpdateVolunteerTest {
+
+        Volunteer volunteer;
+        ImageRemover imageRemover;
+
+        @BeforeEach
+        void setUp() {
+            volunteer = VolunteerFixture.volunteer();
+            imageRemover = new MockImageRemover();
+        }
+
+        @Test
+        @DisplayName("성공: 봉사자의 상태가 변경된다.")
+        void updateVolunteer() {
+            //given
+            String newName = volunteer.getName() + "a";
+            VolunteerGender newGender = VolunteerGender.FEMALE;
+            LocalDate newBirthDate = volunteer.getBirthDate().plusDays(1);
+            String newPhoneNumber = "010-1234-1111";
+            String newImageUrl = volunteer.getVolunteerImageUrl() + "1";
+
+            //when
+            volunteer.updateVolunteerInfo(newName, newGender,
+                newBirthDate, newPhoneNumber, newImageUrl, imageRemover);
+
+            //then
+            assertThat(volunteer.getName()).isEqualTo(newName);
+            assertThat(volunteer.getGender()).isEqualTo(newGender);
+            assertThat(volunteer.getBirthDate()).isEqualTo(newBirthDate);
+            assertThat(volunteer.getPhoneNumber()).isEqualTo(newPhoneNumber);
+            assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(newImageUrl);
+        }
+
+        @Test
+        @DisplayName("성공: 이미지 url 입력값이 null이고, 봉사자 이미지가 null인 경우 현재 이미지는 null이다.")
+        void updateVolunteerNullImage() {
+            //given
+            String nullImageUrl = null;
+
+            //when
+            volunteer.updateVolunteerInfo(volunteer.getName(), volunteer.getGender(),
+                volunteer.getBirthDate(), volunteer.getPhoneNumber(), nullImageUrl, imageRemover);
+
+            //then
+            assertThat(volunteer.getVolunteerImageUrl()).isNull();
+        }
+
+        @Test
+        @DisplayName("성공: 이미지 url 입력값이 들어왔고, 봉사자 이미지가 null인 경우 현재 이미지는 입력값이다.")
+        void updateVolunteerNewImage() {
+            //given
+            String newImageUrl = "asdf";
+
+            //when
+            volunteer.updateVolunteerInfo(volunteer.getName(), volunteer.getGender(),
+                volunteer.getBirthDate(), volunteer.getPhoneNumber(), newImageUrl, imageRemover);
+
+            //then
+            assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(newImageUrl);
+        }
+
+        @Test
+        @DisplayName("성공: 이미지 url 입력값이 들어왔고, 봉사자 이미지와 같다면 현재 이미지는 업데이트 되지 않는다.")
+        void updateVolunteerImageWhenEqualsImageUrl() {
+            //given
+            String equalsImageUrl = "asdf";
+            volunteer.updateVolunteerInfo(volunteer.getName(),
+                volunteer.getGender(), volunteer.getBirthDate(), volunteer.getPhoneNumber(),
+                equalsImageUrl, imageRemover);
+            Object beforeVolunteerImage = ReflectionTestUtils.getField(volunteer, "volunteerImage");
+
+            //when
+            volunteer.updateVolunteerInfo(
+                volunteer.getName(), volunteer.getGender(), volunteer.getBirthDate(),
+                volunteer.getPhoneNumber(), equalsImageUrl, imageRemover);
+
+            //then
+            Object afterVolunteerImage = ReflectionTestUtils.getField(volunteer, "volunteerImage");
+            assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(equalsImageUrl);
+            assertThat(beforeVolunteerImage).isEqualTo(afterVolunteerImage);
+        }
+
+        @Test
+        @DisplayName("성공: 이미지 url 입력값이 들어왔고, 봉사자 이미지와 다르다면 현재 이미지는 입력값이다.")
+        void updateVolunteerImageWhenNotEqualsImageUrl() {
+            //given
+            String imageUrl = "asdf";
+            volunteer.updateVolunteerInfo(volunteer.getName(),
+                volunteer.getGender(), volunteer.getBirthDate(), volunteer.getPhoneNumber(),
+                imageUrl, imageRemover);
+            String notEqualsImageUrl = imageUrl + "a";
+
+            //when
+            volunteer.updateVolunteerInfo(
+                volunteer.getName(), volunteer.getGender(), volunteer.getBirthDate(),
+                volunteer.getPhoneNumber(), notEqualsImageUrl, imageRemover);
+
+            //then
+            assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(notEqualsImageUrl);
+        }
+    }
 }
