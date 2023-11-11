@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.volunteer.dto.request;
 
-public record UpdateVolunteerPassword(
+public record UpdateVolunteerPasswordRequest(
     String oldPassword,
     String newPassword
 ) {
