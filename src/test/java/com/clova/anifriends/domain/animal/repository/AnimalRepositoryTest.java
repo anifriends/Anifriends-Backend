@@ -18,15 +18,11 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class AnimalRepositoryTest extends BaseRepositoryTest {
-
-    @Autowired
-    private AnimalRepository animalRepository;
 
     @Nested
     @DisplayName("findAnimalsByShelter 실행 시")

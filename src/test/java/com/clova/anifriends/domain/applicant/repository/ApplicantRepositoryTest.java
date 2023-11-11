@@ -16,35 +16,19 @@ import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
-import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 class ApplicantRepositoryTest extends BaseRepositoryTest {
-
-    @Autowired
-    private ApplicantRepository applicantRepository;
-
-    @Autowired
-    private RecruitmentRepository recruitmentRepository;
-
-    @Autowired
-    private VolunteerRepository volunteerRepository;
-
-    @Autowired
-    private ShelterRepository shelterRepository;
 
     @Nested
     @DisplayName("findApprovedByRecruitmentIdAndShelterId 메서드 실행 시")
