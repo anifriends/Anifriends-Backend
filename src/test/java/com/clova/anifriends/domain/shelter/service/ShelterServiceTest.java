@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.shelter.service;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -276,6 +277,58 @@ class ShelterServiceTest {
     class UpdateShelterTest {
 
         @Test
+        @DisplayName("성공")
+        void update() {
+            // given
+            String originName = "originName";
+            String originAddress = "originAddress";
+            String originAddressDetail = "originAddressDetail";
+            String originPhoneNumber = "010-1111-1111";
+            String originSparePhoneNumber = "010-2222-2222";
+            boolean originIsOpenedAddress = true;
+
+            String newName = "newName";
+            String newImageUrl = "newImageUrl";
+            String newAddress = "newAddress";
+            String newAddressDetail = "newAddressDetail";
+            String newPhoneNumber = "010-3333-3333";
+            String newSparePhoneNumber = "010-4444-4444";
+            boolean newIsOpenedAddress = false;
+
+            Shelter shelter = new Shelter(
+                "shelterEmail@email.com",
+                "shelterPassword",
+                originAddress,
+                originAddressDetail,
+                originName,
+                originPhoneNumber,
+                originSparePhoneNumber,
+                originIsOpenedAddress,
+                passwordEncoder
+            );
+
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.of(shelter));
+
+            // when
+            shelterService.updateShelter(anyLong(), newName, newImageUrl, newAddress,
+                newAddressDetail, newPhoneNumber, newSparePhoneNumber, newIsOpenedAddress);
+
+            // then
+            verify(imageRemover, times(0)).removeImage(anyString());
+
+            assertSoftly(softAssertions -> {
+                softAssertions.assertThat(shelter.getName()).isEqualTo(newName);
+                softAssertions.assertThat(shelter.getImage()).isEqualTo(newImageUrl);
+                softAssertions.assertThat(shelter.getAddress()).isEqualTo(newAddress);
+                softAssertions.assertThat(shelter.getAddressDetail()).isEqualTo(newAddressDetail);
+                softAssertions.assertThat(shelter.getPhoneNumber()).isEqualTo(newPhoneNumber);
+                softAssertions.assertThat(shelter.getSparePhoneNumber())
+                    .isEqualTo(newSparePhoneNumber);
+                softAssertions.assertThat(shelter.isOpenedAddress()).isEqualTo(newIsOpenedAddress);
+            });
+        }
+
+        @Test
         @DisplayName("성공: 기존 이미지 존재 -> 새로운 이미지 갱신")
         void updateWhenExistToNewImage() {
             // given
@@ -320,7 +373,7 @@ class ShelterServiceTest {
         }
 
         @Test
-        @DisplayName("성공: 기존 이미지 존재 -> none")
+        @DisplayName("성공: 기존 이미지 존재 -> 이미지 none")
         void updateShelterWhenExistToNoneImage() {
             // given
             String originImageUrl = "originImageUrl";
@@ -343,7 +396,7 @@ class ShelterServiceTest {
         }
 
         @Test
-        @DisplayName("성공: none -> 새로운 이미지 갱신")
+        @DisplayName("성공: 이미지 none -> 새로운 이미지 갱신")
         void updateShelterWhenNoneToNewImage() {
             // given
             String originImageUrl = "originImageUrl";
@@ -367,7 +420,7 @@ class ShelterServiceTest {
         }
 
         @Test
-        @DisplayName("성공: none -> none")
+        @DisplayName("성공: 이미지 none -> 이미지 none")
         void updateShelterWhenNoneToNoneImage() {
             // given
             String originImageUrl = "originImageUrl";
