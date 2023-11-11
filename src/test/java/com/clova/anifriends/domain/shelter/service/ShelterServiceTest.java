@@ -262,4 +262,48 @@ class ShelterServiceTest {
             assertThat(shelter.isOpenedAddress()).isFalse();
         }
     }
+
+    @Nested
+    @DisplayName("updateShelter 실행 시")
+    class UpdateShelterTest {
+
+        @Test
+        @DisplayName("성공")
+        void updateShelter() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.of(shelter));
+
+            // when
+            Exception exception = catchException(() -> shelterService.updateShelter(
+                anyLong(), shelter.getName(), shelter.getImage(), shelter.getAddress(),
+                shelter.getAddressDetail(), shelter.getPhoneNumber(), shelter.getSparePhoneNumber(),
+                shelter.isOpenedAddress()
+            ));
+
+            // then
+            assertThat(exception).isNull();
+        }
+
+        @Test
+        @DisplayName("예외(ShelterNotFoundException): 존재하지 않는 보호소")
+        void exceptionWhenNotExist() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+            // when
+            Exception exception = catchException(() -> shelterService.updateShelter(
+                anyLong(), shelter.getName(), shelter.getImage(), shelter.getAddress(),
+                shelter.getAddressDetail(), shelter.getPhoneNumber(), shelter.getSparePhoneNumber(),
+                shelter.isOpenedAddress()
+            ));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
+        }
+    }
+
 }
