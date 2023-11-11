@@ -89,33 +89,6 @@ public class Volunteer extends BaseTimeEntity {
         this.name = new VolunteerName(name);
     }
 
-    private Volunteer(
-        Long volunteerId,
-        VolunteerEmail email,
-        VolunteerPassword password,
-        LocalDate birthDate,
-        VolunteerPhoneNumber phoneNumber,
-        VolunteerGender gender,
-        VolunteerTemperature temperature,
-        VolunteerName name,
-        List<Applicant> applicants,
-        VolunteerImage volunteerImage) {
-        this.volunteerId = volunteerId;
-        this.email = email;
-        this.password = password;
-        this.birthDate = birthDate;
-        this.phoneNumber = phoneNumber;
-        this.gender = gender;
-        this.temperature = temperature;
-        this.name = name;
-        this.applicants = applicants;
-        if(Objects.isNull(volunteerImage)) {
-            this.volunteerImage = null;
-        } else {
-            this.volunteerImage = volunteerImage.updateVolunteer(this);
-        }
-    }
-
     private LocalDate validateBirthDate(String birthDate) {
         try {
             return LocalDate.parse(birthDate);
@@ -132,41 +105,26 @@ public class Volunteer extends BaseTimeEntity {
         this.volunteerImage = volunteerImage;
     }
 
-    public Volunteer updateVolunteerInfo(
+    public void updateVolunteerInfo(
         String name,
         VolunteerGender gender,
         LocalDate birthDate,
         String phoneNumber,
         String imageUrl,
         ImageRemover imageRemover) {
-        return new Volunteer(
-            this.volunteerId,
-            this.email,
-            this.password,
-            updateBirthDate(birthDate),
-            updatePhoneNumber(phoneNumber),
-            updateGender(gender),
-            this.temperature,
-            updateName(name),
-            this.applicants,
-            updateVolunteerImage(imageUrl, imageRemover)
-        );
+        this.name = this.name.updateName(name);
+        this.gender = updateGender(gender);
+        this.birthDate = updateBirthDate(birthDate);
+        this.phoneNumber = this.phoneNumber.updatePhoneNumber(phoneNumber);
+        this.volunteerImage = updateVolunteerImage(imageUrl, imageRemover);
     }
 
     private LocalDate updateBirthDate(LocalDate birthDate) {
         return birthDate != null ? birthDate : this.birthDate;
     }
 
-    private VolunteerPhoneNumber updatePhoneNumber(String phoneNumber) {
-        return phoneNumber != null ? new VolunteerPhoneNumber(phoneNumber) : this.phoneNumber;
-    }
-
     private VolunteerGender updateGender(VolunteerGender gender) {
         return gender != null ? gender : this.gender;
-    }
-
-    private VolunteerName updateName(String name) {
-        return name != null ? new VolunteerName(name) : this.name;
     }
 
     private VolunteerImage updateVolunteerImage(String imageUrl, ImageRemover imageRemover) {
@@ -174,7 +132,7 @@ public class Volunteer extends BaseTimeEntity {
             return this.volunteerImage;
         }
         clearVolunteerImageIfExists(imageRemover);
-        if (Objects.isNull(imageUrl)) {
+        if(Objects.isNull(imageUrl)) {
             return null;
         }
         return new VolunteerImage(this, imageUrl);

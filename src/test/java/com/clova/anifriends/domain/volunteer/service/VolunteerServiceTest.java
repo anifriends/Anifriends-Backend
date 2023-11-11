@@ -20,7 +20,6 @@ import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
 import java.time.LocalDate;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -148,28 +147,18 @@ class VolunteerServiceTest {
     @DisplayName("updatedVolunteerInfo 메서드 호출 시")
     class UpdateVolunteerInfoTest {
 
-        Volunteer volunteer;
-        String newName;
-        VolunteerGender newGender;
-        LocalDate newBirthDate;
-        String newPhoneNumber;
-        String newImageUrl;
-
-        @BeforeEach
-        void setUp() {
-            volunteer = VolunteerFixture.volunteer();
-            newName = volunteer.getName() + "a";
-            newGender = volunteer.getGender() == VolunteerGender.FEMALE
-                ? VolunteerGender.MALE : VolunteerGender.FEMALE;
-            newBirthDate = volunteer.getBirthDate().plusDays(1);
-            newPhoneNumber = "010-9999-9999";
-            newImageUrl = "asdf";
-        }
-
         @Test
         @DisplayName("성공")
         void updateVolunteerInfo() {
             //given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            String newName = volunteer.getName() + "a";
+            VolunteerGender newGender = volunteer.getGender() == VolunteerGender.FEMALE
+                ? VolunteerGender.MALE : VolunteerGender.FEMALE;
+            LocalDate newBirthDate = volunteer.getBirthDate().plusDays(1);
+            String newPhoneNumber = "010-9999-9999";
+            String newImageUrl = "asdf";
+
             given(volunteerRepository.findById(anyLong())).willReturn(ofNullable(volunteer));
 
             //when
@@ -177,7 +166,11 @@ class VolunteerServiceTest {
                 newPhoneNumber, newImageUrl);
 
             //then
-            then(volunteerRepository).should().save(any(Volunteer.class));
+            assertThat(volunteer.getName()).isEqualTo(newName);
+            assertThat(volunteer.getGender()).isEqualTo(newGender);
+            assertThat(volunteer.getBirthDate()).isEqualTo(newBirthDate);
+            assertThat(volunteer.getPhoneNumber()).isEqualTo(newPhoneNumber);
+            assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(newImageUrl);
         }
     }
 }

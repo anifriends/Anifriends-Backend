@@ -72,13 +72,6 @@ public class VolunteerService {
         String phoneNumber,
         String imageUrl) {
         Volunteer volunteer = getVolunteer(volunteerId);
-        Volunteer updatedVolunteer = volunteer.updateVolunteerInfo(
-            name,
-            gender,
-            birthDate,
-            phoneNumber,
-            imageUrl,
-            imageRemover);
-        volunteerRepository.save(updatedVolunteer);
+        volunteer.updateVolunteerInfo(name, gender, birthDate, phoneNumber, imageUrl, imageRemover);
     }
 }

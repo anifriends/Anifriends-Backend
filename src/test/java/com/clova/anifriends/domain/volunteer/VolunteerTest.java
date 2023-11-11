@@ -61,11 +61,12 @@ class VolunteerTest {
     class UpdateVolunteerTest {
 
         Volunteer volunteer;
-        ImageRemover imageRemover = new MockImageRemover();
+        ImageRemover imageRemover;
 
         @BeforeEach
         void setUp() {
             volunteer = VolunteerFixture.volunteer();
+            imageRemover = new MockImageRemover();
         }
 
         @Test
@@ -79,15 +80,15 @@ class VolunteerTest {
             String newImageUrl = volunteer.getVolunteerImageUrl() + "1";
 
             //when
-            Volunteer updatedVolunteer = volunteer.updateVolunteerInfo(newName, newGender,
+            volunteer.updateVolunteerInfo(newName, newGender,
                 newBirthDate, newPhoneNumber, newImageUrl, imageRemover);
 
             //then
-            assertThat(updatedVolunteer.getName()).isEqualTo(newName);
-            assertThat(updatedVolunteer.getGender()).isEqualTo(newGender);
-            assertThat(updatedVolunteer.getBirthDate()).isEqualTo(newBirthDate);
-            assertThat(updatedVolunteer.getPhoneNumber()).isEqualTo(newPhoneNumber);
-            assertThat(updatedVolunteer.getVolunteerImageUrl()).isEqualTo(newImageUrl);
+            assertThat(volunteer.getName()).isEqualTo(newName);
+            assertThat(volunteer.getGender()).isEqualTo(newGender);
+            assertThat(volunteer.getBirthDate()).isEqualTo(newBirthDate);
+            assertThat(volunteer.getPhoneNumber()).isEqualTo(newPhoneNumber);
+            assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(newImageUrl);
         }
 
         @Test
@@ -97,12 +98,11 @@ class VolunteerTest {
             String nullImageUrl = null;
 
             //when
-            Volunteer updatedVolunteer = volunteer.updateVolunteerInfo(volunteer.getName(),
-                volunteer.getGender(), volunteer.getBirthDate(), volunteer.getPhoneNumber(),
-                nullImageUrl, imageRemover);
+            volunteer.updateVolunteerInfo(volunteer.getName(), volunteer.getGender(),
+                volunteer.getBirthDate(), volunteer.getPhoneNumber(), nullImageUrl, imageRemover);
 
             //then
-            assertThat(updatedVolunteer.getVolunteerImageUrl()).isNull();
+            assertThat(volunteer.getVolunteerImageUrl()).isNull();
         }
 
         @Test
@@ -112,38 +112,32 @@ class VolunteerTest {
             String newImageUrl = "asdf";
 
             //when
-            Volunteer updatedVolunteer = volunteer.updateVolunteerInfo(volunteer.getName(),
-                volunteer.getGender(), volunteer.getBirthDate(), volunteer.getPhoneNumber(),
-                newImageUrl, imageRemover);
+            volunteer.updateVolunteerInfo(volunteer.getName(), volunteer.getGender(),
+                volunteer.getBirthDate(), volunteer.getPhoneNumber(), newImageUrl, imageRemover);
 
             //then
-            assertThat(updatedVolunteer.getVolunteerImageUrl()).isEqualTo(newImageUrl);
-            VolunteerImage volunteerImage = (VolunteerImage) ReflectionTestUtils.getField(
-                updatedVolunteer, "volunteerImage");
-            assertThat(volunteerImage.getVolunteer()).isEqualTo(updatedVolunteer);
+            assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(newImageUrl);
         }
 
         @Test
-        @DisplayName("성공: 이미지 url 입력값이 들어왔고, 봉사자 이미지와 같다면 현재 이미지는 업데이트 된 봉사자를 참조한다.")
+        @DisplayName("성공: 이미지 url 입력값이 들어왔고, 봉사자 이미지와 같다면 현재 이미지는 업데이트 되지 않는다.")
         void updateVolunteerImageWhenEqualsImageUrl() {
             //given
             String equalsImageUrl = "asdf";
-            Volunteer updatedVolunteer = volunteer.updateVolunteerInfo(volunteer.getName(),
+            volunteer.updateVolunteerInfo(volunteer.getName(),
                 volunteer.getGender(), volunteer.getBirthDate(), volunteer.getPhoneNumber(),
                 equalsImageUrl, imageRemover);
+            Object beforeVolunteerImage = ReflectionTestUtils.getField(volunteer, "volunteerImage");
 
             //when
-            Volunteer secondUpdatedVolunteer = updatedVolunteer.updateVolunteerInfo(
+            volunteer.updateVolunteerInfo(
                 volunteer.getName(), volunteer.getGender(), volunteer.getBirthDate(),
                 volunteer.getPhoneNumber(), equalsImageUrl, imageRemover);
 
             //then
-            assertThat(secondUpdatedVolunteer.getVolunteerImageUrl())
-                .isEqualTo(updatedVolunteer.getVolunteerImageUrl());
-            VolunteerImage secondUpdatedImage = (VolunteerImage) ReflectionTestUtils.getField(
-                secondUpdatedVolunteer,
-                "volunteerImage");
-            assertThat(secondUpdatedImage.getVolunteer()).isEqualTo(secondUpdatedVolunteer);
+            Object afterVolunteerImage = ReflectionTestUtils.getField(volunteer, "volunteerImage");
+            assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(equalsImageUrl);
+            assertThat(beforeVolunteerImage).isEqualTo(afterVolunteerImage);
         }
 
         @Test
@@ -151,18 +145,18 @@ class VolunteerTest {
         void updateVolunteerImageWhenNotEqualsImageUrl() {
             //given
             String imageUrl = "asdf";
-            Volunteer updatedVolunteer = volunteer.updateVolunteerInfo(volunteer.getName(),
+            volunteer.updateVolunteerInfo(volunteer.getName(),
                 volunteer.getGender(), volunteer.getBirthDate(), volunteer.getPhoneNumber(),
                 imageUrl, imageRemover);
             String notEqualsImageUrl = imageUrl + "a";
 
             //when
-            Volunteer secondUpdatedVolunteer = updatedVolunteer.updateVolunteerInfo(
+            volunteer.updateVolunteerInfo(
                 volunteer.getName(), volunteer.getGender(), volunteer.getBirthDate(),
                 volunteer.getPhoneNumber(), notEqualsImageUrl, imageRemover);
 
             //then
-            assertThat(secondUpdatedVolunteer.getVolunteerImageUrl()).isEqualTo(notEqualsImageUrl);
+            assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(notEqualsImageUrl);
         }
     }
 }
