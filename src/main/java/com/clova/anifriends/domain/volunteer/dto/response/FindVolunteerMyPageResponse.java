@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.volunteer.dto.response;
 
 import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
 import java.time.LocalDate;
 
 public record FindVolunteerMyPageResponse(
@@ -13,7 +14,7 @@ public record FindVolunteerMyPageResponse(
     int volunteerTemperature,
     long completedVolunteerCount,
     String volunteerImageUrl,
-    String volunteerGender
+    VolunteerGender volunteerGender
 ) {
 
     public static FindVolunteerMyPageResponse from(Volunteer volunteer) {

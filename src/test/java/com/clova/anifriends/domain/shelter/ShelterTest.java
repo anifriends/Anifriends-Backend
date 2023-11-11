@@ -2,11 +2,21 @@ package com.clova.anifriends.domain.shelter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class ShelterTest {
+
+    CustomPasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    void setUp() {
+        passwordEncoder = new MockPasswordEncoder();
+    }
 
     @Nested
     @DisplayName("Shelter 생성 시")
@@ -28,11 +38,11 @@ class ShelterTest {
             //when
             Shelter shelter = new Shelter(
                 email, password, address, addressDetail, name, phoneNumber, sparePhoneNumber,
-                isOpenedAddress);
+                isOpenedAddress, passwordEncoder);
 
             //then
             assertThat(shelter.getEmail()).isEqualTo(email);
-            assertThat(shelter.getPassword()).isEqualTo(password);
+            assertThat(passwordEncoder.matchesPassword(password, shelter.getPassword())).isTrue();
             assertThat(shelter.getAddress()).isEqualTo(address);
             assertThat(shelter.getAddressDetail()).isEqualTo(addressDetail);
             assertThat(shelter.getName()).isEqualTo(name);

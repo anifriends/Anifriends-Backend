@@ -4,6 +4,7 @@ import static com.clova.anifriends.global.exception.ErrorCode.BAD_REQUEST;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
@@ -11,6 +12,7 @@ import com.clova.anifriends.domain.volunteer.wrapper.VolunteerName;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerPassword;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerPhoneNumber;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerTemperature;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -67,7 +69,7 @@ public class Volunteer extends BaseTimeEntity {
     @OneToMany(mappedBy = "volunteer", fetch = FetchType.LAZY)
     private List<Applicant> applicants = new ArrayList<>();
 
-    @OneToOne(mappedBy = "volunteer")
+    @OneToOne(mappedBy = "volunteer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private VolunteerImage volunteerImage;
 
     public Volunteer(
@@ -103,6 +105,45 @@ public class Volunteer extends BaseTimeEntity {
         this.volunteerImage = volunteerImage;
     }
 
+    public void updateVolunteerInfo(
+        String name,
+        VolunteerGender gender,
+        LocalDate birthDate,
+        String phoneNumber,
+        String imageUrl,
+        ImageRemover imageRemover) {
+        this.name = this.name.updateName(name);
+        this.gender = updateGender(gender);
+        this.birthDate = updateBirthDate(birthDate);
+        this.phoneNumber = this.phoneNumber.updatePhoneNumber(phoneNumber);
+        this.volunteerImage = updateVolunteerImage(imageUrl, imageRemover);
+    }
+
+    private LocalDate updateBirthDate(LocalDate birthDate) {
+        return birthDate != null ? birthDate : this.birthDate;
+    }
+
+    private VolunteerGender updateGender(VolunteerGender gender) {
+        return gender != null ? gender : this.gender;
+    }
+
+    private VolunteerImage updateVolunteerImage(String imageUrl, ImageRemover imageRemover) {
+        if (Objects.nonNull(volunteerImage) && volunteerImage.isEqualImageUrl(imageUrl)) {
+            return this.volunteerImage;
+        }
+        clearVolunteerImageIfExists(imageRemover);
+        if(Objects.isNull(imageUrl)) {
+            return null;
+        }
+        return new VolunteerImage(this, imageUrl);
+    }
+
+    private void clearVolunteerImageIfExists(ImageRemover imageRemover) {
+        if (Objects.nonNull(volunteerImage)) {
+            volunteerImage.removeImage(imageRemover);
+        }
+    }
+
     public long getReviewCount() {
         return applicants.stream()
             .filter(applicant -> Objects.nonNull(applicant.getReview()))
@@ -129,8 +170,8 @@ public class Volunteer extends BaseTimeEntity {
         return this.phoneNumber.getPhoneNumber();
     }
 
-    public String getGender() {
-        return this.gender.getName();
+    public VolunteerGender getGender() {
+        return this.gender;
     }
 
     public Integer getTemperature() {

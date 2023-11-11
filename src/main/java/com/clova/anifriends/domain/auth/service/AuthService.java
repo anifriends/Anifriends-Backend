@@ -3,11 +3,11 @@ package com.clova.anifriends.domain.auth.service;
 import static com.clova.anifriends.global.exception.ErrorCode.INVALID_AUTH_INFO;
 
 import com.clova.anifriends.domain.auth.RefreshToken;
+import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
 import com.clova.anifriends.domain.auth.exception.AuthAuthenticationException;
 import com.clova.anifriends.domain.auth.exception.AuthNotFoundException;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
-import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
 import com.clova.anifriends.domain.auth.repository.RefreshTokenRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -15,8 +15,8 @@ import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +29,7 @@ public class AuthService {
     private final VolunteerRepository volunteerRepository;
     private final ShelterRepository shelterRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final CustomPasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
     @Transactional
@@ -51,7 +51,7 @@ public class AuthService {
     }
 
     private void validatePassword(String rawPassword, String encodedPassword) {
-        if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
+        if (!passwordEncoder.matchesPassword(rawPassword, encodedPassword)) {
             throw new AuthAuthenticationException(INVALID_AUTH_INFO, NOT_EQUALS_AUTH_INFO);
         }
     }
