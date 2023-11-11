@@ -89,6 +89,14 @@ operation::review-controller-test/find-shelter-reviews-by-volunteer[snippets='ht
 
 == 2. 보호소
 
+=== 보호소 비밀번호 변경
+
+==== Request
+operation::shelter-controller-test/update-password[snippets='http-request,request-headers,request-fields']
+
+==== Response
+operation::shelter-controller-test/update-password[snippets='http-response']
+
 === 보호소 마이 페이지 조회
 
 ==== Request
