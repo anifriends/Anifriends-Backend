@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.shelter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.clova.anifriends.base.MockImageRemover;
 import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
@@ -60,6 +61,63 @@ class ShelterTest {
     class UpdateTest {
 
         @Test
+        @DisplayName("성공")
+        void updateWhen() {
+            // given
+            ImageRemover imageRemover = new MockImageRemover();
+            String originName = "originName";
+            String originAddress = "originAddress";
+            String originAddressDetail = "originAddressDetail";
+            String originPhoneNumber = "010-1111-1111";
+            String originSparePhoneNumber = "010-2222-2222";
+            boolean originIsOpenedAddress = true;
+
+            String newName = "newName";
+            String newImageUrl = "newImageUrl";
+            String newAddress = "newAddress";
+            String newAddressDetail = "newAddressDetail";
+            String newPhoneNumber = "010-3333-3333";
+            String newSparePhoneNumber = "010-4444-4444";
+            boolean newIsOpenedAddress = false;
+
+            Shelter shelter = new Shelter(
+                "shelterEmail@email.com",
+                "shelterPassword",
+                originAddress,
+                originAddressDetail,
+                originName,
+                originPhoneNumber,
+                originSparePhoneNumber,
+                originIsOpenedAddress,
+                passwordEncoder
+            );
+
+            // when
+            shelter.updateShelter(
+                newName,
+                newImageUrl,
+                newAddress,
+                newAddressDetail,
+                newPhoneNumber,
+                newSparePhoneNumber,
+                newIsOpenedAddress,
+                imageRemover
+            );
+
+            // then
+            assertSoftly(softAssertions -> {
+                softAssertions.assertThat(shelter.getName()).isEqualTo(newName);
+                softAssertions.assertThat(shelter.getImage()).isEqualTo(newImageUrl);
+                softAssertions.assertThat(shelter.getAddress()).isEqualTo(newAddress);
+                softAssertions.assertThat(shelter.getAddressDetail()).isEqualTo(newAddressDetail);
+                softAssertions.assertThat(shelter.getPhoneNumber()).isEqualTo(newPhoneNumber);
+                softAssertions.assertThat(shelter.isOpenedAddress()).isEqualTo(newIsOpenedAddress);
+                softAssertions.assertThat(shelter.getSparePhoneNumber())
+                    .isEqualTo(newSparePhoneNumber);
+            });
+        }
+
+        @Test
         @DisplayName("성공: 기존 이미지 존재 -> 새로운 이미지 갱신")
         void updateWhenExistToNewImage() {
             // given
@@ -111,7 +169,7 @@ class ShelterTest {
         }
 
         @Test
-        @DisplayName("성공: 기존 이미지 존재 -> none")
+        @DisplayName("성공: 기존 이미지 존재 -> 이미지 none")
         void updateExistToNone() {
             // given
             ImageRemover imageRemover = new MockImageRemover();
@@ -137,7 +195,7 @@ class ShelterTest {
         }
 
         @Test
-        @DisplayName("성공: none -> 새로운 이미지 갱신")
+        @DisplayName("성공: 이미지 none -> 새로운 이미지 갱신")
         void updateNoneToNewImage() {
             // given
             ImageRemover imageRemover = new MockImageRemover();
@@ -163,7 +221,7 @@ class ShelterTest {
         }
 
         @Test
-        @DisplayName("성공: none -> none")
+        @DisplayName("성공: 이미지 none -> 이미지 none")
         void updateNoneToNone() {
             // given
             ImageRemover imageRemover = new MockImageRemover();
