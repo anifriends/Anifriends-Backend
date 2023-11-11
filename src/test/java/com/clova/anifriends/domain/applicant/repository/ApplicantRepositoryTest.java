@@ -219,10 +219,13 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             );
 
             List<Long> attendedIds = List.of(applicantNoShowToAttendance.getApplicantId());
+            List<Long> noShowIds = List.of(applicantAttendanceToNoShow.getApplicantId());
 
             // when
             applicantRepository.updateBulkAttendance(shelter.getShelterId(),
-                recruitment.getRecruitmentId(), attendedIds);
+                recruitment.getRecruitmentId(), attendedIds, ATTENDANCE);
+            applicantRepository.updateBulkAttendance(shelter.getShelterId(),
+                recruitment.getRecruitmentId(), noShowIds, NO_SHOW);
 
             // then
             Optional<Applicant> persistedApplicantNoShowToAttendance = applicantRepository.findById(

@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.applicant.repository;
 
 import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.util.List;
@@ -55,15 +56,15 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
     );
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query("update Applicant a set a.status = "
-        + "case when a.applicantId in :attendedIds "
-        + "then 'ATTENDANCE' else 'NO_SHOW' end "
+    @Query("update Applicant a set a.status = :status "
         + "where a.recruitment.recruitmentId = :recruitmentId "
         + "and a.recruitment.shelter.shelterId = :shelterId "
+        + "and a.applicantId in :ids "
         + "and (a.status = 'ATTENDANCE' or a.status = 'NO_SHOW')")
     void updateBulkAttendance(
         @Param("shelterId") Long shelterId,
         @Param("recruitmentId") Long recruitmentId,
-        @Param("attendedIds") List<Long> attendedIds
+        @Param("ids") List<Long> ids,
+        @Param("status") ApplicantStatus status
     );
 }

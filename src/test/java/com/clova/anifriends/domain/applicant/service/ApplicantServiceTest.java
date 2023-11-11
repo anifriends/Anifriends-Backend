@@ -332,7 +332,12 @@ class ApplicantServiceTest {
             verify(applicantRepository, times(1))
                 .updateBulkAttendance(shelter.getShelterId(), recruitment.getRecruitmentId(),
                     List.of(applicantAttendance.getApplicantId(),
-                        applicantNoShowToAttendance.getApplicantId()));
+                        applicantNoShowToAttendance.getApplicantId()), ATTENDANCE);
+
+            verify(applicantRepository, times(1))
+                .updateBulkAttendance(shelter.getShelterId(), recruitment.getRecruitmentId(),
+                    List.of(applicantAttendanceToNoShow.getApplicantId(),
+                        applicantNoShow.getApplicantId()), NO_SHOW);
 
         }
     }

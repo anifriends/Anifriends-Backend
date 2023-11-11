@@ -1,9 +1,9 @@
 package com.clova.anifriends.domain.applicant.controller;
 
+import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
-import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.service.ApplicantService;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.auth.LoginUser;
@@ -61,12 +61,12 @@ public class ApplicantController {
     public ResponseEntity<Void> updateApplicantAttendance(
         @LoginUser Long shelterId,
         @PathVariable Long recruitmentId,
-        @RequestBody UpdateApplicantsAttendanceRequest request
+        @RequestBody UpdateApplicantsAttendanceRequest updateApplicantsAttendanceRequest
     ) {
         applicantService.updateApplicantAttendance(
             shelterId,
             recruitmentId,
-            request.applicants()
+            updateApplicantsAttendanceRequest.applicants()
                 .stream()
                 .map(applicant -> new UpdateApplicantAttendanceCommand(applicant.applicantId(),
                     applicant.isAttended()))
