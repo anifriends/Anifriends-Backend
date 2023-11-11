@@ -36,6 +36,7 @@ import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.request.UpdateRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
@@ -428,5 +429,56 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     parameterWithName("recruitmentId").description("봉사 모집글 ID")
                 )
             ));
+    }
+
+    @Test
+    @DisplayName("성공: 봉사 몾집글 수정 api 호출 시")
+    void updateRecruitment() throws Exception {
+        //given
+        String title = "title";
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startTime = now.plusMonths(1);
+        LocalDateTime endTime = startTime.plusHours(1);
+        LocalDateTime deadline = startTime.minusDays(1);
+        int capacity = 10;
+        String content = "content";
+        List<String> imageUrls = List.of("a1", "a2");
+        UpdateRecruitmentRequest updateRecruitmentRequest = new UpdateRecruitmentRequest(title,
+            startTime, endTime, deadline, capacity, content, imageUrls);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            patch("/api/shelters/recruitments/{recruitmentId}", 1L)
+                .header(AUTHORIZATION, shelterAccessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRecruitmentRequest)));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("recruitmentId").description("봉사 모집글 ID")
+                ),
+                requestFields(
+                    fieldWithPath("title").type(STRING).description("봉사 모집글 제목").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 100자 이하")),
+                    fieldWithPath("startTime").type(STRING).description("봉사 시작 시간").optional()
+                        .attributes(DocumentationFormatGenerator.getDatetimeConstraint()),
+                    fieldWithPath("endTime").type(STRING).description("봉사 종료 시간").optional()
+                        .attributes(DocumentationFormatGenerator.getDatetimeConstraint()),
+                    fieldWithPath("deadline").type(STRING).description("봉사 마감 시간").optional()
+                        .attributes(DocumentationFormatGenerator.getDatetimeConstraint()),
+                    fieldWithPath("capacity").type(NUMBER).description("봉사 정원").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("1명 이상, 99명 이하")),
+                    fieldWithPath("content").type(STRING).description("봉사 모집글 내용").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 1000자 이하")),
+                    fieldWithPath("imageUrls").type(ARRAY).description("봉사 모집글 이미지 리스트").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("5장 이하"))
+                )
+            ));
+
     }
 }
