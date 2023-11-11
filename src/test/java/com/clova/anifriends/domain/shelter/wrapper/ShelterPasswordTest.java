@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class ShelterPasswordTest {
 
@@ -28,37 +30,40 @@ class ShelterPasswordTest {
             password = "asdfqwer123";
 
             // when
-            ShelterPassword shelterPassword = new ShelterPassword(password);
+            ShelterPassword shelterPassword = new ShelterPassword(password, passwordEncoder);
 
             // then
-            assertThat(shelterPassword.getPassword()).isEqualTo(password);
+            assertThat(passwordEncoder.matchesPassword(password, shelterPassword.getPassword()))
+                .isTrue();
         }
 
         @Test
-        @DisplayName("예외(ShelterNotFoundException): 비밀번호가 null인 경우")
-        void throwExceptionWhenPasswordIsNull() {
-            // given
-            password = null;
+        @DisplayName("예외(ShelterBadRequestException): 패스워드가 null")
+        void exceptionWhenPasswordIsNull() {
+            //given
+            String nullPassword = null;
 
-            // when
+            //when
             Exception exception = catchException(
-                () -> new ShelterPassword(password));
+                () -> new ShelterPassword(nullPassword, passwordEncoder));
 
-            // then
+            //then
             assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
         }
 
-        @Test
-        @DisplayName("예외(ShelterNotFoundException): 비밀번호가 blank인 경우")
-        void throwExceptionWhenPasswordIsBlank() {
-            // given
-            password = null;
+        @ParameterizedTest
+        @CsvSource({
+            "4", "5", "17", "18"
+        })
+        @DisplayName("예외(ShelterBadRequestException): 패스워드가 6자 미만, 16자 초과")
+        void exceptionWhenPasswordOutOfLength(String passwordLength) {
+            //given
+            String passwordOutOfLength = "a".repeat(Integer.parseInt(passwordLength));
 
-            // when
+            //when
             Exception exception = catchException(
-                () -> new ShelterPassword(password));
-
-            // then
+                () -> new ShelterPassword(passwordOutOfLength, passwordEncoder));
+            //then
             assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
         }
     }
@@ -80,8 +85,7 @@ class ShelterPasswordTest {
         @DisplayName("성공: 입력된 현재 비밀번호와 보호소 비밀번호가 같음")
         void updatePassword() {
             //given
-            String encodedPassword = passwordEncoder.encodePassword(rawOldPassword);
-            ShelterPassword shelterPassword = new ShelterPassword(encodedPassword);
+            ShelterPassword shelterPassword = new ShelterPassword(rawOldPassword, passwordEncoder);
 
             //when
             Exception exception = catchException(
@@ -96,7 +100,7 @@ class ShelterPasswordTest {
         @DisplayName("예외(ShelterBadRequestException): 입력된 현재 비밀번호와 보호소 비밀번호가 같지 않음")
         void exceptionWhenNotEqualsPassword() {
             //given
-            ShelterPassword shelterPassword = new ShelterPassword(rawOldPassword);
+            ShelterPassword shelterPassword = new ShelterPassword(rawOldPassword, passwordEncoder);
             String notEqualsPassword = rawOldPassword + "a";
 
             //when
@@ -112,7 +116,7 @@ class ShelterPasswordTest {
         @DisplayName("예외(ShelterBadRequestException): 입력된 새로운 비밀번호와 보호소 비밀번호가 같음")
         void exceptionWhenEqualsNewPassword() {
             //given
-            ShelterPassword shelterPassword = new ShelterPassword(rawOldPassword);
+            ShelterPassword shelterPassword = new ShelterPassword(rawOldPassword, passwordEncoder);
             String notEqualsPassword = rawOldPassword + "a";
 
             //when

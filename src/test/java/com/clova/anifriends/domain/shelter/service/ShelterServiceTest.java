@@ -17,7 +17,6 @@ import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
-import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -27,8 +26,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -94,39 +91,6 @@ class ShelterServiceTest {
 
             //then
             then(shelterRepository).should().save(any());
-        }
-
-        @Test
-        @DisplayName("예외(ShelterBadRequestException): 패스워드가 null")
-        void exceptionWhenPasswordIsNull() {
-            //given
-            String nullPassword = null;
-
-            //when
-            Exception exception = catchException(
-                () -> shelterService.registerShelter(email, nullPassword, name, address,
-                    addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress));
-
-            //then
-            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
-        }
-
-        @ParameterizedTest
-        @CsvSource({
-            "4", "5", "17", "18"
-        })
-        @DisplayName("예외(ShelterBadRequestException): 패스워드가 6자 미만, 16자 초과")
-        void exceptionWhenPasswordOutOfLength(String passwordLength) {
-            //given
-            String passwordOutOfLength = "a".repeat(Integer.parseInt(passwordLength));
-
-            //when
-            Exception exception = catchException(
-                () -> shelterService.registerShelter(email, passwordOutOfLength, name, address,
-                    addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress));
-
-            //then
-            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
         }
     }
 

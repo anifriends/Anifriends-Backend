@@ -54,27 +54,11 @@ public class Shelter extends BaseTimeEntity {
         String name,
         String phoneNumber,
         String sparePhoneNumber,
-        boolean isOpenedAddress
+        boolean isOpenedAddress,
+        CustomPasswordEncoder passwordEncoder
     ) {
-        this(null, email, password, address, addressDetail, name,
-            phoneNumber,
-            sparePhoneNumber, isOpenedAddress);
-    }
-
-    private Shelter(
-        Long shelterId,
-        String email,
-        String password,
-        String address,
-        String addressDetail,
-        String name,
-        String phoneNumber,
-        String sparePhoneNumber,
-        boolean isOpenedAddress
-    ) {
-        this.shelterId = shelterId;
         this.email = new ShelterEmail(email);
-        this.password = new ShelterPassword(password);
+        this.password = new ShelterPassword(password, passwordEncoder);
         this.name = new ShelterName(name);
         this.phoneNumberInfo = new ShelterPhoneNumberInfo(phoneNumber, sparePhoneNumber);
         this.addressInfo = new ShelterAddressInfo(address, addressDetail, isOpenedAddress);
