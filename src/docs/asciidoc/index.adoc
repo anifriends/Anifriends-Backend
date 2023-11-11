@@ -103,6 +103,16 @@ operation::recruitment-controller-test/register-recruitment[snippets='http-reque
 
 operation::recruitment-controller-test/register-recruitment[snippets='http-response,response-headers']
 
+=== 봉사 모집글 마감
+
+==== Request
+
+operation::recruitment-controller-test/close-recruitment[snippets='http-request,request-headers,path-parameters']
+
+==== Response
+
+operation::recruitment-controller-test/close-recruitment[snippets='http-response']
+
 == 4. 봉사 신청
 
 == 5. 봉사 후기
