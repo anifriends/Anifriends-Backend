@@ -26,6 +26,7 @@ import com.clova.anifriends.domain.shelter.dto.request.CheckDuplicateShelterEmai
 import com.clova.anifriends.domain.shelter.dto.request.RegisterShelterRequest;
 import com.clova.anifriends.domain.shelter.dto.request.UpdateAddressStatusRequest;
 import com.clova.anifriends.domain.shelter.dto.request.UpdateShelterPasswordRequest;
+import com.clova.anifriends.domain.shelter.dto.request.UpdateShelterRequest;
 import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
@@ -330,5 +331,58 @@ class ShelterControllerTest extends BaseControllerTest {
 
                 )
             ));
+    }
+
+    @Test
+    @DisplayName("보호소 정보 수정 api 호출 시")
+    void updateShelter() throws Exception {
+        // given
+        Shelter shelter = ShelterFixture.shelter();
+        UpdateShelterRequest request = new UpdateShelterRequest(
+            shelter.getName(), shelter.getImage(), shelter.getAddress(), shelter.getAddressDetail(),
+            shelter.getPhoneNumber(), shelter.getSparePhoneNumber(), shelter.isOpenedAddress()
+        );
+
+        // when
+        ResultActions result = mockMvc.perform(
+            patch("/api/shelters/me")
+                .header(AUTHORIZATION, shelterAccessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)));
+
+        // then
+        result.andExpect(status().isNoContent())
+            .andDo(
+                restDocs.document(
+                    requestHeaders(
+                        headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                    ),
+                    requestFields(
+                        fieldWithPath("name").type(JsonFieldType.STRING).description("보호소 이름")
+                            .attributes(
+                                DocumentationFormatGenerator.getConstraint("1자 이상, 20자 이하")),
+                        fieldWithPath("imageUrl").type(JsonFieldType.STRING).description("보호소 이름")
+                            .optional(),
+                        fieldWithPath("address").type(JsonFieldType.STRING).description("보호소 주소")
+                            .attributes(
+                                DocumentationFormatGenerator.getConstraint("1자 이상, 100자 이하")),
+                        fieldWithPath("addressDetail").type(JsonFieldType.STRING)
+                            .description("보호소 상세 주소")
+                            .attributes(
+                                DocumentationFormatGenerator.getConstraint("1자 이상, 100자 이하")),
+                        fieldWithPath("phoneNumber").type(JsonFieldType.STRING)
+                            .description("보호소 전화번호")
+                            .attributes(
+                                DocumentationFormatGenerator.getConstraint("- 포함, 전화번호 형식 준수")),
+                        fieldWithPath("sparePhoneNumber").type(JsonFieldType.STRING)
+                            .description("보호소 임시 전화번호")
+                            .attributes(
+                                DocumentationFormatGenerator.getConstraint("- 포함, 전화번호 형식 준수")),
+                        fieldWithPath("isOpenedAddress").type(JsonFieldType.BOOLEAN)
+                            .description("보호소 주소 공개 여부")
+                    )
+                ));
+
+
     }
 }

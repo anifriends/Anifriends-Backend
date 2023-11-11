@@ -5,6 +5,7 @@ import com.clova.anifriends.domain.shelter.dto.request.CheckDuplicateShelterEmai
 import com.clova.anifriends.domain.shelter.dto.request.RegisterShelterRequest;
 import com.clova.anifriends.domain.shelter.dto.request.UpdateAddressStatusRequest;
 import com.clova.anifriends.domain.shelter.dto.request.UpdateShelterPasswordRequest;
+import com.clova.anifriends.domain.shelter.dto.request.UpdateShelterRequest;
 import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
@@ -92,6 +93,25 @@ public class ShelterController {
         @RequestBody @Valid UpdateAddressStatusRequest updateAddressStatusRequest
     ) {
         shelterService.updateAddressStatus(shelterId, updateAddressStatusRequest.isOpenedAddress());
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/shelters/me")
+    public ResponseEntity<Void> updateShelter(
+        @LoginUser Long shelterId,
+        @RequestBody UpdateShelterRequest updateShelterRequest
+    ) {
+        shelterService.updateShelter(
+            shelterId,
+            updateShelterRequest.name(),
+            updateShelterRequest.imageUrl(),
+            updateShelterRequest.address(),
+            updateShelterRequest.addressDetail(),
+            updateShelterRequest.phoneNumber(),
+            updateShelterRequest.sparePhoneNumber(),
+            updateShelterRequest.isOpenedAddress()
+        );
 
         return ResponseEntity.noContent().build();
     }
