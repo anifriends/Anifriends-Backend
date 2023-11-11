@@ -2,10 +2,10 @@ package com.clova.anifriends.domain.shelter.service;
 
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
+import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleByVolunteerResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
