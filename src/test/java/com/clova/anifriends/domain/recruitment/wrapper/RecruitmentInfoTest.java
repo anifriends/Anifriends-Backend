@@ -248,5 +248,29 @@ class RecruitmentInfoTest {
                 .isEqualTo(recruitmentInfo.getCapacity());
             assertThat(updatedRecruitmentInfo).isEqualTo(recruitmentInfo);
         }
+
+        @Test
+        @DisplayName("성공: null이 입력되지 않은 값에 대해서만 업테이트")
+        void updateRecruitmentInfoWhenUpdateStartTimeAndEndTime() {
+            //given
+            LocalDateTime newStartTime = recruitmentInfo.getStartTime().plusDays(1);
+            LocalDateTime newEndTime = newStartTime.plusHours(1);
+            LocalDateTime nullDeadline = null;
+            Integer nullCapacity = null;
+
+            //when
+            RecruitmentInfo updatedRecruitmentInfo = recruitmentInfo.updateRecruitmentInfo(
+                newStartTime, newEndTime, nullDeadline, nullCapacity);
+
+            //then
+            assertThat(updatedRecruitmentInfo.getStartTime())
+                .isEqualTo(newStartTime);
+            assertThat(updatedRecruitmentInfo.getEndTime())
+                .isEqualTo(newEndTime);
+            assertThat(updatedRecruitmentInfo.getDeadline())
+                .isEqualTo(recruitmentInfo.getDeadline());
+            assertThat(updatedRecruitmentInfo.getCapacity())
+                .isEqualTo(recruitmentInfo.getCapacity());
+        }
     }
 }
