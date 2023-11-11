@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.volunteer.controller;
 import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.volunteer.dto.request.CheckDuplicateVolunteerEmailRequest;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
+import com.clova.anifriends.domain.volunteer.dto.request.UpdateVolunteerInfoRequest;
 import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
@@ -12,6 +13,7 @@ import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,5 +69,19 @@ public class VolunteerController {
                 volunteerId
             )
         );
+    }
+
+    @PatchMapping("/volunteers/me")
+    public ResponseEntity<Void> updateVolunteerInfo(
+        @LoginUser Long volunteerId,
+        @RequestBody @Valid UpdateVolunteerInfoRequest updateVolunteerInfoRequest) {
+        volunteerService.updateVolunteerInfo(
+            volunteerId,
+            updateVolunteerInfoRequest.name(),
+            updateVolunteerInfoRequest.gender(),
+            updateVolunteerInfoRequest.birthDate(),
+            updateVolunteerInfoRequest.phoneNumber(),
+            updateVolunteerInfoRequest.imageUrl());
+        return ResponseEntity.noContent().build();
     }
 }

@@ -20,6 +20,8 @@ import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -144,6 +146,37 @@ class VolunteerServiceTest {
             // then
             assertThat(foundFindVolunteerProfileResponse).usingRecursiveComparison()
                 .isEqualTo(expectedFindVolunteerProfileResponse);
+        }
+    }
+
+    @Nested
+    @DisplayName("updatedVolunteerInfo 메서드 호출 시")
+    class UpdateVolunteerInfoTest {
+
+        @Test
+        @DisplayName("성공")
+        void updateVolunteerInfo() {
+            //given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            String newName = volunteer.getName() + "a";
+            VolunteerGender newGender = volunteer.getGender() == VolunteerGender.FEMALE
+                ? VolunteerGender.MALE : VolunteerGender.FEMALE;
+            LocalDate newBirthDate = volunteer.getBirthDate().plusDays(1);
+            String newPhoneNumber = "010-9999-9999";
+            String newImageUrl = "asdf";
+
+            given(volunteerRepository.findById(anyLong())).willReturn(ofNullable(volunteer));
+
+            //when
+            volunteerService.updateVolunteerInfo(1L, newName, newGender, newBirthDate,
+                newPhoneNumber, newImageUrl);
+
+            //then
+            assertThat(volunteer.getName()).isEqualTo(newName);
+            assertThat(volunteer.getGender()).isEqualTo(newGender);
+            assertThat(volunteer.getBirthDate()).isEqualTo(newBirthDate);
+            assertThat(volunteer.getPhoneNumber()).isEqualTo(newPhoneNumber);
+            assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(newImageUrl);
         }
     }
 }

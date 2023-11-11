@@ -81,4 +81,8 @@ public class RecruitmentInfo {
                     "봉사 모집 인원은 {0}명 이상, {1}명 이하여야 합니다.", MIN_CAPACITY, MAX_CAPACITY));
         }
     }
+
+    public RecruitmentInfo closeRecruitment() {
+        return new RecruitmentInfo(startTime, endTime, deadline, true, capacity);
+    }
 }

@@ -160,4 +160,29 @@ class RecruitmentInfoTest {
                 .isInstanceOf(RecruitmentBadRequestException.class);
         }
     }
+
+    @Nested
+    @DisplayName("closeRecruitment 메서드 호출 시")
+    class CloseRecruitmentTest {
+
+        @Test
+        @DisplayName("성공")
+        void closeRecruitment() {
+            //given
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime startTime = now.plusHours(1);
+            LocalDateTime endTime = startTime.plusMinutes(1);
+            LocalDateTime deadline = startTime.minusMinutes(1);
+            boolean isClosed = false;
+            int capacity = 10;
+            RecruitmentInfo recruitmentInfo
+                = new RecruitmentInfo(startTime, endTime, deadline, isClosed, capacity);
+
+            //when
+            RecruitmentInfo updatedRecruitmentInfo = recruitmentInfo.closeRecruitment();
+
+            //then
+            assertThat(updatedRecruitmentInfo.isClosed()).isTrue();
+        }
+    }
 }

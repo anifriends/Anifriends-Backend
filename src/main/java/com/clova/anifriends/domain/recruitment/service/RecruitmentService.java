@@ -132,4 +132,10 @@ public class RecruitmentService {
             pageable);
         return FindRecruitmentsByVolunteerResponse.from(recruitments);
     }
+
+    @Transactional
+    public void closeRecruitment(Long shelterId, Long recruitmentId) {
+        Recruitment recruitment = getRecruitmentByShelter(shelterId, recruitmentId);
+        recruitment.closeRecruitment();
+    }
 }

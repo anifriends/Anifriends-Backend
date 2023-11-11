@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.volunteer.service;
 
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
@@ -8,6 +9,8 @@ import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileRe
 import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
+import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
+    private final ImageRemover imageRemover;
     private final CustomPasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
@@ -59,5 +63,17 @@ public class VolunteerService {
     private Volunteer getVolunteer(Long volunteerId) {
         return volunteerRepository.findById(volunteerId)
             .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
+    }
+
+    @Transactional
+    public void updateVolunteerInfo(
+        Long volunteerId,
+        String name,
+        VolunteerGender gender,
+        LocalDate birthDate,
+        String phoneNumber,
+        String imageUrl) {
+        Volunteer volunteer = getVolunteer(volunteerId);
+        volunteer.updateVolunteerInfo(name, gender, birthDate, phoneNumber, imageUrl, imageRemover);
     }
 }

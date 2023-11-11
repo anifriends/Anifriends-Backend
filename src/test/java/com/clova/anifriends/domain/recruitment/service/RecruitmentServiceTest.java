@@ -26,6 +26,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVo
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse.FindRecruitmentByVolunteerResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
+import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -34,6 +35,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -165,9 +167,11 @@ class RecruitmentServiceTest {
             FindRecruitmentByVolunteerResponse findRecruitment = recruitmentsByVolunteer.recruitments()
                 .get(0);
             assertThat(findRecruitment.recruitmentTitle()).isEqualTo(recruitment.getTitle());
-            assertThat(findRecruitment.recruitmentStartTime()).isEqualTo(recruitment.getStartTime());
+            assertThat(findRecruitment.recruitmentStartTime()).isEqualTo(
+                recruitment.getStartTime());
             assertThat(findRecruitment.recruitmentEndTime()).isEqualTo(recruitment.getEndTime());
-            assertThat(findRecruitment.recruitmentApplicantCount()).isEqualTo(recruitment.getApplicantCount());
+            assertThat(findRecruitment.recruitmentApplicantCount()).isEqualTo(
+                recruitment.getApplicantCount());
             assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
             assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
             assertThat(findRecruitment.shelterImageUrl())
@@ -246,7 +250,8 @@ class RecruitmentServiceTest {
             when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.of(recruitment));
 
             // when
-            FindRecruitmentDetailResponse result = recruitmentService.findRecruitmentDetail(anyLong());
+            FindRecruitmentDetailResponse result = recruitmentService.findRecruitmentDetail(
+                anyLong());
 
             // then
             assertThat(result).isEqualTo(expected);
@@ -263,6 +268,48 @@ class RecruitmentServiceTest {
                 () -> recruitmentService.findRecruitmentDetail(anyLong()));
 
             // then
+            assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("closeRecruitment 메서드 호출 시")
+    class CloseRecruitmentTest {
+
+        Recruitment recruitment;
+
+        @BeforeEach
+        void setUp() {
+            Shelter shelter = shelter();
+            recruitment = RecruitmentFixture.recruitment(shelter);
+        }
+
+        @Test
+        @DisplayName("성공")
+        void closeRecruitment() {
+            //given
+            given(recruitmentRepository.findByShelterIdAndRecruitmentId(anyLong(), anyLong()))
+                .willReturn(Optional.ofNullable(recruitment));
+
+            //when
+            recruitmentService.closeRecruitment(1L, 1L);
+
+            //then
+            assertThat(recruitment.isClosed()).isTrue();
+        }
+
+        @Test
+        @DisplayName("예외(RecruitmentNotFounException): 존재하지 않는 봉사 모집글")
+        void exceptionWhenRecruitmentNotFound() {
+            //given
+            given(recruitmentRepository.findByShelterIdAndRecruitmentId(anyLong(), anyLong()))
+                .willReturn(Optional.empty());
+
+            //when
+            Exception exception = catchException(
+                () -> recruitmentService.closeRecruitment(1L, 1L));
+
+            //then
             assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
         }
     }

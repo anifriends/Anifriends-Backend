@@ -158,7 +158,8 @@ private excludedClassFilesForReport(classDirectories) {
 						"**/*Config*",
 						"**/*Response*",
 						"**/*Request*",
-						"**/exception/**"
+						"**/exception/**",
+						"**/Mock**"
 				])
 			})
 	)
