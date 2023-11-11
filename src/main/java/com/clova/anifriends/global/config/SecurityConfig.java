@@ -1,6 +1,8 @@
 package com.clova.anifriends.global.config;
 
 import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider;
+import com.clova.anifriends.global.security.passwordencoder.BCryptCustomPasswordEncoder;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.global.web.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +13,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 
@@ -23,8 +24,8 @@ public class SecurityConfig {
     private static final String ROLE_VOLUNTEER = "VOLUNTEER";
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public CustomPasswordEncoder customPasswordEncoder() {
+        return new BCryptCustomPasswordEncoder(new BCryptPasswordEncoder());
     }
 
     @Bean

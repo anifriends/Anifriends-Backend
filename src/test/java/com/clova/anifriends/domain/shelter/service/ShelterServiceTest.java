@@ -9,6 +9,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.when;
 
+import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
@@ -31,7 +33,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 class ShelterServiceTest {
@@ -43,17 +44,7 @@ class ShelterServiceTest {
     private ShelterRepository shelterRepository;
 
     @Spy
-    PasswordEncoder passwordEncoder = new PasswordEncoder() {
-        @Override
-        public String encode(CharSequence rawPassword) {
-            return new StringBuilder(rawPassword).reverse().toString();
-        }
-
-        @Override
-        public boolean matches(CharSequence rawPassword, String encodedPassword) {
-            return encode(rawPassword).equals(encodedPassword);
-        }
-    };
+    CustomPasswordEncoder passwordEncoder = new MockPasswordEncoder();
 
     Shelter givenShelter;
     ShelterImage givenShelterImage;
@@ -261,6 +252,50 @@ class ShelterServiceTest {
 
             // then
             assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("updatePassword 메서드 호출 시")
+    class UpdatePasswordTest {
+
+        @Test
+        @DisplayName("성공")
+        void updatePassword() {
+            //given
+            Shelter shelter = shelter();
+            String encodedOldPassword = shelter.getPassword();
+            String rawShelterPassword = ShelterFixture.RAW_SHELTER_PASSWORD;
+            String rawNewPassword = rawShelterPassword + "a";
+
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
+
+            //when
+            shelterService.updatePassword(1L, rawShelterPassword, rawNewPassword);
+
+            //then
+            then(shelterRepository).should().save(any(Shelter.class));
+        }
+    }
+
+    @Nested
+    @DisplayName("updateAddressStatus 메서드 호출 시")
+    class UpdateAddressStatusTest {
+
+        @Test
+        @DisplayName("성공")
+        void updateAddressStatus() {
+            //given
+            Shelter shelter = shelter();
+            boolean updateAddressStatus = false;
+
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
+
+            //when
+            shelterService.updateAddressStatus(1L, updateAddressStatus);
+
+            //then
+            assertThat(shelter.isOpenedAddress()).isFalse();
         }
     }
 }

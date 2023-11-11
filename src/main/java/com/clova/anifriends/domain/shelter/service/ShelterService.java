@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.shelter.service;
 
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
@@ -12,7 +13,6 @@ import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
 import java.text.MessageFormat;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +24,7 @@ public class ShelterService {
     private static final int MAX_PASSWORD_LENGTH = 16;
 
     private final ShelterRepository shelterRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final CustomPasswordEncoder passwordEncoder;
 
     @Transactional
     public Long registerShelter(
@@ -52,7 +52,17 @@ public class ShelterService {
     private String encodePassword(String password) {
         validatePasswordNotNull(password);
         validatePasswordLength(password);
-        return passwordEncoder.encode(password);
+        return passwordEncoder.encodePassword(password);
+    }
+
+    @Transactional
+    public void updatePassword(Long shelterId, String rawOldPassword, String rawNewPassword) {
+        Shelter shelter = getShelter(shelterId);
+        Shelter updatedShelter = shelter.updatePassword(
+            passwordEncoder,
+            rawOldPassword,
+            rawNewPassword);
+        shelterRepository.save(updatedShelter);
     }
 
     private void validatePasswordNotNull(String password) {
@@ -105,5 +115,14 @@ public class ShelterService {
     private Shelter getShelter(Long shelterId) {
         return shelterRepository.findById(shelterId)
             .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
+    }
+
+    @Transactional
+    public void updateAddressStatus(
+        Long shelterId,
+        Boolean isOpenedAddress
+    ) {
+        Shelter foundShelter = getShelter(shelterId);
+        foundShelter.updateAddressStatus(isOpenedAddress);
     }
 }
