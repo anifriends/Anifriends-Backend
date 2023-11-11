@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.volunteer.service;
 
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
@@ -75,5 +75,15 @@ public class VolunteerService {
         String imageUrl) {
         Volunteer volunteer = getVolunteer(volunteerId);
         volunteer.updateVolunteerInfo(name, gender, birthDate, phoneNumber, imageUrl, imageRemover);
+    }
+
+    @Transactional
+    public void updatePassword(
+        Long volunteerId,
+        String rawOldPassword,
+        String rawNewPassword
+    ) {
+        Volunteer foundVolunteer = getVolunteer(volunteerId);
+        foundVolunteer.updatePassword(passwordEncoder, rawOldPassword, rawNewPassword);
     }
 }
