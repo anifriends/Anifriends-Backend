@@ -98,20 +98,10 @@ public class Shelter extends BaseTimeEntity {
             this.addressInfo.isOpenedAddress());
     }
 
-    public Shelter updateAddressStatus(
+    public void updateAddressStatus(
         Boolean updatedAddressStatus
     ) {
-        return new Shelter(
-            this.shelterId,
-            this.email.getEmail(),
-            this.password.getPassword(),
-            this.addressInfo.getAddress(),
-            this.addressInfo.getAddressDetail(),
-            this.name.getName(),
-            this.phoneNumberInfo.getPhoneNumber(),
-            this.phoneNumberInfo.getSparePhoneNumber(),
-            updatedAddressStatus
-        );
+        addressInfo = addressInfo.updateAddressStatus(updatedAddressStatus);
     }
 
     public Long getShelterId() {

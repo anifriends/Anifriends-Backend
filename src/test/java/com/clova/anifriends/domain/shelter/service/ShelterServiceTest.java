@@ -295,7 +295,7 @@ class ShelterServiceTest {
             shelterService.updateAddressStatus(1L, updateAddressStatus);
 
             //then
-            then(shelterRepository).should().save(any(Shelter.class));
+            assertThat(shelter.isOpenedAddress()).isFalse();
         }
     }
 }

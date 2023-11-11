@@ -123,8 +123,6 @@ public class ShelterService {
         Boolean isOpenedAddress
     ) {
         Shelter foundShelter = getShelter(shelterId);
-        Shelter updatedShelter = foundShelter.updateAddressStatus(isOpenedAddress);
-
-        shelterRepository.save(updatedShelter);
+        foundShelter.updateAddressStatus(isOpenedAddress);
     }
 }
