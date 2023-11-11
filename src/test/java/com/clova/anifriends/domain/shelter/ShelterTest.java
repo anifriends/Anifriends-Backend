@@ -111,8 +111,8 @@ class ShelterTest {
         }
 
         @Test
-        @DisplayName("성공: 기존 이미지 존재 -> null")
-        void update() {
+        @DisplayName("성공: 기존 이미지 존재 -> none")
+        void updateExistToNone() {
             // given
             ImageRemover imageRemover = new MockImageRemover();
             String originImageUrl = "originImageUrl";
@@ -137,7 +137,7 @@ class ShelterTest {
         }
 
         @Test
-        @DisplayName("성공: null -> 새로운 이미지 갱신")
+        @DisplayName("성공: none -> 새로운 이미지 갱신")
         void updateNoneToNewImage() {
             // given
             ImageRemover imageRemover = new MockImageRemover();
@@ -160,6 +160,31 @@ class ShelterTest {
 
             // then
             assertThat(shelter.getImage()).isEqualTo(newImageUrl);
+        }
+
+        @Test
+        @DisplayName("성공: none -> none")
+        void updateNoneToNone() {
+            // given
+            ImageRemover imageRemover = new MockImageRemover();
+            String nullImageUrl = null;
+
+            Shelter shelter = ShelterFixture.shelter(nullImageUrl);
+
+            // when
+            shelter.updateShelter(
+                shelter.getName(),
+                nullImageUrl,
+                shelter.getAddress(),
+                shelter.getAddressDetail(),
+                shelter.getPhoneNumber(),
+                shelter.getSparePhoneNumber(),
+                shelter.isOpenedAddress(),
+                imageRemover
+            );
+
+            // then
+            assertThat(shelter.getImage()).isNull();
         }
 
     }
