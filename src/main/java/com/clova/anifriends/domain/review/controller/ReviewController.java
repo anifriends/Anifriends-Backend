@@ -51,11 +51,10 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/volunteers/{volunteerId}/reviews")
+    @GetMapping("/shelters/volunteers/{volunteerId}/reviews")
     public ResponseEntity<FindVolunteerReviewsResponse> findVolunteerReviews(
         @PathVariable("volunteerId") Long volunteerId,
-        Pageable pageable,
-        @LoginUser Long userId
+        Pageable pageable
     ) {
         return ResponseEntity.ok(reviewService.findVolunteerReviews(volunteerId, pageable));
     }

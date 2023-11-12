@@ -222,11 +222,11 @@ class ReviewControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions
-            = mockMvc.perform(get("/api/volunteers/{volunteerId}/reviews", volunteerId)
+            = mockMvc.perform(get("/api/shelters/volunteers/{volunteerId}/reviews", volunteerId)
             .header(AUTHORIZATION, shelterAccessToken)
             .param("pageNumber", "0")
             .param("pageSize", "10"));
-
+        
         // then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
