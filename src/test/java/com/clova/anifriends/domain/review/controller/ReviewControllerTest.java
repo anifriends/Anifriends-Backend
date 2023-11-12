@@ -42,7 +42,7 @@ import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByVolunteerResponse;
-import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
@@ -104,9 +104,8 @@ class ReviewControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("성공: 보호소가 받은 봉사자 리뷰 목록 조회 api 호출")
-    void findShelterReviews() throws Exception {
-        //given
-        Long shelterId = 1L;
+    void findShelterReviewsByShelter() throws Exception {
+        //give
         Shelter shelter = shelter();
         ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
         shelter.updateShelterImage(shelterImage);
@@ -119,13 +118,13 @@ class ReviewControllerTest extends BaseControllerTest {
         ReflectionTestUtils.setField(review, "reviewId", 1L);
         ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());
         PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
-        FindShelterReviewsResponse response = FindShelterReviewsResponse.from(reviewPage);
+        FindShelterReviewsByShelterResponse response = FindShelterReviewsByShelterResponse.from(reviewPage);
 
-        given(reviewService.findShelterReviews(anyLong(), any())).willReturn(response);
+        given(reviewService.findShelterReviewsByShelter(anyLong(), any())).willReturn(response);
 
         //when
         ResultActions resultActions
-            = mockMvc.perform(get("/api/shelters/{shelterId}/reviews", shelterId)
+            = mockMvc.perform(get("/api/shelters/me/reviews")
             .header(AUTHORIZATION, shelterAccessToken)
             .param("pageNumber", "0")
             .param("pageSize", "10"));
@@ -135,9 +134,6 @@ class ReviewControllerTest extends BaseControllerTest {
             .andDo(restDocs.document(
                 requestHeaders(
                     headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
-                ),
-                pathParameters(
-                    parameterWithName("shelterId").description("보호소 ID")
                 ),
                 queryParameters(
                     parameterWithName("pageNumber").description("페이지 번호"),

@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
 
-public record FindShelterReviewsResponse(List<FindShelterReviewResponse> reviews,
-                                         PageInfo pageInfo) {
+public record FindShelterReviewsByShelterResponse(List<FindShelterReviewResponse> reviews,
+                                                  PageInfo pageInfo) {
 
     public record FindShelterReviewResponse(
         Long reviewId,
@@ -36,11 +36,11 @@ public record FindShelterReviewsResponse(List<FindShelterReviewResponse> reviews
         }
     }
 
-    public static FindShelterReviewsResponse from(Page<Review> reviewPage) {
+    public static FindShelterReviewsByShelterResponse from(Page<Review> reviewPage) {
         PageInfo pageInfo = PageInfo.of(reviewPage.getTotalElements(), reviewPage.hasNext());
         List<FindShelterReviewResponse> reviews = reviewPage
             .map(FindShelterReviewResponse::from)
             .stream().toList();
-        return new FindShelterReviewsResponse(reviews, pageInfo);
+        return new FindShelterReviewsByShelterResponse(reviews, pageInfo);
     }
 }

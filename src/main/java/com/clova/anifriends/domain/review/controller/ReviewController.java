@@ -4,7 +4,7 @@ import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByVolunteerResponse;
-import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.service.ReviewService;
 import java.net.URI;
@@ -43,11 +43,11 @@ public class ReviewController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping("/shelters/{shelterId}/reviews")
-    public ResponseEntity<FindShelterReviewsResponse> findShelterReviews(
-        @PathVariable("shelterId") Long shelterId,
+    @GetMapping("/shelters/me/reviews")
+    public ResponseEntity<FindShelterReviewsByShelterResponse> findShelterReviewsByShelter(
+        @LoginUser Long shelterId,
         Pageable pageable) {
-        FindShelterReviewsResponse response = reviewService.findShelterReviews(shelterId, pageable);
+        FindShelterReviewsByShelterResponse response = reviewService.findShelterReviewsByShelter(shelterId, pageable);
         return ResponseEntity.ok(response);
     }
 
