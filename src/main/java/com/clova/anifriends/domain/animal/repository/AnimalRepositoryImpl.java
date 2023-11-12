@@ -72,7 +72,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     }
 
     @Override
-    public Page<Animal> findAnimalsByVolunteer(
+    public Page<Animal> findAnimals(
         AnimalType type,
         AnimalActive active,
         Boolean isNeutered,

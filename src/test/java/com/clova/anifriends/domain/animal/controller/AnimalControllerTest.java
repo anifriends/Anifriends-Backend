@@ -35,7 +35,7 @@ import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
-import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByVolunteerResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
@@ -235,8 +235,8 @@ class AnimalControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("보호 동물 조회 & 검색(봉사자) api 호출 시")
-    void findAnimalsByVolunteer() throws Exception {
+    @DisplayName("보호 동물 조회 & 검색 api 호출 시")
+    void findAnimals() throws Exception {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("type", AnimalType.DOG.name());
@@ -252,10 +252,10 @@ class AnimalControllerTest extends BaseControllerTest {
         Animal animal = animal(shelter);
         ReflectionTestUtils.setField(animal, "animalId", 1L);
 
-        FindAnimalsByVolunteerResponse response = FindAnimalsByVolunteerResponse
+        FindAnimalsResponse response = FindAnimalsResponse
             .from(new PageImpl<>(List.of(animal)));
 
-        when(animalService.findAnimalsByVolunteer(
+        when(animalService.findAnimals(
             any(AnimalType.class),
             any(AnimalActive.class),
             anyBoolean(),
@@ -266,7 +266,7 @@ class AnimalControllerTest extends BaseControllerTest {
         ).thenReturn(response);
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/api/volunteers/animals")
+        ResultActions resultActions = mockMvc.perform(get("/api/animals")
             .header(AUTHORIZATION, volunteerAccessToken)
             .params(params));
 

@@ -5,7 +5,7 @@ import com.clova.anifriends.domain.common.PageInfo;
 import java.util.List;
 import org.springframework.data.domain.Page;
 
-public record FindAnimalsByVolunteerResponse(
+public record FindAnimalsResponse(
     PageInfo pageInfo,
     List<FindAnimalByVolunteerResponse> animals
 ) {
@@ -29,12 +29,12 @@ public record FindAnimalsByVolunteerResponse(
         }
     }
 
-    public static FindAnimalsByVolunteerResponse from(Page<Animal> pagination) {
+    public static FindAnimalsResponse from(Page<Animal> pagination) {
         PageInfo pageInfo = PageInfo.of(pagination.getTotalElements(), pagination.hasNext());
         List<FindAnimalByVolunteerResponse> findAnimalByVolunteerResponses = pagination.get()
             .map(FindAnimalByVolunteerResponse::from).toList();
 
-        return new FindAnimalsByVolunteerResponse(pageInfo, findAnimalByVolunteerResponses);
+        return new FindAnimalsResponse(pageInfo, findAnimalByVolunteerResponses);
     }
 
 }

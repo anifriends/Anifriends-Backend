@@ -6,7 +6,7 @@ import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
 
-public record FindAnimalsByVolunteerRequest(
+public record FindAnimalsRequest(
     AnimalType type,
     AnimalGender gender,
     Boolean isNeutered,

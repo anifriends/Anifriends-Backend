@@ -17,7 +17,7 @@ import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
-import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByVolunteerResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
@@ -175,12 +175,12 @@ class AnimalServiceTest {
     }
 
     @Nested
-    @DisplayName("findAnimalsByVolunteer 실행 시")
-    class FindAnimalsByVolunteer {
+    @DisplayName("findAnimals 실행 시")
+    class FindAnimals {
 
         @Test
         @DisplayName("성공")
-        void findAnimalsByVolunteer() {
+        void findAnimals() {
             // given
             String mockName = "animalName";
             String mockInformation = "animalInformation";
@@ -213,15 +213,15 @@ class AnimalServiceTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
             Page<Animal> pageResult = new PageImpl<>(List.of(matchAnimal), pageRequest, 1);
 
-            FindAnimalsByVolunteerResponse expected = FindAnimalsByVolunteerResponse.from(
+            FindAnimalsResponse expected = FindAnimalsResponse.from(
                 pageResult);
 
-            when(animalRepository.findAnimalsByVolunteer(typeFilter, activeFilter, isNeuteredFilter,
+            when(animalRepository.findAnimals(typeFilter, activeFilter, isNeuteredFilter,
                 ageFilter, genderFilter, sizeFilter, pageRequest))
                 .thenReturn(pageResult);
 
             // when
-            FindAnimalsByVolunteerResponse result = animalService.findAnimalsByVolunteer(
+            FindAnimalsResponse result = animalService.findAnimals(
                 typeFilter, activeFilter, isNeuteredFilter,
                 ageFilter, genderFilter, sizeFilter, pageRequest);
 

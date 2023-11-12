@@ -6,7 +6,7 @@ import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
-import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByVolunteerResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.mapper.AnimalMapper;
@@ -77,7 +77,7 @@ public class AnimalService {
     }
 
 
-    public FindAnimalsByVolunteerResponse findAnimalsByVolunteer(
+    public FindAnimalsResponse findAnimals(
         AnimalType type,
         AnimalActive active,
         Boolean isNeutered,
@@ -86,7 +86,7 @@ public class AnimalService {
         AnimalSize size,
         Pageable pageable
     ) {
-        Page<Animal> animalsWithPagination = animalRepository.findAnimalsByVolunteer(
+        Page<Animal> animalsWithPagination = animalRepository.findAnimals(
             type,
             active,
             isNeutered,
@@ -96,7 +96,7 @@ public class AnimalService {
             pageable
         );
 
-        return FindAnimalsByVolunteerResponse.from(animalsWithPagination);
+        return FindAnimalsResponse.from(animalsWithPagination);
     }
 
     private Animal getAnimalById(Long animalId) {

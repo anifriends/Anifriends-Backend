@@ -1,11 +1,11 @@
 package com.clova.anifriends.domain.animal.controller;
 
 import com.clova.anifriends.domain.animal.dto.request.FindAnimalsByShelterRequest;
-import com.clova.anifriends.domain.animal.dto.request.FindAnimalsByVolunteerRequest;
+import com.clova.anifriends.domain.animal.dto.request.FindAnimalsRequest;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
-import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByVolunteerResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.service.AnimalService;
 import com.clova.anifriends.domain.auth.LoginUser;
@@ -64,18 +64,18 @@ public class AnimalController {
         ));
     }
 
-    @GetMapping("/volunteers/animals")
-    public ResponseEntity<FindAnimalsByVolunteerResponse> findAnimalsByVolunteer(
+    @GetMapping("/animals")
+    public ResponseEntity<FindAnimalsResponse> findAnimals(
         Pageable pageable,
-        @ModelAttribute FindAnimalsByVolunteerRequest findAnimalsByVolunteerRequest
+        @ModelAttribute FindAnimalsRequest findAnimalsRequest
     ) {
-        return ResponseEntity.ok(animalService.findAnimalsByVolunteer(
-            findAnimalsByVolunteerRequest.type(),
-            findAnimalsByVolunteerRequest.active(),
-            findAnimalsByVolunteerRequest.isNeutered(),
-            findAnimalsByVolunteerRequest.age(),
-            findAnimalsByVolunteerRequest.gender(),
-            findAnimalsByVolunteerRequest.size(),
+        return ResponseEntity.ok(animalService.findAnimals(
+            findAnimalsRequest.type(),
+            findAnimalsRequest.active(),
+            findAnimalsRequest.isNeutered(),
+            findAnimalsRequest.age(),
+            findAnimalsRequest.gender(),
+            findAnimalsRequest.size(),
             pageable
         ));
     }
