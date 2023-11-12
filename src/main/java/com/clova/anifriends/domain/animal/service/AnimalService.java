@@ -14,9 +14,12 @@ import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +32,7 @@ public class AnimalService {
 
     private final AnimalRepository animalRepository;
     private final ShelterRepository shelterRepository;
+    private final ImageRemover imageRemover;
 
     @Transactional
     public RegisterAnimalResponse registerAnimal(
@@ -77,6 +81,7 @@ public class AnimalService {
     }
 
 
+    @Transactional(readOnly = true)
     public FindAnimalsByVolunteerResponse findAnimalsByVolunteer(
         AnimalType type,
         AnimalActive active,
@@ -99,6 +104,29 @@ public class AnimalService {
         return FindAnimalsByVolunteerResponse.from(animalsWithPagination);
     }
 
+    @Transactional
+    public void updateAnimal(
+        Long shelterId,
+        Long animalId,
+        String name,
+        LocalDate birthDate,
+        AnimalType type,
+        String breed,
+        AnimalGender gender,
+        Boolean isNeutered,
+        AnimalActive active,
+        Double weight,
+        String information,
+        List<String> imageUrls
+    ) {
+        Animal foundAnimal = getAnimalByAnimalIdAndShelterIdWithImages(animalId, shelterId);
+
+        foundAnimal.updateAnimal(
+            name, birthDate, type, breed, gender, isNeutered, active, weight, information,
+            imageUrls, imageRemover
+        );
+    }
+
     private Animal getAnimalById(Long animalId) {
         return animalRepository.findById(animalId)
             .orElseThrow(() -> new AnimalNotFoundException("존재하지 않는 보호 동물입니다."));
@@ -107,6 +135,5 @@ public class AnimalService {
     private Animal getAnimalByAnimalIdAndShelterIdWithImages(Long animalId, Long shelterId) {
         return animalRepository.findByAnimalIdAndShelterIdWithImages(animalId, shelterId)
             .orElseThrow(() -> new AnimalNotFoundException("존재하지 않는 보호 동물입니다."));
-
     }
 }
