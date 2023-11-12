@@ -13,6 +13,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
@@ -33,6 +34,7 @@ import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
+import com.clova.anifriends.domain.animal.dto.request.UpdateAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByVolunteerResponse;
@@ -314,6 +316,67 @@ class AnimalControllerTest extends BaseControllerTest {
                     fieldWithPath("animals[].shelterAddress").type(STRING).description("보호소 주소"),
                     fieldWithPath("animals[].animalImageUrl").type(STRING)
                         .description("보호 동물 이미지 url")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 보호 동물 수정 api 호출 시")
+    void updateAnimal() throws Exception {
+        //given
+        String mockName = "animalName";
+        LocalDate mockBirthDate = LocalDate.now();
+        String mockInformation = "animalInformation";
+        String mockBreed = "animalBreed";
+        List<String> mockImageUrls = List.of("www.aws.s3.com/2");
+
+        AnimalType mockType = AnimalType.DOG;
+        AnimalActive mockActive = AnimalActive.ACTIVE;
+        Double mockWeight = 1.2;
+        Boolean mockIsNeutered = true;
+        AnimalGender mockGender = AnimalGender.MALE;
+
+        UpdateAnimalRequest updateAnimalRequest = new UpdateAnimalRequest(mockName, mockBirthDate,
+            mockType, mockBreed, mockGender, mockIsNeutered, mockActive, mockWeight,
+            mockInformation, mockImageUrls);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            patch("/api/shelters/animals/{animalId}", 1L)
+                .header(AUTHORIZATION, shelterAccessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateAnimalRequest)));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("animalId").description("보호 동물 ID")
+                ),
+                requestFields(
+                    fieldWithPath("name").type(STRING).description("보호 동물 이름")
+                        .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 20자 이하")),
+                    fieldWithPath("birthDate").type(STRING).description("보호 동물 생년월")
+                        .attributes(DocumentationFormatGenerator.getDateConstraint()),
+                    fieldWithPath("type").type(STRING).description("보호 동물 종류")
+                        .attributes(DocumentationFormatGenerator.getConstraint("DOG, CAT, ETC")),
+                    fieldWithPath("breed").type(STRING).description("보호 동물 품종")
+                        .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 20자 이하")),
+                    fieldWithPath("gender").type(STRING).description("보호 동물 성별")
+                        .attributes(DocumentationFormatGenerator.getConstraint("MALE, FEMALE")),
+                    fieldWithPath("isNeutered").type(BOOLEAN).description("중성화 여부"),
+                    fieldWithPath("active").type(STRING).description("성격")
+                        .attributes(DocumentationFormatGenerator
+                            .getConstraint("QUIET, NORMAL, ACTIVE, VERY_ACTIVE")),
+                    fieldWithPath("weight").type(NUMBER).description("몸무게")
+                        .attributes(DocumentationFormatGenerator.getConstraint("0 이상, 50 이하")),
+                    fieldWithPath("information").type(STRING).description("기타 정보")
+                        .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 1000자 이하")),
+                    fieldWithPath("imageUrls").type(ARRAY).description("이미지 url 리스트")
+                        .attributes(DocumentationFormatGenerator.getConstraint("1장 이상, 5장 이하"))
                 )
             ));
     }

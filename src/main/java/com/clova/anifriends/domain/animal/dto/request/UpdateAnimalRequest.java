@@ -13,15 +13,15 @@ public record UpdateAnimalRequest(
     String name,
     @NotNull(message = "생년월일은 필수값입니다.")
     LocalDate birthDate,
-    @NotBlank(message = "종류는 공백일 수 없습니다.")
+    @NotNull(message = "종류는 공백일 수 없습니다.")
     AnimalType type,
     @NotBlank(message = "품종은 공백일 수 없습니다.")
     String breed,
-    @NotBlank(message = "성별은 공백일 수 없습니다.")
+    @NotNull(message = "성별은 공백일 수 없습니다.")
     AnimalGender gender,
     @NotNull(message = "중성화 여부는 필수값입니다.")
     Boolean isNeutered,
-    @NotBlank(message = "성경은 공백일 수 없습니다.")
+    @NotNull(message = "성격은 공백일 수 없습니다.")
     AnimalActive active,
     @NotNull(message = "무게는 필수값입니다.")
     Double weight,
