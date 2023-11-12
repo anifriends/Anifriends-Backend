@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.volunteer.service;
 
 import com.clova.anifriends.domain.common.ImageRemover;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
@@ -20,6 +21,7 @@ public class VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
     private final ImageRemover imageRemover;
+    private final CustomPasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public CheckDuplicateVolunteerEmailResponse checkDuplicateVolunteerEmail(String email) {
@@ -36,8 +38,8 @@ public class VolunteerService {
         String phoneNumber,
         String gender
     ) {
-        Volunteer volunteer = new Volunteer(email, password, birthDate, phoneNumber, gender, name);
-
+        Volunteer volunteer = new Volunteer(email, password, birthDate, phoneNumber, gender, name,
+            passwordEncoder);
         volunteerRepository.save(volunteer);
         return volunteer.getVolunteerId();
     }

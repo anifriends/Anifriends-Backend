@@ -23,6 +23,13 @@ public class ApplicantFixture {
 
     }
 
+    public static Applicant applicant(Recruitment recruitment, Volunteer volunteer,
+        ApplicantStatus status, Long applicantId) {
+        Applicant applicant = applicant(recruitment, volunteer, status);
+        ReflectionTestUtils.setField(applicant, "applicantId", applicantId);
+        return applicant;
+    }
+
     public static Applicant applicantWithReview(Recruitment recruitment, Volunteer volunteer) {
         Applicant applicant = applicant(recruitment, volunteer);
         ReflectionTestUtils.setField(applicant, "status", ATTENDANCE);
