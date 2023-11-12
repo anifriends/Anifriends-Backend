@@ -30,7 +30,8 @@ class VolunteerPasswordTest {
             VolunteerPassword volunteerPassword = new VolunteerPassword(password, passwordEncoder);
 
             // then
-            assertThat(passwordEncoder.matchesPassword(password, volunteerPassword.getPassword())).isTrue();
+            assertThat(passwordEncoder.matchesPassword(password,
+                volunteerPassword.getPassword())).isTrue();
         }
 
         @Test
