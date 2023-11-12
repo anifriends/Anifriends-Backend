@@ -184,6 +184,6 @@ public class Animal extends BaseTimeEntity {
     }
 
     public boolean isAdopted() {
-        return adopted.getIsAdopted();
+        return adopted.isAdopted();
     }
 }

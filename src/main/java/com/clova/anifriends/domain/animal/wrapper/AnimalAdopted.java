@@ -2,13 +2,9 @@ package com.clova.anifriends.domain.animal.wrapper;
 
 import com.clova.anifriends.domain.animal.exception.AnimalBadRequestException;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
-@Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AnimalAdopted {
 
@@ -32,5 +28,9 @@ public class AnimalAdopted {
         if (isAdopted == false && this.isAdopted == false) {
             throw new AnimalBadRequestException("입양이 완료된 보호동물이 아닙니다.");
         }
+    }
+
+    public Boolean isAdopted() {
+        return isAdopted;
     }
 }
