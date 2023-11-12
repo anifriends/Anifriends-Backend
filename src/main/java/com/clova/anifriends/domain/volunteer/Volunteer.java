@@ -5,6 +5,7 @@ import static com.clova.anifriends.global.exception.ErrorCode.BAD_REQUEST;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.common.ImageRemover;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
@@ -78,10 +79,11 @@ public class Volunteer extends BaseTimeEntity {
         String birthDate,
         String phoneNumber,
         String gender,
-        String name
+        String name,
+        CustomPasswordEncoder passwordEncoder
     ) {
         this.email = new VolunteerEmail(email);
-        this.password = new VolunteerPassword(password);
+        this.password = new VolunteerPassword(password, passwordEncoder);
         this.birthDate = validateBirthDate(birthDate);
         this.phoneNumber = new VolunteerPhoneNumber(phoneNumber);
         this.gender = VolunteerGender.from(gender);

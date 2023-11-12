@@ -5,10 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.clova.anifriends.base.MockImageRemover;
 import com.clova.anifriends.domain.common.ImageRemover;
+import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
 import java.time.LocalDate;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,6 +19,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 class VolunteerTest {
+
+    CustomPasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    void setUp() {
+        passwordEncoder = new MockPasswordEncoder();
+    }
 
     @Nested
     @DisplayName("Volunteer 생성 시")
@@ -28,6 +38,7 @@ class VolunteerTest {
         String gender = "MALE";
         String name = "홍길동";
 
+
         @Test
         @DisplayName("성공")
         void success() {
@@ -36,7 +47,7 @@ class VolunteerTest {
 
             // when
             Volunteer volunteer = new Volunteer(email, password, birthDate, phoneNumber, gender,
-                name);
+                name, passwordEncoder);
 
             // then
             assertThat(volunteer.getEmail()).isEqualTo(email);
@@ -51,7 +62,7 @@ class VolunteerTest {
             // when
             // then
             assertThatThrownBy(() -> new Volunteer(email, password, birthDate, phoneNumber, gender,
-                name))
+                name, passwordEncoder))
                 .isInstanceOf(VolunteerBadRequestException.class);
         }
     }
