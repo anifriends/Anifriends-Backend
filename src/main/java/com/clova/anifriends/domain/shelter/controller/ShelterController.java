@@ -5,7 +5,7 @@ import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterEmailRequest
 import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
+import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.shelter.dto.RegisterShelterRequest;
 import com.clova.anifriends.domain.shelter.dto.UpdateAddressStatusRequest;
 import com.clova.anifriends.domain.shelter.dto.UpdateShelterPasswordRequest;
@@ -63,11 +63,11 @@ public class ShelterController {
             ));
     }
 
-    @GetMapping("/volunteers/shelters/{shelterId}/profile/simple")
-    public ResponseEntity<FindShelterSimpleByVolunteerResponse> findShelterSimpleByVolunteer(
+    @GetMapping("/shelters/{shelterId}/profile/simple")
+    public ResponseEntity<FindShelterSimpleResponse> findShelterSimple(
         @PathVariable Long shelterId
     ) {
-        return ResponseEntity.ok(shelterService.findShelterSimpleByVolunteer(shelterId));
+        return ResponseEntity.ok(shelterService.findShelterSimple(shelterId));
     }
 
     @GetMapping("/shelters/me")

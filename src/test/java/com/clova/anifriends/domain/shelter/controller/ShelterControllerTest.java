@@ -26,7 +26,7 @@ import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterEmailRequest
 import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
+import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.shelter.dto.RegisterShelterRequest;
 import com.clova.anifriends.domain.shelter.dto.UpdateAddressStatusRequest;
 import com.clova.anifriends.domain.shelter.dto.UpdateShelterPasswordRequest;
@@ -245,20 +245,20 @@ class ShelterControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("findShelterSimpleByVolunteer 실행 시")
-    void findShelterSimpleByVolunteer() throws Exception {
+    @DisplayName("findShelterSimple 실행 시")
+    void findShelterSimple() throws Exception {
         // given
         Long shelterId = 1L;
         Shelter shelter = shelter();
         ReflectionTestUtils.setField(shelter, "shelterId", shelterId);
-        FindShelterSimpleByVolunteerResponse response = FindShelterSimpleByVolunteerResponse.from(
+        FindShelterSimpleResponse response = FindShelterSimpleResponse.from(
             shelter);
 
-        given(shelterService.findShelterSimpleByVolunteer(shelterId)).willReturn(response);
+        given(shelterService.findShelterSimple(shelterId)).willReturn(response);
 
         // when
         ResultActions result = mockMvc.perform(
-            get("/api/volunteers/shelters/{shelterId}/profile/simple", shelterId)
+            get("/api/shelters/{shelterId}/profile/simple", shelterId)
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
