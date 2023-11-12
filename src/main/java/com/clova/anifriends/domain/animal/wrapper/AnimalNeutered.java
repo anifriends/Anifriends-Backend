@@ -16,7 +16,9 @@ public class AnimalNeutered {
     @Column(name = "is_neutered")
     private Boolean isNeutered;
 
-    public AnimalNeutered(boolean value) {
+    public AnimalNeutered(Boolean value) {
+        validateIsNeutered(value);
+
         this.isNeutered = value;
     }
 

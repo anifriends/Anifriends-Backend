@@ -103,6 +103,22 @@ class AnimalTest {
             //then
             assertThat(exception).isInstanceOf(AnimalBadRequestException.class);
         }
+
+        @Test
+        @DisplayName("예외(AnimalBadRequestException): AnimalNeutered가 null")
+        void exceptionWhenAnimalNeuteredIsNull() {
+            //given
+            Boolean isNeuteredIsNull = null;
+
+            //when
+            Exception exception = catchException(
+                () -> new Animal(shelter, name, birthDate,
+                    type, breed, gender, isNeuteredIsNull,
+                    active, weight, information, imageUrls));
+
+            //then
+            assertThat(exception).isInstanceOf(AnimalBadRequestException.class);
+        }
     }
 
     @Nested

@@ -93,7 +93,7 @@ public class Animal extends BaseTimeEntity {
         String type,
         String breed,
         String gender,
-        boolean isNeutered,
+        Boolean isNeutered,
         String active,
         double weight,
         String information,
@@ -176,7 +176,7 @@ public class Animal extends BaseTimeEntity {
         List<AnimalImage> newImages = new ArrayList<>();
         newImages.addAll(existsVolunteerImages);
         newImages.addAll(newVolunteerImages);
-        
+
         this.images = newImages;
     }
 
