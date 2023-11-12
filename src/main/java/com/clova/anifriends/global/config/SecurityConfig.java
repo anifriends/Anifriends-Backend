@@ -47,7 +47,7 @@ public class SecurityConfig {
                 FrameOptionsConfig::disable))
             .authorizeHttpRequests(request ->
                 request
-                    .requestMatchers(HttpMethod.GET, "/api/shelters/*/profile/simple")
+                    .requestMatchers(HttpMethod.GET, "/api/shelters/*/profile/**")
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/volunteers/*/recruitments/completed")
                     .permitAll()

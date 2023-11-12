@@ -53,7 +53,7 @@ public class ShelterController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping("/volunteers/shelters/{shelterId}/profile")
+    @GetMapping("/shelters/{shelterId}/profile")
     public ResponseEntity<FindShelterDetailResponse> findShelterDetail(
         @PathVariable Long shelterId
     ) {

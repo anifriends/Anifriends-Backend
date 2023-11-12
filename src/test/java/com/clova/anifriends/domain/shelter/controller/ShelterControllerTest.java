@@ -145,7 +145,7 @@ class ShelterControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-            get("/api/volunteers/shelters/{shelterId}/profile", shelterId)
+            get("/api/shelters/{shelterId}/profile", shelterId)
                 .header(AUTHORIZATION, volunteerAccessToken)
                 .contentType(MediaType.APPLICATION_JSON));
 
