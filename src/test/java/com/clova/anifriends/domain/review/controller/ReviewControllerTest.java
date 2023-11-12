@@ -41,7 +41,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
-import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByVolunteerResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -255,8 +255,8 @@ class ReviewControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("성공: 봉사자가 받은 봉사자 리뷰 목록 조회 api 호출")
-    void findShelterReviewsByVolunteer() throws Exception {
+    @DisplayName("성공: 보호소가 받은 봉사자 리뷰 목록 조회 api 호출")
+    void findShelterReviews() throws Exception {
         //given
         Long shelterId = 1L;
         Shelter shelter = shelter();
@@ -271,24 +271,20 @@ class ReviewControllerTest extends BaseControllerTest {
         ReflectionTestUtils.setField(review, "reviewId", 1L);
         ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());
         PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
-        FindShelterReviewsByVolunteerResponse response = FindShelterReviewsByVolunteerResponse.from(
+        FindShelterReviewsResponse response = FindShelterReviewsResponse.from(
             reviewPage);
 
-        given(reviewService.findShelterReviewsByVolunteer(anyLong(), any())).willReturn(response);
+        given(reviewService.findShelterReviews(anyLong(), any())).willReturn(response);
 
         //when
         ResultActions resultActions
-            = mockMvc.perform(get("/api/volunteers/shelters/{shelterId}/reviews", shelterId)
-            .header(AUTHORIZATION, volunteerAccessToken)
+            = mockMvc.perform(get("/api/shelters/{shelterId}/reviews", shelterId)
             .param("pageNumber", "0")
             .param("pageSize", "10"));
 
         //then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
-                requestHeaders(
-                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
-                ),
                 pathParameters(
                     parameterWithName("shelterId").description("보호소 ID")
                 ),

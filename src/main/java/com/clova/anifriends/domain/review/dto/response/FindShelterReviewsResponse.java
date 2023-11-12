@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
 
-public record FindShelterReviewsByVolunteerResponse(
+public record FindShelterReviewsResponse(
     List<FindShelterReviewByVolunteerResponse> reviews,
     PageInfo pageInfo
 ) {
@@ -34,7 +34,7 @@ public record FindShelterReviewsByVolunteerResponse(
         }
     }
 
-    public static FindShelterReviewsByVolunteerResponse from(
+    public static FindShelterReviewsResponse from(
         Page<Review> reviewPage
     ) {
         PageInfo pageInfo = PageInfo.of(reviewPage.getTotalElements(), reviewPage.hasNext());
@@ -44,6 +44,6 @@ public record FindShelterReviewsByVolunteerResponse(
             .stream()
             .toList();
 
-        return new FindShelterReviewsByVolunteerResponse(reviews, pageInfo);
+        return new FindShelterReviewsResponse(reviews, pageInfo);
     }
 }
