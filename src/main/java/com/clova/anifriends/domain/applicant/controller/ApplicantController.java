@@ -1,12 +1,14 @@
 package com.clova.anifriends.domain.applicant.controller;
 
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
+import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantStatusRequest;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.service.ApplicantService;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.auth.LoginUser;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,6 +75,17 @@ public class ApplicantController {
                 .toList()
         );
 
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/shelters/recruitments/{recruitmentId}/applicants/{applicantId}")
+    public ResponseEntity<Void> updateApplicantStatus(
+        @LoginUser Long shelterId,
+        @PathVariable Long recruitmentId, @PathVariable Long applicantId,
+        @RequestBody @Valid UpdateApplicantStatusRequest updateApplicantStatusRequest
+    ) {
+        applicantService.updateApplicantStatus(applicantId, recruitmentId, shelterId,
+            updateApplicantStatusRequest.isApproved());
         return ResponseEntity.noContent().build();
     }
 }

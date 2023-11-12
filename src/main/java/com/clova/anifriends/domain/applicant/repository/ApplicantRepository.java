@@ -68,6 +68,6 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         @Param("status") ApplicantStatus status
     );
 
-    Optional<Applicant> findByApplicantIdAndRecruitment_RecruitmentId(Long applicantId,
-        Long recruitmentId);
+    Optional<Applicant> findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId(
+        Long applicantId, Long recruitmentId, Long shelterId);
 }

@@ -108,14 +108,15 @@ public class ApplicantService {
     }
 
     @Transactional
-    public void updateApplicantStatus(Long applicantId, Long recruitmentId, Boolean isApproved) {
-        Applicant applicant = getApplicant(applicantId, recruitmentId);
+    public void updateApplicantStatus(Long applicantId, Long recruitmentId, Long shelterId,
+        Boolean isApproved) {
+        Applicant applicant = getApplicant(applicantId, recruitmentId, shelterId);
         applicant.updateApplicantStatus(isApproved);
     }
 
-    private Applicant getApplicant(Long applicantId, Long recruitmentId) {
-        return applicantRepository.findByApplicantIdAndRecruitment_RecruitmentId(applicantId,
-                recruitmentId)
+    private Applicant getApplicant(Long applicantId, Long recruitmentId, Long shelterId) {
+        return applicantRepository.findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId(
+                applicantId, recruitmentId, shelterId)
             .orElseThrow(() -> new ApplicantNotFoundException("존재하지 않는 봉사 신청입니다."));
     }
 }
