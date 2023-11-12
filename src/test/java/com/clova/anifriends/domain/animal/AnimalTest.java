@@ -120,7 +120,7 @@ class AnimalTest {
         AnimalActive active = AnimalActive.valueOf(AnimalActive.ACTIVE.getName());
         double weight = 0.7;
         String information = "info";
-        List<String> newImageUrls = List.of("www.aws.s3.com/2", "www.aws.s3.com/3");
+        List<String> newImageUrls = List.of("www.aws.s3.com/2", "www.aws.s3.com/4");
 
         @Test
         @DisplayName("성공")

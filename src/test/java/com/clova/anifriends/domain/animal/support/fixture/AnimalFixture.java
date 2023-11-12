@@ -19,7 +19,7 @@ public class AnimalFixture {
     public static final String ANIMAL_ACTIVE = AnimalActive.NORMAL.getName();
     public static final double WEIGHT = 1.2;
     public static final String ANIMAL_INFORMATION = "animalInformation";
-    private static final List<String> IMAGE_URLS = List.of("www.aws.s3.com/2", "www.aws.s3.com/2");
+    private static final List<String> IMAGE_URLS = List.of("www.aws.s3.com/2", "www.aws.s3.com/3");
 
     public static Animal animal(Shelter shelter) {
         return new Animal(
