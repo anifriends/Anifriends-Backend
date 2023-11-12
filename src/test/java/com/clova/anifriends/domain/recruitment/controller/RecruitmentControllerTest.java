@@ -138,12 +138,16 @@ class RecruitmentControllerTest extends BaseControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(
-            get("/api/volunteers/{volunteerId}/recruitments/completed", volunteerId)
+            get("/api/shelters/volunteers/{volunteerId}/recruitments/completed", volunteerId)
+                .header(AUTHORIZATION, shelterAccessToken)
                 .params(params));
 
         //then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
                 pathParameters(
                     parameterWithName("volunteerId").description("봉사자 ID")
                 ),

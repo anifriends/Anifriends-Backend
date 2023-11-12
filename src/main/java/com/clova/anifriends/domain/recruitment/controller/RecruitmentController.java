@@ -56,7 +56,7 @@ public class RecruitmentController {
         return ResponseEntity.ok(recruitmentService.findRecruitmentDetail(recruitmentId));
     }
 
-    @GetMapping("/volunteers/{volunteerId}/recruitments/completed")
+    @GetMapping("/shelters/volunteers/{volunteerId}/recruitments/completed")
     public ResponseEntity<FindCompletedRecruitmentsResponse> findCompletedRecruitments(
         @PathVariable("volunteerId") Long volunteerId,
         Pageable pageable) {
