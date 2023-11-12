@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.applicant.dto;
+package com.clova.anifriends.domain.applicant.dto.response;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;

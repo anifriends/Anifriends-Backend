@@ -1,11 +1,13 @@
 package com.clova.anifriends.domain.applicant.repository;
 
 import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -51,5 +53,18 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
     List<Applicant> findByRecruitmentIdAndShelterId(
         @Param("recruitmentId") Long recruitmentId,
         @Param("shelterId") Long shelterId
+    );
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("update Applicant a set a.status = :status "
+        + "where a.recruitment.recruitmentId = :recruitmentId "
+        + "and a.recruitment.shelter.shelterId = :shelterId "
+        + "and a.applicantId in :ids "
+        + "and (a.status = 'ATTENDANCE' or a.status = 'NO_SHOW')")
+    void updateBulkAttendance(
+        @Param("shelterId") Long shelterId,
+        @Param("recruitmentId") Long recruitmentId,
+        @Param("ids") List<Long> ids,
+        @Param("status") ApplicantStatus status
     );
 }
