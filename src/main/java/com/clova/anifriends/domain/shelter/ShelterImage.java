@@ -43,4 +43,8 @@ public class ShelterImage extends BaseTimeEntity {
     public boolean isDifferentFrom(String imageUrl) {
         return !this.imageUrl.equals(imageUrl);
     }
+
+    public boolean isSameWith(String imageUrl) {
+        return this.imageUrl.equals(imageUrl);
+    }
 }

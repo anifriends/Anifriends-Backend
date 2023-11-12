@@ -87,6 +87,9 @@ public class Shelter extends BaseTimeEntity {
         if (nonNull(this.image) && this.image.isDifferentFrom(imageUrl)) {
             imageRemover.removeImage(this.image.getImageUrl());
         }
+        if (nonNull(this.image) && this.image.isSameWith(imageUrl)) {
+            return this.image;
+        }
         if (nonNull(imageUrl)) {
             return new ShelterImage(this, imageUrl);
         }
