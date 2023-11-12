@@ -173,9 +173,11 @@ public class Animal extends BaseTimeEntity {
         List<AnimalImage> existsVolunteerImages = filterRemainImages(updateImageUrls);
         List<AnimalImage> newVolunteerImages = filterNewImages(updateImageUrls);
 
-        this.images.clear();
-        this.images.addAll(existsVolunteerImages);
-        this.images.addAll(newVolunteerImages);
+        List<AnimalImage> newImages = new ArrayList<>();
+        newImages.addAll(existsVolunteerImages);
+        newImages.addAll(newVolunteerImages);
+        
+        this.images = newImages;
     }
 
     private List<AnimalImage> filterRemainImages(List<String> updateImageUrls) {
