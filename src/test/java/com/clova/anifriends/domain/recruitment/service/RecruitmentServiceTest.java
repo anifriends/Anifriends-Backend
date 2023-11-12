@@ -22,8 +22,8 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruit
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
@@ -134,12 +134,12 @@ class RecruitmentServiceTest {
     }
 
     @Nested
-    @DisplayName("findRecruitmentsByVolunteer 실행 시")
-    class FindRecruitmentsByVolunteerTest {
+    @DisplayName("findRecruitments 실행 시")
+    class FindRecruitmentsTest {
 
         @Test
         @DisplayName("성공")
-        void findRecruitmentsByVolunteer() {
+        void findRecruitments() {
             //give
             String keyword = "keyword";
             LocalDate startDate = LocalDate.now();
@@ -157,14 +157,14 @@ class RecruitmentServiceTest {
                 title, content, shelterName, pageRequest)).willReturn(recruitments);
 
             //when
-            FindRecruitmentsByVolunteerResponse recruitmentsByVolunteer
-                = recruitmentService.findRecruitmentsByVolunteer(keyword, startDate, endDate,
+            FindRecruitmentsResponse recruitmentsByVolunteer
+                = recruitmentService.findRecruitments(keyword, startDate, endDate,
                 isClosed, title, content, shelterName, pageRequest);
 
             //then
             PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
             assertThat(pageInfo.totalElements()).isEqualTo(recruitments.getSize());
-            FindRecruitmentByVolunteerResponse findRecruitment = recruitmentsByVolunteer.recruitments()
+            FindRecruitmentResponse findRecruitment = recruitmentsByVolunteer.recruitments()
                 .get(0);
             assertThat(findRecruitment.recruitmentTitle()).isEqualTo(recruitment.getTitle());
             assertThat(findRecruitment.recruitmentStartTime()).isEqualTo(

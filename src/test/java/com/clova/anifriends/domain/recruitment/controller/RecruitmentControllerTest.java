@@ -40,8 +40,8 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruit
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse.FindRecruitmentByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -168,8 +168,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("성공: 봉사 모집글 조회, 검색(봉사자) API 호출")
-    void findRecruitmentsByVolunteer() throws Exception {
+    @DisplayName("성공: 봉사 모집글 조회, 검색 API 호출")
+    void findRecruitments() throws Exception {
         //given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("keyword", "겅색어");
@@ -186,18 +186,18 @@ class RecruitmentControllerTest extends BaseControllerTest {
         shelter.updateShelterImage(shelterImage);
         Recruitment recruitment = recruitment(shelter);
         ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
-        FindRecruitmentByVolunteerResponse findRecruitmentByVolunteerResponse
-            = FindRecruitmentByVolunteerResponse.from(recruitment);
+        FindRecruitmentResponse findRecruitmentResponse
+            = FindRecruitmentResponse.from(recruitment);
         PageInfo pageInfo = new PageInfo(1, false);
-        FindRecruitmentsByVolunteerResponse response = new FindRecruitmentsByVolunteerResponse(
-            List.of(findRecruitmentByVolunteerResponse), pageInfo);
+        FindRecruitmentsResponse response = new FindRecruitmentsResponse(
+            List.of(findRecruitmentResponse), pageInfo);
 
-        given(recruitmentService.findRecruitmentsByVolunteer(anyString(), any(), any(),
+        given(recruitmentService.findRecruitments(anyString(), any(), any(),
             anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), any()))
             .willReturn(response);
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/api/volunteers/recruitments")
+        ResultActions resultActions = mockMvc.perform(get("/api/recruitments")
             .header(AUTHORIZATION, volunteerAccessToken)
             .params(params));
 

@@ -6,11 +6,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
 
-public record FindRecruitmentsByVolunteerResponse(
-    List<FindRecruitmentByVolunteerResponse> recruitments,
+public record FindRecruitmentsResponse(
+    List<FindRecruitmentResponse> recruitments,
     PageInfo pageInfo) {
 
-    public record FindRecruitmentByVolunteerResponse(
+    public record FindRecruitmentResponse(
         Long recruitmentId,
         String recruitmentTitle,
         LocalDateTime recruitmentStartTime,
@@ -21,8 +21,8 @@ public record FindRecruitmentsByVolunteerResponse(
         String shelterName,
         String shelterImageUrl) {
 
-        public static FindRecruitmentByVolunteerResponse from(Recruitment recruitment) {
-            return new FindRecruitmentByVolunteerResponse(
+        public static FindRecruitmentResponse from(Recruitment recruitment) {
+            return new FindRecruitmentResponse(
                 recruitment.getRecruitmentId(),
                 recruitment.getTitle(),
                 recruitment.getStartTime(),
@@ -36,12 +36,12 @@ public record FindRecruitmentsByVolunteerResponse(
         }
     }
 
-    public static FindRecruitmentsByVolunteerResponse from(Page<Recruitment> recruitments) {
+    public static FindRecruitmentsResponse from(Page<Recruitment> recruitments) {
         PageInfo pageInfo = PageInfo.of(recruitments.getTotalElements(), recruitments.hasNext());
-        List<FindRecruitmentByVolunteerResponse> content = recruitments.getContent()
+        List<FindRecruitmentResponse> content = recruitments.getContent()
             .stream()
-            .map(FindRecruitmentByVolunteerResponse::from)
+            .map(FindRecruitmentResponse::from)
             .toList();
-        return new FindRecruitmentsByVolunteerResponse(content, pageInfo);
+        return new FindRecruitmentsResponse(content, pageInfo);
     }
 }

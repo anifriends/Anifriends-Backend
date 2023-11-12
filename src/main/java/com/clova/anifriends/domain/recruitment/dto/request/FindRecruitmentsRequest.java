@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.recruitment.dto.request;
 
 import java.time.LocalDate;
 
-public record FindRecruitmentsByVolunteerRequest(
+public record FindRecruitmentsRequest(
     String keyword,
     LocalDate startDate,
     LocalDate endDate,
@@ -12,7 +12,7 @@ public record FindRecruitmentsByVolunteerRequest(
     Boolean shelterName
 ) {
 
-    public FindRecruitmentsByVolunteerRequest(String keyword, LocalDate startDate,
+    public FindRecruitmentsRequest(String keyword, LocalDate startDate,
         LocalDate endDate,
         Boolean isClosed, Boolean title, Boolean content, Boolean shelterName) {
         this.keyword = keyword;

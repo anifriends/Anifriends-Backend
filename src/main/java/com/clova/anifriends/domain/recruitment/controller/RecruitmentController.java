@@ -2,13 +2,13 @@ package com.clova.anifriends.domain.recruitment.controller;
 
 import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByShelterRequest;
-import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByVolunteerRequest;
+import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
 import jakarta.validation.Valid;
@@ -65,18 +65,18 @@ public class RecruitmentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/volunteers/recruitments")
-    public ResponseEntity<FindRecruitmentsByVolunteerResponse> findRecruitmentsByVolunteer(
-        @ModelAttribute @Valid FindRecruitmentsByVolunteerRequest findRecruitmentsByVolunteerRequest,
+    @GetMapping("/recruitments")
+    public ResponseEntity<FindRecruitmentsResponse> findRecruitments(
+        @ModelAttribute @Valid FindRecruitmentsRequest findRecruitmentsRequest,
         Pageable pageable) {
-        return ResponseEntity.ok(recruitmentService.findRecruitmentsByVolunteer(
-            findRecruitmentsByVolunteerRequest.keyword(),
-            findRecruitmentsByVolunteerRequest.startDate(),
-            findRecruitmentsByVolunteerRequest.endDate(),
-            findRecruitmentsByVolunteerRequest.isClosed(),
-            findRecruitmentsByVolunteerRequest.title(),
-            findRecruitmentsByVolunteerRequest.content(),
-            findRecruitmentsByVolunteerRequest.shelterName(),
+        return ResponseEntity.ok(recruitmentService.findRecruitments(
+            findRecruitmentsRequest.keyword(),
+            findRecruitmentsRequest.startDate(),
+            findRecruitmentsRequest.endDate(),
+            findRecruitmentsRequest.isClosed(),
+            findRecruitmentsRequest.title(),
+            findRecruitmentsRequest.content(),
+            findRecruitmentsRequest.shelterName(),
             pageable
         ));
     }
