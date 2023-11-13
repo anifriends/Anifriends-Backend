@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.catchException;
 
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -183,6 +184,93 @@ class RecruitmentInfoTest {
 
             //then
             assertThat(updatedRecruitmentInfo.isClosed()).isTrue();
+        }
+    }
+
+    @Nested
+    @DisplayName("updateRecruitmentInfo 메서드 호출 시")
+    class UpdateRecruitmentInfoTest {
+
+        RecruitmentInfo recruitmentInfo;
+
+        @BeforeEach
+        void setUp() {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime startTime = now.plusMonths(1);
+            LocalDateTime endTime = startTime.plusHours(1);
+            LocalDateTime deadline = startTime.minusDays(1);
+            int capacity = 10;
+            recruitmentInfo = new RecruitmentInfo(startTime, endTime, deadline, false, capacity);
+        }
+
+        @Test
+        @DisplayName("성공: 입력값이 null이 아닐 때, 값이 업데이트 된 RecruitmentInfoTest를 반환")
+        void updateRecruitmentInfo() {
+            //given
+            LocalDateTime newStartTime = recruitmentInfo.getStartTime().plusDays(1);
+            LocalDateTime newEndTime = recruitmentInfo.getEndTime().plusDays(1);
+            LocalDateTime newDeadline = recruitmentInfo.getDeadline().plusDays(1);
+            int newCapacity = recruitmentInfo.getCapacity() + 1;
+
+            //when
+            RecruitmentInfo updatedRecruitmentInfo = recruitmentInfo.updateRecruitmentInfo(
+                newStartTime, newEndTime, newDeadline, newCapacity);
+
+            //then
+            assertThat(updatedRecruitmentInfo.getStartTime()).isEqualTo(newStartTime);
+            assertThat(updatedRecruitmentInfo.getEndTime()).isEqualTo(newEndTime);
+            assertThat(updatedRecruitmentInfo.getDeadline()).isEqualTo(newDeadline);
+            assertThat(updatedRecruitmentInfo.getDeadline()).isEqualTo(newDeadline);
+            assertThat(updatedRecruitmentInfo).isNotEqualTo(recruitmentInfo);
+        }
+
+        @Test
+        @DisplayName("성공: 입력값이 null일 때, 값이 업데이트 되지 않은 자기 자신을 반환")
+        void updateRecruitmentInfoWhenInputIsNull() {
+            //given
+            LocalDateTime nullStartTime = null;
+            LocalDateTime nullEndTime = null;
+            LocalDateTime nullDeadline = null;
+            Integer nullCapacity = null;
+
+            //when
+            RecruitmentInfo updatedRecruitmentInfo = recruitmentInfo.updateRecruitmentInfo(
+                nullStartTime, nullEndTime, nullDeadline, nullCapacity);
+
+            //then
+            assertThat(updatedRecruitmentInfo.getStartTime())
+                .isEqualTo(recruitmentInfo.getStartTime());
+            assertThat(updatedRecruitmentInfo.getEndTime())
+                .isEqualTo(recruitmentInfo.getEndTime());
+            assertThat(updatedRecruitmentInfo.getDeadline())
+                .isEqualTo(recruitmentInfo.getDeadline());
+            assertThat(updatedRecruitmentInfo.getCapacity())
+                .isEqualTo(recruitmentInfo.getCapacity());
+            assertThat(updatedRecruitmentInfo).isEqualTo(recruitmentInfo);
+        }
+
+        @Test
+        @DisplayName("성공: null이 입력되지 않은 값에 대해서만 업테이트")
+        void updateRecruitmentInfoWhenUpdateStartTimeAndEndTime() {
+            //given
+            LocalDateTime newStartTime = recruitmentInfo.getStartTime().plusDays(1);
+            LocalDateTime newEndTime = newStartTime.plusHours(1);
+            LocalDateTime nullDeadline = null;
+            Integer nullCapacity = null;
+
+            //when
+            RecruitmentInfo updatedRecruitmentInfo = recruitmentInfo.updateRecruitmentInfo(
+                newStartTime, newEndTime, nullDeadline, nullCapacity);
+
+            //then
+            assertThat(updatedRecruitmentInfo.getStartTime())
+                .isEqualTo(newStartTime);
+            assertThat(updatedRecruitmentInfo.getEndTime())
+                .isEqualTo(newEndTime);
+            assertThat(updatedRecruitmentInfo.getDeadline())
+                .isEqualTo(recruitmentInfo.getDeadline());
+            assertThat(updatedRecruitmentInfo.getCapacity())
+                .isEqualTo(recruitmentInfo.getCapacity());
         }
     }
 }

@@ -16,6 +16,8 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
+import com.clova.anifriends.domain.common.ImageRemover;
+import com.clova.anifriends.domain.common.MockImageRemover;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
@@ -42,6 +44,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -59,6 +62,9 @@ class RecruitmentServiceTest {
 
     @Mock
     RecruitmentRepository recruitmentRepository;
+
+    @Spy
+    ImageRemover imageRemover = new MockImageRemover();
 
     @Nested
     @DisplayName("registerRecruitment 메서드 실행 시")
@@ -308,6 +314,73 @@ class RecruitmentServiceTest {
             //when
             Exception exception = catchException(
                 () -> recruitmentService.closeRecruitment(1L, 1L));
+
+            //then
+            assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("updateRecruitment 메서드 호출 시")
+    class UpdateRecruitmentTest {
+
+        Recruitment recruitment;
+
+        @BeforeEach
+        void setUp() {
+            Shelter shelter = ShelterFixture.shelter();
+            recruitment = RecruitmentFixture.recruitment(shelter);
+        }
+
+        @Test
+        @DisplayName("성공")
+        void updateRecruitment() {
+            //given
+            String newTitle = recruitment.getTitle() + "a";
+            LocalDateTime newStartTime = recruitment.getStartTime().plusDays(1);
+            LocalDateTime newEndTime = recruitment.getEndTime().plusDays(1);
+            LocalDateTime newDeadline = recruitment.getDeadline().plusDays(1);
+            int newCapacity = recruitment.getCapacity() + 1;
+            String newContent = recruitment.getContent() + "a";
+            List<String> newImageUrls = List.of("a1", "a2");
+
+            given(recruitmentRepository.findByShelterIdAndRecruitmentIdWithImages(anyLong(),
+                anyLong())).willReturn(Optional.ofNullable(recruitment));
+
+            //when
+            recruitmentService.updateRecruitment(1L, 1L,
+                newTitle, newStartTime, newEndTime, newDeadline, newCapacity, newContent,
+                newImageUrls);
+
+            //then
+            assertThat(recruitment.getTitle()).isEqualTo(newTitle);
+            assertThat(recruitment.getStartTime()).isEqualTo(newStartTime);
+            assertThat(recruitment.getEndTime()).isEqualTo(newEndTime);
+            assertThat(recruitment.getDeadline()).isEqualTo(newDeadline);
+            assertThat(recruitment.getCapacity()).isEqualTo(newCapacity);
+            assertThat(recruitment.getContent()).isEqualTo(newContent);
+            assertThat(recruitment.getImages()).containsExactlyElementsOf(newImageUrls);
+        }
+
+        @Test
+        @DisplayName("예외(RecruitmentNotFoundException): 존재하지 않는 봉사 모집글")
+        void exceptionWhenRecruitmentNotFound() {
+            //given
+            String newTitle = recruitment.getTitle() + "a";
+            LocalDateTime newStartTime = recruitment.getStartTime().plusDays(1);
+            LocalDateTime newEndTime = recruitment.getEndTime().plusDays(1);
+            LocalDateTime newDeadline = recruitment.getDeadline().plusDays(1);
+            int newCapacity = recruitment.getCapacity() + 1;
+            String newContent = recruitment.getContent() + "a";
+            List<String> newImageUrls = List.of("a1", "a2");
+
+            given(recruitmentRepository.findByShelterIdAndRecruitmentIdWithImages(anyLong(),
+                anyLong())).willReturn(Optional.empty());
+
+            //when
+            Exception exception = catchException(() -> recruitmentService.updateRecruitment(1L, 1L,
+                newTitle, newStartTime, newEndTime, newDeadline, newCapacity, newContent,
+                newImageUrls));
 
             //then
             assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);

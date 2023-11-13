@@ -13,7 +13,6 @@ public interface ImageRemover {
 
     /**
      * 원격지에 저장된 이미지 리스트를 삭제합니다.
-     *
      * @param imageUrls 이미지가 저장된 위치를 뜻하는 문자열 리스트
      */
     void removeImages(List<String> imageUrls);

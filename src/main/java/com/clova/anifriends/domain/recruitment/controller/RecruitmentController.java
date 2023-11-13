@@ -4,6 +4,7 @@ import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByShelterRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByVolunteerRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
+import com.clova.anifriends.domain.recruitment.dto.request.UpdateRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
@@ -112,6 +113,24 @@ public class RecruitmentController {
         @LoginUser Long shelterId,
         @PathVariable Long recruitmentId) {
         recruitmentService.closeRecruitment(shelterId, recruitmentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/shelters/recruitments/{recruitmentId}")
+    public ResponseEntity<Void> updateRecruitment(
+        @LoginUser Long shelterId,
+        @PathVariable Long recruitmentId,
+        @RequestBody @Valid UpdateRecruitmentRequest updateRecruitmentRequest) {
+        recruitmentService.updateRecruitment(
+            shelterId,
+            recruitmentId,
+            updateRecruitmentRequest.title(),
+            updateRecruitmentRequest.startTime(),
+            updateRecruitmentRequest.endTime(),
+            updateRecruitmentRequest.deadline(),
+            updateRecruitmentRequest.capacity(),
+            updateRecruitmentRequest.content(),
+            updateRecruitmentRequest.imageUrls());
         return ResponseEntity.noContent().build();
     }
 }
