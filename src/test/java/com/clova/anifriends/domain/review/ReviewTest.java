@@ -159,7 +159,7 @@ class ReviewTest {
         }
 
         @Test
-        @DisplayName("예외(): 이미지 리스트가 5장을 초과했을 떄")
+        @DisplayName("예외(ReviewBadRequestException): 이미지 리스트가 5장을 초과했을 떄")
         void throwExceptionWhenImageIsOver5() {
             // given
             String content = "1234567890";
