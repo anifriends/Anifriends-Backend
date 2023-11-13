@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.shelter.dto;
+package com.clova.anifriends.domain.shelter.dto.response;
 
 public record CheckDuplicateShelterResponse(
     boolean isDuplicated) {

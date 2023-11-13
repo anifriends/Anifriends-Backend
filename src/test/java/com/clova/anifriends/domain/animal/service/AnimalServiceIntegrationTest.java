@@ -68,7 +68,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
                     Animal.class)
                 .setParameter("id", response.animalId())
                 .getSingleResult();
-            assertThat(animal.getImageUrls()).hasSize(imageUrls.size());
+            assertThat(animal.getImages()).hasSize(imageUrls.size());
         }
     }
 }

@@ -29,7 +29,7 @@ public record FindShelterReviewsByVolunteerResponse(
                 review.getCreatedAt(),
                 review.getContent(),
                 review.getApplicant().getVolunteer().getEmail(),
-                review.getImageUrls()
+                review.getImages()
             );
         }
     }

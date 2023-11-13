@@ -26,6 +26,10 @@ public class ShelterName {
         this.name = value;
     }
 
+    public ShelterName update(String value) {
+        return new ShelterName(value);
+    }
+
     private void validateName(String name) {
         if (isNull(name) || name.isBlank()) {
             throw new ShelterBadRequestException(ErrorCode.BAD_REQUEST, "이름은 필수 항목입니다.");
