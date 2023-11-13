@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.shelter.dto;
+package com.clova.anifriends.domain.shelter.dto.response;
 
 import com.clova.anifriends.domain.shelter.Shelter;
 
@@ -26,7 +26,7 @@ public record FindShelterMyPageResponse(
             shelter.isOpenedAddress(),
             shelter.getPhoneNumber(),
             shelter.getSparePhoneNumber(),
-            shelter.getShelterImageUrl()
+            shelter.getImage()
         );
     }
 }

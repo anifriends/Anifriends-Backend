@@ -177,7 +177,7 @@ public class Animal extends BaseTimeEntity {
         return information.getInformation();
     }
 
-    public List<String> getImageUrls() {
+    public List<String> getImages() {
         return images.stream()
             .map(AnimalImage::getImageUrl)
             .toList();
