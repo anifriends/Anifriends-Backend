@@ -111,9 +111,11 @@ public class Animal extends BaseTimeEntity {
         this.active = AnimalActive.valueOf(active);
         this.weight = new AnimalWeight(weight);
         this.information = new AnimalInformation(information);
-        this.images = imageUrls.stream()
-            .map(url -> new AnimalImage(this, url))
-            .toList();
+        this.images.addAll(
+            imageUrls.stream()
+                .map(url -> new AnimalImage(this, url))
+                .toList()
+        );
         this.isAdopted = false;
     }
 
@@ -173,11 +175,9 @@ public class Animal extends BaseTimeEntity {
         List<AnimalImage> existsVolunteerImages = filterRemainImages(updateImageUrls);
         List<AnimalImage> newVolunteerImages = filterNewImages(updateImageUrls);
 
-        List<AnimalImage> newImages = new ArrayList<>();
-        newImages.addAll(existsVolunteerImages);
-        newImages.addAll(newVolunteerImages);
-
-        this.images = newImages;
+        this.images.clear();
+        images.addAll(existsVolunteerImages);
+        images.addAll(newVolunteerImages);
     }
 
     private List<AnimalImage> filterRemainImages(List<String> updateImageUrls) {
