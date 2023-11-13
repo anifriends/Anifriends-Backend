@@ -49,7 +49,7 @@ public class Recruitment extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "recruitment", fetch = FetchType.LAZY,
         cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RecruitmentImage> recruitmentImages = new ArrayList<>();
+    private List<RecruitmentImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitment", fetch = FetchType.LAZY)
     private List<Applicant> applicants = new ArrayList<>();
@@ -75,18 +75,18 @@ public class Recruitment extends BaseTimeEntity {
         LocalDateTime startTime,
         LocalDateTime endTime,
         LocalDateTime deadline,
-        List<String> imageUrls
+        List<String> images
     ) {
         this.shelter = shelter;
         this.title = new RecruitmentTitle(title);
         this.content = new RecruitmentContent(content);
         this.info = new RecruitmentInfo(startTime, endTime, deadline, IS_CLOSED_DEFAULT, capacity);
-        if (Objects.nonNull(imageUrls)) {
-            validateImageUrlsSize(imageUrls);
-            List<RecruitmentImage> newImages = imageUrls.stream()
+        if (Objects.nonNull(images)) {
+            validateImageUrlsSize(images);
+            List<RecruitmentImage> newImages = images.stream()
                 .map(url -> new RecruitmentImage(this, url))
                 .toList();
-            this.recruitmentImages.addAll(newImages);
+            this.images.addAll(newImages);
         }
     }
 
@@ -141,8 +141,8 @@ public class Recruitment extends BaseTimeEntity {
         return updatedAt;
     }
 
-    public List<String> getImageUrls() {
-        return recruitmentImages.stream()
+    public List<String> getImages() {
+        return images.stream()
             .map(RecruitmentImage::getImageUrl)
             .toList();
     }
@@ -189,7 +189,7 @@ public class Recruitment extends BaseTimeEntity {
     }
 
     private void deleteNotContainsImageUrls(List<String> updateImageUrls, ImageRemover imageRemover) {
-        List<String> deleteImageUrls = this.recruitmentImages.stream()
+        List<String> deleteImageUrls = this.images.stream()
             .map(RecruitmentImage::getImageUrl)
             .filter(existsImageUrl -> !updateImageUrls.contains(existsImageUrl))
             .toList();
@@ -199,20 +199,20 @@ public class Recruitment extends BaseTimeEntity {
     private void addNewImageUrls(List<String> updateImageUrls) {
         List<RecruitmentImage> existsVolunteerImages = filterRemainImages(updateImageUrls);
         List<RecruitmentImage> newVolunteerImages = filterNewImages(updateImageUrls);
-        this.recruitmentImages.clear();
-        this.recruitmentImages.addAll(existsVolunteerImages);
-        this.recruitmentImages.addAll(newVolunteerImages);
+        this.images.clear();
+        this.images.addAll(existsVolunteerImages);
+        this.images.addAll(newVolunteerImages);
     }
 
     private List<RecruitmentImage> filterRemainImages(List<String> updateImageUrls) {
-        return this.recruitmentImages.stream()
+        return this.images.stream()
             .filter(recruitmentImage -> updateImageUrls.contains(recruitmentImage.getImageUrl()))
             .toList();
     }
 
     private List<RecruitmentImage> filterNewImages(
         List<String> updateImageUrls) {
-        List<String> existsImageUrls = getImageUrls();
+        List<String> existsImageUrls = getImages();
         return updateImageUrls.stream()
             .filter(imageUrl -> !existsImageUrls.contains(imageUrl))
             .map(imageUrl -> new RecruitmentImage(this, imageUrl))

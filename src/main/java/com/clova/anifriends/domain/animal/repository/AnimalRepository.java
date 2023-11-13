@@ -8,6 +8,14 @@ import org.springframework.data.repository.query.Param;
 
 public interface AnimalRepository extends JpaRepository<Animal, Long>, AnimalRepositoryCustom {
 
+    @Query("select a from Animal a "
+        + "where a.shelter.shelterId = :shelterId "
+        + "and a.animalId = :animalId")
+    Optional<Animal> findByShelterIdAndAnimalId(
+        @Param("shelterId") Long shelterId,
+        @Param("animalId") Long animalId
+    );
+
     @Query("select a from Animal a"
         + " join fetch a.images"
         + " where a.animalId = :animalId and a.shelter.shelterId = :shelterId")

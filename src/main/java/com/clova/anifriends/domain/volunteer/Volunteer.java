@@ -4,7 +4,9 @@ import static com.clova.anifriends.global.exception.ErrorCode.BAD_REQUEST;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.common.ImageRemover;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
@@ -70,7 +72,7 @@ public class Volunteer extends BaseTimeEntity {
     private List<Applicant> applicants = new ArrayList<>();
 
     @OneToOne(mappedBy = "volunteer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private VolunteerImage volunteerImage;
+    private VolunteerImage image;
 
     public Volunteer(
         String email,
@@ -78,15 +80,24 @@ public class Volunteer extends BaseTimeEntity {
         String birthDate,
         String phoneNumber,
         String gender,
-        String name
+        String name,
+        CustomPasswordEncoder passwordEncoder
     ) {
         this.email = new VolunteerEmail(email);
-        this.password = new VolunteerPassword(password);
+        this.password = new VolunteerPassword(password, passwordEncoder);
         this.birthDate = validateBirthDate(birthDate);
         this.phoneNumber = new VolunteerPhoneNumber(phoneNumber);
         this.gender = VolunteerGender.from(gender);
         this.temperature = new VolunteerTemperature(36);
         this.name = new VolunteerName(name);
+    }
+
+    public void updatePassword(
+        CustomPasswordEncoder passwordEncoder,
+        String rawOldPassword,
+        String rawNewPassword
+    ) {
+        password = password.updatePassword(passwordEncoder, rawOldPassword, rawNewPassword);
     }
 
     private LocalDate validateBirthDate(String birthDate) {
@@ -101,10 +112,6 @@ public class Volunteer extends BaseTimeEntity {
         applicants.add(applicant);
     }
 
-    public void updateVolunteerImage(VolunteerImage volunteerImage) {
-        this.volunteerImage = volunteerImage;
-    }
-
     public void updateVolunteerInfo(
         String name,
         VolunteerGender gender,
@@ -116,7 +123,7 @@ public class Volunteer extends BaseTimeEntity {
         this.gender = updateGender(gender);
         this.birthDate = updateBirthDate(birthDate);
         this.phoneNumber = this.phoneNumber.updatePhoneNumber(phoneNumber);
-        this.volunteerImage = updateVolunteerImage(imageUrl, imageRemover);
+        this.image = updateVolunteerImage(imageUrl, imageRemover);
     }
 
     private LocalDate updateBirthDate(LocalDate birthDate) {
@@ -128,19 +135,19 @@ public class Volunteer extends BaseTimeEntity {
     }
 
     private VolunteerImage updateVolunteerImage(String imageUrl, ImageRemover imageRemover) {
-        if (Objects.nonNull(volunteerImage) && volunteerImage.isEqualImageUrl(imageUrl)) {
-            return this.volunteerImage;
+        if (Objects.nonNull(image) && image.isEqualImageUrl(imageUrl)) {
+            return this.image;
         }
         clearVolunteerImageIfExists(imageRemover);
-        if(Objects.isNull(imageUrl)) {
+        if (Objects.isNull(imageUrl)) {
             return null;
         }
         return new VolunteerImage(this, imageUrl);
     }
 
     private void clearVolunteerImageIfExists(ImageRemover imageRemover) {
-        if (Objects.nonNull(volunteerImage)) {
-            volunteerImage.removeImage(imageRemover);
+        if (Objects.nonNull(image)) {
+            image.removeImage(imageRemover);
         }
     }
 
@@ -183,7 +190,7 @@ public class Volunteer extends BaseTimeEntity {
     }
 
     public String getVolunteerImageUrl() {
-        return this.volunteerImage == null ? null : volunteerImage.getImageUrl();
+        return this.image == null ? null : image.getImageUrl();
     }
 
     public List<Applicant> getApplicants() {

@@ -1,5 +1,8 @@
 package com.clova.anifriends.global.image;
 
+import static java.util.Objects.isNull;
+
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -23,10 +26,12 @@ public class S3Service {
 
     private final AmazonS3 amazonS3;
     private static final String FOLDER = "images";
+    private static final List<String> FILE_EXTENSIONS = List.of(".jpg", ".jpeg", ".png", ".JPG",
+        ".JPEG", ".PNG");
 
     public List<String> uploadImages(List<MultipartFile> multipartFileList) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
-        List<String> list = new ArrayList<>();
+        List<String> imageUrls = new ArrayList<>();
 
         for (MultipartFile multipartFile : multipartFileList) {
             String fileName = createFileName(multipartFile.getOriginalFilename());
@@ -38,12 +43,22 @@ public class S3Service {
                     new PutObjectRequest(bucket + "/" + FOLDER, fileName, inputStream,
                         objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
-                list.add(amazonS3.getUrl(bucket + "/" + FOLDER, fileName).toString());
-            } catch (IOException e) {
+                imageUrls.add(amazonS3.getUrl(bucket + "/" + FOLDER, fileName).toString());
+            } catch (IOException exception) {
                 throw new S3BadRequestException("S3에 이미지를 업로드하는데 실패했습니다.");
             }
         }
-        return list;
+        return imageUrls;
+    }
+
+    public void deleteImages(List<String> imageUrls) {
+        try {
+            imageUrls.forEach(
+                imageUrl -> amazonS3.deleteObject(bucket + "/" + FOLDER, imageUrl)
+            );
+        } catch (SdkClientException exception) {
+            throw new S3BadRequestException("S3에 이미지를 제거하는데 실패했습니다.");
+        }
     }
 
     private String createFileName(String fileName) {
@@ -51,20 +66,15 @@ public class S3Service {
     }
 
     private String getFileExtension(String fileName) {
-        if (fileName.length() == 0) {
+        if (isNull(fileName) || fileName.isBlank()) {
             throw new S3BadRequestException("잘못된 파일입니다.");
         }
-        ArrayList<String> fileValidate = new ArrayList<>();
-        fileValidate.add(".jpg");
-        fileValidate.add(".jpeg");
-        fileValidate.add(".png");
-        fileValidate.add(".JPG");
-        fileValidate.add(".JPEG");
-        fileValidate.add(".PNG");
-        String idxFileName = fileName.substring(fileName.lastIndexOf("."));
-        if (!fileValidate.contains(idxFileName)) {
+
+        String extension = fileName.substring(fileName.lastIndexOf("."));
+        if (!FILE_EXTENSIONS.contains(extension)) {
             throw new S3BadRequestException("잘못된 파일 형식입니다.");
         }
-        return fileName.substring(fileName.lastIndexOf("."));
+
+        return extension;
     }
 }

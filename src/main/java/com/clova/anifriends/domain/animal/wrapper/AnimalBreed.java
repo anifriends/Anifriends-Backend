@@ -26,6 +26,13 @@ public class AnimalBreed {
         this.breed = value;
     }
 
+    public AnimalBreed updateBreed(String breed) {
+        validateNotNull(breed);
+        validateLength(breed);
+
+        return new AnimalBreed(breed);
+    }
+
     private void validateNotNull(String value) {
         if (Objects.isNull(value)) {
             throw new AnimalBadRequestException("품종은 필수값입니다.");

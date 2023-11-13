@@ -37,6 +37,11 @@ public class ShelterAddressInfo {
         this.isOpenedAddress = isOpenedAddress;
     }
 
+    public ShelterAddressInfo update(String address, String addressDetail,
+        boolean isOpenedAddress) {
+        return new ShelterAddressInfo(address, addressDetail, isOpenedAddress);
+    }
+
     public ShelterAddressInfo updateAddressStatus(
         Boolean isOpenedAddress
     ) {

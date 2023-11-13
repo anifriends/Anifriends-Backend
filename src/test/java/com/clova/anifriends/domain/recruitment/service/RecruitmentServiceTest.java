@@ -181,7 +181,7 @@ class RecruitmentServiceTest {
             assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
             assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
             assertThat(findRecruitment.shelterImageUrl())
-                .isEqualTo(recruitment.getShelter().getShelterImageUrl());
+                .isEqualTo(recruitment.getShelter().getImage());
 
         }
     }
@@ -359,7 +359,7 @@ class RecruitmentServiceTest {
             assertThat(recruitment.getDeadline()).isEqualTo(newDeadline);
             assertThat(recruitment.getCapacity()).isEqualTo(newCapacity);
             assertThat(recruitment.getContent()).isEqualTo(newContent);
-            assertThat(recruitment.getImageUrls()).containsExactlyElementsOf(newImageUrls);
+            assertThat(recruitment.getImages()).containsExactlyElementsOf(newImageUrls);
         }
 
         @Test

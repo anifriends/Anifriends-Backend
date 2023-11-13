@@ -16,36 +16,20 @@ import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
-import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 class ApplicantRepositoryTest extends BaseRepositoryTest {
-
-    @Autowired
-    private ApplicantRepository applicantRepository;
-
-    @Autowired
-    private RecruitmentRepository recruitmentRepository;
-
-    @Autowired
-    private VolunteerRepository volunteerRepository;
-
-    @Autowired
-    private ShelterRepository shelterRepository;
 
     @Nested
     @DisplayName("findApprovedByRecruitmentIdAndShelterId 메서드 실행 시")
@@ -248,6 +232,38 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
                 applicantRefused.getApplicantId());
             assertThat(persistedApplicantRefused).isNotEmpty();
             assertThat(persistedApplicantRefused.get().getStatus()).isEqualTo(REFUSED);
+        }
+    }
+
+    @Nested
+    @DisplayName("findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId 실행 시")
+    class FindByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterIdTest {
+
+        @Test
+        @DisplayName("성공")
+        void findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId() {
+            // given
+            Shelter shelter = shelter();
+            Volunteer volunteer = volunteer();
+            Recruitment recruitment = recruitment(shelter);
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+
+            shelterRepository.save(shelter);
+            volunteerRepository.save(volunteer);
+            recruitmentRepository.save(recruitment);
+            applicantRepository.save(applicant);
+
+            // when
+            Optional<Applicant> expected = applicantRepository
+                .findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId(
+                    applicant.getApplicantId(),
+                    recruitment.getRecruitmentId(),
+                    shelter.getShelterId()
+                );
+
+            // then
+            assertThat(expected).isNotEmpty();
+            assertThat(expected.get()).isEqualTo(applicant);
         }
     }
 }

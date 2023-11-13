@@ -46,8 +46,6 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVo
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.ShelterImage;
-import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -183,8 +181,6 @@ class RecruitmentControllerTest extends BaseControllerTest {
         params.add("pageNumber", "0");
         params.add("pageSize", "10");
         Shelter shelter = shelter();
-        ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
-        shelter.updateShelterImage(shelterImage);
         Recruitment recruitment = recruitment(shelter);
         ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
         FindRecruitmentByVolunteerResponse findRecruitmentByVolunteerResponse
@@ -243,7 +239,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
                         .description("봉사 정원"),
                     fieldWithPath("recruitments[].shelterName").type(STRING).description("보호소 이름"),
                     fieldWithPath("recruitments[].shelterImageUrl").type(STRING)
-                        .description("보호소 이미지 url"),
+                        .description("보호소 이미지 url").optional(),
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
                     fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부")

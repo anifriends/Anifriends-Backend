@@ -47,7 +47,7 @@ public class RecruitmentIntegrationTest extends BaseIntegrationTest {
         @DisplayName("성공: 이미지 url 입력값이 현재 이미지와 같을 때, 새로운 엔티티는 생성되지 않는다.")
         void updateRecruitmentWhenNoMoreEntities() {
             //given
-            List<String> givenImageUrls = recruitment.getImageUrls();
+            List<String> givenImageUrls = recruitment.getImages();
 
             //when
             recruitmentService.updateRecruitment(shelter.getShelterId(),

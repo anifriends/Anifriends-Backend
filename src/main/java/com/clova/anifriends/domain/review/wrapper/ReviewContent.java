@@ -33,4 +33,8 @@ public class ReviewContent {
             );
         }
     }
+
+    public ReviewContent updateContent(String value) {
+        return value != null ? new ReviewContent(value) : this;
+    }
 }

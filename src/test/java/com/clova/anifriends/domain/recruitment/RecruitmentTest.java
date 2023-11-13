@@ -122,7 +122,7 @@ class RecruitmentTest {
             assertThat(recruitment.getDeadline()).isEqualTo(newDeadline);
             assertThat(recruitment.getCapacity()).isEqualTo(newCapacity);
             assertThat(recruitment.getContent()).isEqualTo(newContent);
-            assertThat(recruitment.getImageUrls()).isEqualTo(newImageUrls);
+            assertThat(recruitment.getImages()).isEqualTo(newImageUrls);
         }
 
         @Test
@@ -135,7 +135,7 @@ class RecruitmentTest {
             LocalDateTime givenDeadline = recruitment.getDeadline();
             int givenCapacity = recruitment.getCapacity();
             String givenContent = recruitment.getContent();
-            List<String> givenImageUrls = recruitment.getImageUrls();
+            List<String> givenImageUrls = recruitment.getImages();
 
             //when
             recruitment.updateRecruitment(null, null, null, null,
@@ -148,7 +148,7 @@ class RecruitmentTest {
             assertThat(recruitment.getDeadline()).isEqualTo(givenDeadline);
             assertThat(recruitment.getCapacity()).isEqualTo(givenCapacity);
             assertThat(recruitment.getContent()).isEqualTo(givenContent);
-            assertThat(recruitment.getImageUrls()).containsExactlyElementsOf(givenImageUrls);
+            assertThat(recruitment.getImages()).containsExactlyElementsOf(givenImageUrls);
         }
 
         @Test
@@ -162,7 +162,7 @@ class RecruitmentTest {
                 null, null, emptyImageUrls, imageRemover);
 
             //then
-            assertThat(recruitment.getImageUrls()).isEmpty();
+            assertThat(recruitment.getImages()).isEmpty();
         }
 
         @Test

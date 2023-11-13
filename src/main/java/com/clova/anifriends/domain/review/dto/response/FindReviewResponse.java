@@ -13,7 +13,7 @@ public record FindReviewResponse(
         return new FindReviewResponse(
             review.getReviewId(),
             review.getContent(),
-            review.getImageUrls()
+            review.getImages()
         );
     }
 }
