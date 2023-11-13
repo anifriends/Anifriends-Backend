@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AnimalNeutered {
 
-    @Column(name = "is_neutered")
+    @Column(name = "is_neutered", nullable = false)
     private Boolean isNeutered;
 
     public AnimalNeutered(boolean value) {

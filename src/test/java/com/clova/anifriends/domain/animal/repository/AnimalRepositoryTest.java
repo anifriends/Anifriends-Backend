@@ -14,18 +14,15 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
-class AnimalRepositoryImplTest extends BaseRepositoryTest {
-
-    @Autowired
-    private AnimalRepositoryImpl customAnimalRepository;
+public class AnimalRepositoryTest extends BaseRepositoryTest {
 
     @Nested
     @DisplayName("findAnimalsByShelter 실행 시")
@@ -59,7 +56,7 @@ class AnimalRepositoryImplTest extends BaseRepositoryTest {
             animalRepository.save(animalNotFound);
 
             // when
-            Page<Animal> expected = customAnimalRepository.findAnimalsByShelter(
+            Page<Animal> expected = animalRepository.findAnimalsByShelter(
                 shelter.getShelterId(),
                 "animalName",
                 null,
@@ -116,7 +113,7 @@ class AnimalRepositoryImplTest extends BaseRepositoryTest {
             entityManager.persist(animalNotFound);
 
             // when
-            Page<Animal> expected = customAnimalRepository.findAnimalsByShelter(
+            Page<Animal> expected = animalRepository.findAnimalsByShelter(
                 shelter.getShelterId(),
                 "animalName",
                 null,
@@ -160,7 +157,7 @@ class AnimalRepositoryImplTest extends BaseRepositoryTest {
             animalRepository.save(animalNotFound);
 
             // when
-            Page<Animal> expected = customAnimalRepository.findAnimalsByShelter(
+            Page<Animal> expected = animalRepository.findAnimalsByShelter(
                 shelter.getShelterId(),
                 "animalName",
                 AnimalType.DOG,
@@ -229,7 +226,7 @@ class AnimalRepositoryImplTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Page<Animal> result = customAnimalRepository.findAnimalsByShelter(
+            Page<Animal> result = animalRepository.findAnimalsByShelter(
                 shelter.getShelterId(),
                 keyword,
                 nullTypeFilter,
@@ -298,7 +295,7 @@ class AnimalRepositoryImplTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Page<Animal> result = customAnimalRepository.findAnimalsByShelter(
+            Page<Animal> result = animalRepository.findAnimalsByShelter(
                 shelter.getShelterId(),
                 keyword,
                 nullTypeFilter,
@@ -386,7 +383,7 @@ class AnimalRepositoryImplTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Page<Animal> result = customAnimalRepository.findAnimalsByVolunteer(
+            Page<Animal> result = animalRepository.findAnimalsByVolunteer(
                 typeFilter,
                 activeFilter,
                 isNeuteredFilter,
@@ -452,7 +449,7 @@ class AnimalRepositoryImplTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Page<Animal> result = customAnimalRepository.findAnimalsByVolunteer(
+            Page<Animal> result = animalRepository.findAnimalsByVolunteer(
                 nullTypeFilter,
                 nullActiveFilter,
                 nullIsNeuteredFilter,
@@ -465,6 +462,29 @@ class AnimalRepositoryImplTest extends BaseRepositoryTest {
             // then
             assertThat(result.getContent()).containsExactlyInAnyOrder(matchAnimal1, matchAnimal2);
         }
+    }
 
+    @Nested
+    @DisplayName("findByShelterIdAndAnimalId 실행 시")
+    class FindByShelterIdAndAnimalIdTest {
+
+        @Test
+        @DisplayName("성공")
+        void findByShelterIdAndAnimalId() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            Animal animal = AnimalFixture.animal(shelter);
+
+            shelterRepository.save(shelter);
+            animalRepository.save(animal);
+
+            // when
+            Optional<Animal> result = animalRepository.findByShelterIdAndAnimalId(
+                shelter.getShelterId(),
+                animal.getAnimalId());
+
+            // then
+            assertThat(result).isEqualTo(Optional.of(animal));
+        }
     }
 }
