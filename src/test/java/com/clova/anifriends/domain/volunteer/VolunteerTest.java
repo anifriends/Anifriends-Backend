@@ -2,13 +2,19 @@ package com.clova.anifriends.domain.volunteer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchException;
 
 import com.clova.anifriends.base.MockImageRemover;
+import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.common.ImageRemover;
+import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
 import java.time.LocalDate;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,6 +22,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 class VolunteerTest {
+
+    CustomPasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    void setUp() {
+        passwordEncoder = new MockPasswordEncoder();
+    }
 
     @Nested
     @DisplayName("Volunteer 생성 시")
@@ -28,6 +41,7 @@ class VolunteerTest {
         String gender = "MALE";
         String name = "홍길동";
 
+
         @Test
         @DisplayName("성공")
         void success() {
@@ -36,7 +50,7 @@ class VolunteerTest {
 
             // when
             Volunteer volunteer = new Volunteer(email, password, birthDate, phoneNumber, gender,
-                name);
+                name, passwordEncoder);
 
             // then
             assertThat(volunteer.getEmail()).isEqualTo(email);
@@ -51,7 +65,7 @@ class VolunteerTest {
             // when
             // then
             assertThatThrownBy(() -> new Volunteer(email, password, birthDate, phoneNumber, gender,
-                name))
+                name, passwordEncoder))
                 .isInstanceOf(VolunteerBadRequestException.class);
         }
     }
@@ -157,6 +171,61 @@ class VolunteerTest {
 
             //then
             assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(notEqualsImageUrl);
+        }
+    }
+
+    @Nested
+    @DisplayName("updatePassword 메서드 호출 시")
+    class updatePasswordTest {
+
+        @Test
+        @DisplayName("성공")
+        void updatePassword() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            String rawOldPassword = VolunteerFixture.PASSWORD;
+            String rawNewPassword = rawOldPassword + "a";
+
+            // when
+            volunteer.updatePassword(passwordEncoder, rawOldPassword, rawNewPassword);
+
+            // then
+            String encodedUpdatePassword = volunteer.getPassword();
+            boolean match = passwordEncoder.matchesPassword(encodedUpdatePassword, rawNewPassword);
+
+            assertThat(match).isTrue();
+        }
+
+        @Test
+        @DisplayName("예외(VolunteerBadRequest) : 이전 비밀번호와 새로운 비밀번호가 같은 경우")
+        void throwExceptionWhenOldPasswordEqualsNewPassword() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            String rawOldPassword = VolunteerFixture.PASSWORD;
+            String rawNewPassword = rawOldPassword;
+
+            // when
+            Exception exception = catchException(
+                () -> volunteer.updatePassword(passwordEncoder, rawOldPassword, rawNewPassword));
+
+            // then
+            assertThat(exception).isInstanceOf(VolunteerBadRequestException.class);
+        }
+
+        @Test
+        @DisplayName("예외(VolunteerBadRequest) : 입력한 이전 비밀번호가 다른 경우")
+        void throwExceptionWhenOldPasswordIsNotSame() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            String rawOldPassword = VolunteerFixture.PASSWORD + "123";
+            String rawNewPassword = rawOldPassword + "1";
+
+            // when
+            Exception exception = catchException(
+                () -> volunteer.updatePassword(passwordEncoder, rawOldPassword, rawNewPassword));
+
+            // then
+            assertThat(exception).isInstanceOf(VolunteerBadRequestException.class);
         }
     }
 }

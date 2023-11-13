@@ -8,6 +8,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
+import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
@@ -20,12 +22,14 @@ import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
 import java.time.LocalDate;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -37,6 +41,9 @@ class VolunteerServiceTest {
 
     @Mock
     VolunteerRepository volunteerRepository;
+
+    @Spy
+    CustomPasswordEncoder passwordEncoder = new MockPasswordEncoder();
 
     @Nested
     @DisplayName("checkDuplicateVolunteerEmail 메서드 실행 시")
@@ -171,6 +178,31 @@ class VolunteerServiceTest {
             assertThat(volunteer.getBirthDate()).isEqualTo(newBirthDate);
             assertThat(volunteer.getPhoneNumber()).isEqualTo(newPhoneNumber);
             assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(newImageUrl);
+        }
+    }
+
+    @Nested
+    @DisplayName("updatePassword 메서드 호출 시")
+    class updatePasswordTest {
+
+        @Test
+        @DisplayName("성공")
+        void updatePassword() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            String rawOldPassword = VolunteerFixture.PASSWORD;
+            String rawNewPassword = rawOldPassword + "a";
+
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+
+            // when
+            volunteerService.updatePassword(1L, rawOldPassword, rawNewPassword);
+
+            // then
+            String encodedUpdatePassword = volunteer.getPassword();
+            boolean match = passwordEncoder.matchesPassword(encodedUpdatePassword, rawNewPassword);
+
+            assertThat(match).isTrue();
         }
     }
 }
