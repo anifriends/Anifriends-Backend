@@ -123,7 +123,7 @@ class ReviewTest {
 
             //then
             assertThat(review.getContent()).isEqualTo(content);
-            assertThat(review.getImageUrls()).isEqualTo(imageUrls);
+            assertThat(review.getImages()).isEqualTo(imageUrls);
         }
 
         @Test
@@ -133,14 +133,14 @@ class ReviewTest {
             String content = null;
             List<String> imageUrls = null;
             String givenContent = review.getContent();
-            List<String> givenImageUrls = review.getImageUrls();
+            List<String> givenImageUrls = review.getImages();
 
             //when
             review.updateReview(content, imageUrls, imageRemover);
 
             //then
             assertThat(review.getContent()).isEqualTo(givenContent);
-            assertThat(review.getImageUrls()).isEqualTo(givenImageUrls);
+            assertThat(review.getImages()).isEqualTo(givenImageUrls);
         }
 
         @Test
@@ -155,7 +155,7 @@ class ReviewTest {
 
             //then
             assertThat(review.getContent()).isEqualTo(content);
-            assertThat(review.getImageUrls()).isEmpty();
+            assertThat(review.getImages()).isEmpty();
         }
 
         @Test

@@ -284,7 +284,7 @@ class ReviewServiceTest {
 
             // then
             assertThat(review.getContent()).isEqualTo(newContent);
-            assertThat(review.getImageUrls()).isEqualTo(newImageUrls);
+            assertThat(review.getImages()).isEqualTo(newImageUrls);
         }
 
         @Test

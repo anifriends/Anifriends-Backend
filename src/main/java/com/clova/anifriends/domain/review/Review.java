@@ -55,7 +55,7 @@ public class Review extends BaseTimeEntity {
         this.applicant = applicant;
         this.applicant.registerReview(this);
         this.content = new ReviewContent(content);
-        this.images = images == null ? null : images.stream()
+        this.imageUrls = images == null ? null : images.stream()
             .map(url -> new ReviewImage(this, url))
             .toList();
     }
@@ -79,7 +79,7 @@ public class Review extends BaseTimeEntity {
     }
 
     public List<String> getImages() {
-        return images.stream()
+        return imageUrls.stream()
             .map(ReviewImage::getImageUrl)
             .toList();
     }
@@ -141,7 +141,7 @@ public class Review extends BaseTimeEntity {
     private List<ReviewImage> filterNewImages(
         List<String> updateImageUrls
     ) {
-        List<String> existsImageUrls = getImageUrls();
+        List<String> existsImageUrls = getImages();
 
         return updateImageUrls.stream()
             .filter(imageUrl -> !existsImageUrls.contains(imageUrl))
