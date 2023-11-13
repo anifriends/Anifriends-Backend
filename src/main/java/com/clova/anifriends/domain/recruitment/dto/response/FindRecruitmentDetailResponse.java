@@ -31,7 +31,7 @@ public record FindRecruitmentDetailResponse(
             recruitment.getDeadline(),
             recruitment.getCreatedAt(),
             recruitment.getUpdatedAt(),
-            recruitment.getImageUrls()
+            recruitment.getImages()
         );
     }
 }

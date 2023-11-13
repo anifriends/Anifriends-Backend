@@ -12,6 +12,6 @@ public class MockImageRemover implements ImageRemover {
 
     @Override
     public void removeImages(List<String> imageUrls) {
-        System.out.println("remove Images");
+        System.out.println("remove" + imageUrls);
     }
 }

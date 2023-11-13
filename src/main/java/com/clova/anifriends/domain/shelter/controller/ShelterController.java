@@ -1,14 +1,15 @@
 package com.clova.anifriends.domain.shelter.controller;
 
 import com.clova.anifriends.domain.auth.LoginUser;
-import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterEmailRequest;
-import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleByVolunteerResponse;
-import com.clova.anifriends.domain.shelter.dto.RegisterShelterRequest;
-import com.clova.anifriends.domain.shelter.dto.UpdateAddressStatusRequest;
-import com.clova.anifriends.domain.shelter.dto.UpdateShelterPasswordRequest;
+import com.clova.anifriends.domain.shelter.dto.request.CheckDuplicateShelterEmailRequest;
+import com.clova.anifriends.domain.shelter.dto.request.RegisterShelterRequest;
+import com.clova.anifriends.domain.shelter.dto.request.UpdateAddressStatusRequest;
+import com.clova.anifriends.domain.shelter.dto.request.UpdateShelterPasswordRequest;
+import com.clova.anifriends.domain.shelter.dto.request.UpdateShelterRequest;
+import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleByVolunteerResponse;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -92,6 +93,25 @@ public class ShelterController {
         @RequestBody @Valid UpdateAddressStatusRequest updateAddressStatusRequest
     ) {
         shelterService.updateAddressStatus(shelterId, updateAddressStatusRequest.isOpenedAddress());
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/shelters/me")
+    public ResponseEntity<Void> updateShelter(
+        @LoginUser Long shelterId,
+        @RequestBody UpdateShelterRequest updateShelterRequest
+    ) {
+        shelterService.updateShelter(
+            shelterId,
+            updateShelterRequest.name(),
+            updateShelterRequest.imageUrl(),
+            updateShelterRequest.address(),
+            updateShelterRequest.addressDetail(),
+            updateShelterRequest.phoneNumber(),
+            updateShelterRequest.sparePhoneNumber(),
+            updateShelterRequest.isOpenedAddress()
+        );
 
         return ResponseEntity.noContent().build();
     }

@@ -11,6 +11,7 @@ import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
+import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
@@ -104,5 +105,18 @@ public class ApplicantService {
 
         applicantRepository.updateBulkAttendance(shelterId, recruitmentId, attendedIds,
             ApplicantStatus.ATTENDANCE);
+    }
+
+    @Transactional
+    public void updateApplicantStatus(Long applicantId, Long recruitmentId, Long shelterId,
+        Boolean isApproved) {
+        Applicant applicant = getApplicant(applicantId, recruitmentId, shelterId);
+        applicant.updateApplicantStatus(isApproved);
+    }
+
+    private Applicant getApplicant(Long applicantId, Long recruitmentId, Long shelterId) {
+        return applicantRepository.findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId(
+                applicantId, recruitmentId, shelterId)
+            .orElseThrow(() -> new ApplicantNotFoundException("존재하지 않는 봉사 신청입니다."));
     }
 }

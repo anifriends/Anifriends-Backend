@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.review.service;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
@@ -26,6 +27,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     private final ApplicantRepository applicantRepository;
+    private final ImageRemover imageRemover;
 
     public FindReviewResponse findReview(Long userId, Long reviewId) {
         return FindReviewResponse.from(getReview(userId, reviewId));
@@ -84,5 +86,16 @@ public class ReviewService {
             = reviewRepository.findAllByVolunteerVolunteerIdOrderByCreatedAtDesc(volunteerId,
             pageable);
         return FindVolunteerReviewsResponse.of(reviewPage.getContent(), PageInfo.from(reviewPage));
+    }
+
+    @Transactional
+    public void updateReview(
+        Long volunteerId,
+        Long reviewId,
+        String content,
+        List<String> imageUrls
+    ) {
+        Review review = getReview(volunteerId, reviewId);
+        review.updateReview(content, imageUrls, imageRemover);
     }
 }

@@ -123,4 +123,10 @@ public class Applicant extends BaseTimeEntity {
     public boolean isCompleted() {
         return this.status == ApplicantStatus.ATTENDANCE;
     }
+
+    public void updateApplicantStatus(Boolean isApproved) {
+        if (Objects.nonNull(isApproved)) {
+            this.status = isApproved ? ApplicantStatus.ATTENDANCE : ApplicantStatus.REFUSED;
+        }
+    }
 }

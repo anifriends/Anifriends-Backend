@@ -35,7 +35,7 @@ public record FindAnimalByShelterResponse(
             animal.getWeight(),
             animal.getInformation(),
             animal.isAdopted(),
-            animal.getImageUrls()
+            animal.getImages()
         );
     }
 }

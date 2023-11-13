@@ -2,7 +2,6 @@ package com.clova.anifriends.domain.animal.service;
 
 import static com.clova.anifriends.domain.animal.support.fixture.AnimalFixture.animal;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
-import static com.clova.anifriends.domain.shelter.support.ShelterImageFixture.shelterImage;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
@@ -116,7 +115,6 @@ class AnimalServiceTest {
         void findAnimalDetail() {
             // given
             Shelter shelter = shelter();
-            shelter.updateShelterImage(shelterImage(shelter));
             Animal animal = animal(shelter);
             FindAnimalDetail expected = FindAnimalDetail.from(animal);
 
@@ -240,6 +238,31 @@ class AnimalServiceTest {
     }
 
     @Nested
+    @DisplayName("updateAnimalAdoptStatus 실행 시")
+    class UpdateAnimalAdoptStatus {
+
+        @Test
+        @DisplayName("성공")
+        void updateAnimalAdoptStatus() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            boolean originStatus = true;
+            boolean updateStatus = false;
+            Animal animal = AnimalFixture.animal(shelter, originStatus);
+
+            when(animalRepository.findByShelterIdAndAnimalId(anyLong(), anyLong()))
+                .thenReturn(Optional.of(animal));
+
+            // when
+            Exception exception = catchException(
+                () -> animalService.updateAnimalAdoptStatus(anyLong(), anyLong(), updateStatus));
+
+            // then
+            assertThat(exception).isNull();
+        }
+    }
+
+    @Nested
     @DisplayName("updateAnimal 메서드 호출 시")
     class UpdateRecruitmentTest {
 
@@ -293,7 +316,7 @@ class AnimalServiceTest {
             assertThat(animal.getActive()).isEqualTo(mockActive);
             assertThat(animal.getWeight()).isEqualTo(mockWeight);
             assertThat(animal.getInformation()).isEqualTo(mockInformation);
-            assertThat(animal.getImageUrls()).usingRecursiveComparison().isEqualTo(mockImageUrls);
+            assertThat(animal.getImages()).usingRecursiveComparison().isEqualTo(mockImageUrls);
         }
 
         @Test

@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.animal;
 
 import com.clova.anifriends.domain.animal.exception.AnimalBadRequestException;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
+import com.clova.anifriends.domain.animal.wrapper.AnimalAdopted;
 import com.clova.anifriends.domain.animal.wrapper.AnimalBreed;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalInformation;
@@ -39,6 +40,7 @@ import lombok.NoArgsConstructor;
 public class Animal extends BaseTimeEntity {
 
     private static final int MAX_IMAGES_SIZE = 5;
+    public static final boolean IS_ADOPTED_DEFAULT = false;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,8 +81,8 @@ public class Animal extends BaseTimeEntity {
     @Embedded
     private AnimalInformation information;
 
-    @Column(name = "is_adopted")
-    private boolean isAdopted;
+    @Embedded
+    private AnimalAdopted adopted = new AnimalAdopted(IS_ADOPTED_DEFAULT);
 
     @OneToMany(mappedBy = "animal", cascade = CascadeType.PERSIST,
         fetch = FetchType.LAZY, orphanRemoval = true)
@@ -116,7 +118,10 @@ public class Animal extends BaseTimeEntity {
                 .map(url -> new AnimalImage(this, url))
                 .toList()
         );
-        this.isAdopted = false;
+    }
+
+    public void updateAdoptStatus(boolean isAdopted) {
+        this.adopted = this.adopted.updateAdoptStatus(isAdopted);
     }
 
     public void updateAnimal(
@@ -253,13 +258,13 @@ public class Animal extends BaseTimeEntity {
         return information.getInformation();
     }
 
-    public List<String> getImageUrls() {
+    public List<String> getImages() {
         return images.stream()
             .map(AnimalImage::getImageUrl)
             .toList();
     }
 
     public boolean isAdopted() {
-        return isAdopted;
+        return adopted.isAdopted();
     }
 }

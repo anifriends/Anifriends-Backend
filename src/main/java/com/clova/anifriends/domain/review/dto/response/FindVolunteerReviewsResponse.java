@@ -24,7 +24,7 @@ public record FindVolunteerReviewsResponse(
                 review.getApplicant().getRecruitment().getShelter().getName(),
                 review.getCreatedAt(),
                 review.getContent(),
-                review.getImageUrls()
+                review.getImages()
             );
         }
     }

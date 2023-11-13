@@ -34,6 +34,7 @@ import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
+import com.clova.anifriends.domain.animal.dto.request.UpdateAnimalAdoptStatusRequest;
 import com.clova.anifriends.domain.animal.dto.request.UpdateAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
@@ -316,6 +317,39 @@ class AnimalControllerTest extends BaseControllerTest {
                     fieldWithPath("animals[].shelterAddress").type(STRING).description("보호소 주소"),
                     fieldWithPath("animals[].animalImageUrl").type(STRING)
                         .description("보호 동물 이미지 url")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("보호 동물 입양 완료 api 호출 시")
+    void updateAnimalAdoptStatus() throws Exception {
+        // given
+        Shelter shelter = shelter();
+        Animal animal = animal(shelter);
+        ReflectionTestUtils.setField(animal, "animalId", 1L);
+
+        UpdateAnimalAdoptStatusRequest request = new UpdateAnimalAdoptStatusRequest(
+            true);
+
+        // when
+        ResultActions result = mockMvc.perform(
+            patch("/api/shelters/animals/{animalId}/status", animal.getAnimalId())
+                .header(AUTHORIZATION, shelterAccessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)));
+
+        // then
+        result.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("animalId").description("보호 동물 ID")
+                ),
+                requestFields(
+                    fieldWithPath("isAdopted").type(BOOLEAN).description("보호 동물 입양 여부")
                 )
             ));
     }
