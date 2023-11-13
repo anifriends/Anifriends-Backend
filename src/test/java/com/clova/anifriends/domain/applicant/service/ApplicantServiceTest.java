@@ -31,6 +31,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentInfo;
+import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
@@ -339,6 +340,60 @@ class ApplicantServiceTest {
                     List.of(applicantAttendanceToNoShow.getApplicantId(),
                         applicantNoShow.getApplicantId()), NO_SHOW);
 
+        }
+    }
+
+    @Nested
+    @DisplayName("updateApplicantStatus 실행 시")
+    class UpdateApplicantStatus {
+
+        @Test
+        @DisplayName("성공")
+        void updateApplicantStatus() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
+            Shelter shelter = ShelterFixture.shelter();
+            ReflectionTestUtils.setField(shelter, "shelterId", 1L);
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer, PENDING);
+            ReflectionTestUtils.setField(applicant, "applicantId", 1L);
+            when(
+                applicantRepository.findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId(
+                    anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(applicant));
+
+            // when
+            applicantService.updateApplicantStatus(applicant.getApplicantId(),
+                recruitment.getRecruitmentId(), shelter.getShelterId(), false);
+
+            // then
+            assertThat(applicant.getStatus()).isEqualTo(REFUSED);
+        }
+
+        @Test
+        @DisplayName("예외(ApplicantNotFoundException): 존재하지 않는 신청인 경우")
+        void throwExceptionWhenApplicantNotFound() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
+            Shelter shelter = ShelterFixture.shelter();
+            ReflectionTestUtils.setField(shelter, "shelterId", 1L);
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer, PENDING);
+            ReflectionTestUtils.setField(applicant, "applicantId", 1L);
+            when(
+                applicantRepository.findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId(
+                    anyLong(), anyLong(), anyLong())).thenReturn(Optional.empty());
+
+            // when
+            Exception exception = catchException(() -> applicantService.updateApplicantStatus(
+                applicant.getApplicantId(), recruitment.getRecruitmentId(),
+                shelter.getShelterId(), false));
+
+            // then
+            assertThat(exception).isInstanceOf(ApplicantNotFoundException.class);
         }
     }
 }

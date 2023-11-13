@@ -1,11 +1,12 @@
 package com.clova.anifriends.domain.shelter.service;
 
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleResponse;
+import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
@@ -19,6 +20,7 @@ public class ShelterService {
 
     private final ShelterRepository shelterRepository;
     private final CustomPasswordEncoder passwordEncoder;
+    private final ImageRemover imageRemover;
 
     @Transactional
     public Long registerShelter(
@@ -95,5 +97,23 @@ public class ShelterService {
     ) {
         Shelter foundShelter = getShelter(shelterId);
         foundShelter.updateAddressStatus(isOpenedAddress);
+    }
+
+    @Transactional
+    public void updateShelter(
+        Long shelterId,
+        String name,
+        String imageUrl,
+        String address,
+        String addressDetail,
+        String phoneNumber,
+        String sparePhoneNumber,
+        Boolean isOpenedAddress
+    ) {
+        Shelter shelter = getShelter(shelterId);
+        shelter.updateShelter(
+            name, imageUrl, address, addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress,
+            imageRemover
+        );
     }
 }

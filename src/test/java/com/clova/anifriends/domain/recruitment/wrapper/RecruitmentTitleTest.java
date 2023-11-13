@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -64,6 +65,47 @@ class RecruitmentTitleTest {
 
             //then
             assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("updateTitle 메서드 호출 시")
+    class UpdateTitleTest {
+
+        RecruitmentTitle recruitmentTitle;
+
+        @BeforeEach
+        void setUp() {
+            String title = "title";
+            recruitmentTitle = new RecruitmentTitle(title);
+        }
+
+        @Test
+        @DisplayName("성공: 입력값이 null 아닐 때, 값이 업데이트 된 RecruitmentTitle을 반환")
+        void updateTitle() {
+            //given
+            String newTitle = recruitmentTitle.getTitle() + "a";
+
+            //when
+            RecruitmentTitle updatedTitle = recruitmentTitle.updateTitle(newTitle);
+
+            //then
+            assertThat(updatedTitle.getTitle()).isEqualTo(newTitle);
+            assertThat(updatedTitle).isNotEqualTo(recruitmentTitle);
+        }
+
+        @Test
+        @DisplayName("성공: 입력값이 null 일 때, 값이 업데이트 되지 않은 자기 자신을 반환")
+        void updateTitleWhenTitleIsNull() {
+            //given
+            String nullTitle = null;
+
+            //when
+            RecruitmentTitle updatedTitle = recruitmentTitle.updateTitle(nullTitle);
+
+            //then
+            assertThat(updatedTitle.getTitle()).isEqualTo(recruitmentTitle.getTitle());
+            assertThat(recruitmentTitle).isEqualTo(updatedTitle);
         }
     }
 }

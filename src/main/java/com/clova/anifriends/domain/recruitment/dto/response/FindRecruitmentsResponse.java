@@ -31,7 +31,7 @@ public record FindRecruitmentsResponse(
                 recruitment.getApplicantCount(),
                 recruitment.getCapacity(),
                 recruitment.getShelter().getName(),
-                recruitment.getShelter().getShelterImageUrl()
+                recruitment.getShelter().getImage()
             );
         }
     }

@@ -26,6 +26,15 @@ public class AnimalInformation {
         this.information = value;
     }
 
+    public AnimalInformation updateInformation(
+        String information
+    ) {
+        validateNotNull(information);
+        validateLength(information);
+
+        return new AnimalInformation(information);
+    }
+
     private void validateNotNull(String value) {
         if (Objects.isNull(value)) {
             throw new AnimalBadRequestException("기타 정보는 필수값입니다.");

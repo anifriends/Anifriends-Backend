@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.recruitment.service;
 
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
@@ -27,6 +28,7 @@ public class RecruitmentService {
 
     private final ShelterRepository shelterRepository;
     private final RecruitmentRepository recruitmentRepository;
+    private final ImageRemover imageRemover;
 
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
@@ -142,5 +144,35 @@ public class RecruitmentService {
     public void closeRecruitment(Long shelterId, Long recruitmentId) {
         Recruitment recruitment = getRecruitmentByShelter(shelterId, recruitmentId);
         recruitment.closeRecruitment();
+    }
+
+    @Transactional
+    public void updateRecruitment(
+        Long shelterId,
+        Long recruitmentId,
+        String title,
+        LocalDateTime startTime,
+        LocalDateTime endTime,
+        LocalDateTime deadline,
+        Integer capacity,
+        String content,
+        List<String> imageUrls) {
+        Recruitment recruitment = getRecruitmentByShelterWithImages(shelterId, recruitmentId);
+        recruitment.updateRecruitment(
+            title,
+            startTime,
+            endTime,
+            deadline,
+            capacity,
+            content,
+            imageUrls,
+            imageRemover);
+    }
+
+    private Recruitment getRecruitmentByShelterWithImages(Long shelterId, Long recruitmentId) {
+        return recruitmentRepository.findByShelterIdAndRecruitmentIdWithImages(
+                shelterId,
+                recruitmentId)
+            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 봉사 모집글입니다."));
     }
 }

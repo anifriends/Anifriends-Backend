@@ -22,6 +22,7 @@ import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
 import java.time.LocalDate;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -107,7 +108,7 @@ class VolunteerServiceTest {
             volunteer = VolunteerFixture.volunteer();
             ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
             volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
-            setField(volunteer, "volunteerImage", volunteerImage);
+            setField(volunteer, "image", volunteerImage);
             FindVolunteerMyPageResponse expected = FindVolunteerMyPageResponse.from(volunteer);
 
             given(volunteerRepository.findById(anyLong())).willReturn(ofNullable(volunteer));
@@ -133,7 +134,7 @@ class VolunteerServiceTest {
             // given
             volunteer = VolunteerFixture.volunteer();
             volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
-            setField(volunteer, "volunteerImage", volunteerImage);
+            setField(volunteer, "image", volunteerImage);
             FindVolunteerProfileResponse expectedFindVolunteerProfileResponse = FindVolunteerProfileResponse.from(
                 volunteer);
 
@@ -177,6 +178,31 @@ class VolunteerServiceTest {
             assertThat(volunteer.getBirthDate()).isEqualTo(newBirthDate);
             assertThat(volunteer.getPhoneNumber()).isEqualTo(newPhoneNumber);
             assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(newImageUrl);
+        }
+    }
+
+    @Nested
+    @DisplayName("updatePassword 메서드 호출 시")
+    class updatePasswordTest {
+
+        @Test
+        @DisplayName("성공")
+        void updatePassword() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            String rawOldPassword = VolunteerFixture.PASSWORD;
+            String rawNewPassword = rawOldPassword + "a";
+
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+
+            // when
+            volunteerService.updatePassword(1L, rawOldPassword, rawNewPassword);
+
+            // then
+            String encodedUpdatePassword = volunteer.getPassword();
+            boolean match = passwordEncoder.matchesPassword(encodedUpdatePassword, rawNewPassword);
+
+            assertThat(match).isTrue();
         }
     }
 }

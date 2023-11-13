@@ -18,7 +18,7 @@ public record RegisterAnimalRequest(
     String gender,
     @NotNull(message = "중성화 여부는 필수값입니다.")
     Boolean isNeutered,
-    @NotBlank(message = "성경은 공백일 수 없습니다.")
+    @NotBlank(message = "성격은 공백일 수 없습니다.")
     String active,
     @NotNull(message = "무게는 필수값입니다.")
     Double weight,

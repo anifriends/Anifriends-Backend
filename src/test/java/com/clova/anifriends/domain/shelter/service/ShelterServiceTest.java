@@ -3,20 +3,26 @@ package com.clova.anifriends.domain.shelter.service;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
-import com.clova.anifriends.domain.shelter.dto.CheckDuplicateShelterResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterDetailResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterMyPageResponse;
-import com.clova.anifriends.domain.shelter.dto.FindShelterSimpleResponse;
+import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -39,6 +45,9 @@ class ShelterServiceTest {
 
     @Mock
     private ShelterRepository shelterRepository;
+
+    @Mock
+    private ImageRemover imageRemover;
 
     @Spy
     CustomPasswordEncoder passwordEncoder = new MockPasswordEncoder();
@@ -146,7 +155,6 @@ class ShelterServiceTest {
             //given
             givenShelter = ShelterFixture.shelter();
             givenShelterImage = ShelterImageFixture.shelterImage(givenShelter);
-            givenShelter.updateShelterImage(givenShelterImage);
 
             given(shelterRepository.findById(anyLong())).willReturn(
                 Optional.ofNullable(givenShelter));
@@ -263,4 +271,195 @@ class ShelterServiceTest {
             assertThat(shelter.isOpenedAddress()).isFalse();
         }
     }
+
+    @Nested
+    @DisplayName("updateShelter 실행 시")
+    class UpdateShelterTest {
+
+        @Test
+        @DisplayName("성공")
+        void update() {
+            // given
+            String originName = "originName";
+            String originAddress = "originAddress";
+            String originAddressDetail = "originAddressDetail";
+            String originPhoneNumber = "010-1111-1111";
+            String originSparePhoneNumber = "010-2222-2222";
+            boolean originIsOpenedAddress = true;
+
+            String newName = "newName";
+            String newImageUrl = "newImageUrl";
+            String newAddress = "newAddress";
+            String newAddressDetail = "newAddressDetail";
+            String newPhoneNumber = "010-3333-3333";
+            String newSparePhoneNumber = "010-4444-4444";
+            boolean newIsOpenedAddress = false;
+
+            Shelter shelter = new Shelter(
+                "shelterEmail@email.com",
+                "shelterPassword",
+                originAddress,
+                originAddressDetail,
+                originName,
+                originPhoneNumber,
+                originSparePhoneNumber,
+                originIsOpenedAddress,
+                passwordEncoder
+            );
+
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.of(shelter));
+
+            // when
+            shelterService.updateShelter(anyLong(), newName, newImageUrl, newAddress,
+                newAddressDetail, newPhoneNumber, newSparePhoneNumber, newIsOpenedAddress);
+
+            // then
+            verify(imageRemover, times(0)).removeImage(anyString());
+
+            assertSoftly(softAssertions -> {
+                softAssertions.assertThat(shelter.getName()).isEqualTo(newName);
+                softAssertions.assertThat(shelter.getImage()).isEqualTo(newImageUrl);
+                softAssertions.assertThat(shelter.getAddress()).isEqualTo(newAddress);
+                softAssertions.assertThat(shelter.getAddressDetail()).isEqualTo(newAddressDetail);
+                softAssertions.assertThat(shelter.getPhoneNumber()).isEqualTo(newPhoneNumber);
+                softAssertions.assertThat(shelter.getSparePhoneNumber())
+                    .isEqualTo(newSparePhoneNumber);
+                softAssertions.assertThat(shelter.isOpenedAddress()).isEqualTo(newIsOpenedAddress);
+            });
+        }
+
+        @Test
+        @DisplayName("성공: 기존 이미지 존재 -> 새로운 이미지 갱신")
+        void updateWhenExistToNewImage() {
+            // given
+            String originImageUrl = "originImageUrl";
+            String newImageUrl = "newImageUrl";
+            Shelter shelter = ShelterFixture.shelter(originImageUrl);
+
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.of(shelter));
+
+            // when
+            Exception exception = catchException(() -> shelterService.updateShelter(
+                anyLong(), shelter.getName(), newImageUrl, shelter.getAddress(),
+                shelter.getAddressDetail(), shelter.getPhoneNumber(), shelter.getSparePhoneNumber(),
+                shelter.isOpenedAddress()
+            ));
+
+            // then
+            verify(imageRemover, times(1)).removeImage(originImageUrl);
+            assertThat(exception).isNull();
+        }
+
+        @Test
+        @DisplayName("성공: 기존 이미지 존재 -> 동일한 이미지")
+        void updateShelterWhenSameImage() {
+            // given
+            String sameImageUrl = "originImageUrl";
+
+            Shelter shelter = ShelterFixture.shelter(sameImageUrl);
+
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.of(shelter));
+
+            // when
+            Exception exception = catchException(() -> shelterService.updateShelter(
+                anyLong(), shelter.getName(), sameImageUrl, shelter.getAddress(),
+                shelter.getAddressDetail(), shelter.getPhoneNumber(), shelter.getSparePhoneNumber(),
+                shelter.isOpenedAddress()
+            ));
+
+            // then
+            verify(imageRemover, never()).removeImage(anyString());
+            assertThat(exception).isNull();
+        }
+
+        @Test
+        @DisplayName("성공: 기존 이미지 존재 -> 이미지 none")
+        void updateShelterWhenExistToNoneImage() {
+            // given
+            String originImageUrl = "originImageUrl";
+            String nullNewImageUrl = null;
+
+            Shelter shelter = ShelterFixture.shelter(originImageUrl);
+
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.of(shelter));
+
+            // when
+            Exception exception = catchException(() -> shelterService.updateShelter(
+                anyLong(), shelter.getName(), nullNewImageUrl, shelter.getAddress(),
+                shelter.getAddressDetail(), shelter.getPhoneNumber(), shelter.getSparePhoneNumber(),
+                shelter.isOpenedAddress()
+            ));
+
+            // then
+            verify(imageRemover, times(1)).removeImage(originImageUrl);
+            assertThat(exception).isNull();
+        }
+
+        @Test
+        @DisplayName("성공: 이미지 none -> 새로운 이미지 갱신")
+        void updateShelterWhenNoneToNewImage() {
+            // given
+            String originImageUrl = "originImageUrl";
+            String nullOriginImageUrl = null;
+            String newImageUrl = "newImageUrl";
+
+            Shelter shelter = ShelterFixture.shelter(nullOriginImageUrl);
+
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.of(shelter));
+
+            // when
+            Exception exception = catchException(() -> shelterService.updateShelter(
+                anyLong(), shelter.getName(), newImageUrl, shelter.getAddress(),
+                shelter.getAddressDetail(), shelter.getPhoneNumber(), shelter.getSparePhoneNumber(),
+                shelter.isOpenedAddress()
+            ));
+
+            // then
+            verify(imageRemover, never()).removeImage(anyString());
+            assertThat(exception).isNull();
+        }
+
+        @Test
+        @DisplayName("성공: 이미지 none -> 이미지 none")
+        void updateShelterWhenNoneToNoneImage() {
+            // given
+            String originImageUrl = "originImageUrl";
+            String nullImageUrl = null;
+
+            Shelter shelter = ShelterFixture.shelter(nullImageUrl);
+
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.of(shelter));
+
+            // when
+            Exception exception = catchException(() -> shelterService.updateShelter(
+                anyLong(), shelter.getName(), nullImageUrl, shelter.getAddress(),
+                shelter.getAddressDetail(), shelter.getPhoneNumber(), shelter.getSparePhoneNumber(),
+                shelter.isOpenedAddress()
+            ));
+
+            // then
+            verify(imageRemover, never()).removeImage(anyString());
+            assertThat(exception).isNull();
+        }
+
+        @Test
+        @DisplayName("예외(ShelterNotFoundException): 존재하지 않는 보호소")
+        void exceptionWhenNotExist() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+            // when
+            Exception exception = catchException(() -> shelterService.updateShelter(
+                anyLong(), shelter.getName(), shelter.getImage(), shelter.getAddress(),
+                shelter.getAddressDetail(), shelter.getPhoneNumber(), shelter.getSparePhoneNumber(),
+                shelter.isOpenedAddress()
+            ));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
+        }
+    }
+
 }

@@ -4,6 +4,7 @@ import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.volunteer.dto.request.CheckDuplicateVolunteerEmailRequest;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
 import com.clova.anifriends.domain.volunteer.dto.request.UpdateVolunteerInfoRequest;
+import com.clova.anifriends.domain.volunteer.dto.request.UpdateVolunteerPasswordRequest;
 import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
@@ -82,6 +83,20 @@ public class VolunteerController {
             updateVolunteerInfoRequest.birthDate(),
             updateVolunteerInfoRequest.phoneNumber(),
             updateVolunteerInfoRequest.imageUrl());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/volunteers/me/password")
+    public ResponseEntity<Void> updateVolunteerPassword(
+        @LoginUser Long volunteerId,
+        @RequestBody @Valid UpdateVolunteerPasswordRequest updateVolunteerPasswordRequest
+    ) {
+        volunteerService.updatePassword(
+            volunteerId,
+            updateVolunteerPasswordRequest.oldPassword(),
+            updateVolunteerPasswordRequest.newPassword()
+        );
+
         return ResponseEntity.noContent().build();
     }
 }

@@ -12,33 +12,16 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.volunteer.Volunteer;
-import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 class ReviewRepositoryTest extends BaseRepositoryTest {
-
-    @Autowired
-    private ShelterRepository shelterRepository;
-
-    @Autowired
-    private RecruitmentRepository recruitmentRepository;
-
-    @Autowired
-    private VolunteerRepository volunteerRepository;
-
-    @Autowired
-    private ApplicantRepository applicantRepository;
 
     @Test
     @DisplayName("성공")

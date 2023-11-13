@@ -38,4 +38,8 @@ public class RecruitmentContent {
                 MessageFormat.format("본문은 {0}자 이상, {1}자 이하여야 합니다.", MIN_LENGTH, MAX_LENGTH));
         }
     }
+
+    public RecruitmentContent updateContent(String content) {
+        return content != null ? new RecruitmentContent(content) : this;
+    }
 }

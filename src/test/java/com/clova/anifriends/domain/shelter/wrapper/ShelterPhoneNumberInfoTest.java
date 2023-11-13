@@ -36,7 +36,7 @@ class ShelterPhoneNumberInfoTest {
         @DisplayName("예외(ShelterNotFoundException): 전화번호가 null")
         void throwExceptionWhenPhoneNumberIsNull() {
             // given
-            String nullPhoneNumber=  null;
+            String nullPhoneNumber = null;
 
             // when
             Exception exception = catchException(
@@ -90,4 +90,100 @@ class ShelterPhoneNumberInfoTest {
             assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
         }
     }
+
+    @Nested
+    @DisplayName("update 실행 시")
+    class Update {
+
+        @Test
+        @DisplayName("성공")
+        void update() {
+            // given
+            String phoneNumberValue = "010-1234-1234";
+            String sparePhoneNumberValue = "010-1234-1234";
+
+            // when
+            Exception exception = catchException(
+                () -> new ShelterPhoneNumberInfo(phoneNumberValue, sparePhoneNumberValue));
+
+            // then
+            assertThat(exception).isNull();
+        }
+
+        @Test
+        @DisplayName("예외(ShelterBadRequestException): 전화번호 형식이 아닌 경우")
+        void exceptionWhenWrongPattern() {
+            // given
+            String phoneNumberValue = "01012341234";
+            String sparePhoneNumberValue = "0101234-1234";
+
+            // when
+            Exception exception = catchException(
+                () -> new ShelterPhoneNumberInfo(phoneNumberValue, sparePhoneNumberValue));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
+        }
+
+        @Test
+        @DisplayName("예외(ShelterBadRequestException): 전화번호가 null")
+        void exceptionWhenPhoneNumberIsNull() {
+            // given
+            String nullPhoneNumberValue = null;
+            String sparePhoneNumberValue = "010-1234-1234";
+
+            // when
+            Exception exception = catchException(
+                () -> new ShelterPhoneNumberInfo(nullPhoneNumberValue, sparePhoneNumberValue));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
+        }
+
+        @Test
+        @DisplayName("예외(ShelterBadRequestException): 임시 전화번호가 null")
+        void exceptionWhenSparePhoneNumberIsNull() {
+            // given
+            String phoneNumberValue = "010-1234-1234";
+            String nullSparePhoneNumberValue = null;
+
+            // when
+            Exception exception = catchException(
+                () -> new ShelterPhoneNumberInfo(phoneNumberValue, nullSparePhoneNumberValue));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
+        }
+
+        @Test
+        @DisplayName("예외(ShelterBadRequestException): 전화번호가 blank")
+        void exceptionWhenPhoneNumberIsBlank() {
+            // given
+            String blankPhoneNumberValue = "";
+            String sparePhoneNumberValue = "010-1234-1234";
+
+            // when
+            Exception exception = catchException(
+                () -> new ShelterPhoneNumberInfo(blankPhoneNumberValue, sparePhoneNumberValue));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
+        }
+
+        @Test
+        @DisplayName("예외(ShelterBadRequestException): 임시 전화번호가 blank")
+        void exceptionWhenSparePhoneNumberIsBlank() {
+            // given
+            String phoneNumberValue = "010-1234-1234";
+            String blankSparePhoneNumberValue = "";
+
+            // when
+            Exception exception = catchException(
+                () -> new ShelterPhoneNumberInfo(phoneNumberValue, blankSparePhoneNumberValue));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
+        }
+    }
+
 }

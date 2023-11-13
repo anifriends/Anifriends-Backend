@@ -31,11 +31,15 @@ public class ShelterPhoneNumberInfo {
         this.sparePhoneNumber = sparePhoneNumber;
     }
 
+    public ShelterPhoneNumberInfo update(String phoneNumber, String sparePhoneNumber) {
+        return new ShelterPhoneNumberInfo(phoneNumber, sparePhoneNumber);
+    }
+
     private void validateNotNull(String phoneNumber, String sparePhoneNumber) {
-        if(Objects.isNull(phoneNumber)) {
+        if (Objects.isNull(phoneNumber)) {
             throw new ShelterBadRequestException("전화번호는 필수 항목입니다.");
         }
-        if(Objects.isNull(sparePhoneNumber)) {
+        if (Objects.isNull(sparePhoneNumber)) {
             throw new ShelterBadRequestException("임시 전화번호는 필수 항목입니다.");
         }
     }

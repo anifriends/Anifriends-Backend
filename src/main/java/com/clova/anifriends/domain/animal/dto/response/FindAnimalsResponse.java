@@ -24,7 +24,7 @@ public record FindAnimalsResponse(
                 animal.getName(),
                 animal.getShelter().getName(),
                 animal.getShelter().getAddress(),
-                animal.getImageUrls().get(0)
+                animal.getImages().get(0)
             );
         }
     }

@@ -34,7 +34,7 @@ public record FindAnimalDetail(
             animal.getActive(),
             animal.getWeight(),
             animal.getInformation(),
-            animal.getImageUrls(),
+            animal.getImages(),
             animal.isAdopted());
     }
 

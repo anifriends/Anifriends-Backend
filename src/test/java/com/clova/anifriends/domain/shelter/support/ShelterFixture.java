@@ -1,10 +1,14 @@
 package com.clova.anifriends.domain.shelter.support;
 
+import static java.util.Objects.nonNull;
+
 import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.ShelterImage;
 import java.util.List;
 import java.util.stream.IntStream;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public class ShelterFixture {
 
@@ -31,6 +35,25 @@ public class ShelterFixture {
             IS_OPENED_ADDRESS,
             PASSWORD_ENCODER
         );
+    }
+
+    public static Shelter shelter(String imageUrl) {
+        Shelter shelter = new Shelter(
+            SHELTER_EMAIL,
+            RAW_SHELTER_PASSWORD,
+            SHELTER_ADDRESS,
+            SHELTER_ADDRESS_DETAIL,
+            SHELTER_NAME,
+            PHONE_NUMBER,
+            SPARE_PHONE_NUMBER,
+            IS_OPENED_ADDRESS,
+            PASSWORD_ENCODER
+        );
+        if (nonNull(imageUrl)) {
+            ReflectionTestUtils.setField(shelter, "image", new ShelterImage(shelter, imageUrl));
+        }
+        
+        return shelter;
     }
 
     public static List<Shelter> createShelters(int end) {

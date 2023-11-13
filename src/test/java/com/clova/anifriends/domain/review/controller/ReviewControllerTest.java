@@ -19,6 +19,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
@@ -40,16 +41,13 @@ import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
+import com.clova.anifriends.domain.review.dto.request.UpdateReviewRequest;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.ShelterImage;
-import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
-import com.clova.anifriends.domain.volunteer.VolunteerImage;
-import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -107,12 +105,8 @@ class ReviewControllerTest extends BaseControllerTest {
     void findShelterReviewsByShelter() throws Exception {
         //give
         Shelter shelter = shelter();
-        ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
-        shelter.updateShelterImage(shelterImage);
         Recruitment recruitment = recruitment(shelter);
         Volunteer volunteer = volunteer();
-        VolunteerImage volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
-        volunteer.updateVolunteerImage(volunteerImage);
         Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
         Review review = review(applicant);
         ReflectionTestUtils.setField(review, "reviewId", 1L);
@@ -145,11 +139,11 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("reviews[].createdAt").type(STRING).description("리뷰 생성일"),
                     fieldWithPath("reviews[].content").type(STRING).description("리뷰 내용"),
                     fieldWithPath("reviews[].reviewImageUrls").type(ARRAY)
-                        .description("리뷰 이미지 url 리스트"),
+                        .description("리뷰 이미지 url 리스트").optional(),
                     fieldWithPath("reviews[].volunteerName").type(STRING).description("봉사자 이름"),
                     fieldWithPath("reviews[].temperature").type(NUMBER).description("봉사자 온도"),
                     fieldWithPath("reviews[].volunteerImageUrl").type(STRING)
-                        .description("봉사자 프로필 이미지 url"),
+                        .description("봉사자 프로필 이미지 url").optional(),
                     fieldWithPath("reviews[].VolunteerReviewCount").type(NUMBER)
                         .description("봉사자 리뷰 수"),
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
@@ -170,7 +164,7 @@ class ReviewControllerTest extends BaseControllerTest {
         RegisterReviewRequest request = registerReviewRequest(review(applicant));
 
         when(reviewService.registerReview(anyLong(), eq(applicant.getApplicantId()),
-            eq(review.getContent()), eq(review.getImageUrls())))
+            eq(review.getContent()), eq(review.getImages())))
             .thenReturn(review.getReviewId());
 
         //when
@@ -249,7 +243,8 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("reviews[].shelterName").type(STRING).description("보호소 이름"),
                     fieldWithPath("reviews[].reviewCreatedAt").type(STRING).description("리뷰 생성일"),
                     fieldWithPath("reviews[].reviewContent").type(STRING).description("리뷰 내용"),
-                    fieldWithPath("reviews[].reviewImageUrls").type(ARRAY).description("리뷰 이미지 url 리스트")
+                    fieldWithPath("reviews[].reviewImageUrls").type(ARRAY)
+                        .description("리뷰 이미지 url 리스트")
                 )
             ));
     }
@@ -309,12 +304,8 @@ class ReviewControllerTest extends BaseControllerTest {
         //given
         Long shelterId = 1L;
         Shelter shelter = shelter();
-        ShelterImage shelterImage = ShelterImageFixture.shelterImage(shelter);
-        shelter.updateShelterImage(shelterImage);
         Recruitment recruitment = recruitment(shelter);
         Volunteer volunteer = volunteer();
-        VolunteerImage volunteerImage = VolunteerImageFixture.volunteerImage(volunteer);
-        volunteer.updateVolunteerImage(volunteerImage);
         Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
         Review review = review(applicant);
         ReflectionTestUtils.setField(review, "reviewId", 1L);
@@ -354,6 +345,41 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
                     fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 리뷰 수정 api 호출")
+    void updateReview() throws Exception {
+        // given
+        String content = "글 내용";
+        List<String> imageUrls = List.of("url1", "url2");
+        UpdateReviewRequest updateReviewRequest = new UpdateReviewRequest(content, imageUrls);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+            patch("/api/volunteers/reviews/{reviewId}", 1L)
+                .header(AUTHORIZATION, volunteerAccessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateReviewRequest))
+        );
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("reviewId").description("리뷰 ID")
+                ),
+                requestFields(
+                    fieldWithPath("content").type(STRING).description("리뷰 내용")
+                        .description(DocumentationFormatGenerator.getConstraint("10 ~ 300자")),
+                    fieldWithPath("imageUrls[]").type(ARRAY).description("리뷰 이미지 url 리스트")
+                        .description(DocumentationFormatGenerator.getConstraint("최대 5개"))
+                        .optional()
                 )
             ));
     }
