@@ -17,6 +17,7 @@ public class RecruitmentInfo {
 
     private static final int MIN_CAPACITY = 1;
     private static final int MAX_CAPACITY = 99;
+    private static final int DELETABLE_HOURS = 36;
 
     @Column(name = "start_time")
     private LocalDateTime startTime;
@@ -127,6 +128,14 @@ public class RecruitmentInfo {
 
     private int updateCapacity(Integer capacity) {
         return capacity != null ? capacity : this.capacity;
+    }
+
+    public void checkDeletable() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime maxDeletableTime = startTime.minusHours(DELETABLE_HOURS);
+        if (maxDeletableTime.isBefore(now)) {
+            throw new RecruitmentBadRequestException("봉사 시작 36시간 전까지만 삭제 가능합니다.");
+        }
     }
 
     @Override
