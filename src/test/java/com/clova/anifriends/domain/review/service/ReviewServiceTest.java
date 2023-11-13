@@ -19,6 +19,9 @@ import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
+import com.clova.anifriends.domain.common.ImageRemover;
+import com.clova.anifriends.domain.common.MockImageRemover;
 import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
@@ -30,6 +33,7 @@ import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
+import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.util.List;
@@ -40,6 +44,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -55,6 +60,9 @@ class ReviewServiceTest {
 
     @Mock
     private ApplicantRepository applicantRepository;
+
+    @Spy
+    ImageRemover imageRemover = new MockImageRemover();
 
     @Nested
     @DisplayName("findReviewById 메서드 실행 시")
@@ -250,6 +258,48 @@ class ReviewServiceTest {
             assertThat(response).usingRecursiveComparison()
                 .ignoringFields("reviewId")
                 .isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("updateReview 메서드 실행 시")
+    class UpdateReviewTest {
+
+        @Test
+        @DisplayName("성공")
+        void updateReview() {
+            // given
+            Recruitment recruitment = recruitment(shelter());
+            Volunteer volunteer = volunteer();
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer, ATTENDANCE);
+            Review review = ReviewFixture.review(applicant);
+            String newContent = "updatedContent";
+            List<String> newImageUrls = List.of("url1", "url2");
+
+            given(reviewRepository.findByReviewIdAndVolunteerId(anyLong(), anyLong()))
+                .willReturn(Optional.of(review));
+
+            // when
+            reviewService.updateReview(anyLong(), anyLong(), newContent, newImageUrls);
+
+            // then
+            assertThat(review.getContent()).isEqualTo(newContent);
+            assertThat(review.getImages()).isEqualTo(newImageUrls);
+        }
+
+        @Test
+        @DisplayName("예외(ReviewNotFoundException): 존재하지 않는 리뷰")
+        void exceptionWhenReviewIsNotExist() {
+            // given
+            given(reviewRepository.findByReviewIdAndVolunteerId(anyLong(), anyLong()))
+                .willReturn(Optional.empty());
+
+            // when
+            Exception exception = catchException(
+                () -> reviewService.updateReview(anyLong(), anyLong(), "content", null));
+
+            // then
+            assertThat(exception).isInstanceOf(ReviewNotFoundException.class);
         }
     }
 }
