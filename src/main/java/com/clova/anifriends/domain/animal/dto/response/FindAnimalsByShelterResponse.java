@@ -27,7 +27,7 @@ public record FindAnimalsByShelterResponse(
             return new FindAnimalByShelterResponse(
                 animal.getAnimalId(),
                 animal.getName(),
-                animal.getImageUrls().get(0),
+                animal.getImages().get(0),
                 animal.getBirthDate(),
                 animal.getGender().getName(),
                 animal.isAdopted(),

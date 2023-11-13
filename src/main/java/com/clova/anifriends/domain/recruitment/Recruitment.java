@@ -46,7 +46,7 @@ public class Recruitment extends BaseTimeEntity {
     private Shelter shelter;
 
     @OneToMany(mappedBy = "recruitment", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<RecruitmentImage> imageUrls = new ArrayList<>();
+    private List<RecruitmentImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitment", fetch = FetchType.LAZY)
     private List<Applicant> applicants = new ArrayList<>();
@@ -72,15 +72,15 @@ public class Recruitment extends BaseTimeEntity {
         LocalDateTime startTime,
         LocalDateTime endTime,
         LocalDateTime deadline,
-        List<String> imageUrls
+        List<String> images
     ) {
         this.shelter = shelter;
         this.title = new RecruitmentTitle(title);
         this.content = new RecruitmentContent(content);
         this.info = new RecruitmentInfo(startTime, endTime, deadline, IS_CLOSED_DEFAULT, capacity);
-        if(Objects.nonNull(imageUrls)) {
-            validateImageUrlsSize(imageUrls);
-            this.imageUrls = imageUrls.stream()
+        if (Objects.nonNull(images)) {
+            validateImageUrlsSize(images);
+            this.images = images.stream()
                 .map(url -> new RecruitmentImage(this, url))
                 .toList();
         }
@@ -137,8 +137,8 @@ public class Recruitment extends BaseTimeEntity {
         return updatedAt;
     }
 
-    public List<String> getImageUrls() {
-        return imageUrls.stream()
+    public List<String> getImages() {
+        return images.stream()
             .map(RecruitmentImage::getImageUrl)
             .toList();
     }

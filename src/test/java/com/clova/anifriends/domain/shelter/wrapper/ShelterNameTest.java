@@ -71,4 +71,79 @@ class ShelterNameTest {
             assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
         }
     }
+
+    @Nested
+    @DisplayName("update 실행 시")
+    class Update {
+
+        @Test
+        @DisplayName("성공: 이름의 길이가 20")
+        void updateWhenLengthIs20() {
+            // given
+            String value = "a".repeat(20);
+
+            // when
+            Exception exception = catchException(() -> new ShelterName(value));
+
+            // then
+            assertThat(exception).isNull();
+
+        }
+
+        @Test
+        @DisplayName("성공: 이름의 길이가 1")
+        void updateWhenLengthIs1() {
+            // given
+            String value = "a".repeat(1);
+
+            // when
+            Exception exception = catchException(() -> new ShelterName(value));
+
+            // then
+            assertThat(exception).isNull();
+
+        }
+
+        @Test
+        @DisplayName("예외(ShelterBadRequestException): 이름이 null")
+        void exceptionWhenNameIsNull() {
+            // given
+            String nullValue = null;
+
+            // when
+            Exception exception = catchException(() -> new ShelterName(nullValue));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
+
+        }
+
+        @Test
+        @DisplayName("예외(ShelterBadRequestException): 이름이 빈 문자열")
+        void exceptionWhenNameIsBlank() {
+            // given
+            String blankValue = "";
+
+            // when
+            Exception exception = catchException(() -> new ShelterName(blankValue));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
+
+        }
+
+        @Test
+        @DisplayName("예외(ShelterBadRequestException): 이름의 길이가 20 초과")
+        void exceptionWhenNameLengthOver20() {
+            // given
+            String value = "a".repeat(21);
+
+            // when
+            Exception exception = catchException(() -> new ShelterName(value));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
+
+        }
+    }
 }

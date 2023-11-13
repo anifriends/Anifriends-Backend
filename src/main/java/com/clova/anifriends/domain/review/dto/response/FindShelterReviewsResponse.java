@@ -27,7 +27,7 @@ public record FindShelterReviewsResponse(List<FindShelterReviewResponse> reviews
                 review.getReviewId(),
                 review.getCreatedAt(),
                 review.getContent(),
-                review.getImageUrls(),
+                review.getImages(),
                 volunteer.getName(),
                 volunteer.getTemperature(),
                 volunteer.getVolunteerImageUrl(),

@@ -1,7 +1,10 @@
 package com.clova.anifriends.domain.shelter;
 
+import static java.util.Objects.nonNull;
+
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterAddressInfo;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterName;
@@ -44,7 +47,7 @@ public class Shelter extends BaseTimeEntity {
     private ShelterAddressInfo addressInfo;
 
     @OneToOne(mappedBy = "shelter")
-    private ShelterImage shelterImage;
+    private ShelterImage image;
 
     public Shelter(
         String email,
@@ -62,6 +65,35 @@ public class Shelter extends BaseTimeEntity {
         this.name = new ShelterName(name);
         this.phoneNumberInfo = new ShelterPhoneNumberInfo(phoneNumber, sparePhoneNumber);
         this.addressInfo = new ShelterAddressInfo(address, addressDetail, isOpenedAddress);
+    }
+
+    public void updateShelter(
+        String name,
+        String imageUrl,
+        String address,
+        String addressDetail,
+        String phoneNumber,
+        String sparePhoneNumber,
+        Boolean isOpenedAddress,
+        ImageRemover imageRemover
+    ) {
+        this.name = this.name.update(name);
+        this.image = updateImage(imageUrl, imageRemover);
+        this.addressInfo = this.addressInfo.update(address, addressDetail, isOpenedAddress);
+        this.phoneNumberInfo = this.phoneNumberInfo.update(phoneNumber, sparePhoneNumber);
+    }
+
+    private ShelterImage updateImage(String imageUrl, ImageRemover imageRemover) {
+        if (nonNull(this.image) && this.image.isDifferentFrom(imageUrl)) {
+            imageRemover.removeImage(this.image.getImageUrl());
+        }
+        if (nonNull(this.image) && this.image.isSameWith(imageUrl)) {
+            return this.image;
+        }
+        if (nonNull(imageUrl)) {
+            return new ShelterImage(this, imageUrl);
+        }
+        return null;
     }
 
     public void updatePassword(
@@ -113,15 +145,7 @@ public class Shelter extends BaseTimeEntity {
         return this.phoneNumberInfo.getSparePhoneNumber();
     }
 
-    public String getShelterImageUrl() {
-        return this.shelterImage == null ? null : this.shelterImage.getImageUrl();
-    }
-
-    public void updateShelterImage(ShelterImage shelterImage) {
-        this.shelterImage = shelterImage;
-    }
-
-    public String getImageUrl() {
-        return this.shelterImage == null ? null : this.shelterImage.getImageUrl();
+    public String getImage() {
+        return this.image == null ? null : this.image.getImageUrl();
     }
 }

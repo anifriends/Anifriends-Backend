@@ -14,7 +14,7 @@ public class ReviewDtoFixture {
         return new RegisterReviewRequest(
             review.getApplicant().getApplicantId(),
             review.getContent(),
-            review.getImageUrls()
+            review.getImages()
         );
     }
 }
