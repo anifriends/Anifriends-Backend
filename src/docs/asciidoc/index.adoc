@@ -139,6 +139,16 @@ operation::recruitment-controller-test/update-recruitment[snippets='http-request
 
 operation::recruitment-controller-test/update-recruitment[snippets='http-response']
 
+=== 봉사 모집글 삭제
+
+==== Request
+
+operation::recruitment-controller-test/delete-recruitment[snippets='http-request,request-headers,path-parameters']
+
+==== Response
+
+operation::recruitment-controller-test/delete-recruitment[snippets='http-response']
+
 == 4. 봉사 신청
 
 == 5. 봉사 후기
