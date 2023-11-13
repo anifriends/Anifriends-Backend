@@ -3,10 +3,12 @@ package com.clova.anifriends.domain.review;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.review.exception.ReviewAuthorizationException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import com.clova.anifriends.domain.review.wrapper.ReviewContent;
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -20,6 +22,7 @@ import jakarta.persistence.Table;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -36,7 +39,7 @@ public class Review extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private Applicant applicant;
 
-    @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImage> imageUrls = new ArrayList<>();
 
     @Embedded
@@ -91,5 +94,58 @@ public class Review extends BaseTimeEntity {
 
     public Volunteer getVolunteer() {
         return applicant.getVolunteer();
+    }
+
+    public void updateReview(
+        String content,
+        List<String> imageUrls,
+        ImageRemover imageRemover
+    ) {
+        this.content = this.content.updateContent(content);
+        updateImageUrls(imageUrls, imageRemover);
+    }
+
+    private void updateImageUrls(List<String> imageUrls, ImageRemover imageRemover) {
+        if (Objects.nonNull(imageUrls)) {
+            validateImageUrlsSize(imageUrls);
+            deleteNotContainsImageUrls(imageUrls, imageRemover);
+            addNewImageUrls(imageUrls);
+        }
+    }
+
+    private void deleteNotContainsImageUrls(List<String> updateImageUrls, ImageRemover imageRemover) {
+        List<String> deleteImageUrls = this.imageUrls.stream()
+            .map(ReviewImage::getImageUrl)
+            .filter(existsImageUrl -> !updateImageUrls.contains(existsImageUrl))
+            .toList();
+        imageRemover.removeImages(deleteImageUrls);
+    }
+
+    private void addNewImageUrls(List<String> updateImageUrls) {
+        List<ReviewImage> existsReviewImages = filterRemainImages(updateImageUrls);
+        List<ReviewImage> newReviewImages = filterNewImages(updateImageUrls);
+
+        List<ReviewImage> newImages = new ArrayList<>();
+        newImages.addAll(existsReviewImages);
+        newImages.addAll(newReviewImages);
+
+        this.imageUrls = newImages;
+    }
+
+    private List<ReviewImage> filterRemainImages(List<String> updateImageUrls) {
+        return this.imageUrls.stream()
+            .filter(reviewImage -> updateImageUrls.contains(reviewImage.getImageUrl()))
+            .toList();
+    }
+
+    private List<ReviewImage> filterNewImages(
+        List<String> updateImageUrls
+    ) {
+        List<String> existsImageUrls = getImageUrls();
+
+        return updateImageUrls.stream()
+            .filter(imageUrl -> !existsImageUrls.contains(imageUrl))
+            .map(imageUrl -> new ReviewImage(this, imageUrl))
+            .toList();
     }
 }
