@@ -194,7 +194,7 @@ public class Animal extends BaseTimeEntity {
     private List<AnimalImage> filterNewImages(
         List<String> updateImageUrls
     ) {
-        List<String> existsImageUrls = getImageUrls();
+        List<String> existsImageUrls = getImages();
 
         return updateImageUrls.stream()
             .filter(imageUrl -> !existsImageUrls.contains(imageUrl))
