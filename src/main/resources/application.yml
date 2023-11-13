@@ -4,3 +4,6 @@ spring:
       on-profile: dev
     import:
       - classpath:backend-config/application-dev.yml
+
+front:
+  server: "https://anifriends-frontend-shelter.vercel.app/"
