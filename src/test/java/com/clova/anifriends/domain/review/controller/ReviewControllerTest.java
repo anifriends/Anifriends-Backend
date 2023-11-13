@@ -43,8 +43,8 @@ import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
 import com.clova.anifriends.domain.review.dto.request.UpdateReviewRequest;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
-import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByVolunteerResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
@@ -102,9 +102,8 @@ class ReviewControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("성공: 보호소가 받은 봉사자 리뷰 목록 조회 api 호출")
-    void findShelterReviews() throws Exception {
-        //given
-        Long shelterId = 1L;
+    void findShelterReviewsByShelter() throws Exception {
+        //give
         Shelter shelter = shelter();
         Recruitment recruitment = recruitment(shelter);
         Volunteer volunteer = volunteer();
@@ -113,13 +112,13 @@ class ReviewControllerTest extends BaseControllerTest {
         ReflectionTestUtils.setField(review, "reviewId", 1L);
         ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());
         PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
-        FindShelterReviewsResponse response = FindShelterReviewsResponse.from(reviewPage);
+        FindShelterReviewsByShelterResponse response = FindShelterReviewsByShelterResponse.from(reviewPage);
 
-        given(reviewService.findShelterReviews(anyLong(), any())).willReturn(response);
+        given(reviewService.findShelterReviewsByShelter(anyLong(), any())).willReturn(response);
 
         //when
         ResultActions resultActions
-            = mockMvc.perform(get("/api/shelters/{shelterId}/reviews", shelterId)
+            = mockMvc.perform(get("/api/shelters/me/reviews")
             .header(AUTHORIZATION, shelterAccessToken)
             .param("pageNumber", "0")
             .param("pageSize", "10"));
@@ -129,9 +128,6 @@ class ReviewControllerTest extends BaseControllerTest {
             .andDo(restDocs.document(
                 requestHeaders(
                     headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
-                ),
-                pathParameters(
-                    parameterWithName("shelterId").description("보호소 ID")
                 ),
                 queryParameters(
                     parameterWithName("pageNumber").description("페이지 번호"),
@@ -201,8 +197,8 @@ class ReviewControllerTest extends BaseControllerTest {
 
 
     @Test
-    @DisplayName("성공: 봉사자가 작성 후기 리스트 조회 api 호출")
-    void findVolunteerReviews() throws Exception {
+    @DisplayName("성공: 봉사자가 작성한 후기 리스트 조회(보호소) api 호출")
+    void findVolunteerReviewsByShelter() throws Exception {
         // given
         Long volunteerId = 1L;
         Volunteer volunteer = volunteer();
@@ -220,16 +216,16 @@ class ReviewControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions
-            = mockMvc.perform(get("/api/volunteers/{volunteerId}/reviews", volunteerId)
+            = mockMvc.perform(get("/api/shelters/volunteers/{volunteerId}/reviews", volunteerId)
             .header(AUTHORIZATION, shelterAccessToken)
             .param("pageNumber", "0")
             .param("pageSize", "10"));
-
+        
         // then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
                 requestHeaders(
-                    headerWithName(AUTHORIZATION).description("액세스 토큰")
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
                 ),
                 pathParameters(
                     parameterWithName("volunteerId").description("봉사자 ID")
@@ -253,9 +249,58 @@ class ReviewControllerTest extends BaseControllerTest {
             ));
     }
 
+
     @Test
-    @DisplayName("성공: 봉사자가 받은 봉사자 리뷰 목록 조회 api 호출")
-    void findShelterReviewsByVolunteer() throws Exception {
+    @DisplayName("성공: 봉사자가 작성한 후기 리스트 조회(봉사자) api 호출")
+    void findVolunteerReviewsByVolunteers() throws Exception {
+        // given
+        Volunteer volunteer = volunteer();
+        Shelter shelter = shelter();
+        Recruitment recruitment = recruitment(shelter);
+        Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+        Review review = review(applicant);
+        setField(review, "reviewId", 1L);
+        setField(review, "createdAt", LocalDateTime.now());
+        Page<Review> page = new PageImpl<>(List.of(review));
+        FindVolunteerReviewsResponse response = FindVolunteerReviewsResponse.of(
+            page.getContent(), PageInfo.from(page));
+
+        given(reviewService.findVolunteerReviews(anyLong(), any())).willReturn(response);
+
+        // when
+        ResultActions resultActions
+            = mockMvc.perform(get("/api/volunteers/me/reviews")
+            .header(AUTHORIZATION, volunteerAccessToken)
+            .param("pageNumber", "0")
+            .param("pageSize", "10"));
+
+        // then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
+                queryParameters(
+                    parameterWithName("pageNumber").description("페이지 번호"),
+                    parameterWithName("pageSize").description("페이지 사이즈")
+                ),
+                responseFields(
+                    fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
+                    fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
+                    fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
+                    fieldWithPath("reviews").type(ARRAY).description("리뷰 리스트"),
+                    fieldWithPath("reviews[].reviewId").type(NUMBER).description("리뷰 ID"),
+                    fieldWithPath("reviews[].shelterName").type(STRING).description("보호소 이름"),
+                    fieldWithPath("reviews[].reviewCreatedAt").type(STRING).description("리뷰 생성일"),
+                    fieldWithPath("reviews[].reviewContent").type(STRING).description("리뷰 내용"),
+                    fieldWithPath("reviews[].reviewImageUrls").type(ARRAY).description("리뷰 이미지 url 리스트")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 보호소가 받은 봉사자 리뷰 목록 조회 api 호출")
+    void findShelterReviews() throws Exception {
         //given
         Long shelterId = 1L;
         Shelter shelter = shelter();
@@ -266,24 +311,20 @@ class ReviewControllerTest extends BaseControllerTest {
         ReflectionTestUtils.setField(review, "reviewId", 1L);
         ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());
         PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
-        FindShelterReviewsByVolunteerResponse response = FindShelterReviewsByVolunteerResponse.from(
+        FindShelterReviewsResponse response = FindShelterReviewsResponse.from(
             reviewPage);
 
-        given(reviewService.findShelterReviewsByVolunteer(anyLong(), any())).willReturn(response);
+        given(reviewService.findShelterReviews(anyLong(), any())).willReturn(response);
 
         //when
         ResultActions resultActions
-            = mockMvc.perform(get("/api/volunteers/shelters/{shelterId}/reviews", shelterId)
-            .header(AUTHORIZATION, volunteerAccessToken)
+            = mockMvc.perform(get("/api/shelters/{shelterId}/reviews", shelterId)
             .param("pageNumber", "0")
             .param("pageSize", "10"));
 
         //then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
-                requestHeaders(
-                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
-                ),
                 pathParameters(
                     parameterWithName("shelterId").description("보호소 ID")
                 ),

@@ -61,7 +61,7 @@ public class VolunteerController {
         return ResponseEntity.ok(volunteerService.findVolunteerMyPage(volunteerId));
     }
 
-    @GetMapping("/volunteers/{volunteerId}/profile")
+    @GetMapping("/shelters/volunteers/{volunteerId}/profile")
     public ResponseEntity<FindVolunteerProfileResponse> findVolunteerProfile(
         @PathVariable Long volunteerId
     ) {

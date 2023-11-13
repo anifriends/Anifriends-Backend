@@ -30,7 +30,7 @@ import com.clova.anifriends.domain.shelter.dto.request.UpdateShelterRequest;
 import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
-import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleByVolunteerResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -146,7 +146,7 @@ class ShelterControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-            get("/api/volunteers/shelters/{shelterId}/profile", shelterId)
+            get("/api/shelters/{shelterId}/profile", shelterId)
                 .header(AUTHORIZATION, volunteerAccessToken)
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -246,20 +246,20 @@ class ShelterControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("findShelterSimpleByVolunteer 실행 시")
-    void findShelterSimpleByVolunteer() throws Exception {
+    @DisplayName("findShelterSimple 실행 시")
+    void findShelterSimple() throws Exception {
         // given
         Long shelterId = 1L;
         Shelter shelter = shelter();
         ReflectionTestUtils.setField(shelter, "shelterId", shelterId);
-        FindShelterSimpleByVolunteerResponse response = FindShelterSimpleByVolunteerResponse.from(
+        FindShelterSimpleResponse response = FindShelterSimpleResponse.from(
             shelter);
 
-        given(shelterService.findShelterSimpleByVolunteer(shelterId)).willReturn(response);
+        given(shelterService.findShelterSimple(shelterId)).willReturn(response);
 
         // when
         ResultActions result = mockMvc.perform(
-            get("/api/volunteers/shelters/{shelterId}/profile/simple", shelterId)
+            get("/api/shelters/{shelterId}/profile/simple", shelterId)
                 .contentType(MediaType.APPLICATION_JSON)
         );
 

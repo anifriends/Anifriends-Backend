@@ -6,7 +6,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruit
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByVolunteerResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -119,10 +119,15 @@ public class RecruitmentService {
     }
 
     @Transactional(readOnly = true)
-    public FindRecruitmentsByVolunteerResponse findRecruitmentsByVolunteer(
-        String keyword, LocalDate startDate, LocalDate endDate, Boolean isClosed,
+    public FindRecruitmentsResponse findRecruitments(
+        String keyword,
+        LocalDate startDate,
+        LocalDate endDate,
+        Boolean isClosed,
         Boolean titleContains,
-        Boolean contentContains, Boolean shelterNameContains, Pageable pageable) {
+        Boolean contentContains,
+        Boolean shelterNameContains,
+        Pageable pageable) {
         Page<Recruitment> recruitments = recruitmentRepository.findRecruitments(
             keyword,
             startDate,
@@ -132,7 +137,7 @@ public class RecruitmentService {
             contentContains,
             shelterNameContains,
             pageable);
-        return FindRecruitmentsByVolunteerResponse.from(recruitments);
+        return FindRecruitmentsResponse.from(recruitments);
     }
 
     @Transactional

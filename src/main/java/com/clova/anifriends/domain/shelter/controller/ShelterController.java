@@ -9,7 +9,7 @@ import com.clova.anifriends.domain.shelter.dto.request.UpdateShelterRequest;
 import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
-import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleByVolunteerResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -54,7 +54,7 @@ public class ShelterController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping("/volunteers/shelters/{shelterId}/profile")
+    @GetMapping("/shelters/{shelterId}/profile")
     public ResponseEntity<FindShelterDetailResponse> findShelterDetail(
         @PathVariable Long shelterId
     ) {
@@ -64,11 +64,11 @@ public class ShelterController {
             ));
     }
 
-    @GetMapping("/volunteers/shelters/{shelterId}/profile/simple")
-    public ResponseEntity<FindShelterSimpleByVolunteerResponse> findShelterSimpleByVolunteer(
+    @GetMapping("/shelters/{shelterId}/profile/simple")
+    public ResponseEntity<FindShelterSimpleResponse> findShelterSimple(
         @PathVariable Long shelterId
     ) {
-        return ResponseEntity.ok(shelterService.findShelterSimpleByVolunteer(shelterId));
+        return ResponseEntity.ok(shelterService.findShelterSimple(shelterId));
     }
 
     @GetMapping("/shelters/me")

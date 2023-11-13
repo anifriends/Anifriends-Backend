@@ -22,7 +22,7 @@ import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
-import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleByVolunteerResponse;
+import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -189,21 +189,21 @@ class ShelterServiceTest {
     }
 
     @Nested
-    @DisplayName("findShelterSimpleByVolunteer 실행 시")
-    class FindShelterSimpleByVolunteerTest {
+    @DisplayName("findShelterSimple 실행 시")
+    class FindShelterSimpleTest {
 
         @Test
         @DisplayName("성공")
-        void findShelterSimpleByVolunteer() {
+        void findShelterSimple() {
             // given
             Shelter shelter = shelter();
-            FindShelterSimpleByVolunteerResponse expected = FindShelterSimpleByVolunteerResponse.from(
+            FindShelterSimpleResponse expected = FindShelterSimpleResponse.from(
                 shelter);
 
             given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
 
             // when
-            FindShelterSimpleByVolunteerResponse foundShelterByVolunteerReview = shelterService.findShelterSimpleByVolunteer(
+            FindShelterSimpleResponse foundShelterByVolunteerReview = shelterService.findShelterSimple(
                 anyLong());
 
             // then
@@ -220,7 +220,7 @@ class ShelterServiceTest {
 
             // when
             Exception exception = catchException(
-                () -> shelterService.findShelterSimpleByVolunteer(anyLong()));
+                () -> shelterService.findShelterSimple(anyLong()));
 
             // then
             assertThat(exception).isInstanceOf(ShelterNotFoundException.class);

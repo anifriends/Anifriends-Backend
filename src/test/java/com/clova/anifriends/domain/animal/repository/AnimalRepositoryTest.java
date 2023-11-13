@@ -383,7 +383,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Page<Animal> result = animalRepository.findAnimalsByVolunteer(
+            Page<Animal> result = animalRepository.findAnimals(
                 typeFilter,
                 activeFilter,
                 isNeuteredFilter,
@@ -449,7 +449,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Page<Animal> result = animalRepository.findAnimalsByVolunteer(
+            Page<Animal> result = animalRepository.findAnimals(
                 nullTypeFilter,
                 nullActiveFilter,
                 nullIsNeuteredFilter,

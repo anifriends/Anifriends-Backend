@@ -26,8 +26,8 @@ import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
-import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByVolunteerResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
@@ -163,8 +163,8 @@ class ReviewServiceTest {
     }
 
     @Nested
-    @DisplayName("findShelterReviews 메서드 실행 시")
-    class FindShelterReviewsTest {
+    @DisplayName("findShelterReviewsByShelter 메서드 실행 시")
+    class FindShelterReviewsByShelterTest {
 
         @Test
         @DisplayName("성공")
@@ -178,14 +178,14 @@ class ReviewServiceTest {
             Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
             Review review = review(applicant);
             PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
-            FindShelterReviewsResponse expected = FindShelterReviewsResponse.from(reviewPage);
+            FindShelterReviewsByShelterResponse expected = FindShelterReviewsByShelterResponse.from(reviewPage);
 
             given(reviewRepository.findAllByShelterId(anyLong(), any()))
                 .willReturn(reviewPage);
 
             //then
-            FindShelterReviewsResponse response
-                = reviewService.findShelterReviews(shelterId, pageRequest);
+            FindShelterReviewsByShelterResponse response
+                = reviewService.findShelterReviewsByShelter(shelterId, pageRequest);
 
             //then
             assertThat(response).usingRecursiveComparison()
@@ -229,12 +229,12 @@ class ReviewServiceTest {
     }
 
     @Nested
-    @DisplayName("findShelterReviewsByVolunteer 메서드 실행 시")
-    class FindShelterReviewsByVolunteerTest {
+    @DisplayName("findShelterReviews 메서드 실행 시")
+    class FindShelterReviewsTest {
 
         @Test
         @DisplayName("성공")
-        void findShelterReviewsByVolunteer() {
+        void findShelterReviews() {
             //given
             Long shelterId = 1L;
             PageRequest pageRequest = PageRequest.of(0, 10);
@@ -244,15 +244,15 @@ class ReviewServiceTest {
             Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
             Review review = review(applicant);
             PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
-            FindShelterReviewsByVolunteerResponse expected = FindShelterReviewsByVolunteerResponse.from(
+            FindShelterReviewsResponse expected = FindShelterReviewsResponse.from(
                 reviewPage);
 
             given(reviewRepository.findAllByShelterId(anyLong(), any()))
                 .willReturn(reviewPage);
 
             //then
-            FindShelterReviewsByVolunteerResponse response
-                = reviewService.findShelterReviewsByVolunteer(shelterId, pageRequest);
+            FindShelterReviewsResponse response
+                = reviewService.findShelterReviews(shelterId, pageRequest);
 
             //then
             assertThat(response).usingRecursiveComparison()
