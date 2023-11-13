@@ -4,6 +4,7 @@ import static com.clova.anifriends.global.exception.ErrorCode.BAD_REQUEST;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
+import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
@@ -89,6 +90,14 @@ public class Volunteer extends BaseTimeEntity {
         this.gender = VolunteerGender.from(gender);
         this.temperature = new VolunteerTemperature(36);
         this.name = new VolunteerName(name);
+    }
+
+    public void updatePassword(
+        CustomPasswordEncoder passwordEncoder,
+        String rawOldPassword,
+        String rawNewPassword
+    ) {
+        password = password.updatePassword(passwordEncoder, rawOldPassword, rawNewPassword);
     }
 
     private LocalDate validateBirthDate(String birthDate) {

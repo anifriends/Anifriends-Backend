@@ -26,6 +26,7 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.request.CheckDuplicateVolunteerEmailRequest;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
 import com.clova.anifriends.domain.volunteer.dto.request.UpdateVolunteerInfoRequest;
+import com.clova.anifriends.domain.volunteer.dto.request.UpdateVolunteerPasswordRequest;
 import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
@@ -36,6 +37,7 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -206,6 +208,35 @@ class VolunteerControllerTest extends BaseControllerTest {
                     fieldWithPath("phoneNumber").type(STRING).description("변경할 봉사자 전화번호")
                         .attributes(DocumentationFormatGenerator.getConstraint("-을 포함한 전화번호 형식")),
                     fieldWithPath("imageUrl").type(STRING).description("변경할 봉사자 이미지 url")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("봉사자 비밀번호 변경 api 호출 시")
+    void updatePassword() throws Exception {
+        //given
+        UpdateVolunteerPasswordRequest updateVolunteerPasswordRequest = new UpdateVolunteerPasswordRequest(
+            "oldPassword123!", "newPassword123!");
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            RestDocumentationRequestBuilders.patch("/api/volunteers/me/password")
+                .header(AUTHORIZATION, volunteerAccessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateVolunteerPasswordRequest)));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
+                requestFields(
+                    fieldWithPath("oldPassword").type(STRING).description("현재 비밀번호")
+                        .attributes(DocumentationFormatGenerator.getConstraint("6자 이상, 16자 이하")),
+                    fieldWithPath("newPassword").type(STRING).description("변경할 비밀번호")
+                        .attributes(DocumentationFormatGenerator.getConstraint("6자 이상, 16자 이하"))
                 )
             ));
     }
