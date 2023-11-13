@@ -20,6 +20,7 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterRespo
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByVolunteerResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
+import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
@@ -228,6 +229,31 @@ class AnimalServiceTest {
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
 
+        }
+    }
+
+    @Nested
+    @DisplayName("updateAnimalAdoptStatus 실행 시")
+    class UpdateAnimalAdoptStatus {
+
+        @Test
+        @DisplayName("성공")
+        void updateAnimalAdoptStatus() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            boolean originStatus = true;
+            boolean updateStatus = false;
+            Animal animal = AnimalFixture.animal(shelter, originStatus);
+
+            when(animalRepository.findByShelterIdAndAnimalId(anyLong(), anyLong()))
+                .thenReturn(Optional.of(animal));
+
+            // when
+            Exception exception = catchException(
+                () -> animalService.updateAnimalAdoptStatus(anyLong(), anyLong(), updateStatus));
+
+            // then
+            assertThat(exception).isNull();
         }
     }
 }
