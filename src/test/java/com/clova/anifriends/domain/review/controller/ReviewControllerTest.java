@@ -19,6 +19,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
@@ -40,6 +41,7 @@ import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
+import com.clova.anifriends.domain.review.dto.request.UpdateReviewRequest;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByVolunteerResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
@@ -313,6 +315,41 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
                     fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 리뷰 수정 api 호출")
+    void updateReview() throws Exception {
+        // given
+        String content = "글 내용";
+        List<String> imageUrls = List.of("url1", "url2");
+        UpdateReviewRequest updateReviewRequest = new UpdateReviewRequest(content, imageUrls);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+            patch("/api/volunteers/reviews/{reviewId}", 1L)
+                .header(AUTHORIZATION, volunteerAccessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateReviewRequest))
+        );
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("reviewId").description("리뷰 ID")
+                ),
+                requestFields(
+                    fieldWithPath("content").type(STRING).description("리뷰 내용")
+                        .description(DocumentationFormatGenerator.getConstraint("10 ~ 300자")),
+                    fieldWithPath("imageUrls[]").type(ARRAY).description("리뷰 이미지 url 리스트")
+                        .description(DocumentationFormatGenerator.getConstraint("최대 5개"))
+                        .optional()
                 )
             ));
     }
