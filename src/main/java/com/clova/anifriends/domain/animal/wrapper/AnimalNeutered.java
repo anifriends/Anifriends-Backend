@@ -1,7 +1,9 @@
 package com.clova.anifriends.domain.animal.wrapper;
 
+import com.clova.anifriends.domain.animal.exception.AnimalBadRequestException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,25 @@ public class AnimalNeutered {
     @Column(name = "is_neutered", nullable = false)
     private Boolean isNeutered;
 
-    public AnimalNeutered(boolean value) {
+    public AnimalNeutered(Boolean value) {
+        validateIsNeutered(value);
+
         this.isNeutered = value;
+    }
+
+    public AnimalNeutered updateIsNeutered(
+        Boolean isNeutered
+    ) {
+        validateIsNeutered(isNeutered);
+
+        return new AnimalNeutered(isNeutered);
+    }
+
+    public void validateIsNeutered(
+        Boolean isNeutered
+    ) {
+        if (Objects.isNull(isNeutered)) {
+            throw new AnimalBadRequestException("중성화 여부는 필수값입니다.");
+        }
     }
 }

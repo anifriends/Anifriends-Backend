@@ -11,6 +11,7 @@ import com.clova.anifriends.domain.animal.wrapper.AnimalNeutered;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
 import com.clova.anifriends.domain.animal.wrapper.AnimalWeight;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.Shelter;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -94,7 +95,7 @@ public class Animal extends BaseTimeEntity {
         String type,
         String breed,
         String gender,
-        boolean isNeutered,
+        Boolean isNeutered,
         String active,
         double weight,
         String information,
@@ -112,13 +113,93 @@ public class Animal extends BaseTimeEntity {
         this.active = AnimalActive.valueOf(active);
         this.weight = new AnimalWeight(weight);
         this.information = new AnimalInformation(information);
-        this.images = imageUrls.stream()
-            .map(url -> new AnimalImage(this, url))
-            .toList();
+        this.images.addAll(
+            imageUrls.stream()
+                .map(url -> new AnimalImage(this, url))
+                .toList()
+        );
     }
 
     public void updateAdoptStatus(boolean isAdopted) {
         this.adopted = this.adopted.updateAdoptStatus(isAdopted);
+    }
+
+    public void updateAnimal(
+        String name,
+        LocalDate birthDate,
+        AnimalType type,
+        String breed,
+        AnimalGender gender,
+        Boolean isNeutered,
+        AnimalActive active,
+        Double weight,
+        String information,
+        List<String> imageUrls,
+        ImageRemover imageRemover
+    ) {
+        this.name = this.name.updateName(name);
+        this.birthDate = LocalDate.of(
+            birthDate.getYear(),
+            birthDate.getMonth(),
+            birthDate.getDayOfMonth()
+        );
+        this.type = type;
+        this.breed = this.breed.updateBreed(breed);
+        this.gender = gender;
+        this.neutered = this.neutered.updateIsNeutered(isNeutered);
+        this.active = active;
+        this.weight = this.weight.updateWeight(weight);
+        this.information = this.information.updateInformation(information);
+        updateImages(imageUrls, imageRemover);
+    }
+
+    private void updateImages(
+        List<String> images, ImageRemover imageRemover
+    ) {
+        if (Objects.nonNull(images)) {
+            validateImageSize(images);
+            validateImageIsNotNull(images);
+
+            deleteNotContainsImageUrls(images, imageRemover);
+            addNewImageUrls(images);
+        }
+    }
+
+    private void deleteNotContainsImageUrls(
+        List<String> updateImageUrls,
+        ImageRemover imageRemover
+    ) {
+        List<String> deleteImageUrls = this.images.stream()
+            .map(AnimalImage::getImageUrl)
+            .filter(existsImageUrl -> !updateImageUrls.contains(existsImageUrl))
+            .toList();
+        imageRemover.removeImages(deleteImageUrls);
+    }
+
+    private void addNewImageUrls(List<String> updateImageUrls) {
+        List<AnimalImage> existsVolunteerImages = filterRemainImages(updateImageUrls);
+        List<AnimalImage> newVolunteerImages = filterNewImages(updateImageUrls);
+
+        this.images.clear();
+        images.addAll(existsVolunteerImages);
+        images.addAll(newVolunteerImages);
+    }
+
+    private List<AnimalImage> filterRemainImages(List<String> updateImageUrls) {
+        return this.images.stream()
+            .filter(AnimalImage -> updateImageUrls.contains(AnimalImage.getImageUrl()))
+            .toList();
+    }
+
+    private List<AnimalImage> filterNewImages(
+        List<String> updateImageUrls
+    ) {
+        List<String> existsImageUrls = getImages();
+
+        return updateImageUrls.stream()
+            .filter(imageUrl -> !existsImageUrls.contains(imageUrl))
+            .map(imageUrl -> new AnimalImage(this, imageUrl))
+            .toList();
     }
 
     private void validateImageIsNotNull(List<String> imageUrls) {

@@ -26,6 +26,13 @@ public class AnimalName {
         this.name = value;
     }
 
+    public AnimalName updateName(String name) {
+        validateNotNull(name);
+        validateLength(name);
+
+        return new AnimalName(name);
+    }
+
     private void validateLength(String value) {
         if (value.length() < MIN_LENGTH || value.length() > MAX_LENGTH) {
             throw new AnimalBadRequestException(

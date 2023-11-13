@@ -24,6 +24,14 @@ public class AnimalWeight {
         this.weight = value;
     }
 
+    public AnimalWeight updateWeight(
+        Double weight
+    ) {
+        validateWeight(weight);
+
+        return new AnimalWeight(weight);
+    }
+
     private void validateWeight(double value) {
         if (value <= MIN_WEIGHT || value > MAX_WEIGHT) {
             throw new AnimalBadRequestException(
