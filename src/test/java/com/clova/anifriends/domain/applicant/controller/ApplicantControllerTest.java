@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
+import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantStatusRequest;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest.UpdateApplicantAttendanceRequest;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
@@ -283,5 +284,44 @@ class ApplicantControllerTest extends BaseControllerTest {
                 )
             ));
 
+    }
+
+    @Test
+    @DisplayName("봉사자 신청 상태 수정 API 호출 시")
+    void updateApplicantStatus() throws Exception {
+        // given
+        Shelter shelter = ShelterFixture.shelter();
+        ReflectionTestUtils.setField(shelter, "shelterId", 1L);
+        Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+        ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+        Volunteer volunteer = VolunteerFixture.volunteer();
+        Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer, PENDING, 1L);
+        UpdateApplicantStatusRequest updateApplicantStatusRequest = new UpdateApplicantStatusRequest(
+            true
+        );
+
+        // when
+        ResultActions result = mockMvc.perform(
+            patch("/api/shelters/recruitments/{recruitmentId}/applicants/{applicantId}",
+                recruitment.getRecruitmentId(), applicant.getApplicantId())
+                .header(AUTHORIZATION, shelterAccessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateApplicantStatusRequest))
+        );
+
+        // then
+        result.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName("Authorization").description("액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("recruitmentId").description("모집글 ID"),
+                    parameterWithName("applicantId").description("봉사 신청 ID")
+                ),
+                requestFields(
+                    fieldWithPath("isApproved").type(BOOLEAN).description("승인 상태")
+                )
+            ));
     }
 }

@@ -234,4 +234,36 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             assertThat(persistedApplicantRefused.get().getStatus()).isEqualTo(REFUSED);
         }
     }
+
+    @Nested
+    @DisplayName("findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId 실행 시")
+    class FindByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterIdTest {
+
+        @Test
+        @DisplayName("성공")
+        void findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId() {
+            // given
+            Shelter shelter = shelter();
+            Volunteer volunteer = volunteer();
+            Recruitment recruitment = recruitment(shelter);
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+
+            shelterRepository.save(shelter);
+            volunteerRepository.save(volunteer);
+            recruitmentRepository.save(recruitment);
+            applicantRepository.save(applicant);
+
+            // when
+            Optional<Applicant> expected = applicantRepository
+                .findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId(
+                    applicant.getApplicantId(),
+                    recruitment.getRecruitmentId(),
+                    shelter.getShelterId()
+                );
+
+            // then
+            assertThat(expected).isNotEmpty();
+            assertThat(expected.get()).isEqualTo(applicant);
+        }
+    }
 }
