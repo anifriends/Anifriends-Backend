@@ -109,6 +109,7 @@ class ReviewControllerTest extends BaseControllerTest {
         Volunteer volunteer = volunteer();
         Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
         Review review = review(applicant);
+        ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
         ReflectionTestUtils.setField(review, "reviewId", 1L);
         ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());
         PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
@@ -139,7 +140,8 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("reviews[].createdAt").type(STRING).description("리뷰 생성일"),
                     fieldWithPath("reviews[].content").type(STRING).description("리뷰 내용"),
                     fieldWithPath("reviews[].reviewImageUrls").type(ARRAY)
-                        .description("리뷰 이미지 url 리스트").optional(),
+                    .description("리뷰 이미지 url 리스트").optional(),
+                    fieldWithPath("reviews[].volunteerId").type(NUMBER).description("봉사자 ID"),
                     fieldWithPath("reviews[].volunteerName").type(STRING).description("봉사자 이름"),
                     fieldWithPath("reviews[].temperature").type(NUMBER).description("봉사자 온도"),
                     fieldWithPath("reviews[].volunteerImageUrl").type(STRING)
