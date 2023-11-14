@@ -6,9 +6,27 @@ services:
     build: .
     ports:
       - "8080:8080"
+    networks:
+      - anifriends
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/:/etc/nginx/
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+    networks:
+      - anifriends
 
 #  redis:
 #    container_name: redis
 #    image: redis:latest
 #    ports:
 #      - "6379:6379"
+#    networks:
+#      - anifriends
+
+networks:
+  anifriends:

@@ -1,6 +1,6 @@
 FROM openjdk:17
 ARG JAR_FILE=build/libs/*.jar
-ARG SPRING_PROFILE=dev
+ARG SPRING_PROFILE=local
 
 COPY ${JAR_FILE} anifriends.jar
 
