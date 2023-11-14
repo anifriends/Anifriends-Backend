@@ -87,6 +87,10 @@ dependencies {
 	// S3 AWS
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
 	testImplementation 'io.findify:s3mock_2.13:0.2.6'
+
+	// firebase
+	implementation 'com.google.firebase:firebase-admin:6.8.1'
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
 }
 
 tasks.named('test') {
