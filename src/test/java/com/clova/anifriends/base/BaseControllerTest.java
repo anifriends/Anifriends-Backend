@@ -34,6 +34,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
@@ -107,6 +108,9 @@ public abstract class BaseControllerTest {
 
     @MockBean
     protected ChatService chatService;
+
+    @MockBean
+    protected SimpMessageSendingOperations messagingTemplate;
 
     protected final String volunteerAccessToken = AuthFixture.volunteerAccessToken();
     protected String shelterAccessToken = AuthFixture.shelterAccessToken();
