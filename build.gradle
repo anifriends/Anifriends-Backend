@@ -90,7 +90,7 @@ dependencies {
 
 	// firebase
 	implementation 'com.google.firebase:firebase-admin:6.8.1'
-	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.3'
 }
 
 tasks.named('test') {
