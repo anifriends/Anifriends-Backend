@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import com.clova.anifriends.base.BaseControllerTest.WebMvcTestConfig;
 import com.clova.anifriends.base.config.RestDocsConfig;
-import com.clova.anifriends.domain.applicant.service.ApplicantService;
 import com.clova.anifriends.domain.animal.service.AnimalService;
+import com.clova.anifriends.domain.applicant.service.ApplicantService;
 import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.service.AuthService;
@@ -21,6 +21,7 @@ import com.clova.anifriends.domain.shelter.service.ShelterService;
 import com.clova.anifriends.domain.volunteer.service.VolunteerService;
 import com.clova.anifriends.global.config.SecurityConfig;
 import com.clova.anifriends.global.config.WebMvcConfig;
+import com.clova.anifriends.global.firebase.service.FCMService;
 import com.clova.anifriends.global.image.S3Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Properties;
@@ -103,6 +104,9 @@ public abstract class BaseControllerTest {
 
     @MockBean
     protected S3Service s3Service;
+
+    @MockBean
+    protected FCMService fcmService;
 
     protected final String volunteerAccessToken = AuthFixture.volunteerAccessToken();
     protected String shelterAccessToken = AuthFixture.shelterAccessToken();

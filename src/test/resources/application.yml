@@ -27,3 +27,6 @@ cloud:
       bucket: BuckeyIsThatYou
     stack:
       auto: false        
+firebase:
+  api-url: testUrl
+  config-path: firebase/anifriends-firebase.json
