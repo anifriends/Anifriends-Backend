@@ -116,4 +116,9 @@ public class AnimalController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "hello";
+    }
 }
