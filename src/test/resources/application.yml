@@ -1,0 +1,29 @@
+front:
+  server: ThisIsJustTestFrontServerUrl
+jwt:
+  issuer: test
+  expiry-seconds: 10000
+  secret: ThisIsJustTestSecretSoDontWorryItsOnlyForTest
+  refresh-expiry-seconds: 100000
+  refresh-secret: ThisIsJustTestRefreshSecretSoDontWorryItsOnlyForTest
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: sa
+    url: jdbc:h2:mem:testdb
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+cloud:
+  aws:
+    credentials:
+      accessKey: ThisIsJustTestAccessKey
+      secretKey: ThisIsJustTestSecretKey
+    region:
+      static: nowhere
+    s3:
+      bucket: BuckeyIsThatYou
+    stack:
+      auto: false        
