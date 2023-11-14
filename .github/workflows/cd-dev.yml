@@ -1,0 +1,51 @@
+name: cd-dev-docker
+
+on:
+  push:
+    branches: [ "feat/#190" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{secrets.ACTION_TOKEN}}
+          submodules: true
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Make directory for deliver
+        run: mkdir deploy
+
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+      - name: Copy jar
+        run: cp ./build/libs/*.jar ./deploy/
+
+      ## 도커 이미지 빌드 후 도커허브에 push하기
+      - name: web docker build and push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_REPOSITORY }} .
+          docker push ${{ secrets.DOCKER_REPOSITORY }}
+
+#      # https://github.com/marketplace/actions/configure-aws-credentials-action-for-github-actions
+#      - name: Congigure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ap-northeast-2
+
+
