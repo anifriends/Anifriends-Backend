@@ -175,6 +175,16 @@ operation::volunteer-controller-test/update-volunteer-info[snippets='http-respon
 
 == 5. 봉사 후기
 
+=== 봉사 후기 삭제
+
+==== Request
+
+operation::review-controller-test/delete-review[snippets='http-request,request-headers,path-parameters']
+
+==== Response
+
+operation::review-controller-test/delete-review[snippets='http-response']
+
 == 6. 보호 동물
 
 = Enum 문서화

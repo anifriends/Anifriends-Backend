@@ -17,9 +17,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
@@ -43,8 +44,8 @@ import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
 import com.clova.anifriends.domain.review.dto.request.UpdateReviewRequest;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
-import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
@@ -112,7 +113,8 @@ class ReviewControllerTest extends BaseControllerTest {
         ReflectionTestUtils.setField(review, "reviewId", 1L);
         ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());
         PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
-        FindShelterReviewsByShelterResponse response = FindShelterReviewsByShelterResponse.from(reviewPage);
+        FindShelterReviewsByShelterResponse response = FindShelterReviewsByShelterResponse.from(
+            reviewPage);
 
         given(reviewService.findShelterReviewsByShelter(anyLong(), any())).willReturn(response);
 
@@ -220,7 +222,7 @@ class ReviewControllerTest extends BaseControllerTest {
             .header(AUTHORIZATION, shelterAccessToken)
             .param("pageNumber", "0")
             .param("pageSize", "10"));
-        
+
         // then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
@@ -293,7 +295,8 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("reviews[].shelterName").type(STRING).description("보호소 이름"),
                     fieldWithPath("reviews[].reviewCreatedAt").type(STRING).description("리뷰 생성일"),
                     fieldWithPath("reviews[].reviewContent").type(STRING).description("리뷰 내용"),
-                    fieldWithPath("reviews[].reviewImageUrls").type(ARRAY).description("리뷰 이미지 url 리스트")
+                    fieldWithPath("reviews[].reviewImageUrls").type(ARRAY)
+                        .description("리뷰 이미지 url 리스트")
                 )
             ));
     }
@@ -380,6 +383,29 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("imageUrls[]").type(ARRAY).description("리뷰 이미지 url 리스트")
                         .description(DocumentationFormatGenerator.getConstraint("최대 5개"))
                         .optional()
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 봉사 후기 삭제 api 호출 시")
+    void deleteReview() throws Exception {
+        //given
+        Long reviewId = 1L;
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            delete("/api/volunteers/reviews/{reviewId}", reviewId)
+                .header(AUTHORIZATION, volunteerAccessToken));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("reviewId").description("봉사 후기 ID")
                 )
             ));
     }
