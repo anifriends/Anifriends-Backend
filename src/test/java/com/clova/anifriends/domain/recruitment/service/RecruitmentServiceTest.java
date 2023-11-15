@@ -386,4 +386,41 @@ class RecruitmentServiceTest {
             assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
         }
     }
+
+    @Nested
+    @DisplayName("deleteRecruitment 메서드 호출 시")
+    class DeleteRecruitmentTest {
+
+        @Test
+        @DisplayName("성공")
+        void deleteRecruitment() {
+            //given
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+
+            given(recruitmentRepository.findByShelterIdAndRecruitmentId(anyLong(), anyLong()))
+                .willReturn(Optional.of(recruitment));
+
+            //when
+            recruitmentService.deleteRecruitment(1L, 1L);
+
+            //then
+            then(recruitmentRepository).should().delete(any(Recruitment.class));
+        }
+
+        @Test
+        @DisplayName("예외(RecruitmentNotFoundException): 존재하지 않는 봉사 모집글")
+        void exceptionWhenRecruitmentNotFound() {
+            //given
+            given(recruitmentRepository.findByShelterIdAndRecruitmentId(anyLong(), anyLong()))
+                .willReturn(Optional.empty());
+
+            //when
+            Exception exception = catchException(
+                () -> recruitmentService.deleteRecruitment(1L, 1L));
+
+            //then
+            assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
+        }
+    }
 }

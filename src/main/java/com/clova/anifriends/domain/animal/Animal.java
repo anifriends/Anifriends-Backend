@@ -214,6 +214,11 @@ public class Animal extends BaseTimeEntity {
         }
     }
 
+    public void deleteImages(ImageRemover imageRemover) {
+        imageRemover.removeImages(getImages());
+        this.images.clear();
+    }
+
     public Long getAnimalId() {
         return animalId;
     }

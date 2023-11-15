@@ -17,6 +17,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.exception.ReviewAuthorizationException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
+import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -178,6 +179,31 @@ class ReviewTest {
 
             // then
             assertThat(exception).isInstanceOf(ReviewBadRequestException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteImages 메서드 호출 시")
+    class DeleteImagesTest {
+
+        @Test
+        @DisplayName("성공")
+        void deleteImages() {
+            //given
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            Volunteer volunteer = volunteer();
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+            Review review = ReviewFixture.review(applicant);
+            ImageRemover imageRemover = new MockImageRemover();
+            List<String> newImageUrls = List.of("image1", "image2");
+            review.updateReview(null, newImageUrls, imageRemover);
+
+            //when
+            review.deleteImages(imageRemover);
+
+            //then
+            assertThat(review.getImages()).isEmpty();
         }
     }
 }

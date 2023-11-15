@@ -15,6 +15,7 @@ public record FindShelterReviewsByShelterResponse(List<FindShelterReviewResponse
         LocalDateTime createdAt,
         String content,
         List<String> reviewImageUrls,
+        Long volunteerId,
 
         String volunteerName,
         int temperature,
@@ -28,6 +29,7 @@ public record FindShelterReviewsByShelterResponse(List<FindShelterReviewResponse
                 review.getCreatedAt(),
                 review.getContent(),
                 review.getImages(),
+                volunteer.getVolunteerId(),
                 volunteer.getName(),
                 volunteer.getTemperature(),
                 volunteer.getVolunteerImageUrl(),

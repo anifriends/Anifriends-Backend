@@ -14,6 +14,7 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -196,4 +197,29 @@ class AnimalTest {
     }
 
 
+    @Nested
+    @DisplayName("deleteImages 메서드 호출 시")
+    class DeleteImagesTest {
+
+        ImageRemover imageRemover;
+
+        @BeforeEach
+        void setUp() {
+            imageRemover = new MockImageRemover();
+        }
+
+        @Test
+        @DisplayName("성공")
+        void deleteImages() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            Animal animal = AnimalFixture.animal(shelter);
+
+            //when
+            animal.deleteImages(imageRemover);
+
+            //then
+            assertThat(animal.getImages()).isEmpty();
+        }
+    }
 }
