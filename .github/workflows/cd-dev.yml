@@ -39,13 +39,24 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_REPOSITORY }} .
           docker push ${{ secrets.DOCKER_REPOSITORY }}
+      
+      #      # https://github.com/marketplace/actions/configure-aws-credentials-action-for-github-actions
+      #      - name: Congigure AWS credentials
+      #        uses: aws-actions/configure-aws-credentials@v4
+      #        with:
+      #          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #          aws-region: ap-northeast-2
 
-#      # https://github.com/marketplace/actions/configure-aws-credentials-action-for-github-actions
-#      - name: Congigure AWS credentials
-#        uses: aws-actions/configure-aws-credentials@v4
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: ap-northeast-2
 
-
+      # 도커 컴포즈 실행하기
+      # 도커 허브에서 jar파일 및 pull후에 컴포즈 up
+      - name: Deploy to Dev
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_DEV_HOSTNAME }}
+          key: ${{ secrets.AWS_DEV_PRIVATE_KEY }}
+          script: |
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}
+            docker compose up -d
+            docker image prune -f
