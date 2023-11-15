@@ -356,4 +356,45 @@ class AnimalServiceTest {
             assertThat(exception).isInstanceOf(AnimalNotFoundException.class);
         }
     }
+
+    @Nested
+    @DisplayName("deleteAnimal 메서드 호출 시")
+    class DeleteAnimalTest {
+
+        Animal animal;
+
+        @BeforeEach
+        void setUp() {
+            Shelter shelter = ShelterFixture.shelter();
+            animal = AnimalFixture.animal(shelter);
+        }
+
+        @Test
+        @DisplayName("성공")
+        void deleteAnimal() {
+            //given
+            given(animalRepository.findByShelterIdAndAnimalId(anyLong(), anyLong()))
+                .willReturn(Optional.ofNullable(animal));
+
+            //when
+            animalService.deleteAnimal(1L, 1L);
+
+            //then
+            then(animalRepository).should().delete(any(Animal.class));
+        }
+
+        @Test
+        @DisplayName("예외(AniamlNotFoundException): 존재하지 않는 보호 동물")
+        void exceptionWhenAnimalNotFound() {
+            //given
+            given(animalRepository.findByShelterIdAndAnimalId(anyLong(), anyLong()))
+                .willReturn(Optional.empty());
+
+            //when
+            Exception exception = catchException(() -> animalService.deleteAnimal(1L, 1L));
+
+            //then
+            assertThat(exception).isInstanceOf(AnimalNotFoundException.class);
+        }
+    }
 }

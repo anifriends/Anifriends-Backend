@@ -1,6 +1,27 @@
 spring:
   config:
     activate:
+      on-profile: local
+    import:
+      - classpath:backend-config/application-local.yml
+      - classpath:backend-config/application-default.yml
+
+---
+
+spring:
+  config:
+    activate:
       on-profile: dev
     import:
       - classpath:backend-config/application-dev.yml
+      - classpath:backend-config/application-default.yml
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import:
+      - classpath:backend-config/application-prod.yml
+      - classpath:backend-config/application-default.yml

@@ -155,6 +155,16 @@ operation::recruitment-controller-test/delete-recruitment[snippets='http-respons
 
 == 6. 보호 동물
 
+=== 보호 동물 삭제
+
+==== Request
+
+operation::animal-controller-test/delete-animal[snippets='http-request,request-headers,path-parameters']
+
+==== Response
+
+operation::animal-controller-test/delete-animal[snippets='http-response']
+
 = 봉사자
 
 == 1. 봉사자
@@ -174,6 +184,16 @@ operation::volunteer-controller-test/update-volunteer-info[snippets='http-respon
 == 4. 봉사 신청
 
 == 5. 봉사 후기
+
+=== 봉사 후기 삭제
+
+==== Request
+
+operation::review-controller-test/delete-review[snippets='http-request,request-headers,path-parameters']
+
+==== Response
+
+operation::review-controller-test/delete-review[snippets='http-response']
 
 == 6. 보호 동물
 

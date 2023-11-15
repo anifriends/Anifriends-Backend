@@ -491,7 +491,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_4_봉사_신청">4. 봉사 신청</a></li>
 <li><a href="#_5_봉사_후기">5. 봉사 후기</a></li>
-<li><a href="#_6_보호_동물">6. 보호 동물</a></li>
+<li><a href="#_6_보호_동물">6. 보호 동물</a>
+<ul class="sectlevel2">
+<li><a href="#_보호_동물_삭제">보호 동물 삭제</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_봉사자">봉사자</a>
@@ -504,7 +508,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_2_보호소_2">2. 보호소</a></li>
 <li><a href="#_3_봉사_모집글">3. 봉사 모집글</a></li>
 <li><a href="#_4_봉사_신청_2">4. 봉사 신청</a></li>
-<li><a href="#_5_봉사_후기_2">5. 봉사 후기</a></li>
+<li><a href="#_5_봉사_후기_2">5. 봉사 후기</a>
+<ul class="sectlevel2">
+<li><a href="#_봉사_후기_삭제">봉사 후기 삭제</a></li>
+</ul>
+</li>
 <li><a href="#_6_보호_동물_2">6. 보호 동물</a></li>
 </ul>
 </li>
@@ -536,7 +544,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/shelters/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 64
-X-CSRF-TOKEN: li_3ofSBTEsQh6wfuRAo0aNo4PAkSWGkLeKFkezEk5c43pCuokzBkMSxL3I95M8uij0c4ZMJzchFcQKJFIa1po-mpq8MvfPI
+X-CSRF-TOKEN: X1dV7HWYBYkPFL6CGehzUKho_JtHppzOAe0yfeUAg97J6EAPZmMzjRaoYO0id4-yIcVHZs0N0aJ0lK3jNtkLGYA44ear0CE2
 Host: localhost:8080
 
 {
@@ -591,6 +599,9 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Set-Cookie: refreshToken=refreshToken; Path=/api/auth; Domain=localhost; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
@@ -676,7 +687,7 @@ Content-Length: 78
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/volunteers/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 64
-X-CSRF-TOKEN: 6o_u7RPS23HrXyekrmLjv3KxEUOiMnV7drx81Q5ilKeK7_ds2bfciXLk70PGahSXy0_XiUrSPHubCxNWT94asz1UpcLviZQJ
+X-CSRF-TOKEN: Z-tpQ54WL9nyPoMkgUhrUZU2Ib0gZ2DOxDmNp7Y61tgPsP4wUtkKJ6hzFrrfDbtHsmVfYaJQDIVGBgLjpwvvlY8P5rk8gJgD
 Host: localhost:8080
 
 {
@@ -731,6 +742,9 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Set-Cookie: refreshToken=refreshToken; Path=/api/auth; Domain=localhost; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
@@ -814,9 +828,9 @@ Content-Length: 80
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/refresh HTTP/1.1
-X-CSRF-TOKEN: ncoC9_VE7xzGyHzUGlpegu8Hgto68qnlR4duObjFZrJW3bydrqlglJRw3irrqUzhfndqtttmr7hcwp3IfuYNDozxUIBuvo2q
+X-CSRF-TOKEN: 872USdkKBEFDdlWXFAvdMdCyAvF6TV6Ed_cVp6pRIIgGupmhwdyjK-o6YSRuEmDzcCbpA-OFL8hPLz-pTpJxlJI0GOlkj_yQ
 Host: localhost:8080
-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTc5MDYsInN1YiI6IjEiLCJleHAiOjE3MDAwMjc5MDYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.4YqPiQne8oe3ARne27wPNqYJgG2v0rrVwcLw4hWfEIdcAYYCypWzyvc-ItwYHrBT
+Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzNzYsInN1YiI6IjEiLCJleHAiOjE3MDAwMjkzNzYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.0jz2Mgg2oXn4JJlHegtIDXfA9jN-YzibxJuUBf4WAai6_yceaEA-eyrkpbQ5lMcO
 Content-Type: application/x-www-form-urlencoded</code></pre>
 </div>
 </div>
@@ -850,7 +864,10 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTc5MDYsInN1YiI6IjEiLCJleHAiOjE3MDAwMjc5MDYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.4YqPiQne8oe3ARne27wPNqYJgG2v0rrVwcLw4hWfEIdcAYYCypWzyvc-ItwYHrBT; Path=/api/auth; Domain=localhost; HttpOnly; SameSite=None
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Set-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzNzYsInN1YiI6IjEiLCJleHAiOjE3MDAwMjkzNzYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.0jz2Mgg2oXn4JJlHegtIDXfA9jN-YzibxJuUBf4WAai6_yceaEA-eyrkpbQ5lMcO; Path=/api/auth; Domain=localhost; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
@@ -862,7 +879,7 @@ Content-Length: 267
 {
   "userId" : 1,
   "role" : "ROLE_VOLUNTEER",
-  "accessToken" : "eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTc5MDYsInN1YiI6IjEiLCJleHAiOjE3MDAwMTg5MDYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.RmTpIDQSdALK1veezMyE6Ilm-gdssLmtoUPlQH6jJEqbL0YyfDQ32R2OP3W_Lny8"
+  "accessToken" : "eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzNzYsInN1YiI6IjEiLCJleHAiOjE3MDAwMjAzNzYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.ShZaDsms7K0zkoUbJksQswx8b5Xc53_8bMeE5ID-Ts_NhOGlHZEVjFHEfUTFPajH"
 }</code></pre>
 </div>
 </div>
@@ -938,8 +955,8 @@ Content-Length: 267
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/volunteers/1/recruitments/completed?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTc5MDcsInN1YiI6IjEiLCJleHAiOjE3MDAwMTg5MDcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.MW6jSiUoQ6oHMohzS4QghzxDn4Et8Tqs9GkWWku66HJ-GHP4bEaSp6Xzwho4Yy4J
-X-CSRF-TOKEN: xRX8haZn1O8liSaAbzGGQ-fFhBs0JJ7eq42IZpHEZiI3PyRC_CDKsJ9U4d8I6xLiVxyydtD3qXlSFv3zn7u9A_CgVkRUBxNy
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzNzgsInN1YiI6IjEiLCJleHAiOjE3MDAwMjAzNzgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.VSdxdQ2dugeHUT37c4aiVPVmL9bysGXOKl25kysyb0Est7da4tGT_kpdzuefKBXe
+X-CSRF-TOKEN: tnuSNC0jm_qaYaIOUbQIqNkJk32x3LBY4SdWAn5qpCD6S1dA1R6mDRlB_863AMQ7Zpk8nrhsvhzV5dZ11BAwMUtckxDIemYl
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1007,6 +1024,9 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
@@ -1019,7 +1039,7 @@ Content-Length: 264
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-12-15T12:11:45.933398",
+    "recruitmentStartTime" : "2023-12-15T12:36:16.096601",
     "shelterName" : "shelterName"
   } ],
   "pageInfo" : {
@@ -1106,8 +1126,8 @@ Content-Length: 264
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/animals/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTc5MDMsInN1YiI6IjEiLCJleHAiOjE3MDAwMTg5MDMsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.6IDFz6xqcrgFugPbBWRwoKEZPKU1o2g5l6XS0EUnzYnOtb9f99dxi2hiEA6ge7X-
-X-CSRF-TOKEN: kU9FPir3FWUhqH_r83Hnv9OCC3RA6B5erNhIph8exyToMHoR9X4gXxKWIQYMzEjdxVzTieLjJhVwjitznet9xCwnokCKB0sp
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzNzMsInN1YiI6IjEiLCJleHAiOjE3MDAwMjAzNzMsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.WVagYKDwKhjTOZvmuKZ4a8wse-Q3MDDyn5Tb8TQ21L9rKTuDfIH3jpTyBS9ypBLc
+X-CSRF-TOKEN: EiLO2Nk5a7Hvbq_QHyeWfl_wMCXbeiuloyO5eIwyH3qOOWggcxT3vrwLUoPCD57iJgqiSGrJHUe5SUiIxhLaHLtRekntDw4V
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1142,6 +1162,9 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
@@ -1347,9 +1370,9 @@ Content-Length: 395
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/me/passwords HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTc5MDgsInN1YiI6IjEiLCJleHAiOjE3MDAwMTg5MDgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.egefl3ZESyb13MYmJbYFARISAus_tbjIu9fk1bSRTAP-9P0XiG3P7DXF2z2sLs7D
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzNzksInN1YiI6IjEiLCJleHAiOjE3MDAwMjAzNzksInJvbGUiOiJST0xFX1NIRUxURVIifQ.YPmzN2GXS38Y8lf4JwHU1KJK994vPW25jWrEsv713-y5970WRBh6i6_SUc65LO18
 Content-Length: 76
-X-CSRF-TOKEN: iqPGuLc8fclFrZSNdX1p_-LbUEVRNhCO5ET-uKFO7162mnDr6ZTwj9MMT61omKC6QFBdyNS6fX1jACaj0X3IjZd8222A_0aN
+X-CSRF-TOKEN: ohmk1ExBxbIzSsCUnx9vS2tXyBawpnvJi5SJf7Ca8om0_cTxmnyT4nxw99Qeffj3qTJbf1o05XeDnkjkvPG4RoKuxOjVxKfF
 Host: localhost:8080
 
 {
@@ -1425,6 +1448,9 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1445,8 +1471,8 @@ Expires: 0</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/me HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTc5MDgsInN1YiI6IjEiLCJleHAiOjE3MDAwMTg5MDgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.egefl3ZESyb13MYmJbYFARISAus_tbjIu9fk1bSRTAP-9P0XiG3P7DXF2z2sLs7D
-X-CSRF-TOKEN: 5Xr9TPCQZFcJ54PAIo9rAuJHc1Jr9lVbdD18lQj_wI8MXsLv1BjKLsOkVWIk0ub3FqJfOtB2XjBZxGN2Eg0domzG9r5qOqDX
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzNzksInN1YiI6IjEiLCJleHAiOjE3MDAwMjAzNzksInJvbGUiOiJST0xFX1NIRUxURVIifQ.YPmzN2GXS38Y8lf4JwHU1KJK994vPW25jWrEsv713-y5970WRBh6i6_SUc65LO18
+X-CSRF-TOKEN: oXsfXQsqr5MuXN8JpNQDqlQvJwDsEhlk2S_AD_vCs7iD6pPqkhh-ZT9Jy6UDaO0xkfk3nGIaCjmPcCBJvUn5Np2j0N6x2PCM
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1480,6 +1506,9 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
@@ -1583,16 +1612,16 @@ Content-Length: 341
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/shelters/recruitments HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTc5MDcsInN1YiI6IjEiLCJleHAiOjE3MDAwMTg5MDcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.MW6jSiUoQ6oHMohzS4QghzxDn4Et8Tqs9GkWWku66HJ-GHP4bEaSp6Xzwho4Yy4J
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzNzgsInN1YiI6IjEiLCJleHAiOjE3MDAwMjAzNzgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.VSdxdQ2dugeHUT37c4aiVPVmL9bysGXOKl25kysyb0Est7da4tGT_kpdzuefKBXe
 Content-Length: 223
-X-CSRF-TOKEN: wHVtszs2KHwzr3Sjm_L1QemF-esLt176SLjSXWV4baxB5IKt80VagllQGh0enECa-d_Bdorh1Ilvh2zXcIrnPAEeD8kg3bqV
+X-CSRF-TOKEN: gDQ-5fIcaY0ookJXXLPUMTH1ufAUnw9UguWiVI_Df3wf3sFos1cP3JZ_X7UFmyFgOp7gBgbElJInqTt5soObZr2iHU0pvfFR
 Host: localhost:8080
 
 {
   "title" : "title",
-  "startTime" : "2023-11-16T12:11:47.252799",
-  "endTime" : "2023-11-16T13:11:47.252799",
-  "deadline" : "2023-11-15T17:11:47.252799",
+  "startTime" : "2023-11-16T12:36:18.201981",
+  "endTime" : "2023-11-16T13:36:18.201981",
+  "deadline" : "2023-11-15T17:36:18.201981",
   "capacity" : 10,
   "content" : "content",
   "imageUrls" : [ ]
@@ -1701,6 +1730,9 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Location: /api/recruitments/1
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
@@ -1742,8 +1774,8 @@ Expires: 0</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1/close HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTc5MDcsInN1YiI6IjEiLCJleHAiOjE3MDAwMTg5MDcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.MW6jSiUoQ6oHMohzS4QghzxDn4Et8Tqs9GkWWku66HJ-GHP4bEaSp6Xzwho4Yy4J
-X-CSRF-TOKEN: PgBvFqcNl11ZtgSNEj6eHgWdFEYpbhYrpGJ1SWndO-AzJB4-X2UMdMQ982h01Da1dhOqeDWpOScbXHMGl1MXeAjrWYEGEydY
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzNzgsInN1YiI6IjEiLCJleHAiOjE3MDAwMjAzNzgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.VSdxdQ2dugeHUT37c4aiVPVmL9bysGXOKl25kysyb0Est7da4tGT_kpdzuefKBXe
+X-CSRF-TOKEN: ip_bqajWM4VDsZA8pEez6WwpzhvosnZNT_xcFpL2D_rOuN8Kuazpz8mzAbFu0qJdkWqH3Vkb4yLe1hRge81tIPSVPc332rxs
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1799,6 +1831,9 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1819,16 +1854,16 @@ Expires: 0</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTc5MDcsInN1YiI6IjEiLCJleHAiOjE3MDAwMTg5MDcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.MW6jSiUoQ6oHMohzS4QghzxDn4Et8Tqs9GkWWku66HJ-GHP4bEaSp6Xzwho4Yy4J
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzNzgsInN1YiI6IjEiLCJleHAiOjE3MDAwMjAzNzgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.VSdxdQ2dugeHUT37c4aiVPVmL9bysGXOKl25kysyb0Est7da4tGT_kpdzuefKBXe
 Content-Length: 234
-X-CSRF-TOKEN: C1R7r2WW5J9wGf95aY7PDuNFA7ehhNZ0BQLnCQEmSCGgx7aybTEZm1On1q9dLZlKXKP7PYAjLo7D5rJZNWbePmBDeBnBpY_Q
+X-CSRF-TOKEN: 2ofAde8u_g0JUtEqfFKUA-cenFeRyw0pYRds-xM82XmDpJQJ4-WkQ41Pz2gkZukeTn-gYdcosW6l_j0EWCVezyUP7hizwKMw
 Host: localhost:8080
 
 {
   "title" : "title",
-  "startTime" : "2023-12-15T12:11:47.234266",
-  "endTime" : "2023-12-15T13:11:47.234266",
-  "deadline" : "2023-12-14T12:11:47.234266",
+  "startTime" : "2023-12-15T12:36:18.183612",
+  "endTime" : "2023-12-15T13:36:18.183612",
+  "deadline" : "2023-12-14T12:36:18.183612",
   "capacity" : 10,
   "content" : "content",
   "imageUrls" : [ "a1", "a2" ]
@@ -1959,6 +1994,9 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1978,8 +2016,8 @@ Expires: 0</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/shelters/recruitments/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTc5MDcsInN1YiI6IjEiLCJleHAiOjE3MDAwMTg5MDcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.MW6jSiUoQ6oHMohzS4QghzxDn4Et8Tqs9GkWWku66HJ-GHP4bEaSp6Xzwho4Yy4J
-X-CSRF-TOKEN: seQ2XN4MVv6sFTssTlqFbu2cP0FHeAsUSNReErmqI3pWpdK0htQOau46Ys-BIl4cL3exXNr-EnkmHDs5LedodoyaR09ul7SA
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzNzgsInN1YiI6IjEiLCJleHAiOjE3MDAwMjAzNzgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.VSdxdQ2dugeHUT37c4aiVPVmL9bysGXOKl25kysyb0Est7da4tGT_kpdzuefKBXe
+X-CSRF-TOKEN: JAnl1zyizKV5qh8N30ubbwQiPMtZ018b4ekWtapKOkRfDE1yRjHW4g3EqZNUyyY562avCTxHEfNrsmc21opy1Ml8D3xnOHkX
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2035,6 +2073,9 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -2062,7 +2103,85 @@ Expires: 0</code></pre>
 <div class="sect1">
 <h2 id="_6_보호_동물"><a class="link" href="#_6_보호_동물">6. 보호 동물</a></h2>
 <div class="sectionbody">
-
+<div class="sect2">
+<h3 id="_보호_동물_삭제"><a class="link" href="#_보호_동물_삭제">보호 동물 삭제</a></h3>
+<div class="sect3">
+<h4 id="_request_14"><a class="link" href="#_request_14">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_14_http_request"><a class="link" href="#_request_14_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/shelters/animals/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzNzMsInN1YiI6IjEiLCJleHAiOjE3MDAwMjAzNzMsInJvbGUiOiJST0xFX1NIRUxURVIifQ.q8qmXeTuPFZMpklHtebQAAeQHtX2KAUi-_EBrU90npGJ5FNtA8AZOLj0l5jkwE5T
+X-CSRF-TOKEN: wNsb3IaEFyvhQE0Ll92m7JSwiSE85XvazBuZeBcMYGKMnJqG8esovrGxJEjMJX8y9vCSjqzWpEMNgx33-imqGiY_UgS0ra_g
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_14_request_headers"><a class="link" href="#_request_14_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_request_14_path_parameters"><a class="link" href="#_request_14_path_parameters">Path parameters</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/shelters/animals/{animalId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>animalId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호 동물 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_14"><a class="link" href="#_response_14">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_14_http_response"><a class="link" href="#_response_14_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <h1 id="_봉사자" class="sect0"><a class="link" href="#_봉사자">봉사자</a></h1>
@@ -2072,16 +2191,16 @@ Expires: 0</code></pre>
 <div class="sect2">
 <h3 id="_봉사자_계정_정보_수정"><a class="link" href="#_봉사자_계정_정보_수정">봉사자 계정 정보 수정</a></h3>
 <div class="sect3">
-<h4 id="_request_14"><a class="link" href="#_request_14">Request</a></h4>
+<h4 id="_request_15"><a class="link" href="#_request_15">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_14_http_request"><a class="link" href="#_request_14_http_request">HTTP request</a></h5>
+<h5 id="_request_15_http_request"><a class="link" href="#_request_15_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/volunteers/me HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTc5MDksInN1YiI6IjEiLCJleHAiOjE3MDAwMTg5MDksInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.AxqY0xcNYpoXHzCrmG1VWpvNYqKgUKVweGHbGcv95-9bFYTmZULzRls63vPr14me
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzODAsInN1YiI6IjEiLCJleHAiOjE3MDAwMjAzODAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.5wQXUy5B2X2WDIL2nXmNUkziNsu4qf-EfF8-AwH3B42ywWVPvIjGg21hj5uf8bZp
 Content-Length: 153
-X-CSRF-TOKEN: SIVAbNUezn96h805cXdIig-nG7J6GsM1rpjnqf8CVLmb9eZJcLNzXrQpr0ZXt_kAQFp8uzyXNosbL6IYy_2CmMoxZoGtk4d_
+X-CSRF-TOKEN: RWB33xGaBbefGyG6dGXnl88wRusZHM9mq5HktuVxG9wXuw0JfVNP7imtY4SyeRXZR0jTr61Wa4p9fqlLkvKC09NGLetyjGw_
 Host: localhost:8080
 
 {
@@ -2095,7 +2214,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_14_request_headers"><a class="link" href="#_request_14_request_headers">Request headers</a></h5>
+<h5 id="_request_15_request_headers"><a class="link" href="#_request_15_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2116,7 +2235,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_14_request_fields"><a class="link" href="#_request_14_request_fields">Request fields</a></h5>
+<h5 id="_request_15_request_fields"><a class="link" href="#_request_15_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2175,12 +2294,15 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_14"><a class="link" href="#_response_14">Response</a></h4>
+<h4 id="_response_15"><a class="link" href="#_response_15">Response</a></h4>
 <div class="sect4">
-<h5 id="_response_14_http_response"><a class="link" href="#_response_14_http_response">HTTP response</a></h5>
+<h5 id="_response_15_http_response"><a class="link" href="#_response_15_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -2214,7 +2336,85 @@ Expires: 0</code></pre>
 <div class="sect1">
 <h2 id="_5_봉사_후기_2"><a class="link" href="#_5_봉사_후기_2">5. 봉사 후기</a></h2>
 <div class="sectionbody">
-
+<div class="sect2">
+<h3 id="_봉사_후기_삭제"><a class="link" href="#_봉사_후기_삭제">봉사 후기 삭제</a></h3>
+<div class="sect3">
+<h4 id="_request_16"><a class="link" href="#_request_16">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_16_http_request"><a class="link" href="#_request_16_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/volunteers/reviews/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDAwMTkzNzgsInN1YiI6IjEiLCJleHAiOjE3MDAwMjAzNzgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.toR5xclp1NIiLjH9IfeAmgW1DwwiLGj3c2rmlct0wkthIGi1zqtqRyOF0a_pXhZG
+X-CSRF-TOKEN: MUMZp5h4vFqmCx_pal7e-Y_Ey4NrJTAwhgTLjPaZHrgEy2ueV3Z4xq1O3mOLMi-NCHPqyrei5uENEgUdvzevuZD9eI8y-lz4
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_16_request_headers"><a class="link" href="#_request_16_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사자 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_request_16_path_parameters"><a class="link" href="#_request_16_path_parameters">Path parameters</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/volunteers/reviews/{reviewId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 후기 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_16"><a class="link" href="#_response_16">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_16_http_response"><a class="link" href="#_response_16_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2398,7 +2598,7 @@ Expires: 0</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-11-15 12:11:27 +0900
+Last updated 2023-11-15 12:34:51 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

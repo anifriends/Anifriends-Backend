@@ -16,6 +16,7 @@ import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -114,6 +115,14 @@ public class AnimalController {
             updateAnimalRequest.imageUrls()
         );
 
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/shelters/animals/{animalId}")
+    public ResponseEntity<Void> deleteAnimal(
+        @LoginUser Long shelterId,
+        @PathVariable Long animalId) {
+        animalService.deleteAnimal(shelterId, animalId);
         return ResponseEntity.noContent().build();
     }
 }
