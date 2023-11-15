@@ -18,7 +18,7 @@ class VolunteerNotificationTest {
         Volunteer volunteer = VolunteerFixture.volunteer();
         String title = "title";
         String content = "content";
-        String type = "CHECK_ATTENDANCE";
+        String type = "VOLUNTEER_APPROVED";
 
         @Test
         @DisplayName("성공")

@@ -18,7 +18,7 @@ class ShelterNotificationTest {
         Shelter shelter = ShelterFixture.shelter();
         String title = "title";
         String content = "content";
-        String type = "CHECK_ATTENDANCE";
+        String type = "NEW_APPLICANT";
 
         @Test
         @DisplayName("성공")
