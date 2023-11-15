@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -411,6 +412,29 @@ class AnimalControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 1000자 이하")),
                     fieldWithPath("imageUrls").type(ARRAY).description("이미지 url 리스트")
                         .attributes(DocumentationFormatGenerator.getConstraint("1장 이상, 5장 이하"))
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 보호 동물 삭제 api 호출 시")
+    void deleteAnimal() throws Exception {
+        //given
+        Long animalId = 1L;
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            delete("/api/shelters/animals/{animalId}", animalId)
+                .header(AUTHORIZATION, shelterAccessToken));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("animalId").description("보호 동물 ID")
                 )
             ));
     }

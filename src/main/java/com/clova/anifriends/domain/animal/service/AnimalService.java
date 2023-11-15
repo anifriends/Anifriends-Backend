@@ -145,4 +145,11 @@ public class AnimalService {
         return animalRepository.findByAnimalIdAndShelterIdWithImages(animalId, shelterId)
             .orElseThrow(() -> new AnimalNotFoundException("존재하지 않는 보호 동물입니다."));
     }
+
+    @Transactional
+    public void deleteAnimal(Long shelterId, Long animalId) {
+        Animal animal = getAnimalByAnimalIdAndShelterId(animalId, shelterId);
+        animal.deleteImages(imageRemover);
+        animalRepository.delete(animal);
+    }
 }
