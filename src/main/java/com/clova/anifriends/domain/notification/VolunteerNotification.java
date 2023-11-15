@@ -56,4 +56,28 @@ public class VolunteerNotification extends BaseTimeEntity {
         this.content = new NotificationContent(content);
         this.type = NotificationType.valueOf(type);
     }
+
+    public Long getVolunteerNotificationId() {
+        return volunteerNotificationId;
+    }
+
+    public Volunteer getVolunteer() {
+        return volunteer;
+    }
+
+    public String getTitle() {
+        return title.getTitle();
+    }
+
+    public String getContent() {
+        return content.getContent();
+    }
+
+    public Boolean getIsRead() {
+        return isRead.getIsRead();
+    }
+
+    public NotificationType getType() {
+        return type;
+    }
 }

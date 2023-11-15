@@ -56,4 +56,28 @@ public class ShelterNotification extends BaseTimeEntity {
         this.content = new NotificationContent(content);
         this.type = NotificationType.valueOf(type);
     }
+
+    public Long getShelterNotificationId() {
+        return shelterNotificationId;
+    }
+
+    public Shelter getShelter() {
+        return shelter;
+    }
+
+    public String getTitle() {
+        return title.getTitle();
+    }
+
+    public String getContent() {
+        return content.getContent();
+    }
+
+    public Boolean getIsRead() {
+        return isRead.getIsRead();
+    }
+
+    public NotificationType getType() {
+        return type;
+    }
 }
