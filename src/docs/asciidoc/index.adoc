@@ -145,6 +145,16 @@ operation::recruitment-controller-test/update-recruitment[snippets='http-respons
 
 == 6. 보호 동물
 
+=== 보호 동물 삭제
+
+==== Request
+
+operation::animal-controller-test/delete-animal[snippets='http-request,request-headers,path-parameters']
+
+==== Response
+
+operation::animal-controller-test/delete-animal[snippets='http-response']
+
 = 봉사자
 
 == 1. 봉사자
