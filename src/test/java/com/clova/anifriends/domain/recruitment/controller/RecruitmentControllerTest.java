@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -477,6 +478,29 @@ class RecruitmentControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint("1자 이상, 1000자 이하")),
                     fieldWithPath("imageUrls").type(ARRAY).description("봉사 모집글 이미지 리스트").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("5장 이하"))
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 봉사 모집글 삭제 api 호출 시")
+    void deleteRecruitment() throws Exception {
+        //given
+        Long recruitmentId = 1L;
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            delete("/api/shelters/recruitments/{recruitmentId}", recruitmentId)
+                .header(AUTHORIZATION, shelterAccessToken));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("recruitmentId").description("봉사 모집글 ID")
                 )
             ));
     }

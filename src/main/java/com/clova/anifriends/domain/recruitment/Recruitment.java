@@ -51,7 +51,7 @@ public class Recruitment extends BaseTimeEntity {
         cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecruitmentImage> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recruitment", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "recruitment", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Applicant> applicants = new ArrayList<>();
 
     @Embedded
@@ -217,5 +217,14 @@ public class Recruitment extends BaseTimeEntity {
             .filter(imageUrl -> !existsImageUrls.contains(imageUrl))
             .map(imageUrl -> new RecruitmentImage(this, imageUrl))
             .toList();
+    }
+
+    public void checkDeletable() {
+        info.checkDeletable();
+    }
+
+    public void deleteImages(ImageRemover imageRemover) {
+        imageRemover.removeImages(getImages());
+        images.clear();
     }
 }
