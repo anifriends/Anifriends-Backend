@@ -34,12 +34,19 @@ jobs:
       - name: Copy jar
         run: cp ./build/libs/*.jar ./deploy/
 
-      ## 도커 이미지 빌드 후 도커허브에 push하기
-      - name: web docker build and push
+      ## springboot 도커 이미지 빌드 후 도커허브에 push하기
+      - name: web springboot docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPOSITORY }} .
-          docker push ${{ secrets.DOCKER_REPOSITORY }}
+          docker build -t ${{ secrets.DOCKER_REPOSITORY }}:backend .
+          docker push ${{ secrets.DOCKER_REPOSITORY }}:backend
+
+      ## nginx 도커 이미지 빌드 후 도커허브에 push하기
+      - name: web nginx docker build and push
+        run: |
+          cd ./nginx
+          docker build -t ${{ secrets.DOCKER_REPOSITORY }}:nginx .
+          docker push ${{ secrets.DOCKER_REPOSITORY }}:nginx
 
       # 도커 컴포즈 설정 파일 서버로 전달하기(복사 후 붙여넣기)
       - name: Send docker-compose.yml
@@ -48,8 +55,8 @@ jobs:
           username: ${{ secrets.AWS_DEV_USERNAME }}
           host: ${{ secrets.AWS_DEV_HOSTNAME }}
           key: ${{ secrets.AWS_DEV_PRIVATE_KEY }}
-          source: "./src/main/resources/backend-config/docker-compose.yml"
-          target: ${{ secrets.AWS_DEV_ROOT_PATH }}
+          source: "/src/main/resources/backend-config/docker-compose.yml"
+          target: "${{ secrets.AWS_DEV_ROOT_PATH }}"
 
       # 도커 컴포즈 실행하기
       # 도커 허브에서 jar파일 및 pull후에 컴포즈 up
@@ -65,3 +72,4 @@ jobs:
             docker-compose down
             docker-compose up -d
             docker image prune -f
+
