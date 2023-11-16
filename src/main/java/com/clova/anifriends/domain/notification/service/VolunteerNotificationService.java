@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.notification.service;
 
 import com.clova.anifriends.domain.notification.VolunteerNotification;
-import com.clova.anifriends.domain.notification.dto.FindVolunteerNotificationsResponse;
+import com.clova.anifriends.domain.notification.dto.response.FindVolunteerNotificationsResponse;
 import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

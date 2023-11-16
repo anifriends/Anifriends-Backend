@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.notification.VolunteerNotification;
-import com.clova.anifriends.domain.notification.dto.FindVolunteerNotificationsResponse;
+import com.clova.anifriends.domain.notification.dto.response.FindVolunteerNotificationsResponse;
 import com.clova.anifriends.domain.notification.support.fixture.VolunteerNotificationFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;

@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.notification.controller;
 
 
 import com.clova.anifriends.domain.auth.LoginUser;
-import com.clova.anifriends.domain.notification.dto.FindVolunteerNotificationsResponse;
+import com.clova.anifriends.domain.notification.dto.response.FindVolunteerNotificationsResponse;
 import com.clova.anifriends.domain.notification.service.VolunteerNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
