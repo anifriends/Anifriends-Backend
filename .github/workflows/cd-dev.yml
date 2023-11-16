@@ -34,6 +34,26 @@ jobs:
       - name: Copy jar
         run: cp ./build/libs/*.jar ./deploy/
 
+      # 도커 컴포즈 설정 파일 서버로 전달하기(복사 후 붙여넣기)
+      - name: Send docker-compose.yml
+        uses: appleboy/scp-action@master
+        with:
+          username: ${{ secrets.AWS_DEV_USERNAME }}
+          host: ${{ secrets.AWS_DEV_HOSTNAME }}
+          key: ${{ secrets.AWS_DEV_PRIVATE_KEY }}
+          source: "./src/main/resources/backend-config/docker-compose.yml"
+          target: "${{ secrets.AWS_DEV_ROOT_PATH }}"
+
+      # nginx 설정 파일 서버로 전달하기(복사 후 붙여넣기)
+      - name: Send nginx.conf
+        uses: appleboy/scp-action@master
+        with:
+          username: ${{ secrets.AWS_DEV_USERNAME }}
+          host: ${{ secrets.AWS_DEV_HOSTNAME }}
+          key: ${{ secrets.AWS_DEV_PRIVATE_KEY }}
+          source: "./nginx/nginx.conf"
+          target: "${{ secrets.AWS_DEV_ROOT_PATH }}"
+
       ## springboot 도커 이미지 빌드 후 도커허브에 push하기
       - name: web springboot docker build and push
         run: |
@@ -48,16 +68,6 @@ jobs:
           docker build -t ${{ secrets.DOCKER_REPOSITORY }}:nginx .
           docker push ${{ secrets.DOCKER_REPOSITORY }}:nginx
 
-      # 도커 컴포즈 설정 파일 서버로 전달하기(복사 후 붙여넣기)
-      - name: Send docker-compose.yml
-        uses: appleboy/scp-action@master
-        with:
-          username: ${{ secrets.AWS_DEV_USERNAME }}
-          host: ${{ secrets.AWS_DEV_HOSTNAME }}
-          key: ${{ secrets.AWS_DEV_PRIVATE_KEY }}
-          source: "/src/main/resources/backend-config/docker-compose.yml"
-          target: "${{ secrets.AWS_DEV_ROOT_PATH }}"
-
       # 도커 컴포즈 실행하기
       # 도커 허브에서 jar파일 및 pull후에 컴포즈 up
       - name: Deploy to Dev
@@ -69,7 +79,8 @@ jobs:
           script: |
             docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}
+            cd src/main/resources/backend-config
+            sudo cp ${{ secrets.AWS_DEV_ROOT_PATH }}/nginx/nginx.conf ${{ secrets.AWS_DEV_ROOT_PATH }}/src/main/resources/backend-config/nginx/nginx.conf
             docker-compose down
             docker-compose up -d
             docker image prune -f
-
