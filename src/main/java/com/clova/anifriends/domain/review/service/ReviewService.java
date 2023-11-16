@@ -99,4 +99,11 @@ public class ReviewService {
         Review review = getReview(volunteerId, reviewId);
         review.updateReview(content, imageUrls, imageRemover);
     }
+
+    @Transactional
+    public void deleteReview(Long volunteerId, Long reviewId) {
+        Review review = getReview(volunteerId, reviewId);
+        review.deleteImages(imageRemover);
+        reviewRepository.delete(review);
+    }
 }

@@ -15,6 +15,9 @@ import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.service.AuthService;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
+import com.clova.anifriends.domain.chat.service.ChatRoomService;
+import com.clova.anifriends.domain.notification.service.ShelterNotificationService;
+import com.clova.anifriends.domain.notification.service.VolunteerNotificationService;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
 import com.clova.anifriends.domain.review.service.ReviewService;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
@@ -34,6 +37,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
@@ -104,6 +108,18 @@ public abstract class BaseControllerTest {
 
     @MockBean
     protected S3Service s3Service;
+
+    @MockBean
+    protected ChatRoomService chatRoomService;
+
+    @MockBean
+    protected SimpMessageSendingOperations messagingTemplate;
+
+    @MockBean
+    protected ShelterNotificationService shelterNotificationService;
+
+    @MockBean
+    protected VolunteerNotificationService volunteerNotificationService;
 
     @MockBean
     protected FCMService fcmService;

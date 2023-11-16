@@ -180,4 +180,33 @@ class RecruitmentTest {
             assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
         }
     }
+
+    @Nested
+    @DisplayName("deleteImages 메서드 호출 시")
+    class DeleteImagesTest {
+
+        ImageRemover imageRemover;
+
+        @BeforeEach
+        void setUp() {
+            imageRemover = new MockImageRemover();
+        }
+
+        @Test
+        @DisplayName("성공")
+        void deleteImages() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            List<String> imageUrls = List.of("image1", "image2");
+            recruitment.updateRecruitment(null, null, null, null, null, null, imageUrls,
+                imageRemover);
+
+            //when
+            recruitment.deleteImages(imageRemover);
+
+            //then
+            assertThat(recruitment.getImages()).isEmpty();
+        }
+    }
 }

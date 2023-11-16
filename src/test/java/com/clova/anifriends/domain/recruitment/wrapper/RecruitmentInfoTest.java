@@ -273,4 +273,54 @@ class RecruitmentInfoTest {
                 .isEqualTo(recruitmentInfo.getCapacity());
         }
     }
+
+    @Nested
+    @DisplayName("checkDeletable 메서드 호출 시")
+    class CheckDeletableTest {
+
+        boolean isClosed;
+        int capacity;
+
+        @BeforeEach
+        void setUp() {
+            isClosed = false;
+            capacity = 10;
+        }
+
+        @Test
+        @DisplayName("성공: 봉사 시작 시간 36시간 이전")
+        void checkDeletable() {
+            //given
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime startTime = now.plusMonths(1);
+            LocalDateTime endTime = startTime.plusHours(1);
+            LocalDateTime deadline = startTime.minusDays(1);
+            RecruitmentInfo recruitmentInfo = new RecruitmentInfo(startTime, endTime, deadline,
+                isClosed, capacity);
+
+            //when
+            Exception exception = catchException(() -> recruitmentInfo.checkDeletable());
+
+            //then
+            assertThat(exception).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("예외(RecruitmentBadRequestException): 봉사 시작 시간 36시간 이내")
+        void exceptionWhenStartTimeNear36Hours() {
+            //given
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime startTime = now.plusHours(35);
+            LocalDateTime endTime = startTime.plusHours(1);
+            LocalDateTime deadline = startTime.minusHours(1);
+            RecruitmentInfo recruitmentInfo = new RecruitmentInfo(startTime, endTime, deadline,
+                isClosed, capacity);
+
+            //when
+            Exception exception = catchException(() -> recruitmentInfo.checkDeletable());
+
+            //then
+            assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
+        }
+    }
 }

@@ -40,7 +40,7 @@ public class Review extends BaseTimeEntity {
     private Applicant applicant;
 
     @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReviewImage> imageUrls = new ArrayList<>();
+    private List<ReviewImage> images = new ArrayList<>();
 
     @Embedded
     private ReviewContent content;
@@ -55,9 +55,12 @@ public class Review extends BaseTimeEntity {
         this.applicant = applicant;
         this.applicant.registerReview(this);
         this.content = new ReviewContent(content);
-        this.imageUrls = images == null ? null : images.stream()
-            .map(url -> new ReviewImage(this, url))
-            .toList();
+        if(Objects.nonNull(images)) {
+            List<ReviewImage> newImages = images.stream()
+                .map(url -> new ReviewImage(this, url))
+                .toList();
+            this.images.addAll(newImages);
+        }
     }
 
     private void validateImageUrlsSize(List<String> imageUrls) {
@@ -79,7 +82,7 @@ public class Review extends BaseTimeEntity {
     }
 
     public List<String> getImages() {
-        return imageUrls.stream()
+        return images.stream()
             .map(ReviewImage::getImageUrl)
             .toList();
     }
@@ -114,7 +117,7 @@ public class Review extends BaseTimeEntity {
     }
 
     private void deleteNotContainsImageUrls(List<String> updateImageUrls, ImageRemover imageRemover) {
-        List<String> deleteImageUrls = this.imageUrls.stream()
+        List<String> deleteImageUrls = this.images.stream()
             .map(ReviewImage::getImageUrl)
             .filter(existsImageUrl -> !updateImageUrls.contains(existsImageUrl))
             .toList();
@@ -129,11 +132,11 @@ public class Review extends BaseTimeEntity {
         newImages.addAll(existsReviewImages);
         newImages.addAll(newReviewImages);
 
-        this.imageUrls = newImages;
+        this.images = newImages;
     }
 
     private List<ReviewImage> filterRemainImages(List<String> updateImageUrls) {
-        return this.imageUrls.stream()
+        return this.images.stream()
             .filter(reviewImage -> updateImageUrls.contains(reviewImage.getImageUrl()))
             .toList();
     }
@@ -147,5 +150,10 @@ public class Review extends BaseTimeEntity {
             .filter(imageUrl -> !existsImageUrls.contains(imageUrl))
             .map(imageUrl -> new ReviewImage(this, imageUrl))
             .toList();
+    }
+
+    public void deleteImages(ImageRemover imageRemover) {
+        imageRemover.removeImages(getImages());
+        this.images.clear();
     }
 }
