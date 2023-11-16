@@ -93,9 +93,9 @@ public class JJwtProvider implements JwtProvider {
         try {
             Claims claims = accessTokenParser.parseSignedClaims(token).getPayload();
             Long userId = Long.valueOf(claims.getSubject());
-            String userRole = claims.get(ROLE, String.class);
-            List<String> authorities = UserRole.valueOf(userRole).getAuthorities();
-            return CustomClaims.of(userId, authorities);
+            UserRole userRole = UserRole.valueOf(claims.get(ROLE, String.class));
+            List<String> authorities = userRole.getAuthorities();
+            return CustomClaims.of(userId, userRole, authorities);
         } catch (ExpiredJwtException ex) {
             log.info("[EX] {}: 만료된 JWT입니다.", ex.getClass().getSimpleName());
             throw new ExpiredAccessTokenException("만료된 액세스 토큰입니다.");
