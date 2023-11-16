@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.notification.controller;
 
 import com.clova.anifriends.domain.auth.LoginUser;
+import com.clova.anifriends.domain.notification.dto.response.FindShelterHasNewNotificationResponse;
 import com.clova.anifriends.domain.notification.dto.response.FindShelterNotificationsResponse;
 import com.clova.anifriends.domain.notification.service.ShelterNotificationService;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,13 @@ public class ShelterNotificationController {
         @LoginUser Long shelterId
     ) {
         return ResponseEntity.ok(shelterNotificationService.findShelterNotifications(shelterId));
+    }
+
+    @GetMapping("/shelters/notifications/read")
+    public ResponseEntity<FindShelterHasNewNotificationResponse> findShelterHasNewNotification(
+        @LoginUser Long shelterId
+    ) {
+        return ResponseEntity.ok(
+            shelterNotificationService.findShelterHasNewNotification(shelterId));
     }
 }
