@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.notification.VolunteerNotification;
+import com.clova.anifriends.domain.notification.dto.response.FindVolunteerHasNewNotificationResponse;
 import com.clova.anifriends.domain.notification.dto.response.FindVolunteerNotificationsResponse;
 import com.clova.anifriends.domain.notification.support.fixture.VolunteerNotificationFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
@@ -23,6 +24,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -65,6 +67,33 @@ class VolunteerNotificationControllerTest extends BaseControllerTest {
                         .description("알림 읽음 여부"),
                     fieldWithPath("notifications[].notificationType").type(STRING)
                         .description("알림 타입")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 봉사자 새로운 알림 여부 조회 api 호출 시")
+    void findVolunteerHasNewNotification() throws Exception {
+        // given
+        FindVolunteerHasNewNotificationResponse findVolunteerHasNewNotificationResponse = FindVolunteerHasNewNotificationResponse.from(
+            true);
+        given(volunteerNotificationService.findVolunteerHasNewNotification(anyLong()))
+            .willReturn(findVolunteerHasNewNotificationResponse);
+
+        // when
+        ResultActions result = mockMvc.perform(get("/api/volunteers/notifications/read")
+            .header(AUTHORIZATION, volunteerAccessToken)
+            .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
+                responseFields(
+                    fieldWithPath("hasNewNotification").type(JsonFieldType.BOOLEAN).description("새로운 알림 존재 여부")
                 )
             ));
     }

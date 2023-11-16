@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.notification.controller;
 
 
 import com.clova.anifriends.domain.auth.LoginUser;
+import com.clova.anifriends.domain.notification.dto.response.FindVolunteerHasNewNotificationResponse;
 import com.clova.anifriends.domain.notification.dto.response.FindVolunteerNotificationsResponse;
 import com.clova.anifriends.domain.notification.service.VolunteerNotificationService;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +24,13 @@ public class VolunteerNotificationController {
     ) {
         return ResponseEntity.ok(
             volunteerNotificationService.findVolunteerNotifications(volunteerId));
+    }
+
+    @GetMapping("/volunteers/notifications/read")
+    public ResponseEntity<FindVolunteerHasNewNotificationResponse> findVolunteerHasNewNotification(
+        @LoginUser Long volunteerId
+    ) {
+        return ResponseEntity.ok(
+            volunteerNotificationService.findVolunteerHasNewNotification(volunteerId));
     }
 }
