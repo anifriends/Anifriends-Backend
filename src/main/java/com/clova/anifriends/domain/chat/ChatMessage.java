@@ -40,4 +40,12 @@ public class ChatMessage extends BaseTimeEntity {
 
     @Column(name = "isRead")
     private boolean isRead;
+
+    public ChatMessage(ChatRoom chatRoom, Long senderId, UserRole senderRole, String message) {
+        this.chatRoom = chatRoom;
+        this.senderId = senderId;
+        this.senderRole = senderRole;
+        this.message = message;
+        this.isRead = false;
+    }
 }
