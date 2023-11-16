@@ -10,9 +10,11 @@ import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterName;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterPassword;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterPhoneNumberInfo;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,7 +48,7 @@ public class Shelter extends BaseTimeEntity {
     @Embedded
     private ShelterAddressInfo addressInfo;
 
-    @OneToOne(mappedBy = "shelter")
+    @OneToOne(mappedBy = "shelter", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private ShelterImage image;
 
     public Shelter(

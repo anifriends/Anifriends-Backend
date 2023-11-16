@@ -3,7 +3,9 @@ package com.clova.anifriends.domain.volunteer.support;
 import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public class VolunteerFixture {
 
@@ -18,5 +20,11 @@ public class VolunteerFixture {
     public static Volunteer volunteer() {
         return new Volunteer(EMAIL, PASSWORD, BIRTH_DATE, PHONE_NUMBER, GENDER, NAME,
             PASSWORD_ENCODER);
+    }
+
+    public static Volunteer volunteer(String imageUrl) {
+        Volunteer volunteer = volunteer();
+        ReflectionTestUtils.setField(volunteer, "image", new VolunteerImage(volunteer, imageUrl));
+        return volunteer;
     }
 }

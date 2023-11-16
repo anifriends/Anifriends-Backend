@@ -52,7 +52,8 @@ class ChatServiceTest {
                 .willReturn(Optional.of(chatRoom));
 
             //when
-            FindChatRoomDetailResponse chatRoomDetail = chatService.findChatRoomDetailByVolunteer(1L);
+            FindChatRoomDetailResponse chatRoomDetail = chatService.findChatRoomDetailByVolunteer(
+                1L);
 
             //then
             assertThat(chatRoomDetail.chatPartnerName()).isEqualTo(shelter.getName());
@@ -66,7 +67,8 @@ class ChatServiceTest {
             given(chatRoomRepository.findByIdWithShelter(anyLong())).willReturn(Optional.empty());
 
             //when
-            Exception exception = catchException(() -> chatService.findChatRoomDetailByVolunteer(1L));
+            Exception exception = catchException(() -> chatService.findChatRoomDetailByVolunteer(
+                1L));
 
             //then
             assertThat(exception).isInstanceOf(ChatNotFoundException.class);
