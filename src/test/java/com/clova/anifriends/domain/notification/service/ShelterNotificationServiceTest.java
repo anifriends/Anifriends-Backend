@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.notification.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
@@ -10,7 +11,6 @@ import com.clova.anifriends.domain.notification.support.fixture.ShelterNotificat
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,16 +39,20 @@ class ShelterNotificationServiceTest {
             // given
             Shelter shelter = ShelterFixture.shelter();
             ReflectionTestUtils.setField(shelter, "shelterId", 1L);
-            ShelterNotification shelterNotification = ShelterNotificationFixture.shelterNotification(shelter);
-            FindShelterNotificationsResponse expected = FindShelterNotificationsResponse.from(List.of(shelterNotification));
-            given(shelterNotificationRepository.findByShelter_ShelterIdOrderByCreatedAtDesc(anyLong()))
+            ShelterNotification shelterNotification = ShelterNotificationFixture.shelterNotification(
+                shelter);
+            FindShelterNotificationsResponse expected = FindShelterNotificationsResponse.from(
+                List.of(shelterNotification));
+            given(shelterNotificationRepository.findByShelter_ShelterIdOrderByCreatedAtDesc(
+                anyLong()))
                 .willReturn(List.of(shelterNotification));
 
             // when
-            FindShelterNotificationsResponse result = shelterNotificationService.findShelterNotifications(shelter.getShelterId());
+            FindShelterNotificationsResponse result = shelterNotificationService.findShelterNotifications(
+                shelter.getShelterId());
 
             // then
-            Assertions.assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+            assertThat(result).usingRecursiveComparison().isEqualTo(expected);
         }
     }
 }
