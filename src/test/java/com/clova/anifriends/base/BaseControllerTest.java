@@ -17,6 +17,7 @@ import com.clova.anifriends.domain.auth.service.AuthService;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
 import com.clova.anifriends.domain.chat.service.ChatRoomService;
 import com.clova.anifriends.domain.notification.service.ShelterNotificationService;
+import com.clova.anifriends.domain.notification.service.VolunteerNotificationService;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
 import com.clova.anifriends.domain.review.service.ReviewService;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
@@ -115,6 +116,9 @@ public abstract class BaseControllerTest {
 
     @MockBean
     protected ShelterNotificationService shelterNotificationService;
+
+    @MockBean
+    protected VolunteerNotificationService volunteerNotificationService;
 
     protected final String volunteerAccessToken = AuthFixture.volunteerAccessToken();
     protected String shelterAccessToken = AuthFixture.shelterAccessToken();

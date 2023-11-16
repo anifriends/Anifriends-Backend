@@ -40,13 +40,17 @@ class ShelterNotificationServiceTest {
             // given
             Shelter shelter = ShelterFixture.shelter();
             ReflectionTestUtils.setField(shelter, "shelterId", 1L);
-            ShelterNotification shelterNotification = ShelterNotificationFixture.shelterNotification(shelter);
-            FindShelterNotificationsResponse expected = FindShelterNotificationsResponse.from(List.of(shelterNotification));
-            given(shelterNotificationRepository.findByShelter_ShelterIdOrderByCreatedAtDesc(anyLong()))
+            ShelterNotification shelterNotification = ShelterNotificationFixture.shelterNotification(
+                shelter);
+            FindShelterNotificationsResponse expected = FindShelterNotificationsResponse.from(
+                List.of(shelterNotification));
+            given(shelterNotificationRepository.findByShelter_ShelterIdOrderByCreatedAtDesc(
+                anyLong()))
                 .willReturn(List.of(shelterNotification));
 
             // when
-            FindShelterNotificationsResponse result = shelterNotificationService.findShelterNotifications(shelter.getShelterId());
+            FindShelterNotificationsResponse result = shelterNotificationService.findShelterNotifications(
+                shelter.getShelterId());
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
