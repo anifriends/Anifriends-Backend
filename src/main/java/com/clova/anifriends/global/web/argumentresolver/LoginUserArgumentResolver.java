@@ -29,7 +29,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         checkAuthenticated(authentication);
         JwtAuthentication jwtAuthentication = (JwtAuthentication) authentication.getPrincipal();
-        return jwtAuthentication.memberId();
+        return jwtAuthentication.userId();
     }
 
     private void checkAuthenticated(Authentication authentication) {
