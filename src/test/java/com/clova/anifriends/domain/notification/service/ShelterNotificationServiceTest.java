@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 import com.clova.anifriends.domain.notification.ShelterNotification;
+import com.clova.anifriends.domain.notification.dto.response.FindShelterHasNewNotificationResponse;
 import com.clova.anifriends.domain.notification.dto.response.FindShelterNotificationsResponse;
 import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
 import com.clova.anifriends.domain.notification.support.fixture.ShelterNotificationFixture;
@@ -53,6 +54,25 @@ class ShelterNotificationServiceTest {
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("findShelterHasNewNotification 메서드 실행 시")
+    class FindShelterHasNewNotificationTest {
+
+        @Test
+        @DisplayName("성공")
+        void findShelterHasNewNotification() {
+            // given
+            FindShelterHasNewNotificationResponse expected = FindShelterHasNewNotificationResponse.from(true);
+            given(shelterNotificationRepository.hasNewNotification(anyLong())).willReturn(true);
+
+            // when
+            FindShelterHasNewNotificationResponse result = shelterNotificationService.findShelterHasNewNotification(1L);
+
+            // then
+            assertThat(result).isEqualTo(expected);
         }
     }
 }

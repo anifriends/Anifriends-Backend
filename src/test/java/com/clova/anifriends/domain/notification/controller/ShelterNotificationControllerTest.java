@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.notification.ShelterNotification;
+import com.clova.anifriends.domain.notification.dto.response.FindShelterHasNewNotificationResponse;
 import com.clova.anifriends.domain.notification.dto.response.FindShelterNotificationsResponse;
 import com.clova.anifriends.domain.notification.support.fixture.ShelterNotificationFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -65,6 +66,33 @@ class ShelterNotificationControllerTest extends BaseControllerTest {
                         .description("알림 읽음 여부"),
                     fieldWithPath("notifications[].notificationType").type(STRING)
                         .description("알림 타입")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공")
+    void findShelterHasNewNotification() throws Exception {
+        // given
+        FindShelterHasNewNotificationResponse findShelterHasNewNotificationResponse = FindShelterHasNewNotificationResponse.from(
+            true);
+        given(shelterNotificationService.findShelterHasNewNotification(anyLong()))
+            .willReturn(findShelterHasNewNotificationResponse);
+
+        // when
+        ResultActions result = mockMvc.perform(get("/api/shelters/notifications/read")
+            .header(AUTHORIZATION, shelterAccessToken)
+            .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
+                responseFields(
+                    fieldWithPath("hasNewNotification").type(BOOLEAN).description("새로운 알림 존재 여부")
                 )
             ));
     }
