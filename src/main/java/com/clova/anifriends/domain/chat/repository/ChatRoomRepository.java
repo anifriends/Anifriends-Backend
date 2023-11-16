@@ -4,6 +4,7 @@ import com.clova.anifriends.domain.chat.ChatRoom;
 import com.clova.anifriends.domain.chat.repository.response.FindChatRoomResult;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,9 +13,9 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     @Query("select cr from ChatRoom cr"
         + " join fetch cr.shelter"
-        + " where cr.volunteer = :volunteer")
-    List<ChatRoom> findAllByVolunteerWithShelter(@Param("volunteer") Volunteer volunteer);
-
+        + " join fetch cr.shelter.image"
+        + " where cr.chatRoomId = :chatRoomId")
+    Optional<ChatRoom> findByIdWithShelter(@Param("chatRoomId") Long chatRoomId);
 
     @Query("select"
         + " cr.chatRoomId as chatRoomId,"

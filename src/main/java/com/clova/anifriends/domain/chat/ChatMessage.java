@@ -38,7 +38,7 @@ public class ChatMessage extends BaseTimeEntity {
     @Column(name = "message")
     private String message;
 
-    @Column(name = "isRead")
+    @Column(name = "is_read")
     private boolean isRead;
 
     public ChatMessage(ChatRoom chatRoom, Long senderId, UserRole senderRole, String message) {
