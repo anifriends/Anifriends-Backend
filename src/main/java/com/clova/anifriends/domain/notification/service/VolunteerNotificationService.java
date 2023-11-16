@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.notification.service;
 
 import com.clova.anifriends.domain.notification.VolunteerNotification;
+import com.clova.anifriends.domain.notification.dto.response.FindVolunteerHasNewNotificationResponse;
 import com.clova.anifriends.domain.notification.dto.response.FindVolunteerNotificationsResponse;
 import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
 import java.util.List;
@@ -19,5 +20,11 @@ public class VolunteerNotificationService {
         List<VolunteerNotification> volunteerNotifications = volunteerNotificationRepository.findByVolunteer_VolunteerIdOrderByCreatedAtDesc(
             volunteerId);
         return FindVolunteerNotificationsResponse.from(volunteerNotifications);
+    }
+
+    @Transactional(readOnly = true)
+    public FindVolunteerHasNewNotificationResponse findVolunteerHasNewNotification(Long volunteerId) {
+        return FindVolunteerHasNewNotificationResponse.from(
+            volunteerNotificationRepository.hasNewNotification(volunteerId));
     }
 }
