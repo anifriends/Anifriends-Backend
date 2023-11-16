@@ -183,5 +183,19 @@ class ChatRoomServiceTest {
             assertThat(chatRoomResponse.createdAt()).isEqualTo(createdAt);
             assertThat(chatRoomResponse.chatUnReadCount()).isEqualTo(chatUnReadCount);
         }
+
+        @Test
+        @DisplayName("예외(VolunteerNotFoundException): 존재하지 않는 봉사자")
+        void exceptionWhenVolunteerNotFound() {
+            //given
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.empty());
+
+            //when
+            Exception exception = catchException(
+                () -> chatRoomService.findChatRoomsByVolunteer(1L));
+
+            //then
+            assertThat(exception).isInstanceOf(VolunteerNotFoundException.class);
+        }
     }
 }

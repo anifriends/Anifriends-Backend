@@ -49,17 +49,20 @@ class ChatRoomRepositoryTest extends BaseRepositoryTest {
             shelterRepository.saveAll(shelters);
             volunteerRepository.save(volunteer);
             chatRoomRepository.saveAll(chatRooms);
+            String oldMessage = "첫 번째";
+            String secondOldMessage = "두 번째";
+            String recentMessage = "세 번째";
             List<ChatMessage> oldMessages = IntStream.range(0, shelters.size())
                 .mapToObj(i -> new ChatMessage(chatRooms.get(i), shelters.get(i).getShelterId(),
-                    UserRole.ROLE_SHELTER, "첫 번째"))
+                    UserRole.ROLE_SHELTER, oldMessage))
                 .toList();
             List<ChatMessage> secondOldMessages = IntStream.range(0, shelters.size())
                 .mapToObj(i -> new ChatMessage(chatRooms.get(i), shelters.get(i).getShelterId(),
-                    UserRole.ROLE_SHELTER, "두 번째"))
+                    UserRole.ROLE_SHELTER, secondOldMessage))
                 .toList();
             List<ChatMessage> recentMessages = IntStream.range(0, shelters.size())
                 .mapToObj(i -> new ChatMessage(chatRooms.get(i), shelters.get(i).getShelterId(),
-                    UserRole.ROLE_SHELTER, "세 번째"))
+                    UserRole.ROLE_SHELTER, recentMessage))
                 .toList();
             chatMessageRepository.saveAll(oldMessages);
             chatMessageRepository.saveAll(secondOldMessages);
@@ -80,6 +83,7 @@ class ChatRoomRepositoryTest extends BaseRepositoryTest {
                 .allSatisfy(chatRoom -> {
                     assertThat(chatRoom.getCreatedAt())
                         .isCloseTo(now, within(5, ChronoUnit.SECONDS));
+                    assertThat(chatRoom.getChatRecentMessage()).isEqualTo(recentMessage);
                 });
         }
     }
