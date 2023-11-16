@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ChatIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
-    ChatService chatService;
+    ChatRoomService chatRoomService;
 
     @Nested
     @DisplayName("findChatRoomDetailByVolunteer 메서드 호출 시")
@@ -59,7 +59,7 @@ public class ChatIntegrationTest extends BaseIntegrationTest {
             chatMessageRepository.save(volunteerMessageB);
 
             //when
-            chatService.findChatRoomDetailByVolunteer(chatRoom.getChatRoomId());
+            chatRoomService.findChatRoomDetailByVolunteer(chatRoom.getChatRoomId());
 
             //then
             List<ChatMessage> messages = chatMessageRepository.findAll();

@@ -65,4 +65,22 @@ class LoginUserArgumentResolverTest extends BaseControllerTest {
                 .andExpect(jsonPath("$").doesNotExist());
         }
     }
+
+    @Nested
+    @DisplayName("@AuthenticationPrincipal을 사용하는 경우")
+    class AuthenticationPrincipalTest {
+
+        @Test
+        @DisplayName("성공")
+        void authenticationPrincipal() throws Exception {
+            //given
+
+            //when
+            ResultActions resultActions = mockMvc.perform(get("/test/authentication-principal")
+                .header(AUTHORIZATION, shelterAccessToken));
+
+            //then
+            resultActions.andExpect(status().isOk());
+        }
+    }
 }
