@@ -1,7 +1,7 @@
 package com.clova.anifriends.global.firebase.service;
 
+import com.clova.anifriends.domain.notification.wrapper.NotificationType;
 import com.clova.anifriends.global.firebase.domain.FCMMessage;
-import com.clova.anifriends.global.firebase.domain.NotificationType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.net.HttpHeaders;

@@ -1,5 +1,6 @@
 package com.clova.anifriends.global.firebase.domain;
 
+import com.clova.anifriends.domain.notification.wrapper.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
