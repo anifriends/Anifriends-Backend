@@ -5,12 +5,16 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,13 +31,16 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatRoomId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "volunteer_id")
     private Volunteer volunteer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
+
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY)
+    private List<ChatMessage> messages = new ArrayList<>();
 
     public ChatRoom(Volunteer volunteer, Shelter shelter) {
         validateVolunteer(volunteer);

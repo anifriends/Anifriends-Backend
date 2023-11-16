@@ -1,6 +1,8 @@
 package com.clova.anifriends.base;
 
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
+import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -47,6 +49,12 @@ public abstract class BaseIntegrationTest {
 
     @Autowired
     protected ApplicantRepository applicantRepository;
+
+    @Autowired
+    protected ChatRoomRepository chatRoomRepository;
+
+    @Autowired
+    protected ChatMessageRepository chatMessageRepository;
 
     @BeforeEach
     void setUp() {
