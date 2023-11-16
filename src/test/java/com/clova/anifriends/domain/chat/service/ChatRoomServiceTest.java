@@ -4,13 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.chat.ChatRoom;
+import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
+import com.clova.anifriends.domain.chat.exception.ChatNotFoundException;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
 import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
+import com.clova.anifriends.domain.chat.support.ChatRoomFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -29,22 +33,61 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class ChatServiceTest {
+class ChatRoomServiceTest {
 
     @InjectMocks
-    private ChatService chatService;
+    ChatRoomService chatRoomService;
 
     @Mock
-    private ChatRoomRepository chatRoomRepository;
+    ChatRoomRepository chatRoomRepository;
 
     @Mock
-    private ChatMessageRepository chatMessageRepository;
+    ChatMessageRepository chatMessageRepository;
 
     @Mock
-    private ShelterRepository shelterRepository;
+    VolunteerRepository volunteerRepository;
 
     @Mock
-    private VolunteerRepository volunteerRepository;
+    ShelterRepository shelterRepository;
+
+    @Nested
+    @DisplayName("findChatRoomDetail 메서드 호출 시")
+    class FindChatRoomDetailsTest {
+
+        @Test
+        @DisplayName("성공")
+        void findChatRoomDetail() {
+            //given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            Shelter shelter = ShelterFixture.shelter();
+            ChatRoom chatRoom = ChatRoomFixture.chatRoom(volunteer, shelter);
+
+            given(chatRoomRepository.findByIdWithShelter(anyLong()))
+                .willReturn(Optional.of(chatRoom));
+
+            //when
+            FindChatRoomDetailResponse chatRoomDetail = chatRoomService.findChatRoomDetailByVolunteer(
+                1L);
+
+            //then
+            assertThat(chatRoomDetail.chatPartnerName()).isEqualTo(shelter.getName());
+            assertThat(chatRoomDetail.chatPartnerImageUrl()).isEqualTo(shelter.getImage());
+        }
+
+        @Test
+        @DisplayName("예외(ChatNotFoundException): 존재하지 않는 채팅방")
+        void exceptionWhenChatRoomNotFound() {
+            //given
+            given(chatRoomRepository.findByIdWithShelter(anyLong())).willReturn(Optional.empty());
+
+            //when
+            Exception exception = catchException(() -> chatRoomService.findChatRoomDetailByVolunteer(
+                1L));
+
+            //then
+            assertThat(exception).isInstanceOf(ChatNotFoundException.class);
+        }
+    }
 
     @Nested
     @DisplayName("registerChatRoom 메소드 실행 시")
@@ -61,7 +104,7 @@ class ChatServiceTest {
             when(shelterRepository.findById(anyLong())).thenReturn(Optional.of(shelter));
 
             // when
-            chatService.registerChatRoom(1L, 1L);
+            chatRoomService.registerChatRoom(1L, 1L);
 
             // then
             verify(chatRoomRepository, times(1)).save(any(ChatRoom.class));
@@ -74,7 +117,7 @@ class ChatServiceTest {
             when(volunteerRepository.findById(anyLong())).thenReturn(Optional.empty());
 
             // when
-            Exception exception = catchException(() -> chatService.registerChatRoom(1L, 1L));
+            Exception exception = catchException(() -> chatRoomService.registerChatRoom(1L, 1L));
 
             // then
             assertThat(exception).isInstanceOf(VolunteerNotFoundException.class);
@@ -90,11 +133,10 @@ class ChatServiceTest {
             when(shelterRepository.findById(anyLong())).thenReturn(Optional.empty());
 
             // when
-            Exception exception = catchException(() -> chatService.registerChatRoom(1L, 1L));
+            Exception exception = catchException(() -> chatRoomService.registerChatRoom(1L, 1L));
 
             // then
             assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
         }
     }
-
 }

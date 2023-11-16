@@ -197,6 +197,18 @@ operation::review-controller-test/delete-review[snippets='http-response']
 
 == 6. 보호 동물
 
+== 7. 채팅
+
+=== 채팅방 상세 조회
+
+==== Request
+
+operation::chat-room-controller-test/find-chat-room-detail-by-volunteer[snippets='http-request,request-headers,path-parameters']
+
+==== Response
+
+operation::chat-room-controller-test/find-chat-room-detail-by-volunteer[snippets='http-response,response-fields']
+
 = Enum 문서화
 
 == 1. 보호 동물 성격
