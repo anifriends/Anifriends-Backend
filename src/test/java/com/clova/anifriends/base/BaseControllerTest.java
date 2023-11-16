@@ -15,6 +15,7 @@ import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.service.AuthService;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
+import com.clova.anifriends.domain.chat.service.ChatMessageService;
 import com.clova.anifriends.domain.chat.service.ChatRoomService;
 import com.clova.anifriends.domain.notification.service.ShelterNotificationService;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
@@ -109,6 +110,9 @@ public abstract class BaseControllerTest {
 
     @MockBean
     protected ChatRoomService chatRoomService;
+
+    @MockBean
+    protected ChatMessageService chatMessageService;
 
     @MockBean
     protected SimpMessageSendingOperations messagingTemplate;
