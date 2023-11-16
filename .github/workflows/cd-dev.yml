@@ -2,7 +2,7 @@ name: cd-dev-docker
 
 on:
   push:
-    branches: [ "feat/#190" ]
+    branches: [ "dev" ]
 
 jobs:
   build:
@@ -73,7 +73,7 @@ jobs:
       - name: Deploy to Dev
         uses: appleboy/ssh-action@master
         with:
-          username: ${{ secrets.AWS_DEV_USERNAME }}
+          username: ec2-user
           host: ${{ secrets.AWS_DEV_HOSTNAME }}
           key: ${{ secrets.AWS_DEV_PRIVATE_KEY }}
           script: |
