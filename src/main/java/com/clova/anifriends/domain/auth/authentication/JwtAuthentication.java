@@ -1,5 +1,7 @@
 package com.clova.anifriends.domain.auth.authentication;
 
-public record JwtAuthentication(Long memberId, String accessToken) {
+import com.clova.anifriends.domain.auth.jwt.UserRole;
+
+public record JwtAuthentication(Long userId, UserRole role, String accessToken) {
 
 }
