@@ -5,6 +5,8 @@ import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
 import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
+import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
+import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -44,4 +46,10 @@ public abstract class BaseRepositoryTest {
 
     @Autowired
     protected ChatRoomRepository chatRoomRepository;
+
+    @Autowired
+    protected ShelterNotificationRepository shelterNotificationRepository;
+
+    @Autowired
+    protected VolunteerNotificationRepository volunteerNotificationRepository;
 }
