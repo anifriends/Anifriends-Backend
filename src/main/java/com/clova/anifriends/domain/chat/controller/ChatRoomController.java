@@ -4,6 +4,7 @@ import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.chat.dto.request.RegisterChatRoomRequest;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
+import com.clova.anifriends.domain.chat.dto.response.FindUnreadCountResponse;
 import com.clova.anifriends.domain.chat.service.ChatRoomService;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +48,13 @@ public class ChatRoomController {
 
         URI location = URI.create("/api/volunteers/chat/rooms/" + chatRoomId);
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping("/volunteers/chat/rooms/unread")
+    public ResponseEntity<FindUnreadCountResponse> findUnreadCountByVolunteer(
+        @LoginUser Long volunteerId) {
+        FindUnreadCountResponse findUnreadCountResponse
+            = chatRoomService.findUnreadCountByVolunteer(volunteerId);
+        return ResponseEntity.ok(findUnreadCountResponse);
     }
 }

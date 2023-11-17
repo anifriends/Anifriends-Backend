@@ -21,6 +21,7 @@ import com.clova.anifriends.domain.chat.dto.request.RegisterChatRoomRequest;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse.FindChatRoomResponse;
+import com.clova.anifriends.domain.chat.dto.response.FindUnreadCountResponse;
 import com.clova.anifriends.domain.chat.support.ChatRoomFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -150,6 +151,32 @@ class ChatRoomControllerTest extends BaseControllerTest {
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 채팅방의 URI")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("안 읽은 총 메시지 수 조회(봉사자) api 호출 시")
+    void findUnreadCountByVolunteer() throws Exception {
+        //given
+        FindUnreadCountResponse findUnreadCountResponse = new FindUnreadCountResponse(5);
+
+        given(chatRoomService.findUnreadCountByVolunteer(anyLong()))
+            .willReturn(findUnreadCountResponse);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/api/volunteers/chat/rooms/unread")
+            .header(AUTHORIZATION, volunteerAccessToken));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
+                responseFields(
+                    fieldWithPath("totalUnreadCount").type(JsonFieldType.NUMBER)
+                        .description("안 읽은 메시지 수")
                 )
             ));
     }
