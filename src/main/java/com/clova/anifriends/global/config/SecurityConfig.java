@@ -1,9 +1,11 @@
 package com.clova.anifriends.global.config;
 
 import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider;
-import com.clova.anifriends.global.security.passwordencoder.BCryptCustomPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import com.clova.anifriends.global.security.passwordencoder.BCryptCustomPasswordEncoder;
 import com.clova.anifriends.global.web.filter.JwtAuthenticationFilter;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @EnableWebSecurity
@@ -22,6 +25,12 @@ public class SecurityConfig {
 
     private static final String ROLE_SHELTER = "SHELTER";
     private static final String ROLE_VOLUNTEER = "VOLUNTEER";
+
+    private final String frontServer;
+
+    public SecurityConfig(@Value("${front.server}") String frontServer) {
+        this.frontServer = frontServer;
+    }
 
     @Bean
     public CustomPasswordEncoder customPasswordEncoder() {
@@ -45,6 +54,16 @@ public class SecurityConfig {
                 SecurityContextHolderFilter.class)
             .headers(header -> header.frameOptions(
                 FrameOptionsConfig::disable))
+            .cors(cors -> cors.configurationSource(request -> {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(
+                    List.of("http://localhost:5173", "http://locahost:5174", frontServer));
+                config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+                config.setAllowCredentials(true);
+                config.setAllowedHeaders(List.of("*"));
+                config.setMaxAge(3600L);
+                return config;
+            }))
             .authorizeHttpRequests(request ->
                 request
                     .requestMatchers(HttpMethod.GET, "/api/shelters/me/**").hasRole(ROLE_SHELTER)
