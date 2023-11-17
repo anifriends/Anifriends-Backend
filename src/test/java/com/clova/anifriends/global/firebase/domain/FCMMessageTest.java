@@ -23,7 +23,8 @@ class FCMMessageTest {
         void newFCMMessage() {
             // given
             // when
-            FCMMessage fcmMessage = new FCMMessage(false, Message.of(targetToken, title, content, type));
+            FCMMessage fcmMessage = new FCMMessage(false,
+                Message.of(targetToken, title, content, type));
 
             // then
             assertThat(fcmMessage.isValidateOnly()).isFalse();
