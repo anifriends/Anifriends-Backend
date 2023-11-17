@@ -8,6 +8,7 @@ import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -64,7 +65,6 @@ class ShelterTest {
         @DisplayName("성공")
         void updateWhen() {
             // given
-            ImageRemover imageRemover = new MockImageRemover();
             String originName = "originName";
             String originAddress = "originAddress";
             String originAddressDetail = "originAddressDetail";
@@ -100,8 +100,7 @@ class ShelterTest {
                 newAddressDetail,
                 newPhoneNumber,
                 newSparePhoneNumber,
-                newIsOpenedAddress,
-                imageRemover
+                newIsOpenedAddress
             );
 
             // then
@@ -135,8 +134,7 @@ class ShelterTest {
                 shelter.getAddressDetail(),
                 shelter.getPhoneNumber(),
                 shelter.getSparePhoneNumber(),
-                shelter.isOpenedAddress(),
-                imageRemover
+                shelter.isOpenedAddress()
             );
 
             // then
@@ -160,8 +158,7 @@ class ShelterTest {
                 shelter.getAddressDetail(),
                 shelter.getPhoneNumber(),
                 shelter.getSparePhoneNumber(),
-                shelter.isOpenedAddress(),
-                imageRemover
+                shelter.isOpenedAddress()
             );
 
             // then
@@ -186,8 +183,7 @@ class ShelterTest {
                 shelter.getAddressDetail(),
                 shelter.getPhoneNumber(),
                 shelter.getSparePhoneNumber(),
-                shelter.isOpenedAddress(),
-                imageRemover
+                shelter.isOpenedAddress()
             );
 
             // then
@@ -212,8 +208,7 @@ class ShelterTest {
                 shelter.getAddressDetail(),
                 shelter.getPhoneNumber(),
                 shelter.getSparePhoneNumber(),
-                shelter.isOpenedAddress(),
-                imageRemover
+                shelter.isOpenedAddress()
             );
 
             // then
@@ -237,13 +232,62 @@ class ShelterTest {
                 shelter.getAddressDetail(),
                 shelter.getPhoneNumber(),
                 shelter.getSparePhoneNumber(),
-                shelter.isOpenedAddress(),
-                imageRemover
+                shelter.isOpenedAddress()
             );
 
             // then
             assertThat(shelter.getImage()).isNull();
         }
 
+    }
+
+    @Nested
+    @DisplayName("findDeletedImageUrl 실행 시")
+    class FindDeleteImagUrl {
+
+        @Test
+        @DisplayName("성공: 기존의 이미지가 존재하고 새로운 이미지와 다를 경우 기존의 이미지를 반환")
+        void findDeleteImageUrlWhenDifferentFromNow() {
+            // given
+            String originImageUrl = "originImageUrl";
+            String newImageUrl = "newImageUrl";
+
+            Shelter shelter = ShelterFixture.shelter(originImageUrl);
+
+            // when
+            Optional<String> result = shelter.findDeleteImageUrl(newImageUrl);
+
+            // then
+            assertThat(result).isEqualTo(Optional.of(originImageUrl));
+        }
+
+        @Test
+        @DisplayName("성공: 기존의 이미지가 존재하고 새로운 이미지와 같을 경우 null반환")
+        void findDeleteImageUrlWhenSameWithNow() {
+            // given
+            String sameImageUrl = "sameImageUrl";
+
+            Shelter shelter = ShelterFixture.shelter(sameImageUrl);
+
+            // when
+            Optional<String> result = shelter.findDeleteImageUrl(sameImageUrl);
+
+            // then
+            assertThat(result).isEmpty();
+        }
+
+        @Test
+        @DisplayName("성공: 기존의 이미지가 존재하지 않으면 null반환")
+        void findDeleteImageUrlWhenNowIsNull() {
+            // given
+            String newImageUrl = "newImageUrl";
+            Shelter shelter = ShelterFixture.shelter();
+
+            // when
+            Optional<String> result = shelter.findDeleteImageUrl(newImageUrl);
+
+            // then
+            assertThat(result).isEmpty();
+        }
     }
 }
