@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.chat.ChatRoom;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
+import com.clova.anifriends.domain.chat.dto.response.FindChatRoomIdResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse.FindChatRoomResponse;
 import com.clova.anifriends.domain.chat.exception.ChatNotFoundException;
@@ -87,8 +88,9 @@ class ChatRoomServiceTest {
             given(chatRoomRepository.findByIdWithShelter(anyLong())).willReturn(Optional.empty());
 
             //when
-            Exception exception = catchException(() -> chatRoomService.findChatRoomDetailByVolunteer(
-                1L));
+            Exception exception = catchException(
+                () -> chatRoomService.findChatRoomDetailByVolunteer(
+                    1L));
 
             //then
             assertThat(exception).isInstanceOf(ChatNotFoundException.class);
@@ -171,7 +173,8 @@ class ChatRoomServiceTest {
                 findChatRoomsResult);
 
             //when
-            FindChatRoomsResponse findChatRoomsResponse = chatRoomService.findChatRoomsByVolunteer(1L);
+            FindChatRoomsResponse findChatRoomsResponse = chatRoomService.findChatRoomsByVolunteer(
+                1L);
 
             //then
             List<FindChatRoomResponse> findChatRooms = findChatRoomsResponse.chatRooms();
@@ -197,5 +200,85 @@ class ChatRoomServiceTest {
             //then
             assertThat(exception).isInstanceOf(VolunteerNotFoundException.class);
         }
+    }
+
+    @Nested
+    @DisplayName("findChatRoomId 메서드 실행 시")
+    class FindChatRoomIdTest {
+
+        @Test
+        @DisplayName("성공: 기존의 채팅 방이 존재하면 채팅방 ID 를 반환한다.")
+        void findChatRoomIdChatRoomExist() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            Shelter shelter = ShelterFixture.shelter();
+            ChatRoom chatRoom = ChatRoomFixture.chatRoom(volunteer, shelter);
+
+            FindChatRoomIdResponse expected = new FindChatRoomIdResponse(
+                chatRoom.getChatRoomId());
+
+            when(volunteerRepository.findById(anyLong())).thenReturn(Optional.of(volunteer));
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.of(shelter));
+            when(chatRoomRepository.findByVolunteerAndShelter(any(Volunteer.class),
+                any(Shelter.class))).thenReturn(Optional.of(chatRoom));
+
+            // when
+            FindChatRoomIdResponse result = chatRoomService.findChatRoomId(1L, 1L);
+
+            // then
+            assertThat(result).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("성공: 기존의 채팅 방이 존재하지 않는다면 null 을 반환한다.")
+        void findChatRoomIdWhenChatRoomNotExist() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            Shelter shelter = ShelterFixture.shelter();
+
+            FindChatRoomIdResponse expected = new FindChatRoomIdResponse(null);
+
+            when(volunteerRepository.findById(anyLong())).thenReturn(Optional.of(volunteer));
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.of(shelter));
+            when(chatRoomRepository.findByVolunteerAndShelter(any(Volunteer.class),
+                any(Shelter.class))).thenReturn(Optional.empty());
+
+            // when
+            FindChatRoomIdResponse result = chatRoomService.findChatRoomId(1L, 1L);
+
+            // then
+            assertThat(result).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("예외(VolunteerNotFoundException): 봉사자가 존재하지 않음")
+        void exceptionWhenVolunteerIsNull() {
+            // given
+            when(volunteerRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+            // when
+            Exception exception = catchException(() -> chatRoomService.findChatRoomId(1L, 1L));
+
+            // then
+            assertThat(exception).isInstanceOf(VolunteerNotFoundException.class);
+        }
+
+        @Test
+        @DisplayName("예외(ShelterNotFoundException): 보호소가 존재하지 않음")
+        void exceptionWhenShelterIsNull() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+
+            when(volunteerRepository.findById(anyLong())).thenReturn(Optional.of(volunteer));
+            when(shelterRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+            // when
+            Exception exception = catchException(() -> chatRoomService.findChatRoomId(1L, 1L));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
+        }
+
+
     }
 }
