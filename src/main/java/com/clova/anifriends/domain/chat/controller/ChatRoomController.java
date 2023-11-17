@@ -1,11 +1,13 @@
 package com.clova.anifriends.domain.chat.controller;
 
+import com.clova.anifriends.domain.chat.dto.response.FindChatMessagesResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
 import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.chat.dto.request.RegisterChatRoomRequest;
 import com.clova.anifriends.domain.chat.service.ChatRoomService;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,5 +40,14 @@ public class ChatRoomController {
 
         URI location = URI.create("/api/volunteers/chat/rooms/" + chatRoomId);
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping("/chat/rooms/{chatRoomId}/messages")
+    public ResponseEntity<FindChatMessagesResponse> findChatMessages(
+        @PathVariable Long chatRoomId,
+        Pageable pageable) {
+        FindChatMessagesResponse findChatMessagesResponse
+            = chatRoomService.findChatMessages(chatRoomId, pageable);
+        return ResponseEntity.ok(findChatMessagesResponse);
     }
 }
