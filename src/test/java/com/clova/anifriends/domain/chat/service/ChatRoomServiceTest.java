@@ -13,6 +13,7 @@ import com.clova.anifriends.domain.chat.ChatRoom;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse.FindChatRoomResponse;
+import com.clova.anifriends.domain.chat.dto.response.FindUnreadCountResponse;
 import com.clova.anifriends.domain.chat.exception.ChatNotFoundException;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
 import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
@@ -193,6 +194,44 @@ class ChatRoomServiceTest {
             //when
             Exception exception = catchException(
                 () -> chatRoomService.findChatRoomsByVolunteer(1L));
+
+            //then
+            assertThat(exception).isInstanceOf(VolunteerNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("findUnreadCountByVolunteer 메서드 호출 시")
+    class FindUnreadCountByVolunteerTest {
+
+        @Test
+        @DisplayName("성공")
+        void findUnreadCountByVolunteer() {
+            //given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            long unreadCount = 10;
+
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+            given(chatMessageRepository.findUnreadCount(any(Volunteer.class)))
+                .willReturn(unreadCount);
+
+            //when
+            FindUnreadCountResponse findUnreadCountResponse = chatRoomService.findUnreadCountByVolunteer(
+                1L);
+
+            //then
+            assertThat(findUnreadCountResponse.totalUnreadCount()).isEqualTo(unreadCount);
+        }
+
+        @Test
+        @DisplayName("예외(VolunteerNotFoundException): 존재하지 않는 봉사자")
+        void exceptionWhenVolunteerNotFound() {
+            //given
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.empty());
+
+            //when
+            Exception exception = catchException(
+                () -> chatRoomService.findUnreadCountByVolunteer(1L));
 
             //then
             assertThat(exception).isInstanceOf(VolunteerNotFoundException.class);
