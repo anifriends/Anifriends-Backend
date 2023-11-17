@@ -5,8 +5,6 @@ import static com.clova.anifriends.global.exception.ErrorCode.BAD_REQUEST;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.domain.common.ImageRemover;
-import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
@@ -33,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -117,13 +116,20 @@ public class Volunteer extends BaseTimeEntity {
         VolunteerGender gender,
         LocalDate birthDate,
         String phoneNumber,
-        String imageUrl,
-        ImageRemover imageRemover) {
+        String imageUrl
+    ) {
         this.name = this.name.updateName(name);
         this.gender = updateGender(gender);
         this.birthDate = updateBirthDate(birthDate);
         this.phoneNumber = this.phoneNumber.updatePhoneNumber(phoneNumber);
-        this.image = updateVolunteerImage(imageUrl, imageRemover);
+        this.image = updateVolunteerImage(imageUrl);
+    }
+
+    public Optional<String> findDeleteImageUrl(String newImageUrl) {
+        if (Objects.nonNull(image) && image.isDifferentFrom(newImageUrl)) {
+            return Optional.of(image.getImageUrl());
+        }
+        return Optional.empty();
     }
 
     private LocalDate updateBirthDate(LocalDate birthDate) {
@@ -134,21 +140,14 @@ public class Volunteer extends BaseTimeEntity {
         return gender != null ? gender : this.gender;
     }
 
-    private VolunteerImage updateVolunteerImage(String imageUrl, ImageRemover imageRemover) {
+    private VolunteerImage updateVolunteerImage(String imageUrl) {
         if (Objects.nonNull(image) && image.isEqualImageUrl(imageUrl)) {
             return this.image;
         }
-        clearVolunteerImageIfExists(imageRemover);
         if (Objects.isNull(imageUrl)) {
             return null;
         }
         return new VolunteerImage(this, imageUrl);
-    }
-
-    private void clearVolunteerImageIfExists(ImageRemover imageRemover) {
-        if (Objects.nonNull(image)) {
-            image.removeImage(imageRemover);
-        }
     }
 
     public long getReviewCount() {
