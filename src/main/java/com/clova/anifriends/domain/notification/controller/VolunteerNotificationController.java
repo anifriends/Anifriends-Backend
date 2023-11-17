@@ -7,6 +7,7 @@ import com.clova.anifriends.domain.notification.service.VolunteerNotificationSer
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,5 +24,13 @@ public class VolunteerNotificationController {
     ) {
         return ResponseEntity.ok(
             volunteerNotificationService.findVolunteerNotifications(volunteerId));
+    }
+
+    @PatchMapping("/volunteers/notifications/read")
+    public ResponseEntity<Void> updateNotificationRead(
+        @LoginUser Long volunteerId
+    ) {
+        volunteerNotificationService.updateNotificationRead(volunteerId);
+        return ResponseEntity.noContent().build();
     }
 }

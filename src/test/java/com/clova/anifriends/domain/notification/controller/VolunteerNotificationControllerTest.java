@@ -11,6 +11,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
@@ -65,6 +66,25 @@ class VolunteerNotificationControllerTest extends BaseControllerTest {
                         .description("알림 읽음 여부"),
                     fieldWithPath("notifications[].notificationType").type(STRING)
                         .description("알림 타입")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 봉사자 알림 읽음 처리 api 호출 시")
+    void updateNotificationRead() throws Exception {
+        // given
+        // when
+        ResultActions result = mockMvc.perform(patch("/api/volunteers/notifications/read")
+            .header(AUTHORIZATION, volunteerAccessToken)
+            .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
                 )
             ));
     }
