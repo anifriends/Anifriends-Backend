@@ -26,5 +26,6 @@ public class VolunteerFixture {
         Volunteer volunteer = volunteer();
         ReflectionTestUtils.setField(volunteer, "image", new VolunteerImage(volunteer, imageUrl));
         return volunteer;
+
     }
 }

@@ -48,7 +48,8 @@ public class Shelter extends BaseTimeEntity {
     @Embedded
     private ShelterAddressInfo addressInfo;
 
-    @OneToOne(mappedBy = "shelter", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "shelter", fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL, orphanRemoval = true)
     private ShelterImage image;
 
     public Shelter(
