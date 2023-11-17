@@ -1,7 +1,9 @@
 package com.clova.anifriends.domain.chat.service;
 
 import com.clova.anifriends.domain.auth.jwt.UserRole;
+import com.clova.anifriends.domain.chat.ChatMessage;
 import com.clova.anifriends.domain.chat.ChatRoom;
+import com.clova.anifriends.domain.chat.dto.response.FindChatMessagesResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
 import com.clova.anifriends.domain.chat.exception.ChatNotFoundException;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
@@ -13,6 +15,8 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,5 +62,18 @@ public class ChatRoomService {
         return volunteerRepository
             .findById(volunteerId)
             .orElseThrow(() -> new VolunteerNotFoundException("봉사자가 존재하지 않습니다."));
+    }
+
+    @Transactional(readOnly = true)
+    public FindChatMessagesResponse findChatMessages(Long chatRoomId, Pageable pageable) {
+        ChatRoom chatRoom = getChatRoom(chatRoomId);
+        Page<ChatMessage> chatMessagePage
+            = chatMessageRepository.findByChatRoomOrderByCreatedAtDesc(chatRoom, pageable);
+        return FindChatMessagesResponse.from(chatMessagePage);
+    }
+
+    private ChatRoom getChatRoom(Long chatRoomId) {
+        return chatRoomRepository.findById(chatRoomId)
+            .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
     }
 }
