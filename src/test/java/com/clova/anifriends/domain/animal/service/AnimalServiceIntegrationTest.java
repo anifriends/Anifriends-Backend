@@ -4,12 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.animal.Animal;
+import com.clova.anifriends.domain.animal.AnimalImage;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
+import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -30,6 +33,9 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     AnimalRepository animalRepository;
+
+    @Autowired
+    ImageRemover imageRemover;
 
     @Nested
     @DisplayName("registerAnimal 메서드 실행 시")
@@ -69,6 +75,46 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
                 .setParameter("id", response.animalId())
                 .getSingleResult();
             assertThat(animal.getImages()).hasSize(imageUrls.size());
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteAnimal 메서드 호출 시")
+    class DeleteAnimalTest {
+
+        @Test
+        @DisplayName("성공: 보호 동물 이미지도 함께 삭제 됨")
+        void deleteAnimalWithAnimalImages() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            Animal animal = AnimalFixture.animal(shelter);
+            List<String> imageUrls = List.of("image1", "image2", "image3");
+            animal.updateAnimal(
+                animal.getName(),
+                animal.getBirthDate(),
+                animal.getType(),
+                animal.getBreed(),
+                animal.getGender(),
+                animal.isNeutered(),
+                animal.getActive(),
+                animal.getWeight(),
+                animal.getInformation(),
+                imageUrls,
+                imageRemover
+            );
+            shelterRepository.save(shelter);
+            animalRepository.save(animal);
+
+            //when
+            animalService.deleteAnimal(shelter.getShelterId(), animal.getAnimalId());
+
+            //then
+            Animal findAnimal = entityManager.find(Animal.class, animal.getAnimalId());
+            assertThat(findAnimal).isNull();
+            List<AnimalImage> findAnimalImages = entityManager.createQuery(
+                    "select ai from AnimalImage ai", AnimalImage.class)
+                .getResultList();
+            assertThat(findAnimalImages).isEmpty();
         }
     }
 }

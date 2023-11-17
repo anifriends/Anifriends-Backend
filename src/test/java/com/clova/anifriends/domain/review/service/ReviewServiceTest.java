@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,8 +27,8 @@ import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
-import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
@@ -178,7 +179,8 @@ class ReviewServiceTest {
             Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
             Review review = review(applicant);
             PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
-            FindShelterReviewsByShelterResponse expected = FindShelterReviewsByShelterResponse.from(reviewPage);
+            FindShelterReviewsByShelterResponse expected = FindShelterReviewsByShelterResponse.from(
+                reviewPage);
 
             given(reviewRepository.findAllByShelterId(anyLong(), any()))
                 .willReturn(reviewPage);
@@ -299,6 +301,45 @@ class ReviewServiceTest {
                 () -> reviewService.updateReview(anyLong(), anyLong(), "content", null));
 
             // then
+            assertThat(exception).isInstanceOf(ReviewNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteReview 메서드 호출 시")
+    class DeleteReviewTest {
+
+        @Test
+        @DisplayName("성공")
+        void deleteReview() {
+            //given
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            Volunteer volunteer = volunteer();
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+            Review review = review(applicant);
+
+            given(reviewRepository.findByReviewIdAndVolunteerId(anyLong(), anyLong()))
+                .willReturn(Optional.of(review));
+
+            //when
+            reviewService.deleteReview(1L, 1L);
+
+            //then
+            then(reviewRepository).should().delete(any(Review.class));
+        }
+
+        @Test
+        @DisplayName("예외(ReviewNotFoundException): 존재하지 않는 봉사 후기")
+        void exceptionWhenReviewNotFound() {
+            //given
+            given(reviewRepository.findByReviewIdAndVolunteerId(anyLong(), anyLong()))
+                .willReturn(Optional.empty());
+
+            //when
+            Exception exception = catchException(() -> reviewService.deleteReview(1L, 1L));
+
+            //then
             assertThat(exception).isInstanceOf(ReviewNotFoundException.class);
         }
     }

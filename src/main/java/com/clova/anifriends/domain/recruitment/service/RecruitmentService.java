@@ -175,4 +175,12 @@ public class RecruitmentService {
                 recruitmentId)
             .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 봉사 모집글입니다."));
     }
+
+    @Transactional
+    public void deleteRecruitment(Long shelterId, Long recruitmentId) {
+        Recruitment recruitment = getRecruitmentByShelter(shelterId, recruitmentId);
+        recruitment.checkDeletable();
+        recruitment.deleteImages(imageRemover);
+        recruitmentRepository.delete(recruitment);
+    }
 }

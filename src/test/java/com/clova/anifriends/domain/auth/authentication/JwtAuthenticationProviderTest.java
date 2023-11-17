@@ -23,10 +23,12 @@ class JwtAuthenticationProviderTest {
     class AuthenticateTest {
 
         @Test
-        @DisplayName("성공")
-        void authenticate() {
+        @DisplayName("성공: principal인 JwtAuthentication이 정상적으로 만들어짐")
+        void authenticateThenAuthenticationHasJwtAuthentication() {
             //given
-            TokenResponse tokenResponse = jwtProvider.createToken(1L, UserRole.ROLE_VOLUNTEER);
+            long userId = 1L;
+            UserRole userRole = UserRole.ROLE_VOLUNTEER;
+            TokenResponse tokenResponse = jwtProvider.createToken(userId, userRole);
 
             //when
             Authentication authentication = authenticationProvider.authenticate(
@@ -35,6 +37,23 @@ class JwtAuthenticationProviderTest {
             //then
             Object principal = authentication.getPrincipal();
             assertThat(principal.getClass()).isAssignableFrom(JwtAuthentication.class);
+            JwtAuthentication jwtAuthentication = (JwtAuthentication) principal;
+            assertThat(jwtAuthentication.userId()).isEqualTo(userId);
+            assertThat(jwtAuthentication.role()).isEqualTo(userRole);
+            assertThat(jwtAuthentication.accessToken()).isEqualTo(tokenResponse.accessToken());
+        }
+
+        @Test
+        @DisplayName("성공: 인증 객체인 UsernamePasswordAuthenticationToken이 정상적으로 만들어짐")
+        void authenticateThenUsernamePasswordAuthenticationTokenIsPublish() {
+            //given
+            TokenResponse tokenResponse = jwtProvider.createToken(1L, UserRole.ROLE_VOLUNTEER);
+
+            //when
+            Authentication authentication = authenticationProvider.authenticate(
+                tokenResponse.accessToken());
+
+            //then
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                 = (UsernamePasswordAuthenticationToken) authentication;
             assertThat(usernamePasswordAuthenticationToken.getAuthorities())
