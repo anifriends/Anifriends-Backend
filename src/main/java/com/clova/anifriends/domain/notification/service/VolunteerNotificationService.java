@@ -20,4 +20,9 @@ public class VolunteerNotificationService {
             volunteerId);
         return FindVolunteerNotificationsResponse.from(volunteerNotifications);
     }
+
+    @Transactional
+    public void updateNotificationRead(Long volunteerId) {
+        volunteerNotificationRepository.updateBulkRead(volunteerId);
+    }
 }
