@@ -95,21 +95,21 @@ class WebSocketStompTest {
 
         ChatMessageRequest request = new ChatMessageRequest(volunteer.getVolunteerId(),
             ROLE_VOLUNTEER, chatMessage.getMessage());
-        NewChatMessageResponse response = NewChatMessageResponse.from(chatMessage);
+        NewChatMessageResponse expected = NewChatMessageResponse.from(chatMessage);
 
         stompSession.subscribe("/sub/new/chat/rooms/shelters/" + shelter.getShelterId(),
-            new StompFrameHandlerImpl<>(response, newChatMessageResponses));
+            new StompFrameHandlerImpl<>(NewChatMessageResponse.class, newChatMessageResponses));
 
         // when
         stompSession.send("/pub/new/chat/rooms/" + chatRoom.getChatRoomId() + "/shelters/"
             + shelter.getShelterId(), request);
-        NewChatMessageResponse newChatMessageResponse = newChatMessageResponses.poll(5,
+        NewChatMessageResponse result = newChatMessageResponses.poll(5,
             TimeUnit.SECONDS);
 
         // then
-        assertThat(newChatMessageResponse).usingRecursiveComparison()
+        assertThat(result).usingRecursiveComparison()
             .ignoringFields("chatMessage.createdAt")
-            .isEqualTo(NewChatMessageResponse.from(chatMessage));
+            .isEqualTo(expected);
     }
 
     @Test
@@ -124,19 +124,20 @@ class WebSocketStompTest {
 
         ChatMessageRequest request = new ChatMessageRequest(volunteer.getVolunteerId(),
             ROLE_VOLUNTEER, chatMessage.getMessage());
-        ChatMessageResponse response = ChatMessageResponse.from(chatMessage);
 
         stompSession.subscribe("/sub/chat/rooms/" + chatRoom.getChatRoomId(),
-            new StompFrameHandlerImpl<>(response, chatMessageResponses));
+            new StompFrameHandlerImpl<>(ChatMessageResponse.class, chatMessageResponses));
+
+        ChatMessageResponse expected = ChatMessageResponse.from(chatMessage);
 
         // when
         stompSession.send("/pub/chat/rooms/" + chatRoom.getChatRoomId(), request);
-        ChatMessageResponse chatMessageResponse = chatMessageResponses.poll(5, TimeUnit.SECONDS);
+        ChatMessageResponse result = chatMessageResponses.poll(5, TimeUnit.SECONDS);
 
         // then
-        assertThat(chatMessageResponse).usingRecursiveComparison()
+        assertThat(result).usingRecursiveComparison()
             .ignoringFields("createdAt")
-            .isEqualTo(ChatMessageResponse.from(chatMessage));
+            .isEqualTo(expected);
     }
 
     private StompSession getStompSession()
@@ -161,17 +162,17 @@ class WebSocketStompTest {
 
 class StompFrameHandlerImpl<T> implements StompFrameHandler {
 
-    private final T response;
+    private final Type responseType;
     private final BlockingQueue<T> responses;
 
-    public StompFrameHandlerImpl(final T response, final BlockingQueue<T> responses) {
-        this.response = response;
+    public StompFrameHandlerImpl(final Class<T> responseType, final BlockingQueue<T> responses) {
+        this.responseType = responseType;
         this.responses = responses;
     }
 
     @Override
     public Type getPayloadType(final StompHeaders headers) {
-        return response.getClass();
+        return responseType;
     }
 
     @Override
