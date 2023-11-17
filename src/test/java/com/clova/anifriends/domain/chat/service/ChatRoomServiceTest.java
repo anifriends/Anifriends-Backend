@@ -87,8 +87,9 @@ class ChatRoomServiceTest {
             given(chatRoomRepository.findByIdWithShelter(anyLong())).willReturn(Optional.empty());
 
             //when
-            Exception exception = catchException(() -> chatRoomService.findChatRoomDetailByVolunteer(
-                1L));
+            Exception exception = catchException(
+                () -> chatRoomService.findChatRoomDetailByVolunteer(
+                    1L));
 
             //then
             assertThat(exception).isInstanceOf(ChatNotFoundException.class);
@@ -171,7 +172,8 @@ class ChatRoomServiceTest {
                 findChatRoomsResult);
 
             //when
-            FindChatRoomsResponse findChatRoomsResponse = chatRoomService.findChatRoomsByVolunteer(1L);
+            FindChatRoomsResponse findChatRoomsResponse = chatRoomService.findChatRoomsByVolunteer(
+                1L);
 
             //then
             List<FindChatRoomResponse> findChatRooms = findChatRoomsResponse.chatRooms();
@@ -196,6 +198,58 @@ class ChatRoomServiceTest {
 
             //then
             assertThat(exception).isInstanceOf(VolunteerNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("findChatRoomsByShelter 메서드 호출 시")
+    class FindChatRoomsByShelterTest {
+
+        @Test
+        @DisplayName("성공")
+        void findChatRoomsByShelter() {
+            //given
+            Shelter shelter = ShelterFixture.shelter("imageUrl");
+            Long chatRoomId = 1L;
+            String chatRecentMessage = "message";
+            String chatPartnerName = "name";
+            String chatPartnerImageUrl = "imageUrl";
+            LocalDateTime createdAt = LocalDateTime.now();
+            Long chatUnReadCount = 5L;
+            FindChatRoomResult chatRoomResult = ChatRoomDtoFixture.findChatRoomResult(chatRoomId,
+                chatRecentMessage, chatPartnerName, chatPartnerImageUrl, createdAt,
+                chatUnReadCount);
+
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
+            given(chatRoomRepository.findChatRoomsByShelter(any(Shelter.class)))
+                .willReturn(List.of(chatRoomResult));
+
+            //when
+            FindChatRoomsResponse findChatRoomsResponse = chatRoomService.findChatRoomsByShelter(
+                1L);
+
+            //then
+            List<FindChatRoomResponse> findChatRooms = findChatRoomsResponse.chatRooms();
+            FindChatRoomResponse chatRoomResponse = findChatRooms.get(0);
+            assertThat(chatRoomResponse.chatRoomId()).isEqualTo(chatRoomId);
+            assertThat(chatRoomResponse.chatRecentMessage()).isEqualTo(chatRecentMessage);
+            assertThat(chatRoomResponse.chatPartnerName()).isEqualTo(chatPartnerName);
+            assertThat(chatRoomResponse.charPartnerImageUrl()).isEqualTo(chatPartnerImageUrl);
+            assertThat(chatRoomResponse.createdAt()).isEqualTo(createdAt);
+            assertThat(chatRoomResponse.chatUnReadCount()).isEqualTo(chatUnReadCount);
+        }
+
+        @Test
+        @DisplayName("예외(shelterNotFoundException): 존재하지 않는 보호소")
+        void exceptionWhenShelterNotFound() {
+            //given
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.empty());
+
+            //when
+            Exception exception = catchException(() -> chatRoomService.findChatRoomsByShelter(1L));
+
+            //then
+            assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
         }
     }
 }

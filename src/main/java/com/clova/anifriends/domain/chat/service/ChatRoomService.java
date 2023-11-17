@@ -62,11 +62,19 @@ public class ChatRoomService {
         Volunteer volunteer = getVolunteer(volunteerId);
         List<FindChatRoomResult> findChatRoomResult
             = chatRoomRepository.findChatRoomsByVolunteer(volunteer);
-        return ChatRoomMapper.toResponse(findChatRoomResult);
+        return ChatRoomMapper.resultToResponse(findChatRoomResult);
     }
 
     private Volunteer getVolunteer(Long volunteerId) {
         return volunteerRepository.findById(volunteerId)
             .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
+    }
+
+    @Transactional(readOnly = true)
+    public FindChatRoomsResponse findChatRoomsByShelter(Long shelterId) {
+        Shelter shelter = getShelter(shelterId);
+        List<FindChatRoomResult> findChatRoomResults = chatRoomRepository.findChatRoomsByShelter(
+            shelter);
+        return ChatRoomMapper.resultToResponse(findChatRoomResults);
     }
 }
