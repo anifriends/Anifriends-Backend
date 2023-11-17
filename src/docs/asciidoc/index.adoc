@@ -71,21 +71,21 @@ operation::animal-controller-test/find-animal-detail-test[snippets='http-respons
 
 ==== Request
 
-operation::recruitment-controller-test/find-recruitments-by-volunteer[snippets='http-request,request-headers,query-parameters']
+operation::recruitment-controller-test/find-recruitments[snippets='http-request,request-headers,query-parameters']
 
 ==== Response
 
-operation::recruitment-controller-test/find-recruitments-by-volunteer[snippets='http-response,response-fields']
+operation::recruitment-controller-test/find-recruitments[snippets='http-response,response-fields']
 
 === 보호소에 달린 후기 리스트 조회
 
 ==== Request
 
-operation::review-controller-test/find-shelter-reviews-by-volunteer[snippets='http-request,path-parameters,query-parameters']
+operation::review-controller-test/find-shelter-reviews[snippets='http-request,path-parameters,query-parameters']
 
 ==== Response
 
-operation::review-controller-test/find-shelter-reviews-by-volunteer[snippets='http-response,response-fields']
+operation::review-controller-test/find-shelter-reviews[snippets='http-response,response-fields']
 
 == 2. 보호소
 
@@ -220,6 +220,26 @@ operation::chat-room-controller-test/find-chat-room-detail-by-volunteer[snippets
 ==== Response
 
 operation::chat-room-controller-test/find-chat-room-detail-by-volunteer[snippets='http-response,response-fields']
+
+=== 채팅방 목록 조회
+
+==== Request
+
+operation::chat-room-controller-test/find-chat-rooms-by-volunteer[snippets='http-request,request-headers']
+
+==== Response
+
+operation::chat-room-controller-test/find-chat-rooms-by-volunteer[snippets='http-response,response-fields']
+
+=== 안 읽은 메시지 총 수 조회
+
+==== Request
+
+operation::chat-room-controller-test/find-unread-count-by-volunteer[snippets='http-request,request-headers']
+
+==== Response
+
+operation::chat-room-controller-test/find-unread-count-by-volunteer[snippets='http-response,response-fields']
 
 = Enum 문서화
 
