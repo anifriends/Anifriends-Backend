@@ -90,10 +90,6 @@ class ShelterNotificationServiceTest {
             // given
             Shelter shelter = ShelterFixture.shelter();
             ReflectionTestUtils.setField(shelter, "shelterId", 1L);
-            ShelterNotification notification1 = ShelterNotificationFixture.shelterNotification(
-                shelter);
-            ShelterNotification notification2 = ShelterNotificationFixture.shelterNotification(
-                shelter);
 
             // when
             shelterNotificationService.updateNotificationRead(shelter.getShelterId());
