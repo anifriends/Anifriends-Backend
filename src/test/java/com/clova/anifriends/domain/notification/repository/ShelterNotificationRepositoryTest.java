@@ -10,6 +10,7 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -26,10 +27,14 @@ class ShelterNotificationRepositoryTest extends BaseRepositoryTest {
         void findByShelter_ShelterIdOrderByCreatedAtDesc() {
             // given
             Shelter shelter = ShelterFixture.shelter();
-            ShelterNotification notification1 = ShelterNotificationFixture.shelterNotification(shelter);
-            ShelterNotification notification2 = ShelterNotificationFixture.shelterNotification(shelter);
-            ReflectionTestUtils.setField(notification1, "createdAt", LocalDateTime.now().minusDays(3));
-            ReflectionTestUtils.setField(notification2, "createdAt", LocalDateTime.now().minusDays(1));
+            ShelterNotification notification1 = ShelterNotificationFixture.shelterNotification(
+                shelter);
+            ShelterNotification notification2 = ShelterNotificationFixture.shelterNotification(
+                shelter);
+            ReflectionTestUtils.setField(notification1, "createdAt",
+                LocalDateTime.now().minusDays(3));
+            ReflectionTestUtils.setField(notification2, "createdAt",
+                LocalDateTime.now().minusDays(1));
 
             shelterRepository.save(shelter);
             shelterNotificationRepository.save(notification1);
@@ -54,8 +59,10 @@ class ShelterNotificationRepositoryTest extends BaseRepositoryTest {
         void hasNewNotificationFalse() {
             // given
             Shelter shelter = ShelterFixture.shelter();
-            ShelterNotification notification1 = ShelterNotificationFixture.shelterNotification(shelter);
-            ShelterNotification notification2 = ShelterNotificationFixture.shelterNotification(shelter);
+            ShelterNotification notification1 = ShelterNotificationFixture.shelterNotification(
+                shelter);
+            ShelterNotification notification2 = ShelterNotificationFixture.shelterNotification(
+                shelter);
             NotificationRead notificationRead = new NotificationRead(true);
             ReflectionTestUtils.setField(notification1, "isRead", notificationRead);
             ReflectionTestUtils.setField(notification2, "isRead", notificationRead);
@@ -65,7 +72,8 @@ class ShelterNotificationRepositoryTest extends BaseRepositoryTest {
             shelterNotificationRepository.save(notification2);
 
             // when
-            boolean expected = shelterNotificationRepository.hasNewNotification(shelter.getShelterId());
+            boolean expected = shelterNotificationRepository.hasNewNotification(
+                shelter.getShelterId());
 
             // then
             assertThat(expected).isFalse();
@@ -76,8 +84,10 @@ class ShelterNotificationRepositoryTest extends BaseRepositoryTest {
         void hasNewNotificationTrue() {
             // given
             Shelter shelter = ShelterFixture.shelter();
-            ShelterNotification notification1 = ShelterNotificationFixture.shelterNotification(shelter);
-            ShelterNotification notification2 = ShelterNotificationFixture.shelterNotification(shelter);
+            ShelterNotification notification1 = ShelterNotificationFixture.shelterNotification(
+                shelter);
+            ShelterNotification notification2 = ShelterNotificationFixture.shelterNotification(
+                shelter);
             NotificationRead notificationRead = new NotificationRead(true);
             ReflectionTestUtils.setField(notification1, "isRead", notificationRead);
 
@@ -86,10 +96,42 @@ class ShelterNotificationRepositoryTest extends BaseRepositoryTest {
             shelterNotificationRepository.save(notification2);
 
             // when
-            boolean expected = shelterNotificationRepository.hasNewNotification(shelter.getShelterId());
+            boolean expected = shelterNotificationRepository.hasNewNotification(
+                shelter.getShelterId());
 
             // then
             assertThat(expected).isTrue();
+        }
+    }
+
+    @Nested
+    @DisplayName("updateBulkRead 실행 시")
+    class UpdateBulkReadTest {
+
+        @Test
+        @DisplayName("성공")
+        void updateBulkRead() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            ShelterNotification notification1 = ShelterNotificationFixture.shelterNotification(
+                shelter);
+            ShelterNotification notification2 = ShelterNotificationFixture.shelterNotification(
+                shelter);
+
+            shelterRepository.save(shelter);
+            shelterNotificationRepository.save(notification1);
+            shelterNotificationRepository.save(notification2);
+
+            // when
+            shelterNotificationRepository.updateBulkRead(shelter.getShelterId());
+
+            // then
+            Optional<ShelterNotification> found1 = shelterNotificationRepository.findById(
+                notification1.getShelterNotificationId());
+            Optional<ShelterNotification> found2 = shelterNotificationRepository.findById(
+                notification2.getShelterNotificationId());
+            assertThat(found1.get().getIsRead()).isTrue();
+            assertThat(found2.get().getIsRead()).isTrue();
         }
     }
 }
