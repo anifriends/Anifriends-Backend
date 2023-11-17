@@ -27,4 +27,9 @@ public class ShelterNotificationService {
         return FindShelterHasNewNotificationResponse.from(
             shelterNotificationRepository.hasNewNotification(shelterId));
     }
+
+    @Transactional
+    public void updateNotificationRead(Long shelterId) {
+        shelterNotificationRepository.updateBulkRead(shelterId);
+    }
 }
