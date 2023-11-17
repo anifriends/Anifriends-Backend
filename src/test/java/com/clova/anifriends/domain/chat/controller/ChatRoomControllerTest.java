@@ -9,7 +9,6 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -25,6 +24,8 @@ import com.clova.anifriends.domain.chat.dto.request.RegisterChatRoomRequest;
 import com.clova.anifriends.domain.chat.dto.response.FindChatMessagesResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatMessagesResponse.FindChatMessageResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
+import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
+import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse.FindChatRoomResponse;
 import com.clova.anifriends.domain.chat.support.ChatRoomFixture;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -42,6 +43,50 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 
 class ChatRoomControllerTest extends BaseControllerTest {
+
+    @Test
+    @DisplayName("성공: 채팅방 목록 조회(봉사자) api 호출 시")
+    void findChatRoomsByVolunteer() throws Exception {
+        //given
+        Long chatRoomId = 1L;
+        String chatRecentMessage = "최근 메시지";
+        String chatPartnerName = "채팅 상대방 이름";
+        String chatPartnerImageUrl = "채팅 상대방 이미지 url";
+        LocalDateTime createdAt = LocalDateTime.now();
+        Long chatUnReadCount = 5L;
+        FindChatRoomResponse findChatRoomResponse = new FindChatRoomResponse(chatRoomId,
+            chatRecentMessage, chatPartnerName, chatPartnerImageUrl, createdAt, chatUnReadCount);
+        FindChatRoomsResponse findChatRoomsResponse = new FindChatRoomsResponse(
+            List.of(findChatRoomResponse));
+
+        given(chatRoomService.findChatRoomsByVolunteer(1L)).willReturn(findChatRoomsResponse);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/api/volunteers/chat/rooms")
+            .header(AUTHORIZATION, volunteerAccessToken));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
+                responseFields(
+                    fieldWithPath("chatRooms").type(JsonFieldType.ARRAY).description("채팅방 목록"),
+                    fieldWithPath("chatRooms[].chatRoomId").type(JsonFieldType.NUMBER)
+                        .description("채팅방 ID"),
+                    fieldWithPath("chatRooms[].chatRecentMessage").type(JsonFieldType.STRING)
+                        .description("채팅방 최근 메시지"),
+                    fieldWithPath("chatRooms[].chatPartnerName").type(JsonFieldType.STRING)
+                        .description("채팅방 상대방 이름"),
+                    fieldWithPath("chatRooms[].charPartnerImageUrl").type(JsonFieldType.STRING)
+                        .description("채팅방 상대방 이미지 URL"),
+                    fieldWithPath("chatRooms[].createdAt").type(JsonFieldType.STRING)
+                        .description("채팅방 최근 메시지 발송 시간"),
+                    fieldWithPath("chatRooms[].chatUnReadCount").type(JsonFieldType.NUMBER)
+                        .description("채팅방 최근 메시지 발송 시간")
+                )));
+    }
 
     @Test
     @DisplayName("성공: 채팅방 상세 조회(봉사자) api 호출 시")
@@ -108,7 +153,7 @@ class ChatRoomControllerTest extends BaseControllerTest {
                     headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
                 ),
                 requestFields(
-                    fieldWithPath("shelterId").type(NUMBER).description("보호소 ID")
+                    fieldWithPath("shelterId").type(JsonFieldType.NUMBER).description("보호소 ID")
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 채팅방의 URI")
