@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.chat;
 import static com.clova.anifriends.domain.auth.jwt.UserRole.ROLE_VOLUNTEER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.chat.exception.ChatMessageBadRequestException;
@@ -33,11 +34,15 @@ class ChatMessageTest {
             String message = "악";
 
             // when
-            Exception exception = catchException(
-                () -> new ChatMessage(chatRoom, senderId, senderRole, message));
+            ChatMessage result = new ChatMessage(chatRoom, senderId, senderRole, message);
 
             // then
-            assertThat(exception).isNull();
+            assertSoftly(softAssertion -> {
+                softAssertion.assertThat(result.getChatRoom()).isEqualTo(chatRoom);
+                softAssertion.assertThat(result.getSenderId()).isEqualTo(senderId);
+                softAssertion.assertThat(result.getSenderRole()).isEqualTo(senderRole);
+                softAssertion.assertThat(result.getMessage()).isEqualTo(message);
+            });
         }
 
         @Test
@@ -52,11 +57,15 @@ class ChatMessageTest {
             String message = "악".repeat(1000);
 
             // when
-            Exception exception = catchException(
-                () -> new ChatMessage(chatRoom, senderId, senderRole, message));
+            ChatMessage result = new ChatMessage(chatRoom, senderId, senderRole, message);
 
             // then
-            assertThat(exception).isNull();
+            assertSoftly(softAssertion -> {
+                softAssertion.assertThat(result.getChatRoom()).isEqualTo(chatRoom);
+                softAssertion.assertThat(result.getSenderId()).isEqualTo(senderId);
+                softAssertion.assertThat(result.getSenderRole()).isEqualTo(senderRole);
+                softAssertion.assertThat(result.getMessage()).isEqualTo(message);
+            });
         }
 
         @Test
