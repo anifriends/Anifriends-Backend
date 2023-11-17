@@ -56,6 +56,25 @@ public class ShelterFixture {
         return shelter;
     }
 
+    public static List<Shelter> shelters(int end) {
+        List<Shelter> shelters = IntStream.range(0, end)
+            .mapToObj(i -> new Shelter(
+                SHELTER_EMAIL,
+                RAW_SHELTER_PASSWORD,
+                SHELTER_ADDRESS,
+                SHELTER_ADDRESS_DETAIL,
+                SHELTER_NAME + i,
+                PHONE_NUMBER, SPARE_PHONE_NUMBER,
+                IS_OPENED_ADDRESS,
+                PASSWORD_ENCODER))
+            .toList();
+        shelters.forEach(shelter -> {
+            ReflectionTestUtils.setField(shelter, "image",
+                new ShelterImage(shelter, SHELTER_IMAGE_URL));
+        });
+        return shelters;
+    }
+
     public static List<Shelter> createShelters(int end) {
         return IntStream.range(0, end)
             .mapToObj(i -> new Shelter(

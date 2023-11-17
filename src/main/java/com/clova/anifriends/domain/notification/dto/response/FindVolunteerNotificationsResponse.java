@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.notification.dto;
+package com.clova.anifriends.domain.notification.dto.response;
 
 import com.clova.anifriends.domain.notification.VolunteerNotification;
 import com.clova.anifriends.domain.notification.wrapper.NotificationType;

@@ -1,8 +1,9 @@
 package com.clova.anifriends.domain.chat.controller;
 
-import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
 import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.chat.dto.request.RegisterChatRoomRequest;
+import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
+import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
 import com.clova.anifriends.domain.chat.service.ChatRoomService;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
+
+    @GetMapping("/volunteers/chat/rooms")
+    public ResponseEntity<FindChatRoomsResponse> findChatRoomsByVolunteer(
+        @LoginUser Long volunteerId) {
+        FindChatRoomsResponse findChatRoomsResponse
+            = chatRoomService.findChatRoomsByVolunteer(volunteerId);
+        return ResponseEntity.ok(findChatRoomsResponse);
+    }
 
     @GetMapping("/volunteers/chat/rooms/{chatRoomId}")
     public ResponseEntity<FindChatRoomDetailResponse> findChatRoomDetailByVolunteer(

@@ -71,7 +71,7 @@ class ShelterNotificationControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("성공")
+    @DisplayName("성공: 보호소 새로운 알림 여부 조회 api 호출 시")
     void findShelterHasNewNotification() throws Exception {
         // given
         FindShelterHasNewNotificationResponse findShelterHasNewNotificationResponse = FindShelterHasNewNotificationResponse.from(
