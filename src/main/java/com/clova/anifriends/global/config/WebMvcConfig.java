@@ -25,6 +25,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
             .allowedOrigins("http://localhost:3000", frontServer,
                 "http://localhost:5173", "http://localhost:5174")
             .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+            .allowedHeaders("*")
             .allowCredentials(true);
     }
 }

@@ -82,5 +82,5 @@ jobs:
             cd src/main/resources/backend-config
             sudo cp /home/ec2-user/nginx/nginx.conf /home/ec2-user/src/main/resources/backend-config/nginx/nginx.conf
             docker-compose down
+            docker rmi $(docker images -q)
             docker-compose up --build -d
-            docker image prune -f
