@@ -153,4 +153,35 @@ class ChatRoomControllerTest extends BaseControllerTest {
                 )
             ));
     }
+
+    @Test
+    @DisplayName("성공: 채팅방 상세 조회(보호소) api 호출 시")
+    void findChatRoomDetailByShelter() throws Exception {
+        //given
+        Long chatRoomId = 1L;
+        FindChatRoomDetailResponse findChatRoomDetailResponse
+            = new FindChatRoomDetailResponse("imageUrl", "채팅 상대방 이름");
+
+        given(chatRoomService.findChatRoomDetailByShelter(anyLong()))
+            .willReturn(findChatRoomDetailResponse);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            get("/api/shelters/chat/rooms/{chatRoomId}", chatRoomId)
+                .header(AUTHORIZATION, shelterAccessToken));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
+                responseFields(
+                    fieldWithPath("chatPartnerImageUrl").type(JsonFieldType.STRING)
+                        .description("채팅 상대방 이미지 URL"),
+                    fieldWithPath("chatPartnerName").type(JsonFieldType.STRING)
+                        .description("채팅 상대방 이름")
+                )
+            ));
+    }
 }
