@@ -11,8 +11,8 @@ import static org.mockito.Mockito.when;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.chat.ChatMessage;
 import com.clova.anifriends.domain.chat.ChatRoom;
+import com.clova.anifriends.domain.chat.dto.response.NewChatMessageResponse;
 import com.clova.anifriends.domain.chat.exception.ChatRoomNotFoundException;
-import com.clova.anifriends.domain.chat.message.pub.NewChatMessagePub;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
 import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
 import com.clova.anifriends.domain.chat.support.ChatMessageFixture;
@@ -58,12 +58,12 @@ class ChatMessageServiceTest {
 
             ChatMessage chatMessage = ChatMessageFixture.chatMessage(chatRoom, senderId,
                 senderRole);
-            NewChatMessagePub expect = NewChatMessagePub.from(chatMessage);
+            NewChatMessageResponse expect = NewChatMessageResponse.from(chatMessage);
 
             when(chatRoomRepository.findById(anyLong())).thenReturn(Optional.of(chatRoom));
 
             // when
-            NewChatMessagePub result = chatMessageService.registerChatMessage(1L,
+            NewChatMessageResponse result = chatMessageService.registerNewChatMessage(1L,
                 chatMessage.getSenderId(), chatMessage.getSenderRole(), chatMessage.getMessage());
 
             // then
@@ -83,7 +83,7 @@ class ChatMessageServiceTest {
 
             // when
             Exception exception = catchException(
-                () -> chatMessageService.registerChatMessage(1L, 1L, senderRole, message));
+                () -> chatMessageService.registerNewChatMessage(1L, 1L, senderRole, message));
 
             // then
             assertThat(exception).isInstanceOf(ChatRoomNotFoundException.class);

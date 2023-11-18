@@ -4,17 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchException;
 
-import com.clova.anifriends.base.MockImageRemover;
-import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
-import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
 import java.time.LocalDate;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -75,12 +71,10 @@ class VolunteerTest {
     class UpdateVolunteerTest {
 
         Volunteer volunteer;
-        ImageRemover imageRemover;
 
         @BeforeEach
         void setUp() {
             volunteer = VolunteerFixture.volunteer();
-            imageRemover = new MockImageRemover();
         }
 
         @Test
@@ -94,8 +88,8 @@ class VolunteerTest {
             String newImageUrl = volunteer.getVolunteerImageUrl() + "1";
 
             //when
-            volunteer.updateVolunteerInfo(newName, newGender,
-                newBirthDate, newPhoneNumber, newImageUrl, imageRemover);
+            volunteer.updateVolunteerInfo(newName, newGender, newBirthDate, newPhoneNumber,
+                newImageUrl);
 
             //then
             assertThat(volunteer.getName()).isEqualTo(newName);
@@ -113,7 +107,7 @@ class VolunteerTest {
 
             //when
             volunteer.updateVolunteerInfo(volunteer.getName(), volunteer.getGender(),
-                volunteer.getBirthDate(), volunteer.getPhoneNumber(), nullImageUrl, imageRemover);
+                volunteer.getBirthDate(), volunteer.getPhoneNumber(), nullImageUrl);
 
             //then
             assertThat(volunteer.getVolunteerImageUrl()).isNull();
@@ -127,7 +121,7 @@ class VolunteerTest {
 
             //when
             volunteer.updateVolunteerInfo(volunteer.getName(), volunteer.getGender(),
-                volunteer.getBirthDate(), volunteer.getPhoneNumber(), newImageUrl, imageRemover);
+                volunteer.getBirthDate(), volunteer.getPhoneNumber(), newImageUrl);
 
             //then
             assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(newImageUrl);
@@ -140,13 +134,13 @@ class VolunteerTest {
             String equalsImageUrl = "asdf";
             volunteer.updateVolunteerInfo(volunteer.getName(),
                 volunteer.getGender(), volunteer.getBirthDate(), volunteer.getPhoneNumber(),
-                equalsImageUrl, imageRemover);
+                equalsImageUrl);
             Object beforeVolunteerImage = ReflectionTestUtils.getField(volunteer, "image");
 
             //when
             volunteer.updateVolunteerInfo(
                 volunteer.getName(), volunteer.getGender(), volunteer.getBirthDate(),
-                volunteer.getPhoneNumber(), equalsImageUrl, imageRemover);
+                volunteer.getPhoneNumber(), equalsImageUrl);
 
             //then
             Object afterVolunteerImage = ReflectionTestUtils.getField(volunteer, "image");
@@ -161,13 +155,13 @@ class VolunteerTest {
             String imageUrl = "asdf";
             volunteer.updateVolunteerInfo(volunteer.getName(),
                 volunteer.getGender(), volunteer.getBirthDate(), volunteer.getPhoneNumber(),
-                imageUrl, imageRemover);
+                imageUrl);
             String notEqualsImageUrl = imageUrl + "a";
 
             //when
             volunteer.updateVolunteerInfo(
                 volunteer.getName(), volunteer.getGender(), volunteer.getBirthDate(),
-                volunteer.getPhoneNumber(), notEqualsImageUrl, imageRemover);
+                volunteer.getPhoneNumber(), notEqualsImageUrl);
 
             //then
             assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(notEqualsImageUrl);
@@ -226,6 +220,56 @@ class VolunteerTest {
 
             // then
             assertThat(exception).isInstanceOf(VolunteerBadRequestException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("findDeletedImageUrl 실행 시")
+    class FindImageToDelete {
+
+        @Test
+        @DisplayName("성공: 기존의 이미지가 존재하고 새로운 이미지와 다를 경우 기존의 이미지를 반환")
+        void findImageToDeleteWhenDifferentFromNow() {
+            // given
+            String originImageUrl = "originImageUrl";
+            String newImageUrl = "newImageUrl";
+
+            Volunteer volunteer = VolunteerFixture.volunteer(originImageUrl);
+
+            // when
+            Optional<String> result = volunteer.findImageToDelete(newImageUrl);
+
+            // then
+            assertThat(result).isEqualTo(Optional.of(originImageUrl));
+        }
+
+        @Test
+        @DisplayName("성공: 기존의 이미지가 존재하고 새로운 이미지와 같을 경우 null반환")
+        void findImageToDeleteWhenSameWithNow() {
+            // given
+            String sameImageUrl = "sameImageUrl";
+
+            Volunteer volunteer = VolunteerFixture.volunteer(sameImageUrl);
+
+            // when
+            Optional<String> result = volunteer.findImageToDelete(sameImageUrl);
+
+            // then
+            assertThat(result).isEmpty();
+        }
+
+        @Test
+        @DisplayName("성공: 기존의 이미지가 존재하지 않으면 null반환")
+        void findImageToDeleteWhenNowIsNull() {
+            // given
+            String newImageUrl = "newImageUrl";
+            Volunteer volunteer = VolunteerFixture.volunteer();
+
+            // when
+            Optional<String> result = volunteer.findImageToDelete(newImageUrl);
+
+            // then
+            assertThat(result).isEmpty();
         }
     }
 }

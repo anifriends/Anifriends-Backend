@@ -26,9 +26,11 @@ public class VolunteerFixture {
 
     public static Volunteer volunteer(String imageUrl) {
         Volunteer volunteer = volunteer();
-        ReflectionTestUtils.setField(volunteer, "image", new VolunteerImage(volunteer, imageUrl));
+        if (imageUrl != null) {
+            ReflectionTestUtils.setField(volunteer, "image",
+                new VolunteerImage(volunteer, imageUrl));
+        }
         return volunteer;
-
     }
 
     public static List<Volunteer> volunteers(int end) {

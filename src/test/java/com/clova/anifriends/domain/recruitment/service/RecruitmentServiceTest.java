@@ -13,11 +13,11 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-import com.clova.anifriends.domain.common.ImageRemover;
-import com.clova.anifriends.domain.common.MockImageRemover;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
@@ -33,6 +33,7 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
+import com.clova.anifriends.global.image.S3Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,7 +45,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -63,8 +63,8 @@ class RecruitmentServiceTest {
     @Mock
     RecruitmentRepository recruitmentRepository;
 
-    @Spy
-    ImageRemover imageRemover = new MockImageRemover();
+    @Mock
+    S3Service s3Service;
 
     @Nested
     @DisplayName("registerRecruitment 메서드 실행 시")
@@ -343,6 +343,7 @@ class RecruitmentServiceTest {
             int newCapacity = recruitment.getCapacity() + 1;
             String newContent = recruitment.getContent() + "a";
             List<String> newImageUrls = List.of("a1", "a2");
+            List<String> originalImageUrls = recruitment.getImages();
 
             given(recruitmentRepository.findByShelterIdAndRecruitmentIdWithImages(anyLong(),
                 anyLong())).willReturn(Optional.ofNullable(recruitment));
@@ -353,6 +354,7 @@ class RecruitmentServiceTest {
                 newImageUrls);
 
             //then
+            verify(s3Service, times(1)).deleteImages(originalImageUrls);
             assertThat(recruitment.getTitle()).isEqualTo(newTitle);
             assertThat(recruitment.getStartTime()).isEqualTo(newStartTime);
             assertThat(recruitment.getEndTime()).isEqualTo(newEndTime);

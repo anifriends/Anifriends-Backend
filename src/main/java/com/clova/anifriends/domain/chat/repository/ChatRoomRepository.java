@@ -55,4 +55,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
         + "select max(cm2.createdAt) from ChatMessage cm2"
         + " where cm2.chatRoom = cr)")
     List<FindChatRoomResult> findChatRoomsByShelter(@Param("shelter") Shelter shelter);
+
+    Optional<ChatRoom> findByVolunteerAndShelter(Volunteer volunteer, Shelter shelter);
 }

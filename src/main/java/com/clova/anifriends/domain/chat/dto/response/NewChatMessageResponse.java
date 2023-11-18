@@ -1,16 +1,16 @@
-package com.clova.anifriends.domain.chat.message.pub;
+package com.clova.anifriends.domain.chat.dto.response;
 
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.chat.ChatMessage;
 import java.time.LocalDateTime;
 
-public record NewChatMessagePub(
+public record NewChatMessageResponse(
     Long chatRoomId,
     NewChatMessage chatMessage
 ) {
 
-    public static NewChatMessagePub from(ChatMessage chatMessage) {
-        return new NewChatMessagePub(
+    public static NewChatMessageResponse from(ChatMessage chatMessage) {
+        return new NewChatMessageResponse(
             chatMessage.getChatRoom().getChatRoomId(),
             new NewChatMessage(
                 chatMessage.getSenderId(),
