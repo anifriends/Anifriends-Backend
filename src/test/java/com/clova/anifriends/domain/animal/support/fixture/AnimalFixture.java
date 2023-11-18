@@ -39,6 +39,22 @@ public class AnimalFixture {
         );
     }
 
+    public static Animal animal(Shelter shelter, List<String> imageUrls) {
+        return new Animal(
+            shelter,
+            ANIMAL_NAME,
+            ANIMAL_BIRTH_DATE,
+            ANIMAL_TYPE,
+            ANIMAL_BREED,
+            ANIMAL_GENDER,
+            IS_NEUTERED,
+            ANIMAL_ACTIVE,
+            WEIGHT,
+            ANIMAL_INFORMATION,
+            imageUrls
+        );
+    }
+
     public static Animal animal(Shelter shelter, boolean isAdopted) {
         Animal animal = animal(shelter);
         ReflectionTestUtils.setField(animal, "adopted", new AnimalAdopted(isAdopted));
