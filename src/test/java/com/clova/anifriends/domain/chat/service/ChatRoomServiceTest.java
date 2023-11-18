@@ -9,7 +9,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.clova.anifriends.domain.auth.jwt.UserRole;
+import com.clova.anifriends.domain.chat.ChatMessage;
 import com.clova.anifriends.domain.chat.ChatRoom;
+import com.clova.anifriends.domain.chat.dto.response.FindChatMessagesResponse;
+import com.clova.anifriends.domain.chat.dto.response.FindChatMessagesResponse.FindChatMessageResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomIdResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
@@ -38,6 +42,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class ChatRoomServiceTest {
@@ -149,56 +156,108 @@ class ChatRoomServiceTest {
     }
 
     @Nested
-    @DisplayName("findChatRoomByVolunteer 메서드 실행 시")
-    class FindChatRoomByVolunteerTest {
+    @DisplayName("findChatMessages 메서드 호출 시")
+    class FindChatMessagesTest {
 
         @Test
         @DisplayName("성공")
-        void findChatRoomsByVolunteer() {
+        void findChatMessages() {
             //given
-            long chatRoomId = 1L;
-            String chatRecentMessage = "최근 메시지";
-            String chatPartnerName = "상대방 이름";
-            String chatPartnerImageUrl = "imageUrl";
-            LocalDateTime createdAt = LocalDateTime.now();
-            long chatUnReadCount = 5L;
-            FindChatRoomResult chatRoomResult = ChatRoomDtoFixture.findChatRoomResult(
-                chatRoomId, chatRecentMessage, chatPartnerName, chatPartnerImageUrl, createdAt,
-                chatUnReadCount);
-            List<FindChatRoomResult> findChatRoomsResult = List.of(chatRoomResult);
-            Volunteer volunteer = VolunteerFixture.volunteer();
+            long senderId = 1L;
+            UserRole userRole = UserRole.ROLE_VOLUNTEER;
+            String message = "message";
+            Volunteer volunteer = VolunteerFixture.volunteer("imageUrl");
+            Shelter shelter = ShelterFixture.shelter("imageUrl");
+            ChatRoom chatRoom = ChatRoomFixture.chatRoom(volunteer, shelter);
+            ChatMessage chatMessage = new ChatMessage(chatRoom, senderId, userRole, message);
+            PageImpl<ChatMessage> chatMessagePage = new PageImpl<>(List.of(chatMessage));
+            PageRequest pageRequest = PageRequest.of(0, 10);
 
-            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
-            given(chatRoomRepository.findChatRoomsByVolunteer(any(Volunteer.class))).willReturn(
-                findChatRoomsResult);
+            given(chatRoomRepository.findById(anyLong())).willReturn(Optional.of(chatRoom));
+            given(chatMessageRepository.findByChatRoomOrderByCreatedAtDesc(any(ChatRoom.class), any(
+                Pageable.class))).willReturn(chatMessagePage);
 
             //when
-            FindChatRoomsResponse findChatRoomsResponse = chatRoomService.findChatRoomsByVolunteer(
-                1L);
-
+            FindChatMessagesResponse findchatMessagesResponse = chatRoomService.findChatMessages(1L,
+                pageRequest);
+            
             //then
-            List<FindChatRoomResponse> findChatRooms = findChatRoomsResponse.chatRooms();
-            FindChatRoomResponse chatRoomResponse = findChatRooms.get(0);
-            assertThat(chatRoomResponse.chatRoomId()).isEqualTo(chatRoomId);
-            assertThat(chatRoomResponse.chatRecentMessage()).isEqualTo(chatRecentMessage);
-            assertThat(chatRoomResponse.chatPartnerName()).isEqualTo(chatPartnerName);
-            assertThat(chatRoomResponse.charPartnerImageUrl()).isEqualTo(chatPartnerImageUrl);
-            assertThat(chatRoomResponse.createdAt()).isEqualTo(createdAt);
-            assertThat(chatRoomResponse.chatUnReadCount()).isEqualTo(chatUnReadCount);
+            assertThat(findchatMessagesResponse.chatMessages()).hasSize(1);
+            FindChatMessageResponse findChatMessageResponse = findchatMessagesResponse.chatMessages()
+                .get(0);
+            assertThat(findChatMessageResponse.chatSenderId()).isEqualTo(senderId);
+            assertThat(findChatMessageResponse.chatSenderRole()).isEqualTo(userRole);
+            assertThat(findChatMessageResponse.chatMessage()).isEqualTo(message);
         }
 
         @Test
-        @DisplayName("예외(VolunteerNotFoundException): 존재하지 않는 봉사자")
-        void exceptionWhenVolunteerNotFound() {
+        @DisplayName("예외(ChatNotFoundException): 존재하지 않는 채팅방")
+        void exceptionWhenChatRoomNotFound() {
             //given
-            given(volunteerRepository.findById(anyLong())).willReturn(Optional.empty());
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
+            given(chatRoomRepository.findById(anyLong())).willReturn(Optional.empty());
 
             //when
             Exception exception = catchException(
-                () -> chatRoomService.findChatRoomsByVolunteer(1L));
+                () -> chatRoomService.findChatMessages(1L, pageRequest));
 
             //then
-            assertThat(exception).isInstanceOf(VolunteerNotFoundException.class);
+            assertThat(exception).isInstanceOf(ChatNotFoundException.class);
+        }
+
+        @Nested
+        @DisplayName("findChatRoomByVolunteer 메서드 실행 시")
+        class FindChatRoomByVolunteerTest {
+
+            @Test
+            @DisplayName("성공")
+            void findChatRoomsByVolunteer() {
+                //given
+                long chatRoomId = 1L;
+                String chatRecentMessage = "최근 메시지";
+                String chatPartnerName = "상대방 이름";
+                String chatPartnerImageUrl = "imageUrl";
+                LocalDateTime createdAt = LocalDateTime.now();
+                long chatUnReadCount = 5L;
+                FindChatRoomResult chatRoomResult = ChatRoomDtoFixture.findChatRoomResult(
+                    chatRoomId, chatRecentMessage, chatPartnerName, chatPartnerImageUrl, createdAt,
+                    chatUnReadCount);
+                List<FindChatRoomResult> findChatRoomsResult = List.of(chatRoomResult);
+                Volunteer volunteer = VolunteerFixture.volunteer();
+
+                given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+                given(chatRoomRepository.findChatRoomsByVolunteer(any(Volunteer.class))).willReturn(
+                    findChatRoomsResult);
+
+                //when
+                FindChatRoomsResponse findChatRoomsResponse = chatRoomService.findChatRoomsByVolunteer(
+                    1L);
+
+                //then
+                List<FindChatRoomResponse> findChatRooms = findChatRoomsResponse.chatRooms();
+                FindChatRoomResponse chatRoomResponse = findChatRooms.get(0);
+                assertThat(chatRoomResponse.chatRoomId()).isEqualTo(chatRoomId);
+                assertThat(chatRoomResponse.chatRecentMessage()).isEqualTo(chatRecentMessage);
+                assertThat(chatRoomResponse.chatPartnerName()).isEqualTo(chatPartnerName);
+                assertThat(chatRoomResponse.charPartnerImageUrl()).isEqualTo(chatPartnerImageUrl);
+                assertThat(chatRoomResponse.createdAt()).isEqualTo(createdAt);
+                assertThat(chatRoomResponse.chatUnReadCount()).isEqualTo(chatUnReadCount);
+            }
+
+            @Test
+            @DisplayName("예외(VolunteerNotFoundException): 존재하지 않는 봉사자")
+            void exceptionWhenVolunteerNotFound() {
+                //given
+                given(volunteerRepository.findById(anyLong())).willReturn(Optional.empty());
+
+                //when
+                Exception exception = catchException(
+                    () -> chatRoomService.findChatRoomsByVolunteer(1L));
+
+                //then
+                assertThat(exception).isInstanceOf(VolunteerNotFoundException.class);
+            }
         }
     }
 
@@ -278,7 +337,5 @@ class ChatRoomServiceTest {
             // then
             assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
         }
-
-
     }
 }
