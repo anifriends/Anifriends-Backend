@@ -87,8 +87,9 @@ class ChatRoomServiceTest {
             given(chatRoomRepository.findByIdWithShelter(anyLong())).willReturn(Optional.empty());
 
             //when
-            Exception exception = catchException(() -> chatRoomService.findChatRoomDetailByVolunteer(
-                1L));
+            Exception exception = catchException(
+                () -> chatRoomService.findChatRoomDetailByVolunteer(
+                    1L));
 
             //then
             assertThat(exception).isInstanceOf(ChatNotFoundException.class);
@@ -171,7 +172,8 @@ class ChatRoomServiceTest {
                 findChatRoomsResult);
 
             //when
-            FindChatRoomsResponse findChatRoomsResponse = chatRoomService.findChatRoomsByVolunteer(1L);
+            FindChatRoomsResponse findChatRoomsResponse = chatRoomService.findChatRoomsByVolunteer(
+                1L);
 
             //then
             List<FindChatRoomResponse> findChatRooms = findChatRoomsResponse.chatRooms();
@@ -196,6 +198,32 @@ class ChatRoomServiceTest {
 
             //then
             assertThat(exception).isInstanceOf(VolunteerNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("findChatRoomDetailByShelter 메서드 호출 시")
+    class FindChatRoomDetailByShelterTest {
+
+        @Test
+        @DisplayName("성공")
+        void findChatRoomDetailByShelter() {
+            //given
+            Volunteer volunteer = VolunteerFixture.volunteer("imageUrl");
+            Shelter shelter = ShelterFixture.shelter("imageUrl");
+            ChatRoom chatRoom = ChatRoomFixture.chatRoom(volunteer, shelter);
+
+            given(chatRoomRepository.findByIdWithVolunteer(anyLong()))
+                .willReturn(Optional.of(chatRoom));
+
+            //when
+            FindChatRoomDetailResponse findChatRoomDetailResponse = chatRoomService.findChatRoomDetailByShelter(
+                1L);
+
+            //then
+            assertThat(findChatRoomDetailResponse.chatPartnerName()).isEqualTo(volunteer.getName());
+            assertThat(findChatRoomDetailResponse.chatPartnerImageUrl())
+                .isEqualTo(volunteer.getVolunteerImageUrl());
         }
     }
 }

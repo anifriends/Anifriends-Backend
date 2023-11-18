@@ -40,6 +40,18 @@ public class ChatRoomService {
             .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
     }
 
+    @Transactional(readOnly = true)
+    public FindChatRoomDetailResponse findChatRoomDetailByShelter(Long chatRoomId) {
+        ChatRoom chatRoom = getChatRoomWithVolunteer(chatRoomId);
+        chatMessageRepository.readPartnerMessages(chatRoom, UserRole.ROLE_SHELTER);
+        return FindChatRoomDetailResponse.fromShelter(chatRoom);
+    }
+
+    private ChatRoom getChatRoomWithVolunteer(Long chatRoomId) {
+        return chatRoomRepository.findByIdWithVolunteer(chatRoomId)
+            .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
+    }
+
     @Transactional
     public Long registerChatRoom(Long volunteerId, Long shelterId) {
         Volunteer volunteer = getVolunteer(volunteerId);

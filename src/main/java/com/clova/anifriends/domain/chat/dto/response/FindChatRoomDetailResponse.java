@@ -11,4 +11,10 @@ public record FindChatRoomDetailResponse(
             chatRoom.getShelter().getImage(),
             chatRoom.getShelter().getName());
     }
+
+    public static FindChatRoomDetailResponse fromShelter(ChatRoom chatRoom) {
+        return new FindChatRoomDetailResponse(
+            chatRoom.getVolunteer().getVolunteerImageUrl(),
+            chatRoom.getVolunteer().getName());
+    }
 }
