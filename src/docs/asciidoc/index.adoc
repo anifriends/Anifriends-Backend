@@ -171,11 +171,22 @@ operation::animal-controller-test/delete-animal[snippets='http-response']
 
 ==== Request
 
-operation::chat-room-controller-test/find-chat-rooms-by-volunteer[snippets='http-request,request-headers']
+operation::chat-room-controller-test/find-chat-rooms-by-shelter[snippets='http-request,request-headers']
 
 ==== Response
 
-operation::chat-room-controller-test/find-chat-rooms-by-volunteer[snippets='http-response,response-fields']
+operation::chat-room-controller-test/find-chat-rooms-by-shelter[snippets='http-response,response-fields']
+
+=== 채팅방 상세 조회(보호소)
+
+==== Request
+
+operation::chat-room-controller-test/find-chat-room-detail-by-shelter[snippets='http-request,request-headers']
+
+==== Response
+
+operation::chat-room-controller-test/find-chat-room-detail-by-shelter[snippets='http-response,response-fields']
+
 
 = 봉사자
 
