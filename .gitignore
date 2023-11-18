@@ -44,3 +44,6 @@ out/
 
 ### Git Submodules ###
 **/backend-config/
+
+### Log ###
+**/logs/
