@@ -7,6 +7,7 @@ import com.clova.anifriends.domain.chat.dto.response.FindChatMessagesResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomIdResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
+import com.clova.anifriends.domain.chat.dto.response.FindUnreadCountResponse;
 import com.clova.anifriends.domain.chat.exception.ChatNotFoundException;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
 import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
@@ -79,6 +80,13 @@ public class ChatRoomService {
     private Volunteer getVolunteer(Long volunteerId) {
         return volunteerRepository.findById(volunteerId)
             .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
+    }
+
+    @Transactional(readOnly = true)
+    public FindUnreadCountResponse findUnreadCountByVolunteer(Long volunteerId) {
+        Volunteer volunteer = getVolunteer(volunteerId);
+        long unreadCount = chatMessageRepository.findUnreadCount(volunteer);
+        return FindUnreadCountResponse.from(unreadCount);
     }
 
     @Transactional(readOnly = true)
