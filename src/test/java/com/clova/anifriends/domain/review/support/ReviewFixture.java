@@ -14,4 +14,7 @@ public class ReviewFixture {
 
     }
 
+    public static Review review(Applicant applicant, List<String> imageUrls) {
+        return new Review(applicant, REVIEW_CONTENT, imageUrls);
+    }
 }
