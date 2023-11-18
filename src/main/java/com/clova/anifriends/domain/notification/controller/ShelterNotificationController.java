@@ -7,6 +7,7 @@ import com.clova.anifriends.domain.notification.service.ShelterNotificationServi
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,5 +31,13 @@ public class ShelterNotificationController {
     ) {
         return ResponseEntity.ok(
             shelterNotificationService.findShelterHasNewNotification(shelterId));
+    }
+
+    @PatchMapping("/shelters/notification/read")
+    public ResponseEntity<Void> updateNotificationRead(
+        @LoginUser Long shelterId
+    ) {
+        shelterNotificationService.updateNotificationRead(shelterId);
+        return ResponseEntity.noContent().build();
     }
 }

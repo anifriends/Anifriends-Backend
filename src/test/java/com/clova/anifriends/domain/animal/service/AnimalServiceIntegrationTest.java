@@ -1,6 +1,8 @@
 package com.clova.anifriends.domain.animal.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.animal.Animal;
@@ -12,16 +14,17 @@ import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
+import com.clova.anifriends.global.image.S3Service;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
 
@@ -34,8 +37,8 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
     @Autowired
     AnimalRepository animalRepository;
 
-    @Autowired
-    ImageRemover imageRemover;
+    @MockBean
+    S3Service s3Service;
 
     @Nested
     @DisplayName("registerAnimal 메서드 실행 시")
@@ -89,6 +92,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             Shelter shelter = ShelterFixture.shelter();
             Animal animal = AnimalFixture.animal(shelter);
             List<String> imageUrls = List.of("image1", "image2", "image3");
+
             animal.updateAnimal(
                 animal.getName(),
                 animal.getBirthDate(),
@@ -99,8 +103,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
                 animal.getActive(),
                 animal.getWeight(),
                 animal.getInformation(),
-                imageUrls,
-                imageRemover
+                imageUrls
             );
             shelterRepository.save(shelter);
             animalRepository.save(animal);
@@ -109,6 +112,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             animalService.deleteAnimal(shelter.getShelterId(), animal.getAnimalId());
 
             //then
+            verify(s3Service, times(1)).deleteImages(imageUrls);
             Animal findAnimal = entityManager.find(Animal.class, animal.getAnimalId());
             assertThat(findAnimal).isNull();
             List<AnimalImage> findAnimalImages = entityManager.createQuery(

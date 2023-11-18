@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.chat.repository;
 
 import com.clova.anifriends.domain.chat.ChatRoom;
 import com.clova.anifriends.domain.chat.repository.response.FindChatRoomResult;
+import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.util.List;
 import java.util.Optional;
@@ -35,4 +36,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
         + "select max(cm2.createdAt) from ChatMessage cm2"
         + " where cm2.chatRoom = cr)")
     List<FindChatRoomResult> findChatRoomsByVolunteer(@Param("volunteer") Volunteer volunteer);
+
+    Optional<ChatRoom> findByVolunteerAndShelter(Volunteer volunteer, Shelter shelter);
 }

@@ -4,6 +4,7 @@ import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.chat.dto.request.RegisterChatRoomRequest;
 import com.clova.anifriends.domain.chat.dto.response.FindChatMessagesResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
+import com.clova.anifriends.domain.chat.dto.response.FindChatRoomIdResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
 import com.clova.anifriends.domain.chat.service.ChatRoomService;
 import java.net.URI;
@@ -51,6 +52,7 @@ public class ChatRoomController {
         return ResponseEntity.created(location).build();
     }
 
+
     @GetMapping("/chat/rooms/{chatRoomId}/messages")
     public ResponseEntity<FindChatMessagesResponse> findChatMessages(
         @PathVariable Long chatRoomId,
@@ -58,5 +60,13 @@ public class ChatRoomController {
         FindChatMessagesResponse findChatMessagesResponse
             = chatRoomService.findChatMessages(chatRoomId, pageable);
         return ResponseEntity.ok(findChatMessagesResponse);
+    }
+
+    @GetMapping("/volunteers/chat/rooms/shelters/{shelterId}")
+    public ResponseEntity<FindChatRoomIdResponse> findChatRoomId(
+        @LoginUser Long volunteerId,
+        @PathVariable Long shelterId
+    ) {
+        return ResponseEntity.ok(chatRoomService.findChatRoomId(volunteerId, shelterId));
     }
 }
