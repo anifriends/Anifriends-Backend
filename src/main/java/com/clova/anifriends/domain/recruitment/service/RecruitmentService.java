@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.recruitment.service;
 
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
@@ -12,7 +13,6 @@ import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
-import com.clova.anifriends.global.image.S3Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +28,7 @@ public class RecruitmentService {
 
     private final ShelterRepository shelterRepository;
     private final RecruitmentRepository recruitmentRepository;
-    private final S3Service s3Service;
+    private final ImageRemover imageRemover;
 
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
@@ -143,7 +143,7 @@ public class RecruitmentService {
         List<String> imageUrls
     ) {
         Recruitment recruitment = getRecruitmentByShelterWithImages(shelterId, recruitmentId);
-        deleteImagesFromS3(recruitment, imageUrls);
+        imageRemover.deleteImages(recruitment.findImagesToDelete(imageUrls));
         recruitment.updateRecruitment(
             title,
             startTime,
@@ -159,13 +159,8 @@ public class RecruitmentService {
     public void deleteRecruitment(Long shelterId, Long recruitmentId) {
         Recruitment recruitment = getRecruitmentByShelter(shelterId, recruitmentId);
         recruitment.checkDeletable();
-        s3Service.deleteImages(recruitment.getImages());
+        imageRemover.deleteImages(recruitment.getImages());
         recruitmentRepository.delete(recruitment);
-    }
-
-    private void deleteImagesFromS3(Recruitment recruitment, List<String> imageUrls) {
-        s3Service.deleteImages(
-            recruitment.findImagesToDelete(imageUrls));
     }
 
     private Recruitment getRecruitmentByShelterWithImages(Long shelterId, Long recruitmentId) {

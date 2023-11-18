@@ -3,10 +3,8 @@ package com.clova.anifriends.domain.shelter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.clova.anifriends.base.MockImageRemover;
 import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -120,7 +118,6 @@ class ShelterTest {
         @DisplayName("성공: 기존 이미지 존재 -> 새로운 이미지 갱신")
         void updateWhenExistToNewImage() {
             // given
-            ImageRemover imageRemover = new MockImageRemover();
             String originImageUrl = "originImageUrl";
             String newImageUrl = "newImageUrl";
 
@@ -145,7 +142,6 @@ class ShelterTest {
         @DisplayName("성공: 기존 이미지 존재 -> 동일한 이미지")
         void updateWhenSame() {
             // given
-            ImageRemover imageRemover = new MockImageRemover();
             String sameImageUrl = "originImageUrl";
 
             Shelter shelter = ShelterFixture.shelter(sameImageUrl);
@@ -169,7 +165,6 @@ class ShelterTest {
         @DisplayName("성공: 기존 이미지 존재 -> 이미지 none")
         void updateExistToNone() {
             // given
-            ImageRemover imageRemover = new MockImageRemover();
             String originImageUrl = "originImageUrl";
             String nullNewImageUrl = null;
 
@@ -194,7 +189,6 @@ class ShelterTest {
         @DisplayName("성공: 이미지 none -> 새로운 이미지 갱신")
         void updateNoneToNewImage() {
             // given
-            ImageRemover imageRemover = new MockImageRemover();
             String nullOriginImageUrl = null;
             String newImageUrl = "newImageUrl";
 
@@ -219,7 +213,6 @@ class ShelterTest {
         @DisplayName("성공: 이미지 none -> 이미지 none")
         void updateNoneToNone() {
             // given
-            ImageRemover imageRemover = new MockImageRemover();
             String nullImageUrl = null;
 
             Shelter shelter = ShelterFixture.shelter(nullImageUrl);

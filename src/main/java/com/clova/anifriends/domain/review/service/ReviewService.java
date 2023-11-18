@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.review.service;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
@@ -12,7 +13,6 @@ import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
-import com.clova.anifriends.global.image.S3Service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,7 +28,7 @@ public class ReviewService {
 
     private final ApplicantRepository applicantRepository;
 
-    private final S3Service s3Service;
+    private final ImageRemover imageRemover;
 
     @Transactional(readOnly = true)
     public FindReviewResponse findReview(Long userId, Long reviewId) {
@@ -82,19 +82,15 @@ public class ReviewService {
         List<String> imageUrls
     ) {
         Review review = getReview(volunteerId, reviewId);
-        deleteImagesFromS3(review, imageUrls);
+        imageRemover.deleteImages(review.findImagesToDelete(imageUrls));
         review.updateReview(content, imageUrls);
     }
 
     @Transactional
     public void deleteReview(Long volunteerId, Long reviewId) {
         Review review = getReview(volunteerId, reviewId);
-        s3Service.deleteImages(review.getImages());
+        imageRemover.deleteImages(review.getImages());
         reviewRepository.delete(review);
-    }
-
-    private void deleteImagesFromS3(Review review, List<String> imageUrls) {
-        s3Service.deleteImages(review.findImagesToDelete(imageUrls));
     }
 
     private Review getReview(Long userId, Long reviewId) {

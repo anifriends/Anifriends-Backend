@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.volunteer.service;
 
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
@@ -9,7 +10,6 @@ import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundExceptio
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
-import com.clova.anifriends.global.image.S3Service;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
     private final CustomPasswordEncoder passwordEncoder;
-    private final S3Service s3Service;
+    private final ImageRemover imageRemover;
 
     @Transactional(readOnly = true)
     public CheckDuplicateVolunteerEmailResponse checkDuplicateVolunteerEmail(String email) {
@@ -87,7 +87,7 @@ public class VolunteerService {
 
     private void deleteImageFromS3(Volunteer volunteer, String newImageUrl) {
         volunteer.findImageToDelete(newImageUrl)
-            .ifPresent(imageUrl -> s3Service.deleteImages(List.of(imageUrl)));
+            .ifPresent(imageUrl -> imageRemover.deleteImages(List.of(imageUrl)));
     }
 
     private Volunteer getVolunteer(Long volunteerId) {

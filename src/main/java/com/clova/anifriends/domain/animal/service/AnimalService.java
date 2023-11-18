@@ -14,10 +14,10 @@ import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
-import com.clova.anifriends.global.image.S3Service;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class AnimalService {
 
     private final AnimalRepository animalRepository;
     private final ShelterRepository shelterRepository;
-    private final S3Service s3Service;
+    private final ImageRemover imageRemover;
 
     @Transactional
     public RegisterAnimalResponse registerAnimal(
@@ -119,7 +119,7 @@ public class AnimalService {
         List<String> imageUrls
     ) {
         Animal foundAnimal = getAnimalByAnimalIdAndShelterIdWithImages(animalId, shelterId);
-        deleteImagesFromS3(foundAnimal, imageUrls);
+        imageRemover.deleteImages(foundAnimal.findImagesToDelete(imageUrls));
         foundAnimal.updateAnimal(name, birthDate, type, breed, gender, isNeutered, active, weight,
             information, imageUrls);
     }
@@ -127,12 +127,8 @@ public class AnimalService {
     @Transactional
     public void deleteAnimal(Long shelterId, Long animalId) {
         Animal animal = getAnimalByAnimalIdAndShelterId(animalId, shelterId);
-        s3Service.deleteImages(animal.getImages());
+        imageRemover.deleteImages(animal.getImages());
         animalRepository.delete(animal);
-    }
-
-    private void deleteImagesFromS3(Animal animal, List<String> imageUrls) {
-        s3Service.deleteImages(animal.findImagesToDelete(imageUrls));
     }
 
     private Shelter getShelterById(Long shelterId) {

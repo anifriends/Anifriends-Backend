@@ -2,7 +2,6 @@ package com.clova.anifriends.domain.recruitment;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentContent;
 import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentInfo;
@@ -156,11 +155,6 @@ public class Recruitment extends BaseTimeEntity {
 
     public void checkDeletable() {
         info.checkDeletable();
-    }
-
-    public void deleteImages(ImageRemover imageRemover) {
-        imageRemover.removeImages(getImages());
-        images.clear();
     }
 
     public Long getRecruitmentId() {

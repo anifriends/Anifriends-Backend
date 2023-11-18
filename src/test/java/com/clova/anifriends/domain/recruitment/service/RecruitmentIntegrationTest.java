@@ -5,9 +5,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.clova.anifriends.base.BaseIntegrationTest;
-import com.clova.anifriends.base.MockImageRemover;
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.RecruitmentImage;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -78,13 +76,11 @@ public class RecruitmentIntegrationTest extends BaseIntegrationTest {
     @DisplayName("deleteRecruitment 메서드 호출 시")
     class DeleteRecruitmentTest {
 
-        ImageRemover imageRemover;
         Shelter shelter;
         Recruitment recruitment;
 
         @BeforeEach
         void setUp() {
-            imageRemover = new MockImageRemover();
             shelter = ShelterFixture.shelter();
             recruitment = RecruitmentFixture.recruitment(shelter);
             shelterRepository.save(shelter);

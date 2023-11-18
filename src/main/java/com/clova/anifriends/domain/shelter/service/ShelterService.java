@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.shelter.service;
 
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
@@ -9,7 +10,6 @@ import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleRespons
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
-import com.clova.anifriends.global.image.S3Service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class ShelterService {
 
     private final ShelterRepository shelterRepository;
     private final CustomPasswordEncoder passwordEncoder;
-    private final S3Service s3Service;
+    private final ImageRemover imageRemover;
 
     @Transactional
     public Long registerShelter(
@@ -120,6 +120,6 @@ public class ShelterService {
 
     private void deleteImageFromS3(Shelter shelter, String newImageUrl) {
         shelter.findImageToDelete(newImageUrl)
-            .ifPresent(imageUrl -> s3Service.deleteImages(List.of(imageUrl)));
+            .ifPresent(imageUrl -> imageRemover.deleteImages(List.of(imageUrl)));
     }
 }
