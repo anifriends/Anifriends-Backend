@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.chat.service;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.chat.ChatRoom;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
+import com.clova.anifriends.domain.chat.dto.response.FindChatRoomIdResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
 import com.clova.anifriends.domain.chat.exception.ChatNotFoundException;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
@@ -35,11 +36,6 @@ public class ChatRoomService {
         return FindChatRoomDetailResponse.fromVolunteer(chatRoom);
     }
 
-    private ChatRoom getChatRoomWithShelter(Long chatRoomId) {
-        return chatRoomRepository.findByIdWithShelter(chatRoomId)
-            .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
-    }
-
     @Transactional
     public Long registerChatRoom(Long volunteerId, Long shelterId) {
         Volunteer volunteer = getVolunteer(volunteerId);
@@ -51,12 +47,6 @@ public class ChatRoomService {
         return chatRoom.getChatRoomId();
     }
 
-    private Shelter getShelter(Long shelterId) {
-        return shelterRepository
-            .findById(shelterId)
-            .orElseThrow(() -> new ShelterNotFoundException("보호소가 존재하지 않습니다."));
-    }
-
     @Transactional(readOnly = true)
     public FindChatRoomsResponse findChatRoomsByVolunteer(Long volunteerId) {
         Volunteer volunteer = getVolunteer(volunteerId);
@@ -65,8 +55,31 @@ public class ChatRoomService {
         return ChatRoomMapper.toResponse(findChatRoomResult);
     }
 
+    @Transactional(readOnly = true)
+    public FindChatRoomIdResponse findChatRoomId(Long volunteerId, Long shelterId) {
+        Volunteer volunteer = getVolunteer(volunteerId);
+        Shelter shelter = getShelter(shelterId);
+
+        Long chatRoomId = chatRoomRepository.findByVolunteerAndShelter(volunteer, shelter)
+            .map(ChatRoom::getChatRoomId)
+            .orElse(null);
+
+        return new FindChatRoomIdResponse(chatRoomId);
+    }
+
+    private ChatRoom getChatRoomWithShelter(Long chatRoomId) {
+        return chatRoomRepository.findByIdWithShelter(chatRoomId)
+            .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
+    }
+
     private Volunteer getVolunteer(Long volunteerId) {
         return volunteerRepository.findById(volunteerId)
             .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
+    }
+
+    private Shelter getShelter(Long shelterId) {
+        return shelterRepository
+            .findById(shelterId)
+            .orElseThrow(() -> new ShelterNotFoundException("보호소가 존재하지 않습니다."));
     }
 }
