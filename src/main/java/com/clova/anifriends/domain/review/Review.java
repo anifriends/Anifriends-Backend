@@ -84,7 +84,10 @@ public class Review extends BaseTimeEntity {
         updateImageUrls(imageUrls);
     }
 
-    public List<String> findDeleteImages(List<String> imageUrls) {
+    public List<String> findImagesToDelete(List<String> imageUrls) {
+        if (Objects.isNull(imageUrls)) {
+            return getImages();
+        }
         return this.images.stream()
             .map(ReviewImage::getImageUrl)
             .filter(existsImageUrl -> !imageUrls.contains(existsImageUrl))

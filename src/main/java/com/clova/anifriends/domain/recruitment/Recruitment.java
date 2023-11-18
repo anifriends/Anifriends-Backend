@@ -112,7 +112,10 @@ public class Recruitment extends BaseTimeEntity {
         addNewImageUrls(imageUrls);
     }
 
-    public List<String> findDeleteImages(List<String> imageUrls) {
+    public List<String> findImagesToDelete(List<String> imageUrls) {
+        if (Objects.isNull(imageUrls)) {
+            return getImages();
+        }
         return this.images.stream()
             .map(RecruitmentImage::getImageUrl)
             .filter(existsImageUrl -> !imageUrls.contains(existsImageUrl))

@@ -95,7 +95,7 @@ public class Shelter extends BaseTimeEntity {
         return null;
     }
 
-    public Optional<String> findDeleteImageUrl(String newImageUrl) {
+    public Optional<String> findImageToDelete(String newImageUrl) {
         if (nonNull(this.image) && this.image.isDifferentFrom(newImageUrl)) {
             return Optional.of(this.image.getImageUrl());
         }

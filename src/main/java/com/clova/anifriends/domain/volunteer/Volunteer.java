@@ -125,7 +125,7 @@ public class Volunteer extends BaseTimeEntity {
         this.image = updateVolunteerImage(imageUrl);
     }
 
-    public Optional<String> findDeleteImageUrl(String newImageUrl) {
+    public Optional<String> findImageToDelete(String newImageUrl) {
         if (Objects.nonNull(image) && image.isDifferentFrom(newImageUrl)) {
             return Optional.of(image.getImageUrl());
         }

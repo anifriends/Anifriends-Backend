@@ -132,7 +132,7 @@ public class AnimalService {
     }
 
     private void deleteImagesFromS3(Animal animal, List<String> imageUrls) {
-        s3Service.deleteImages(animal.findDeleteImages(imageUrls == null ? List.of() : imageUrls));
+        s3Service.deleteImages(animal.findImagesToDelete(imageUrls));
     }
 
     private Shelter getShelterById(Long shelterId) {

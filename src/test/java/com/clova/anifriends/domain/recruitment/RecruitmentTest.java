@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.recruitment;
 
+import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
@@ -174,6 +175,69 @@ class RecruitmentTest {
 
             //then
             assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("findImagesToDelete 메서드 호출 시")
+    class FindImagesToDelete {
+
+        @Test
+        @DisplayName("성공: 기존 이미지 2개, 유지 이미지 0개, 새로운 이미지 0개")
+        void findImagesToDelete1() {
+            // given
+            String imageUrl1 = "www.aws.s3.com/1";
+            String imageUrl2 = "www.aws.s3.com/2";
+            List<String> existsImageUrls = List.of(imageUrl1, imageUrl2);
+
+            Recruitment recruitment = RecruitmentFixture
+                .recruitmentWithImages(shelter(), existsImageUrls);
+
+            List<String> newImageUrls = List.of();
+
+            // when
+            List<String> result = recruitment.findImagesToDelete(newImageUrls);
+
+            // then
+            assertThat(result).isEqualTo(existsImageUrls);
+        }
+
+        @Test
+        @DisplayName("성공: 기존 이미지 0개, 유지 이미지 0개, 새로운 이미지 0개")
+        void findImagesToDelete2() {
+            // given
+            List<String> existsImageUrls = List.of();
+
+            Recruitment recruitment = RecruitmentFixture
+                .recruitmentWithImages(shelter(), existsImageUrls);
+
+            List<String> newImageUrls = List.of();
+
+            // when
+            List<String> result = recruitment.findImagesToDelete(newImageUrls);
+
+            // then
+            assertThat(result).isEmpty();
+        }
+
+        @Test
+        @DisplayName("성공: 기존 이미지 2개, 유지 이미지 1개, 새로운 이미지 1개")
+        void findImagesToDelete3() {
+            // given
+            String imageUrl1 = "www.aws.s3.com/1";
+            String imageUrl2 = "www.aws.s3.com/2";
+            List<String> existsImageUrls = List.of(imageUrl1, imageUrl2);
+
+            Recruitment recruitment = RecruitmentFixture
+                .recruitmentWithImages(shelter(), existsImageUrls);
+
+            List<String> newImageUrls = List.of(imageUrl2);
+
+            // when
+            List<String> result = recruitment.findImagesToDelete(newImageUrls);
+
+            // then
+            assertThat(result).isEqualTo(List.of(imageUrl1));
         }
     }
 }

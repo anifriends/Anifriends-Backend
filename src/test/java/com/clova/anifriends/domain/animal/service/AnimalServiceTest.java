@@ -275,15 +275,20 @@ class AnimalServiceTest {
         }
 
         @Test
-        @DisplayName("성공")
-        void updateRecruitment() {
+        @DisplayName("성공: 기존 이미지 2개, 새로운 이미지 1개")
+        void updateRecruitment1() {
             //given
+            Shelter shelter = ShelterFixture.shelter();
+            String originImage1 = "www.aws.s3.com/1";
+            String originImage2 = "www.aws.s3.com/2";
+            Animal animal = AnimalFixture.animal(shelter, List.of(originImage1, originImage2));
+
             String mockName = "animalName";
             LocalDate mockBirthDate = LocalDate.now();
             String mockInformation = "animalInformation";
             String mockBreed = "animalBreed";
-            List<String> mockImageUrls = List.of("www.aws.s3.com/12");
-            List<String> originImages = animal.getImages();
+            String newImage1 = "www.aws.s3.com/3";
+            List<String> mockImageUrls = List.of(newImage1);
             AnimalType mockType = AnimalType.DOG;
             AnimalActive mockActive = AnimalActive.ACTIVE;
             Double mockWeight = 1.2;
@@ -291,7 +296,7 @@ class AnimalServiceTest {
             AnimalGender mockGender = AnimalGender.MALE;
 
             given(animalRepository.findByAnimalIdAndShelterIdWithImages(anyLong(),
-                anyLong())).willReturn(Optional.ofNullable(animal));
+                anyLong())).willReturn(Optional.of(animal));
 
             //when
             animalService.updateAnimal(1L, 1L,
@@ -307,7 +312,8 @@ class AnimalServiceTest {
                 mockImageUrls);
 
             //then
-            verify(s3Service, times(1)).deleteImages(originImages);
+            verify(s3Service, times(1)).deleteImages(List.of(originImage1, originImage2));
+
             assertThat(animal.getName()).isEqualTo(mockName);
             assertThat(animal.getBirthDate()).isEqualTo(mockBirthDate);
             assertThat(animal.getType()).isEqualTo(mockType);

@@ -165,7 +165,7 @@ public class RecruitmentService {
 
     private void deleteImagesFromS3(Recruitment recruitment, List<String> imageUrls) {
         s3Service.deleteImages(
-            recruitment.findDeleteImages(imageUrls == null ? List.of() : imageUrls));
+            recruitment.findImagesToDelete(imageUrls));
     }
 
     private Recruitment getRecruitmentByShelterWithImages(Long shelterId, Long recruitmentId) {

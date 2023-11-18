@@ -94,7 +94,7 @@ public class ReviewService {
     }
 
     private void deleteImagesFromS3(Review review, List<String> imageUrls) {
-        s3Service.deleteImages(review.findDeleteImages(imageUrls == null ? List.of() : imageUrls));
+        s3Service.deleteImages(review.findImagesToDelete(imageUrls));
     }
 
     private Review getReview(Long userId, Long reviewId) {

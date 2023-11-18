@@ -242,12 +242,12 @@ class ShelterTest {
     }
 
     @Nested
-    @DisplayName("findDeletedImageUrl 실행 시")
-    class FindDeleteImagUrl {
+    @DisplayName("findImageToDelete 실행 시")
+    class findImageToDelete {
 
         @Test
         @DisplayName("성공: 기존의 이미지가 존재하고 새로운 이미지와 다를 경우 기존의 이미지를 반환")
-        void findDeleteImageUrlWhenDifferentFromNow() {
+        void findImageToDeleteWhenDifferentFromNow() {
             // given
             String originImageUrl = "originImageUrl";
             String newImageUrl = "newImageUrl";
@@ -255,7 +255,7 @@ class ShelterTest {
             Shelter shelter = ShelterFixture.shelter(originImageUrl);
 
             // when
-            Optional<String> result = shelter.findDeleteImageUrl(newImageUrl);
+            Optional<String> result = shelter.findImageToDelete(newImageUrl);
 
             // then
             assertThat(result).isEqualTo(Optional.of(originImageUrl));
@@ -263,14 +263,14 @@ class ShelterTest {
 
         @Test
         @DisplayName("성공: 기존의 이미지가 존재하고 새로운 이미지와 같을 경우 null반환")
-        void findDeleteImageUrlWhenSameWithNow() {
+        void findImageToDeleteWhenSameWithNow() {
             // given
             String sameImageUrl = "sameImageUrl";
 
             Shelter shelter = ShelterFixture.shelter(sameImageUrl);
 
             // when
-            Optional<String> result = shelter.findDeleteImageUrl(sameImageUrl);
+            Optional<String> result = shelter.findImageToDelete(sameImageUrl);
 
             // then
             assertThat(result).isEmpty();
@@ -278,13 +278,13 @@ class ShelterTest {
 
         @Test
         @DisplayName("성공: 기존의 이미지가 존재하지 않으면 null반환")
-        void findDeleteImageUrlWhenNowIsNull() {
+        void findImageToDeleteWhenNowIsNull() {
             // given
             String newImageUrl = "newImageUrl";
             Shelter shelter = ShelterFixture.shelter();
 
             // when
-            Optional<String> result = shelter.findDeleteImageUrl(newImageUrl);
+            Optional<String> result = shelter.findImageToDelete(newImageUrl);
 
             // then
             assertThat(result).isEmpty();

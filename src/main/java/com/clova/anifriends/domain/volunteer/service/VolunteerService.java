@@ -86,7 +86,7 @@ public class VolunteerService {
     }
 
     private void deleteImageFromS3(Volunteer volunteer, String newImageUrl) {
-        volunteer.findDeleteImageUrl(newImageUrl)
+        volunteer.findImageToDelete(newImageUrl)
             .ifPresent(imageUrl -> s3Service.deleteImages(List.of(imageUrl)));
     }
 

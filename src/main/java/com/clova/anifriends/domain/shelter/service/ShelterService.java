@@ -119,7 +119,7 @@ public class ShelterService {
     }
 
     private void deleteImageFromS3(Shelter shelter, String newImageUrl) {
-        shelter.findDeleteImageUrl(newImageUrl)
+        shelter.findImageToDelete(newImageUrl)
             .ifPresent(imageUrl -> s3Service.deleteImages(List.of(imageUrl)));
     }
 }

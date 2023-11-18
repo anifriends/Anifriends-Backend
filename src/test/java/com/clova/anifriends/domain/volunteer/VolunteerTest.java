@@ -225,11 +225,11 @@ class VolunteerTest {
 
     @Nested
     @DisplayName("findDeletedImageUrl 실행 시")
-    class FindDeleteImagUrl {
+    class FindImageToDelete {
 
         @Test
         @DisplayName("성공: 기존의 이미지가 존재하고 새로운 이미지와 다를 경우 기존의 이미지를 반환")
-        void findDeleteImageUrlWhenDifferentFromNow() {
+        void findImageToDeleteWhenDifferentFromNow() {
             // given
             String originImageUrl = "originImageUrl";
             String newImageUrl = "newImageUrl";
@@ -237,7 +237,7 @@ class VolunteerTest {
             Volunteer volunteer = VolunteerFixture.volunteer(originImageUrl);
 
             // when
-            Optional<String> result = volunteer.findDeleteImageUrl(newImageUrl);
+            Optional<String> result = volunteer.findImageToDelete(newImageUrl);
 
             // then
             assertThat(result).isEqualTo(Optional.of(originImageUrl));
@@ -245,14 +245,14 @@ class VolunteerTest {
 
         @Test
         @DisplayName("성공: 기존의 이미지가 존재하고 새로운 이미지와 같을 경우 null반환")
-        void findDeleteImageUrlWhenSameWithNow() {
+        void findImageToDeleteWhenSameWithNow() {
             // given
             String sameImageUrl = "sameImageUrl";
 
             Volunteer volunteer = VolunteerFixture.volunteer(sameImageUrl);
 
             // when
-            Optional<String> result = volunteer.findDeleteImageUrl(sameImageUrl);
+            Optional<String> result = volunteer.findImageToDelete(sameImageUrl);
 
             // then
             assertThat(result).isEmpty();
@@ -260,13 +260,13 @@ class VolunteerTest {
 
         @Test
         @DisplayName("성공: 기존의 이미지가 존재하지 않으면 null반환")
-        void findDeleteImageUrlWhenNowIsNull() {
+        void findImageToDeleteWhenNowIsNull() {
             // given
             String newImageUrl = "newImageUrl";
             Volunteer volunteer = VolunteerFixture.volunteer();
 
             // when
-            Optional<String> result = volunteer.findDeleteImageUrl(newImageUrl);
+            Optional<String> result = volunteer.findImageToDelete(newImageUrl);
 
             // then
             assertThat(result).isEmpty();
