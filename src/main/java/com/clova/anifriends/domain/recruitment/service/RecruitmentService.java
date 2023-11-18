@@ -1,6 +1,5 @@
 package com.clova.anifriends.domain.recruitment.service;
 
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
@@ -13,6 +12,7 @@ import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
+import com.clova.anifriends.global.image.S3Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +28,7 @@ public class RecruitmentService {
 
     private final ShelterRepository shelterRepository;
     private final RecruitmentRepository recruitmentRepository;
-    private final ImageRemover imageRemover;
+    private final S3Service s3Service;
 
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
@@ -93,22 +93,6 @@ public class RecruitmentService {
         return FindRecruitmentDetailResponse.from(recruitment);
     }
 
-    private Shelter getShelterById(Long shelterId) {
-        return shelterRepository.findById(shelterId)
-            .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
-    }
-
-    private Recruitment getRecruitmentByShelter(long shelterId,
-        long recruitmentId) {
-        return recruitmentRepository.findByShelterIdAndRecruitmentId(shelterId, recruitmentId)
-            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글입니다."));
-    }
-
-    private Recruitment getRecruitmentById(long id) {
-        return recruitmentRepository.findById(id)
-            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글입니다."));
-    }
-
     @Transactional(readOnly = true)
     public FindCompletedRecruitmentsResponse findCompletedRecruitments(
         Long volunteerId,
@@ -156,8 +140,10 @@ public class RecruitmentService {
         LocalDateTime deadline,
         Integer capacity,
         String content,
-        List<String> imageUrls) {
+        List<String> imageUrls
+    ) {
         Recruitment recruitment = getRecruitmentByShelterWithImages(shelterId, recruitmentId);
+        deleteImagesFromS3(recruitment, imageUrls);
         recruitment.updateRecruitment(
             title,
             startTime,
@@ -165,8 +151,21 @@ public class RecruitmentService {
             deadline,
             capacity,
             content,
-            imageUrls,
-            imageRemover);
+            imageUrls
+        );
+    }
+
+    @Transactional
+    public void deleteRecruitment(Long shelterId, Long recruitmentId) {
+        Recruitment recruitment = getRecruitmentByShelter(shelterId, recruitmentId);
+        recruitment.checkDeletable();
+        s3Service.deleteImages(recruitment.getImages());
+        recruitmentRepository.delete(recruitment);
+    }
+
+    private void deleteImagesFromS3(Recruitment recruitment, List<String> imageUrls) {
+        s3Service.deleteImages(
+            recruitment.findDeleteImages(imageUrls == null ? List.of() : imageUrls));
     }
 
     private Recruitment getRecruitmentByShelterWithImages(Long shelterId, Long recruitmentId) {
@@ -176,11 +175,19 @@ public class RecruitmentService {
             .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 봉사 모집글입니다."));
     }
 
-    @Transactional
-    public void deleteRecruitment(Long shelterId, Long recruitmentId) {
-        Recruitment recruitment = getRecruitmentByShelter(shelterId, recruitmentId);
-        recruitment.checkDeletable();
-        recruitment.deleteImages(imageRemover);
-        recruitmentRepository.delete(recruitment);
+    private Shelter getShelterById(Long shelterId) {
+        return shelterRepository.findById(shelterId)
+            .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
+    }
+
+    private Recruitment getRecruitmentByShelter(long shelterId,
+        long recruitmentId) {
+        return recruitmentRepository.findByShelterIdAndRecruitmentId(shelterId, recruitmentId)
+            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글입니다."));
+    }
+
+    private Recruitment getRecruitmentById(long id) {
+        return recruitmentRepository.findById(id)
+            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글입니다."));
     }
 }

@@ -3,8 +3,6 @@ package com.clova.anifriends.domain.recruitment;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
-import com.clova.anifriends.base.MockImageRemover;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -90,13 +88,11 @@ class RecruitmentTest {
     class UpdateRecruitmentTest {
 
         Recruitment recruitment;
-        ImageRemover imageRemover;
 
         @BeforeEach
         void setUp() {
             Shelter shelter = ShelterFixture.shelter();
             recruitment = RecruitmentFixture.recruitment(shelter);
-            imageRemover = new MockImageRemover();
         }
 
         @Test
@@ -113,7 +109,7 @@ class RecruitmentTest {
 
             //when
             recruitment.updateRecruitment(newTitle, newStartTime, newEndTime, newDeadline,
-                newCapacity, newContent, newImageUrls, imageRemover);
+                newCapacity, newContent, newImageUrls);
 
             //then
             assertThat(recruitment.getTitle()).isEqualTo(newTitle);
@@ -139,7 +135,7 @@ class RecruitmentTest {
 
             //when
             recruitment.updateRecruitment(null, null, null, null,
-                null, null, null, imageRemover);
+                null, null, null);
 
             //then
             assertThat(recruitment.getTitle()).isEqualTo(givenTitle);
@@ -159,7 +155,7 @@ class RecruitmentTest {
 
             //when
             recruitment.updateRecruitment(null, null, null, null,
-                null, null, emptyImageUrls, imageRemover);
+                null, null, emptyImageUrls);
 
             //then
             assertThat(recruitment.getImages()).isEmpty();
@@ -174,39 +170,10 @@ class RecruitmentTest {
             //when
             Exception exception = catchException(
                 () -> recruitment.updateRecruitment(null, null, null, null,
-                    null, null, imageUrlsOver5, imageRemover));
+                    null, null, imageUrlsOver5));
 
             //then
             assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
-        }
-    }
-
-    @Nested
-    @DisplayName("deleteImages 메서드 호출 시")
-    class DeleteImagesTest {
-
-        ImageRemover imageRemover;
-
-        @BeforeEach
-        void setUp() {
-            imageRemover = new MockImageRemover();
-        }
-
-        @Test
-        @DisplayName("성공")
-        void deleteImages() {
-            //given
-            Shelter shelter = ShelterFixture.shelter();
-            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-            List<String> imageUrls = List.of("image1", "image2");
-            recruitment.updateRecruitment(null, null, null, null, null, null, imageUrls,
-                imageRemover);
-
-            //when
-            recruitment.deleteImages(imageRemover);
-
-            //then
-            assertThat(recruitment.getImages()).isEmpty();
         }
     }
 }
