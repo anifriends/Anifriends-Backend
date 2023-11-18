@@ -21,8 +21,6 @@ import static org.mockito.Mockito.when;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
-import com.clova.anifriends.domain.common.ImageRemover;
-import com.clova.anifriends.domain.common.MockImageRemover;
 import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
@@ -37,6 +35,7 @@ import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.global.image.S3Service;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +44,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -62,8 +60,9 @@ class ReviewServiceTest {
     @Mock
     private ApplicantRepository applicantRepository;
 
-    @Spy
-    ImageRemover imageRemover = new MockImageRemover();
+    @Mock
+    private S3Service s3Service;
+
 
     @Nested
     @DisplayName("findReviewById 메서드 실행 시")
@@ -285,6 +284,7 @@ class ReviewServiceTest {
             reviewService.updateReview(anyLong(), anyLong(), newContent, newImageUrls);
 
             // then
+            verify(s3Service, times(1)).deleteImages(any());
             assertThat(review.getContent()).isEqualTo(newContent);
             assertThat(review.getImages()).isEqualTo(newImageUrls);
         }

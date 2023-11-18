@@ -10,6 +10,7 @@ import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleRespons
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,9 +112,14 @@ public class ShelterService {
         Boolean isOpenedAddress
     ) {
         Shelter shelter = getShelter(shelterId);
+        deleteImageFromS3(shelter, imageUrl);
         shelter.updateShelter(
-            name, imageUrl, address, addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress,
-            imageRemover
+            name, imageUrl, address, addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress
         );
+    }
+
+    private void deleteImageFromS3(Shelter shelter, String newImageUrl) {
+        shelter.findImageToDelete(newImageUrl)
+            .ifPresent(imageUrl -> imageRemover.deleteImages(List.of(imageUrl)));
     }
 }

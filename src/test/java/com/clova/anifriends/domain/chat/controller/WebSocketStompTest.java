@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.clova.anifriends.domain.chat.ChatMessage;
 import com.clova.anifriends.domain.chat.ChatRoom;
-import com.clova.anifriends.domain.chat.message.pub.NewChatMessagePub;
-import com.clova.anifriends.domain.chat.message.sub.ChatMessageSub;
+import com.clova.anifriends.domain.chat.dto.request.ChatMessageRequest;
+import com.clova.anifriends.domain.chat.dto.response.NewChatMessageResponse;
 import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
 import com.clova.anifriends.domain.chat.support.ChatMessageFixture;
 import com.clova.anifriends.domain.chat.support.ChatRoomFixture;
@@ -27,6 +27,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,14 +57,21 @@ class WebSocketStompTest {
     @Autowired
     private ChatRoomRepository chatRoomRepository;
 
-    private BlockingQueue<NewChatMessagePub> messages;
+    private BlockingQueue<NewChatMessageResponse> newChatMessageResponses;
+
+    private BlockingQueue<ChatMessageResponse> chatMessageResponses;
+
+    private StompSession stompSession;
 
     private String url;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws ExecutionException, InterruptedException, TimeoutException {
         url = "ws://localhost:" + port + "/ws-stomp";
-        messages = new LinkedBlockingDeque<>();
+        stompSession = getStompSession();
+
+        newChatMessageResponses = new LinkedBlockingDeque<>();
+        chatMessageResponses = new LinkedBlockingDeque<>();
 
         Volunteer volunteer = VolunteerFixture.volunteer();
         Shelter shelter = ShelterFixture.shelter();
@@ -75,9 +83,9 @@ class WebSocketStompTest {
     }
 
     @Test
-    void test() throws Exception {
+    @DisplayName("새로운 채팅방에서 메시지 전송 api 호출 시")
+    void newChatMessage() throws InterruptedException {
         // given
-        StompSession stompSession = getStompSession();
         Volunteer volunteer = volunteerRepository.findAll().get(0);
         Shelter shelter = shelterRepository.findAll().get(0);
         ChatRoom chatRoom = chatRoomRepository.findAll().get(0);
@@ -85,43 +93,51 @@ class WebSocketStompTest {
         ChatMessage chatMessage = ChatMessageFixture.chatMessage(chatRoom,
             volunteer.getVolunteerId(), ROLE_VOLUNTEER);
 
-        NewChatMessagePub.from(chatMessage);
+        ChatMessageRequest request = new ChatMessageRequest(volunteer.getVolunteerId(),
+            ROLE_VOLUNTEER, chatMessage.getMessage());
+        NewChatMessageResponse expected = NewChatMessageResponse.from(chatMessage);
 
         stompSession.subscribe("/sub/new/chat/rooms/shelters/" + shelter.getShelterId(),
-            new StompFrameHandlerImpl<>(NewChatMessagePub.from(chatMessage), messages));
-        System.out.println("/sub/new/chat/rooms/shelters/" + shelter.getShelterId());
+            new StompFrameHandlerImpl<>(NewChatMessageResponse.class, newChatMessageResponses));
+
         // when
         stompSession.send("/pub/new/chat/rooms/" + chatRoom.getChatRoomId() + "/shelters/"
-                + shelter.getShelterId(),
-            new ChatMessageSub(volunteer.getVolunteerId(), ROLE_VOLUNTEER,
-                chatMessage.getMessage()));
-        NewChatMessagePub message = messages.poll(5, TimeUnit.SECONDS);
+            + shelter.getShelterId(), request);
+        NewChatMessageResponse result = newChatMessageResponses.poll(5,
+            TimeUnit.SECONDS);
 
         // then
-        assertThat(message).usingRecursiveComparison()
+        assertThat(result).usingRecursiveComparison()
             .ignoringFields("chatMessage.createdAt")
-            .isEqualTo(NewChatMessagePub.from(chatMessage));
+            .isEqualTo(expected);
     }
 
-    class StompFrameHandlerImpl<T> implements StompFrameHandler {
+    @Test
+    @DisplayName("기존 채팅방에서 메시지 전송 api 호출 시")
+    void ChatMessage() throws InterruptedException {
+        // given
+        Volunteer volunteer = volunteerRepository.findAll().get(0);
+        ChatRoom chatRoom = chatRoomRepository.findAll().get(0);
 
-        private final T response;
-        private final BlockingQueue<T> responses;
+        ChatMessage chatMessage = ChatMessageFixture.chatMessage(chatRoom,
+            volunteer.getVolunteerId(), ROLE_VOLUNTEER);
 
-        public StompFrameHandlerImpl(final T response, final BlockingQueue<T> responses) {
-            this.response = response;
-            this.responses = responses;
-        }
+        ChatMessageRequest request = new ChatMessageRequest(volunteer.getVolunteerId(),
+            ROLE_VOLUNTEER, chatMessage.getMessage());
 
-        @Override
-        public Type getPayloadType(final StompHeaders headers) {
-            return response.getClass();
-        }
+        stompSession.subscribe("/sub/chat/rooms/" + chatRoom.getChatRoomId(),
+            new StompFrameHandlerImpl<>(ChatMessageResponse.class, chatMessageResponses));
 
-        @Override
-        public void handleFrame(final StompHeaders headers, final Object payload) {
-            responses.offer((T) payload);
-        }
+        ChatMessageResponse expected = ChatMessageResponse.from(chatMessage);
+
+        // when
+        stompSession.send("/pub/chat/rooms/" + chatRoom.getChatRoomId(), request);
+        ChatMessageResponse result = chatMessageResponses.poll(5, TimeUnit.SECONDS);
+
+        // then
+        assertThat(result).usingRecursiveComparison()
+            .ignoringFields("createdAt")
+            .isEqualTo(expected);
     }
 
     private StompSession getStompSession()
@@ -142,4 +158,25 @@ class WebSocketStompTest {
             .get(2, TimeUnit.SECONDS);
     }
 
+}
+
+class StompFrameHandlerImpl<T> implements StompFrameHandler {
+
+    private final Type responseType;
+    private final BlockingQueue<T> responses;
+
+    public StompFrameHandlerImpl(final Class<T> responseType, final BlockingQueue<T> responses) {
+        this.responseType = responseType;
+        this.responses = responses;
+    }
+
+    @Override
+    public Type getPayloadType(final StompHeaders headers) {
+        return responseType;
+    }
+
+    @Override
+    public void handleFrame(final StompHeaders headers, final Object payload) {
+        responses.offer((T) payload);
+    }
 }
