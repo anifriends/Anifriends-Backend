@@ -6,6 +6,7 @@ import com.clova.anifriends.global.firebase.service.FCMService;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,7 @@ public class FCMTestController {
     private final FCMService fcmService;
 
     @PostMapping
-    public void pushNotification(
+    public ResponseEntity<Void> pushNotification(
         @Valid @RequestBody FCMTestRequest fcmTestRequest
     ) {
         try {
@@ -30,5 +31,6 @@ public class FCMTestController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return ResponseEntity.noContent().build();
     }
 }
