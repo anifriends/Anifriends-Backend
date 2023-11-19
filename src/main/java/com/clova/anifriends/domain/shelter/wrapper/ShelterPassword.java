@@ -1,9 +1,8 @@
 package com.clova.anifriends.domain.shelter.wrapper;
 
-import static java.util.Objects.isNull;
-
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
+import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.text.MessageFormat;
@@ -55,8 +54,9 @@ public class ShelterPassword {
     private void checkOldPasswordEquals(
         String rawOldPassword,
         CustomPasswordEncoder passwordEncoder) {
-        if(passwordEncoder.noneMatchesPassword(rawOldPassword, password)) {
-            throw new ShelterBadRequestException("비밀번호가 일치하지 않습니다.");
+        if (passwordEncoder.noneMatchesPassword(rawOldPassword, password)) {
+            throw new ShelterBadRequestException(ErrorCode.OLD_PASSWORD_NOT_EQUALS_PREVIOUS,
+                "비밀번호가 일치하지 않습니다.");
         }
     }
 
@@ -64,7 +64,8 @@ public class ShelterPassword {
         String rawNewPassword,
         CustomPasswordEncoder passwordEncoder) {
         if (passwordEncoder.matchesPassword(rawNewPassword, password)) {
-            throw new ShelterBadRequestException("변경하려는 패스워드와 기존 패스워드가 동일합니다.");
+            throw new ShelterBadRequestException(ErrorCode.NEW_PASSWORD_EQUALS_PREVIOUS,
+                "변경하려는 패스워드와 기존 패스워드가 동일합니다.");
         }
     }
 }
