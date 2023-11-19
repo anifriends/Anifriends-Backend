@@ -1,10 +1,12 @@
 package com.clova.anifriends.domain.shelter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.BDDAssertions.catchException;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -281,6 +283,39 @@ class ShelterTest {
 
             // then
             assertThat(result).isEmpty();
+        }
+    }
+
+    @Nested
+    @DisplayName("updateDeviceToken 실행 시")
+    class UpdateDeviceTokenTest {
+
+        @Test
+        @DisplayName("성공")
+        void updateDeviceToken() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            String updateToken = "update";
+
+            // when
+            shelter.updateDeviceToken(updateToken);
+
+            // then
+            assertThat(shelter.getDeviceToken()).isEqualTo(updateToken);
+        }
+
+        @Test
+        @DisplayName("예외(ShelterBadRequestException): 토큰이 null인 경우")
+        void throwExceptionWhenTokenIsNull() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            String updateToken = null;
+
+            // when
+            Exception exception = catchException(() -> shelter.updateDeviceToken(updateToken));
+
+            // then
+            assertThat(exception).isInstanceOf(ShelterBadRequestException.class);
         }
     }
 }
