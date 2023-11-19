@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.volunteer.wrapper;
+package com.clova.anifriends.domain.volunteer.vo;
 
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.global.exception.ErrorCode;

@@ -4,7 +4,7 @@ import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.springframework.test.util.ReflectionTestUtils;

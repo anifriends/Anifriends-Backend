@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.applicant.dto.response;
 
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.time.LocalDate;
 import java.util.List;
 

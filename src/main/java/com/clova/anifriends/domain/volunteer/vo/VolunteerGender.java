@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.volunteer.wrapper;
+package com.clova.anifriends.domain.volunteer.vo;
 
 import com.clova.anifriends.domain.common.EnumType;
 import com.clova.anifriends.domain.volunteer.exception.NotFoundVolunteerGenderException;

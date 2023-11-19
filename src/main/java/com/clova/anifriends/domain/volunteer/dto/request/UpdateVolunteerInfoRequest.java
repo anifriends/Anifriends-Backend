@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.volunteer.dto.request;
 
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.time.LocalDate;
 
 public record UpdateVolunteerInfoRequest(

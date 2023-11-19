@@ -5,7 +5,7 @@ import com.clova.anifriends.domain.animal.vo.AnimalGender;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.common.EnumType;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;

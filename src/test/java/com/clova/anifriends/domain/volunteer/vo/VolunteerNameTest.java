@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.volunteer.wrapper;
+package com.clova.anifriends.domain.volunteer.vo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

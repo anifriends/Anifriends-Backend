@@ -14,7 +14,7 @@ import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.vo.ShelterEmail;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerEmail;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
