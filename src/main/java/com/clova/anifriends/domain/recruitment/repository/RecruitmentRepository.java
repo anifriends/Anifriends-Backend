@@ -15,7 +15,7 @@ public interface RecruitmentRepository
         + " where r.recruitmentId in ("
         + "select a.recruitment.recruitmentId from Applicant a"
         + " where a.volunteer.volunteerId = :volunteerId"
-        + " and a.status = com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE)")
+        + " and a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE)")
     Page<Recruitment> findCompletedRecruitments(
         @Param("volunteerId") Long volunteerId,
         Pageable pageable);

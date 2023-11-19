@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.applicant.wrapper;
+package com.clova.anifriends.domain.applicant.vo;
 
 import com.clova.anifriends.domain.common.EnumType;
 

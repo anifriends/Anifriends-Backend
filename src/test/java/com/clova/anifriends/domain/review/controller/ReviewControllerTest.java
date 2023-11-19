@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.review.controller;
 
 
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.review.support.ReviewDtoFixture.findReviewResponse;
 import static com.clova.anifriends.domain.review.support.ReviewDtoFixture.registerReviewRequest;

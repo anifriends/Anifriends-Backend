@@ -1,8 +1,8 @@
 package com.clova.anifriends.domain.review;
 
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.PENDING;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.PENDING;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static com.clova.anifriends.domain.volunteer.support.VolunteerFixture.volunteer;

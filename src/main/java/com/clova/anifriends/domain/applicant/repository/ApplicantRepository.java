@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.applicant.repository;
 
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.util.List;

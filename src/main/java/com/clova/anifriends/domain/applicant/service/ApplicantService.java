@@ -7,7 +7,7 @@ import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteers
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;

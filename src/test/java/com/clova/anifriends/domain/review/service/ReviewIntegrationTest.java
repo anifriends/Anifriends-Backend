@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verify;
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.review.Review;

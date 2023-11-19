@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.common.EnumType;
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
