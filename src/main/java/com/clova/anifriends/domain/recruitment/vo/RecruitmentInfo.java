@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.recruitment.wrapper;
+package com.clova.anifriends.domain.recruitment.vo;
 
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
 import jakarta.persistence.Column;
