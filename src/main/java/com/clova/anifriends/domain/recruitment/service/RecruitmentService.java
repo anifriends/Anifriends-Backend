@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.recruitment.service;
 
-import com.clova.anifriends.domain.common.ImageRemover;
+import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class RecruitmentService {
 
     private final ShelterRepository shelterRepository;
     private final RecruitmentRepository recruitmentRepository;
-    private final ImageRemover imageRemover;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
@@ -143,7 +144,10 @@ public class RecruitmentService {
         List<String> imageUrls
     ) {
         Recruitment recruitment = getRecruitmentByShelterWithImages(shelterId, recruitmentId);
-        imageRemover.deleteImages(recruitment.findImagesToDelete(imageUrls));
+
+        List<String> imagesToDelete = recruitment.findImagesToDelete(imageUrls);
+        applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
+
         recruitment.updateRecruitment(
             title,
             startTime,
@@ -159,7 +163,10 @@ public class RecruitmentService {
     public void deleteRecruitment(Long shelterId, Long recruitmentId) {
         Recruitment recruitment = getRecruitmentByShelter(shelterId, recruitmentId);
         recruitment.checkDeletable();
-        imageRemover.deleteImages(recruitment.getImages());
+
+        List<String> imagesToDelete = recruitment.getImages();
+        applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
+
         recruitmentRepository.delete(recruitment);
     }
 

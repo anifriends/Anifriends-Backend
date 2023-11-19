@@ -2,8 +2,8 @@ package com.clova.anifriends.domain.review.service;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.common.dto.PageInfo;
+import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
@@ -15,6 +15,7 @@ import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class ReviewService {
 
     private final ApplicantRepository applicantRepository;
 
-    private final ImageRemover imageRemover;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional(readOnly = true)
     public FindReviewResponse findReview(Long userId, Long reviewId) {
@@ -82,14 +83,20 @@ public class ReviewService {
         List<String> imageUrls
     ) {
         Review review = getReview(volunteerId, reviewId);
-        imageRemover.deleteImages(review.findImagesToDelete(imageUrls));
+
+        List<String> imagesToDelete = review.findImagesToDelete(imageUrls);
+        applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
+
         review.updateReview(content, imageUrls);
     }
 
     @Transactional
     public void deleteReview(Long volunteerId, Long reviewId) {
         Review review = getReview(volunteerId, reviewId);
-        imageRemover.deleteImages(review.getImages());
+
+        List<String> imagesToDelete = review.getImages();
+        applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
+
         reviewRepository.delete(review);
     }
 
