@@ -348,4 +348,29 @@ class ChatRoomControllerTest extends BaseControllerTest {
                 )
             ));
     }
+
+    @Test
+    @DisplayName("성공: 안 읽은 메시지 총 수 조회(보호소) api 호출 시")
+    void findUnreadCountByShelter() throws Exception {
+        //given
+        FindUnreadCountResponse findUnreadCountResponse = new FindUnreadCountResponse(5);
+
+        given(chatRoomService.findUnreadCountByShelter(anyLong()))
+            .willReturn(findUnreadCountResponse);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/api/shelters/chat/rooms/unread")
+            .header(AUTHORIZATION, shelterAccessToken));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
+                ),
+                responseFields(
+                    fieldWithPath("totalUnreadCount").type(NUMBER).description("안 읽은 메시지 총 개수")
+                )
+            ));
+    }
 }
