@@ -85,6 +85,7 @@ class AuthServiceTest {
             //then
             assertThat(response.accessToken()).isNotBlank();
             assertThat(response.refreshToken()).isNotBlank();
+            assertThat(volunteer.getDeviceToken()).isEqualTo(deviceToken);
         }
 
         @Test
@@ -175,6 +176,7 @@ class AuthServiceTest {
             //then
             assertThat(response.accessToken()).isNotBlank();
             assertThat(response.refreshToken()).isNotBlank();
+            assertThat(shelter.getDeviceToken()).isEqualTo(deviceToken);
         }
 
         @Test
