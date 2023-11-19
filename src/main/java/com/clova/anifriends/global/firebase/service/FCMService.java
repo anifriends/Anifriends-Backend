@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class FCMService {
 
     @Value("${firebase.api-url}")
@@ -31,6 +30,7 @@ public class FCMService {
 
     private final ObjectMapper objectMapper;
 
+    @Transactional(readOnly = true)
     public Response sendMessage(String deviceToken, String title, String content,
         NotificationType type) throws IOException {
         OkHttpClient client = new OkHttpClient();
