@@ -1,10 +1,9 @@
 package com.clova.anifriends.domain.recruitment;
 
+import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
-import com.clova.anifriends.base.MockImageRemover;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -90,13 +89,11 @@ class RecruitmentTest {
     class UpdateRecruitmentTest {
 
         Recruitment recruitment;
-        ImageRemover imageRemover;
 
         @BeforeEach
         void setUp() {
             Shelter shelter = ShelterFixture.shelter();
             recruitment = RecruitmentFixture.recruitment(shelter);
-            imageRemover = new MockImageRemover();
         }
 
         @Test
@@ -113,7 +110,7 @@ class RecruitmentTest {
 
             //when
             recruitment.updateRecruitment(newTitle, newStartTime, newEndTime, newDeadline,
-                newCapacity, newContent, newImageUrls, imageRemover);
+                newCapacity, newContent, newImageUrls);
 
             //then
             assertThat(recruitment.getTitle()).isEqualTo(newTitle);
@@ -139,7 +136,7 @@ class RecruitmentTest {
 
             //when
             recruitment.updateRecruitment(null, null, null, null,
-                null, null, null, imageRemover);
+                null, null, null);
 
             //then
             assertThat(recruitment.getTitle()).isEqualTo(givenTitle);
@@ -159,7 +156,7 @@ class RecruitmentTest {
 
             //when
             recruitment.updateRecruitment(null, null, null, null,
-                null, null, emptyImageUrls, imageRemover);
+                null, null, emptyImageUrls);
 
             //then
             assertThat(recruitment.getImages()).isEmpty();
@@ -174,7 +171,7 @@ class RecruitmentTest {
             //when
             Exception exception = catchException(
                 () -> recruitment.updateRecruitment(null, null, null, null,
-                    null, null, imageUrlsOver5, imageRemover));
+                    null, null, imageUrlsOver5));
 
             //then
             assertThat(exception).isInstanceOf(RecruitmentBadRequestException.class);
@@ -182,31 +179,65 @@ class RecruitmentTest {
     }
 
     @Nested
-    @DisplayName("deleteImages 메서드 호출 시")
-    class DeleteImagesTest {
+    @DisplayName("findImagesToDelete 메서드 호출 시")
+    class FindImagesToDelete {
 
-        ImageRemover imageRemover;
+        @Test
+        @DisplayName("성공: 기존 이미지 2개, 유지 이미지 0개, 새로운 이미지 0개")
+        void findImagesToDelete1() {
+            // given
+            String imageUrl1 = "www.aws.s3.com/1";
+            String imageUrl2 = "www.aws.s3.com/2";
+            List<String> existsImageUrls = List.of(imageUrl1, imageUrl2);
 
-        @BeforeEach
-        void setUp() {
-            imageRemover = new MockImageRemover();
+            Recruitment recruitment = RecruitmentFixture
+                .recruitmentWithImages(shelter(), existsImageUrls);
+
+            List<String> newImageUrls = List.of();
+
+            // when
+            List<String> result = recruitment.findImagesToDelete(newImageUrls);
+
+            // then
+            assertThat(result).isEqualTo(existsImageUrls);
         }
 
         @Test
-        @DisplayName("성공")
-        void deleteImages() {
-            //given
-            Shelter shelter = ShelterFixture.shelter();
-            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-            List<String> imageUrls = List.of("image1", "image2");
-            recruitment.updateRecruitment(null, null, null, null, null, null, imageUrls,
-                imageRemover);
+        @DisplayName("성공: 기존 이미지 0개, 유지 이미지 0개, 새로운 이미지 0개")
+        void findImagesToDelete2() {
+            // given
+            List<String> existsImageUrls = List.of();
 
-            //when
-            recruitment.deleteImages(imageRemover);
+            Recruitment recruitment = RecruitmentFixture
+                .recruitmentWithImages(shelter(), existsImageUrls);
 
-            //then
-            assertThat(recruitment.getImages()).isEmpty();
+            List<String> newImageUrls = List.of();
+
+            // when
+            List<String> result = recruitment.findImagesToDelete(newImageUrls);
+
+            // then
+            assertThat(result).isEmpty();
+        }
+
+        @Test
+        @DisplayName("성공: 기존 이미지 2개, 유지 이미지 1개, 새로운 이미지 1개")
+        void findImagesToDelete3() {
+            // given
+            String imageUrl1 = "www.aws.s3.com/1";
+            String imageUrl2 = "www.aws.s3.com/2";
+            List<String> existsImageUrls = List.of(imageUrl1, imageUrl2);
+
+            Recruitment recruitment = RecruitmentFixture
+                .recruitmentWithImages(shelter(), existsImageUrls);
+
+            List<String> newImageUrls = List.of(imageUrl2);
+
+            // when
+            List<String> result = recruitment.findImagesToDelete(newImageUrls);
+
+            // then
+            assertThat(result).isEqualTo(List.of(imageUrl1));
         }
     }
 }

@@ -6,17 +6,14 @@ import static org.assertj.core.api.Assertions.catchException;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterResponse;
@@ -27,6 +24,8 @@ import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
+import com.clova.anifriends.global.image.S3Service;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -47,7 +46,7 @@ class ShelterServiceTest {
     private ShelterRepository shelterRepository;
 
     @Mock
-    private ImageRemover imageRemover;
+    private S3Service s3Service;
 
     @Spy
     CustomPasswordEncoder passwordEncoder = new MockPasswordEncoder();
@@ -314,8 +313,7 @@ class ShelterServiceTest {
                 newAddressDetail, newPhoneNumber, newSparePhoneNumber, newIsOpenedAddress);
 
             // then
-            verify(imageRemover, times(0)).removeImage(anyString());
-
+            verify(s3Service, times(0)).deleteImages(any());
             assertSoftly(softAssertions -> {
                 softAssertions.assertThat(shelter.getName()).isEqualTo(newName);
                 softAssertions.assertThat(shelter.getImage()).isEqualTo(newImageUrl);
@@ -346,7 +344,7 @@ class ShelterServiceTest {
             ));
 
             // then
-            verify(imageRemover, times(1)).removeImage(originImageUrl);
+            verify(s3Service, times(1)).deleteImages(List.of(originImageUrl));
             assertThat(exception).isNull();
         }
 
@@ -368,7 +366,7 @@ class ShelterServiceTest {
             ));
 
             // then
-            verify(imageRemover, never()).removeImage(anyString());
+            verify(s3Service, times(0)).deleteImages(any());
             assertThat(exception).isNull();
         }
 
@@ -391,7 +389,7 @@ class ShelterServiceTest {
             ));
 
             // then
-            verify(imageRemover, times(1)).removeImage(originImageUrl);
+            verify(s3Service, times(1)).deleteImages(List.of(originImageUrl));
             assertThat(exception).isNull();
         }
 
@@ -399,7 +397,6 @@ class ShelterServiceTest {
         @DisplayName("성공: 이미지 none -> 새로운 이미지 갱신")
         void updateShelterWhenNoneToNewImage() {
             // given
-            String originImageUrl = "originImageUrl";
             String nullOriginImageUrl = null;
             String newImageUrl = "newImageUrl";
 
@@ -415,7 +412,7 @@ class ShelterServiceTest {
             ));
 
             // then
-            verify(imageRemover, never()).removeImage(anyString());
+            verify(s3Service, times(0)).deleteImages(any());
             assertThat(exception).isNull();
         }
 
@@ -423,7 +420,6 @@ class ShelterServiceTest {
         @DisplayName("성공: 이미지 none -> 이미지 none")
         void updateShelterWhenNoneToNoneImage() {
             // given
-            String originImageUrl = "originImageUrl";
             String nullImageUrl = null;
 
             Shelter shelter = ShelterFixture.shelter(nullImageUrl);
@@ -438,7 +434,7 @@ class ShelterServiceTest {
             ));
 
             // then
-            verify(imageRemover, never()).removeImage(anyString());
+            verify(s3Service, times(0)).deleteImages(any());
             assertThat(exception).isNull();
         }
 

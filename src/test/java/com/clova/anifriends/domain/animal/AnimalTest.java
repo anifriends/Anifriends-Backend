@@ -1,20 +1,18 @@
 package com.clova.anifriends.domain.animal;
 
+import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
-import com.clova.anifriends.base.MockImageRemover;
 import com.clova.anifriends.domain.animal.exception.AnimalBadRequestException;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -126,7 +124,6 @@ class AnimalTest {
     @DisplayName("Animal 수정 시")
     class updateAnimalTest {
 
-        ImageRemover imageRemover = new MockImageRemover();
         Shelter shelter = ShelterFixture.shelter();
         String name = "animal";
         LocalDate birthDate = LocalDate.now();
@@ -148,7 +145,7 @@ class AnimalTest {
             //when
             animal.updateAnimal(
                 name, birthDate, type, breed, gender, isNeutered, active, weight,
-                information, newImageUrls, imageRemover);
+                information, newImageUrls);
 
             //then
             assertThat(animal.getName()).isEqualTo(name);
@@ -172,7 +169,7 @@ class AnimalTest {
             //when
             Exception exception = catchException(
                 () -> animal.updateAnimal(name, birthDate, type, breed, gender, isNeutered, active,
-                    weight, information, imageUrlsEmpty, imageRemover));
+                    weight, information, imageUrlsEmpty));
 
             //then
             assertThat(exception).isInstanceOf(AnimalBadRequestException.class);
@@ -189,37 +186,54 @@ class AnimalTest {
             //when
             Exception exception = catchException(
                 () -> animal.updateAnimal(name, birthDate, type, breed, gender, isNeutered, active,
-                    weight, information, imageUrlsOver5, imageRemover));
+                    weight, information, imageUrlsOver5));
 
             //then
             assertThat(exception).isInstanceOf(AnimalBadRequestException.class);
         }
     }
 
-
     @Nested
-    @DisplayName("deleteImages 메서드 호출 시")
-    class DeleteImagesTest {
+    @DisplayName("findImagesToDelete 메서드 호출 시")
+    class FindImagesToDelete {
 
-        ImageRemover imageRemover;
+        @Test
+        @DisplayName("성공: 기존 이미지 2개, 유지 이미지 0개, 새로운 이미지 0개")
+        void findImagesToDelete1() {
+            // given
+            String imageUrl1 = "www.aws.s3.com/1";
+            String imageUrl2 = "www.aws.s3.com/2";
 
-        @BeforeEach
-        void setUp() {
-            imageRemover = new MockImageRemover();
+            List<String> existsImageUrls = List.of(imageUrl1, imageUrl2);
+            List<String> newImageUrls = List.of();
+
+            Animal animal = AnimalFixture.animal(shelter(), existsImageUrls);
+
+            // when
+            List<String> result = animal.findImagesToDelete(newImageUrls);
+
+            // then
+            assertThat(result).isEqualTo(existsImageUrls);
         }
 
         @Test
-        @DisplayName("성공")
-        void deleteImages() {
-            //given
-            Shelter shelter = ShelterFixture.shelter();
-            Animal animal = AnimalFixture.animal(shelter);
+        @DisplayName("성공: 기존 이미지 2개, 유지 이미지 1개, 새로운 이미지 1개")
+        void findImagesToDelete3() {
+            // given
+            String imageUrl1 = "www.aws.s3.com/1";
+            String imageUrl2 = "www.aws.s3.com/2";
+            String newImageUrl = imageUrl2;
 
-            //when
-            animal.deleteImages(imageRemover);
+            List<String> existsImageUrls = List.of(imageUrl1, imageUrl2);
+            List<String> newImageUrls = List.of(newImageUrl);
 
-            //then
-            assertThat(animal.getImages()).isEmpty();
+            Animal animal = AnimalFixture.animal(shelter(), existsImageUrls);
+
+            // when
+            List<String> result = animal.findImagesToDelete(newImageUrls);
+
+            // then
+            assertThat(result).isEqualTo(List.of(imageUrl1));
         }
     }
 }

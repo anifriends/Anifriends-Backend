@@ -3,7 +3,6 @@ package com.clova.anifriends.domain.review;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.review.exception.ReviewAuthorizationException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import com.clova.anifriends.domain.review.wrapper.ReviewContent;
@@ -55,7 +54,7 @@ public class Review extends BaseTimeEntity {
         this.applicant = applicant;
         this.applicant.registerReview(this);
         this.content = new ReviewContent(content);
-        if(Objects.nonNull(images)) {
+        if (Objects.nonNull(images)) {
             List<ReviewImage> newImages = images.stream()
                 .map(url -> new ReviewImage(this, url))
                 .toList();
@@ -77,51 +76,29 @@ public class Review extends BaseTimeEntity {
         }
     }
 
-    public String getContent() {
-        return content.getContent();
-    }
-
-    public List<String> getImages() {
-        return images.stream()
-            .map(ReviewImage::getImageUrl)
-            .toList();
-    }
-
-    public Long getReviewId() {
-        return reviewId;
-    }
-
-    public Applicant getApplicant() {
-        return applicant;
-    }
-
-    public Volunteer getVolunteer() {
-        return applicant.getVolunteer();
-    }
-
     public void updateReview(
         String content,
-        List<String> imageUrls,
-        ImageRemover imageRemover
+        List<String> imageUrls
     ) {
         this.content = this.content.updateContent(content);
-        updateImageUrls(imageUrls, imageRemover);
+        updateImageUrls(imageUrls);
     }
 
-    private void updateImageUrls(List<String> imageUrls, ImageRemover imageRemover) {
+    public List<String> findImagesToDelete(List<String> imageUrls) {
+        if (Objects.isNull(imageUrls)) {
+            return getImages();
+        }
+        return this.images.stream()
+            .map(ReviewImage::getImageUrl)
+            .filter(existsImageUrl -> !imageUrls.contains(existsImageUrl))
+            .toList();
+    }
+
+    private void updateImageUrls(List<String> imageUrls) {
         if (Objects.nonNull(imageUrls)) {
             validateImageUrlsSize(imageUrls);
-            deleteNotContainsImageUrls(imageUrls, imageRemover);
             addNewImageUrls(imageUrls);
         }
-    }
-
-    private void deleteNotContainsImageUrls(List<String> updateImageUrls, ImageRemover imageRemover) {
-        List<String> deleteImageUrls = this.images.stream()
-            .map(ReviewImage::getImageUrl)
-            .filter(existsImageUrl -> !updateImageUrls.contains(existsImageUrl))
-            .toList();
-        imageRemover.removeImages(deleteImageUrls);
     }
 
     private void addNewImageUrls(List<String> updateImageUrls) {
@@ -152,8 +129,26 @@ public class Review extends BaseTimeEntity {
             .toList();
     }
 
-    public void deleteImages(ImageRemover imageRemover) {
-        imageRemover.removeImages(getImages());
-        this.images.clear();
+    public String getContent() {
+        return content.getContent();
     }
+
+    public List<String> getImages() {
+        return images.stream()
+            .map(ReviewImage::getImageUrl)
+            .toList();
+    }
+
+    public Long getReviewId() {
+        return reviewId;
+    }
+
+    public Applicant getApplicant() {
+        return applicant;
+    }
+
+    public Volunteer getVolunteer() {
+        return applicant.getVolunteer();
+    }
+
 }

@@ -3,11 +3,10 @@ package com.clova.anifriends.domain.shelter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.clova.anifriends.base.MockImageRemover;
 import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -64,7 +63,6 @@ class ShelterTest {
         @DisplayName("성공")
         void updateWhen() {
             // given
-            ImageRemover imageRemover = new MockImageRemover();
             String originName = "originName";
             String originAddress = "originAddress";
             String originAddressDetail = "originAddressDetail";
@@ -100,8 +98,7 @@ class ShelterTest {
                 newAddressDetail,
                 newPhoneNumber,
                 newSparePhoneNumber,
-                newIsOpenedAddress,
-                imageRemover
+                newIsOpenedAddress
             );
 
             // then
@@ -121,7 +118,6 @@ class ShelterTest {
         @DisplayName("성공: 기존 이미지 존재 -> 새로운 이미지 갱신")
         void updateWhenExistToNewImage() {
             // given
-            ImageRemover imageRemover = new MockImageRemover();
             String originImageUrl = "originImageUrl";
             String newImageUrl = "newImageUrl";
 
@@ -135,8 +131,7 @@ class ShelterTest {
                 shelter.getAddressDetail(),
                 shelter.getPhoneNumber(),
                 shelter.getSparePhoneNumber(),
-                shelter.isOpenedAddress(),
-                imageRemover
+                shelter.isOpenedAddress()
             );
 
             // then
@@ -147,7 +142,6 @@ class ShelterTest {
         @DisplayName("성공: 기존 이미지 존재 -> 동일한 이미지")
         void updateWhenSame() {
             // given
-            ImageRemover imageRemover = new MockImageRemover();
             String sameImageUrl = "originImageUrl";
 
             Shelter shelter = ShelterFixture.shelter(sameImageUrl);
@@ -160,8 +154,7 @@ class ShelterTest {
                 shelter.getAddressDetail(),
                 shelter.getPhoneNumber(),
                 shelter.getSparePhoneNumber(),
-                shelter.isOpenedAddress(),
-                imageRemover
+                shelter.isOpenedAddress()
             );
 
             // then
@@ -172,7 +165,6 @@ class ShelterTest {
         @DisplayName("성공: 기존 이미지 존재 -> 이미지 none")
         void updateExistToNone() {
             // given
-            ImageRemover imageRemover = new MockImageRemover();
             String originImageUrl = "originImageUrl";
             String nullNewImageUrl = null;
 
@@ -186,8 +178,7 @@ class ShelterTest {
                 shelter.getAddressDetail(),
                 shelter.getPhoneNumber(),
                 shelter.getSparePhoneNumber(),
-                shelter.isOpenedAddress(),
-                imageRemover
+                shelter.isOpenedAddress()
             );
 
             // then
@@ -198,7 +189,6 @@ class ShelterTest {
         @DisplayName("성공: 이미지 none -> 새로운 이미지 갱신")
         void updateNoneToNewImage() {
             // given
-            ImageRemover imageRemover = new MockImageRemover();
             String nullOriginImageUrl = null;
             String newImageUrl = "newImageUrl";
 
@@ -212,8 +202,7 @@ class ShelterTest {
                 shelter.getAddressDetail(),
                 shelter.getPhoneNumber(),
                 shelter.getSparePhoneNumber(),
-                shelter.isOpenedAddress(),
-                imageRemover
+                shelter.isOpenedAddress()
             );
 
             // then
@@ -224,7 +213,6 @@ class ShelterTest {
         @DisplayName("성공: 이미지 none -> 이미지 none")
         void updateNoneToNone() {
             // given
-            ImageRemover imageRemover = new MockImageRemover();
             String nullImageUrl = null;
 
             Shelter shelter = ShelterFixture.shelter(nullImageUrl);
@@ -237,13 +225,62 @@ class ShelterTest {
                 shelter.getAddressDetail(),
                 shelter.getPhoneNumber(),
                 shelter.getSparePhoneNumber(),
-                shelter.isOpenedAddress(),
-                imageRemover
+                shelter.isOpenedAddress()
             );
 
             // then
             assertThat(shelter.getImage()).isNull();
         }
 
+    }
+
+    @Nested
+    @DisplayName("findImageToDelete 실행 시")
+    class findImageToDelete {
+
+        @Test
+        @DisplayName("성공: 기존의 이미지가 존재하고 새로운 이미지와 다를 경우 기존의 이미지를 반환")
+        void findImageToDeleteWhenDifferentFromNow() {
+            // given
+            String originImageUrl = "originImageUrl";
+            String newImageUrl = "newImageUrl";
+
+            Shelter shelter = ShelterFixture.shelter(originImageUrl);
+
+            // when
+            Optional<String> result = shelter.findImageToDelete(newImageUrl);
+
+            // then
+            assertThat(result).isEqualTo(Optional.of(originImageUrl));
+        }
+
+        @Test
+        @DisplayName("성공: 기존의 이미지가 존재하고 새로운 이미지와 같을 경우 null반환")
+        void findImageToDeleteWhenSameWithNow() {
+            // given
+            String sameImageUrl = "sameImageUrl";
+
+            Shelter shelter = ShelterFixture.shelter(sameImageUrl);
+
+            // when
+            Optional<String> result = shelter.findImageToDelete(sameImageUrl);
+
+            // then
+            assertThat(result).isEmpty();
+        }
+
+        @Test
+        @DisplayName("성공: 기존의 이미지가 존재하지 않으면 null반환")
+        void findImageToDeleteWhenNowIsNull() {
+            // given
+            String newImageUrl = "newImageUrl";
+            Shelter shelter = ShelterFixture.shelter();
+
+            // when
+            Optional<String> result = shelter.findImageToDelete(newImageUrl);
+
+            // then
+            assertThat(result).isEmpty();
+        }
     }
 }

@@ -5,6 +5,8 @@ import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import java.util.List;
+import java.util.stream.IntStream;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class VolunteerFixture {
@@ -24,8 +26,24 @@ public class VolunteerFixture {
 
     public static Volunteer volunteer(String imageUrl) {
         Volunteer volunteer = volunteer();
-        ReflectionTestUtils.setField(volunteer, "image", new VolunteerImage(volunteer, imageUrl));
+        if (imageUrl != null) {
+            ReflectionTestUtils.setField(volunteer, "image",
+                new VolunteerImage(volunteer, imageUrl));
+        }
         return volunteer;
+    }
 
+    public static List<Volunteer> volunteers(int end) {
+        MockPasswordEncoder passwordEncoder = new MockPasswordEncoder();
+        return IntStream.range(0, end)
+            .mapToObj(i -> {
+                Volunteer volunteer = new Volunteer(
+                    EMAIL, PASSWORD, BIRTH_DATE, PHONE_NUMBER, GENDER, NAME + i, passwordEncoder
+                );
+                ReflectionTestUtils.setField(volunteer, "image",
+                    new VolunteerImage(volunteer, "imageUrl"));
+                return volunteer;
+            })
+            .toList();
     }
 }
