@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.shelter.wrapper;
+package com.clova.anifriends.domain.shelter.vo;
 
 import static java.util.Objects.isNull;
 

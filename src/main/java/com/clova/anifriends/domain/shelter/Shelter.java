@@ -4,11 +4,11 @@ import static java.util.Objects.nonNull;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterAddressInfo;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterName;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterPassword;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterPhoneNumberInfo;
+import com.clova.anifriends.domain.shelter.vo.ShelterAddressInfo;
+import com.clova.anifriends.domain.shelter.vo.ShelterEmail;
+import com.clova.anifriends.domain.shelter.vo.ShelterName;
+import com.clova.anifriends.domain.shelter.vo.ShelterPassword;
+import com.clova.anifriends.domain.shelter.vo.ShelterPhoneNumberInfo;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

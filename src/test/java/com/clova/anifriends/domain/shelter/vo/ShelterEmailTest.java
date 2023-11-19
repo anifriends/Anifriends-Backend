@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.shelter.wrapper;
+package com.clova.anifriends.domain.shelter.vo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;

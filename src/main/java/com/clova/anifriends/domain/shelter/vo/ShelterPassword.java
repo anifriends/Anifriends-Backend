@@ -1,6 +1,4 @@
-package com.clova.anifriends.domain.shelter.wrapper;
-
-import static java.util.Objects.isNull;
+package com.clova.anifriends.domain.shelter.vo;
 
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.shelter.exception.ShelterBadRequestException;
