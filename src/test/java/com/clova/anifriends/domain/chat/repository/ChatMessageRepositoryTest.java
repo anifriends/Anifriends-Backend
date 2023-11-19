@@ -114,7 +114,7 @@ class ChatMessageRepositoryTest extends BaseRepositoryTest {
             chatMessageRepository.saveAll(chatMessagesByVolunteer);
 
             //when
-            Long unreadCount = chatMessageRepository.findUnreadCount(volunteer);
+            Long unreadCount = chatMessageRepository.findUnreadCountByVolunteer(volunteer);
 
             //then
             assertThat(unreadCount).isEqualTo(chatMessagesEachCount);

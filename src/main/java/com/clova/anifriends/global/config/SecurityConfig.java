@@ -2,8 +2,10 @@ package com.clova.anifriends.global.config;
 
 import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import com.clova.anifriends.global.security.authorize.UnauthorizedEntryPoint;
 import com.clova.anifriends.global.security.passwordencoder.BCryptCustomPasswordEncoder;
 import com.clova.anifriends.global.web.filter.JwtAuthenticationFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -40,7 +42,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(
         HttpSecurity http,
-        JwtAuthenticationProvider jwtAuthenticationProvider) throws Exception {
+        JwtAuthenticationProvider jwtAuthenticationProvider,
+        ObjectMapper objectMapper) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
@@ -65,6 +68,8 @@ public class SecurityConfig {
                 config.setMaxAge(3600L);
                 return config;
             }))
+            .exceptionHandling(exception ->
+                exception.authenticationEntryPoint(new UnauthorizedEntryPoint(objectMapper)))
             .authorizeHttpRequests(request ->
                 request
                     .requestMatchers(HttpMethod.GET, "/api/shelters/me/**").hasRole(ROLE_SHELTER)

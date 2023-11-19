@@ -77,6 +77,14 @@ public class ChatRoomController {
         return ResponseEntity.ok(findUnreadCountResponse);
     }
 
+    @GetMapping("/shelters/chat/rooms/unread")
+    public ResponseEntity<FindUnreadCountResponse> findUnreadCountByShelter(
+        @LoginUser Long shelterId) {
+        FindUnreadCountResponse findUnreadCountResponse
+            = chatRoomService.findUnreadCountByShelter(shelterId);
+        return ResponseEntity.ok(findUnreadCountResponse);
+    }
+
     @GetMapping("/chat/rooms/{chatRoomId}/messages")
     public ResponseEntity<FindChatMessagesResponse> findChatMessages(
         @PathVariable Long chatRoomId,

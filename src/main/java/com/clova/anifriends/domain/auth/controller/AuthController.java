@@ -30,7 +30,8 @@ public class AuthController {
         HttpServletResponse response) {
         TokenResponse tokenResponse = authService.volunteerLogin(
             loginRequest.email(),
-            loginRequest.password());
+            loginRequest.password(),
+            loginRequest.deviceToken());
         addRefreshTokenCookie(response, tokenResponse);
         LoginResponse loginResponse = LoginResponse.from(tokenResponse);
         return ResponseEntity.ok(loginResponse);
@@ -42,7 +43,8 @@ public class AuthController {
         HttpServletResponse response) {
         TokenResponse tokenResponse = authService.shelterLogin(
             loginRequest.email(),
-            loginRequest.password());
+            loginRequest.password(),
+            loginRequest.deviceToken());
         addRefreshTokenCookie(response, tokenResponse);
         LoginResponse loginResponse = LoginResponse.from(tokenResponse);
         return ResponseEntity.ok(loginResponse);
