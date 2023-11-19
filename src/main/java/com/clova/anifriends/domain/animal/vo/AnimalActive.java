@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.animal.wrapper;
+package com.clova.anifriends.domain.animal.vo;
 
 import com.clova.anifriends.domain.common.EnumType;
 

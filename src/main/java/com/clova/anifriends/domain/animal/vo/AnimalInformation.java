@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.animal.wrapper;
+package com.clova.anifriends.domain.animal.vo;
 
 import com.clova.anifriends.domain.animal.exception.AnimalBadRequestException;
 import jakarta.persistence.Column;
@@ -12,37 +12,39 @@ import lombok.NoArgsConstructor;
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AnimalBreed {
+public class AnimalInformation {
 
     private static final int MIN_LENGTH = 1;
-    private static final int MAX_LENGTH = 20;
+    private static final int MAX_LENGTH = 1000;
 
-    @Column(name = "breed")
-    private String breed;
+    @Column(name = "information")
+    private String information;
 
-    public AnimalBreed(String value) {
+    public AnimalInformation(String value) {
         validateNotNull(value);
         validateLength(value);
-        this.breed = value;
+        this.information = value;
     }
 
-    public AnimalBreed updateBreed(String breed) {
-        validateNotNull(breed);
-        validateLength(breed);
+    public AnimalInformation updateInformation(
+        String information
+    ) {
+        validateNotNull(information);
+        validateLength(information);
 
-        return new AnimalBreed(breed);
+        return new AnimalInformation(information);
     }
 
     private void validateNotNull(String value) {
         if (Objects.isNull(value)) {
-            throw new AnimalBadRequestException("품종은 필수값입니다.");
+            throw new AnimalBadRequestException("기타 정보는 필수값입니다.");
         }
     }
 
     private void validateLength(String value) {
         if (value.length() < MIN_LENGTH || value.length() > MAX_LENGTH) {
             throw new AnimalBadRequestException(
-                MessageFormat.format("품종은 {0}자 이상, {1}자 이하여야 합니다.", MIN_LENGTH, MAX_LENGTH));
+                MessageFormat.format("기타 정보는 {0}자 이상, {1}자 이하여야 합니다.", MIN_LENGTH, MAX_LENGTH));
         }
     }
 }

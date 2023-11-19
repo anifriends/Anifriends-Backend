@@ -1,12 +1,11 @@
-package com.clova.anifriends.domain.animal.wrapper;
+package com.clova.anifriends.domain.animal.vo;
 
 import com.clova.anifriends.domain.common.EnumType;
 
-public enum AnimalType implements EnumType {
+public enum AnimalGender implements EnumType {
 
-    DOG,
-    CAT,
-    ETC,
+    MALE,
+    FEMALE
     ;
 
     @Override
