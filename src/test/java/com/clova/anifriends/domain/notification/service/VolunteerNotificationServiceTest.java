@@ -3,6 +3,8 @@ package com.clova.anifriends.domain.notification.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.clova.anifriends.domain.notification.VolunteerNotification;
 import com.clova.anifriends.domain.notification.dto.response.FindVolunteerHasNewNotificationResponse;
@@ -74,6 +76,26 @@ class VolunteerNotificationServiceTest {
 
             // then
             assertThat(result).isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("updateNotificationRead 메서드 실행 시")
+    class UpdateNotificationReadTest {
+
+        @Test
+        @DisplayName("성공")
+        void updateNotificationRead() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
+
+            // when
+            volunteerNotificationService.updateNotificationRead(volunteer.getVolunteerId());
+
+            // then
+            verify(volunteerNotificationRepository, times(1))
+                .updateBulkRead(volunteer.getVolunteerId());
         }
     }
 }

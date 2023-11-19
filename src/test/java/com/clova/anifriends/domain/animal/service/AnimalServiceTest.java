@@ -8,9 +8,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.clova.anifriends.base.MockImageRemover;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
@@ -24,11 +25,11 @@ import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
 import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
 import com.clova.anifriends.domain.animal.wrapper.AnimalType;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
+import com.clova.anifriends.global.image.S3Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -57,8 +57,8 @@ class AnimalServiceTest {
     @Mock
     ShelterRepository shelterRepository;
 
-    @Spy
-    ImageRemover imageRemover = new MockImageRemover();
+    @Mock
+    S3Service s3Service;
 
     @Nested
     @DisplayName("registerAnimal 메서드 실행 시")
@@ -275,15 +275,20 @@ class AnimalServiceTest {
         }
 
         @Test
-        @DisplayName("성공")
-        void updateRecruitment() {
+        @DisplayName("성공: 기존 이미지 2개, 새로운 이미지 1개")
+        void updateRecruitment1() {
             //given
+            Shelter shelter = ShelterFixture.shelter();
+            String originImage1 = "www.aws.s3.com/1";
+            String originImage2 = "www.aws.s3.com/2";
+            Animal animal = AnimalFixture.animal(shelter, List.of(originImage1, originImage2));
+
             String mockName = "animalName";
             LocalDate mockBirthDate = LocalDate.now();
             String mockInformation = "animalInformation";
             String mockBreed = "animalBreed";
-            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
-
+            String newImage1 = "www.aws.s3.com/3";
+            List<String> mockImageUrls = List.of(newImage1);
             AnimalType mockType = AnimalType.DOG;
             AnimalActive mockActive = AnimalActive.ACTIVE;
             Double mockWeight = 1.2;
@@ -291,7 +296,7 @@ class AnimalServiceTest {
             AnimalGender mockGender = AnimalGender.MALE;
 
             given(animalRepository.findByAnimalIdAndShelterIdWithImages(anyLong(),
-                anyLong())).willReturn(Optional.ofNullable(animal));
+                anyLong())).willReturn(Optional.of(animal));
 
             //when
             animalService.updateAnimal(1L, 1L,
@@ -307,6 +312,8 @@ class AnimalServiceTest {
                 mockImageUrls);
 
             //then
+            verify(s3Service, times(1)).deleteImages(List.of(originImage1, originImage2));
+
             assertThat(animal.getName()).isEqualTo(mockName);
             assertThat(animal.getBirthDate()).isEqualTo(mockBirthDate);
             assertThat(animal.getType()).isEqualTo(mockType);
@@ -373,6 +380,7 @@ class AnimalServiceTest {
         @DisplayName("성공")
         void deleteAnimal() {
             //given
+            List<String> originImages = animal.getImages();
             given(animalRepository.findByShelterIdAndAnimalId(anyLong(), anyLong()))
                 .willReturn(Optional.ofNullable(animal));
 
@@ -380,6 +388,7 @@ class AnimalServiceTest {
             animalService.deleteAnimal(1L, 1L);
 
             //then
+            verify(s3Service, times(1)).deleteImages(originImages);
             then(animalRepository).should().delete(any(Animal.class));
         }
 

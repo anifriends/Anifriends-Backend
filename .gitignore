@@ -45,5 +45,8 @@ out/
 ### Git Submodules ###
 **/backend-config/
 
+### Log ###
+**/logs/
+
 ### firebase ###
 /src/main/resources/firebase

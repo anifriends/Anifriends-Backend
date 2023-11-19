@@ -3,6 +3,8 @@ package com.clova.anifriends.domain.notification.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.clova.anifriends.domain.notification.ShelterNotification;
 import com.clova.anifriends.domain.notification.dto.response.FindShelterHasNewNotificationResponse;
@@ -65,14 +67,36 @@ class ShelterNotificationServiceTest {
         @DisplayName("성공")
         void findShelterHasNewNotification() {
             // given
-            FindShelterHasNewNotificationResponse expected = FindShelterHasNewNotificationResponse.from(true);
+            FindShelterHasNewNotificationResponse expected = FindShelterHasNewNotificationResponse.from(
+                true);
             given(shelterNotificationRepository.hasNewNotification(anyLong())).willReturn(true);
 
             // when
-            FindShelterHasNewNotificationResponse result = shelterNotificationService.findShelterHasNewNotification(1L);
+            FindShelterHasNewNotificationResponse result = shelterNotificationService.findShelterHasNewNotification(
+                1L);
 
             // then
             assertThat(result).isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("updateNotificationRead 메서드 실행 시")
+    class UpdateNotificationReadTest {
+
+        @Test
+        @DisplayName("성공")
+        void updateNotificationRead() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            ReflectionTestUtils.setField(shelter, "shelterId", 1L);
+
+            // when
+            shelterNotificationService.updateNotificationRead(shelter.getShelterId());
+
+            // then
+            verify(shelterNotificationRepository, times(1))
+                .updateBulkRead(shelter.getShelterId());
         }
     }
 }
