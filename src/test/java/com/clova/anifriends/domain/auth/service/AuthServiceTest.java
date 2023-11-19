@@ -63,6 +63,7 @@ class AuthServiceTest {
 
         String email = "email@email.com";
         String password = "password123!";
+        String deviceToken = "token";
         Volunteer volunteer = new Volunteer(email, password,
             LocalDate.now().toString(), "010-1234-1234", "MALE", "name", passwordEncoder);
 
@@ -79,7 +80,7 @@ class AuthServiceTest {
                 Optional.ofNullable(volunteer));
 
             //when
-            TokenResponse response = authService.volunteerLogin(email, password);
+            TokenResponse response = authService.volunteerLogin(email, password, deviceToken);
 
             //then
             assertThat(response.accessToken()).isNotBlank();
@@ -94,10 +95,26 @@ class AuthServiceTest {
                 Optional.ofNullable(volunteer));
 
             //when
-            TokenResponse response = authService.volunteerLogin(email, password);
+            TokenResponse response = authService.volunteerLogin(email, password, deviceToken);
 
             //then
             then(refreshTokenRepository).should().save(any());
+        }
+
+        @Test
+        @DisplayName("성공: deviceToken이 null인 경우")
+        void loginWhenDeviceTokenIsNull() {
+            // given
+            deviceToken = null;
+            given(volunteerRepository.findByEmail(any())).willReturn(
+                Optional.ofNullable(volunteer));
+
+            // when
+            TokenResponse response = authService.volunteerLogin(email, password, deviceToken);
+
+            // then
+            assertThat(response.accessToken()).isNotBlank();
+            assertThat(response.refreshToken()).isNotBlank();
         }
 
         @Test
@@ -111,7 +128,7 @@ class AuthServiceTest {
 
             //when
             Exception exception = catchException(
-                () -> authService.volunteerLogin(email, notEqualsPassword));
+                () -> authService.volunteerLogin(email, notEqualsPassword, deviceToken));
 
             //then
             assertThat(exception).isInstanceOf(AuthAuthenticationException.class);
@@ -124,7 +141,7 @@ class AuthServiceTest {
             given(volunteerRepository.findByEmail(any())).willReturn(Optional.empty());
 
             //when
-            Exception exception = catchException(() -> authService.volunteerLogin(email, password));
+            Exception exception = catchException(() -> authService.volunteerLogin(email, password, deviceToken));
 
             //then
             assertThat(exception).isInstanceOf(AuthAuthenticationException.class);
@@ -137,6 +154,7 @@ class AuthServiceTest {
 
         String email = "email@email.com";
         String password = "password123!";
+        String deviceToken = "token";
         Shelter shelter = new Shelter(email, password, "address",
             "addressDetail", "name", "02-1234-5678", "02-1234-5678", false, passwordEncoder);
 
@@ -152,7 +170,7 @@ class AuthServiceTest {
             given(shelterRepository.findByEmail(any())).willReturn(Optional.ofNullable(shelter));
 
             //when
-            TokenResponse response = authService.shelterLogin(email, password);
+            TokenResponse response = authService.shelterLogin(email, password, deviceToken);
 
             //then
             assertThat(response.accessToken()).isNotBlank();
@@ -167,10 +185,25 @@ class AuthServiceTest {
                 Optional.ofNullable(shelter));
 
             //when
-            TokenResponse response = authService.shelterLogin(email, password);
+            TokenResponse response = authService.shelterLogin(email, password, deviceToken);
 
             //then
             then(refreshTokenRepository).should().save(any());
+        }
+
+        @Test
+        @DisplayName("성공: deviceToken이 null인 경우")
+        void loginWhenDeviceTokenIsNull() {
+            // given
+            deviceToken = null;
+            given(shelterRepository.findByEmail(any())).willReturn(Optional.ofNullable(shelter));
+
+            // when
+            TokenResponse response = authService.shelterLogin(email, password, deviceToken);
+
+            // then
+            assertThat(response.accessToken()).isNotBlank();
+            assertThat(response.refreshToken()).isNotBlank();
         }
 
         @Test
@@ -184,7 +217,7 @@ class AuthServiceTest {
 
             //when
             Exception exception = catchException(
-                () -> authService.shelterLogin(email, notEqualsPassword));
+                () -> authService.shelterLogin(email, notEqualsPassword, deviceToken));
 
             //then
             assertThat(exception).isInstanceOf(AuthAuthenticationException.class);
@@ -197,7 +230,7 @@ class AuthServiceTest {
             given(shelterRepository.findByEmail(any())).willReturn(Optional.empty());
 
             //when
-            Exception exception = catchException(() -> authService.shelterLogin(email, password));
+            Exception exception = catchException(() -> authService.shelterLogin(email, password, deviceToken));
 
             //then
             assertThat(exception).isInstanceOf(AuthAuthenticationException.class);

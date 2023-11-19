@@ -16,6 +16,7 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,20 +34,26 @@ public class AuthService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public TokenResponse volunteerLogin(String email, String password) {
+    public TokenResponse volunteerLogin(String email, String password, String deviceToken) {
         Volunteer volunteer = volunteerRepository.findByEmail(new VolunteerEmail(email))
             .orElseThrow(
                 () -> new AuthAuthenticationException(INVALID_AUTH_INFO, NOT_EQUALS_AUTH_INFO));
         validatePassword(password, volunteer.getPassword());
+        if (Objects.nonNull(deviceToken)) {
+            volunteer.updateDeviceToken(deviceToken);
+        }
         return createToken(volunteer.getVolunteerId(), UserRole.ROLE_VOLUNTEER);
     }
 
     @Transactional
-    public TokenResponse shelterLogin(String email, String password) {
+    public TokenResponse shelterLogin(String email, String password, String deviceToken) {
         Shelter shelter = shelterRepository.findByEmail(new ShelterEmail(email))
             .orElseThrow(
                 () -> new AuthAuthenticationException(INVALID_AUTH_INFO, NOT_EQUALS_AUTH_INFO));
         validatePassword(password, shelter.getPassword());
+        if (Objects.nonNull(deviceToken)) {
+            shelter.updateDeviceToken(deviceToken);
+        }
         return createToken(shelter.getShelterId(), UserRole.ROLE_SHELTER);
     }
 
