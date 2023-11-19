@@ -4,7 +4,6 @@ import static java.util.Objects.nonNull;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterAddressInfo;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
 import com.clova.anifriends.domain.shelter.wrapper.ShelterName;
@@ -20,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -48,7 +48,8 @@ public class Shelter extends BaseTimeEntity {
     @Embedded
     private ShelterAddressInfo addressInfo;
 
-    @OneToOne(mappedBy = "shelter", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "shelter", fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL, orphanRemoval = true)
     private ShelterImage image;
 
     public Shelter(
@@ -76,19 +77,15 @@ public class Shelter extends BaseTimeEntity {
         String addressDetail,
         String phoneNumber,
         String sparePhoneNumber,
-        Boolean isOpenedAddress,
-        ImageRemover imageRemover
+        Boolean isOpenedAddress
     ) {
         this.name = this.name.update(name);
-        this.image = updateImage(imageUrl, imageRemover);
+        this.image = updateImage(imageUrl);
         this.addressInfo = this.addressInfo.update(address, addressDetail, isOpenedAddress);
         this.phoneNumberInfo = this.phoneNumberInfo.update(phoneNumber, sparePhoneNumber);
     }
 
-    private ShelterImage updateImage(String imageUrl, ImageRemover imageRemover) {
-        if (nonNull(this.image) && this.image.isDifferentFrom(imageUrl)) {
-            imageRemover.removeImage(this.image.getImageUrl());
-        }
+    private ShelterImage updateImage(String imageUrl) {
         if (nonNull(this.image) && this.image.isSameWith(imageUrl)) {
             return this.image;
         }
@@ -96,6 +93,13 @@ public class Shelter extends BaseTimeEntity {
             return new ShelterImage(this, imageUrl);
         }
         return null;
+    }
+
+    public Optional<String> findImageToDelete(String newImageUrl) {
+        if (nonNull(this.image) && this.image.isDifferentFrom(newImageUrl)) {
+            return Optional.of(this.image.getImageUrl());
+        }
+        return Optional.empty();
     }
 
     public void updatePassword(

@@ -7,7 +7,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.clova.anifriends.domain.notification.VolunteerNotification;
-import com.clova.anifriends.domain.notification.dto.FindVolunteerNotificationsResponse;
+import com.clova.anifriends.domain.notification.dto.response.FindVolunteerHasNewNotificationResponse;
+import com.clova.anifriends.domain.notification.dto.response.FindVolunteerNotificationsResponse;
 import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
 import com.clova.anifriends.domain.notification.support.fixture.VolunteerNotificationFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
@@ -55,6 +56,26 @@ class VolunteerNotificationServiceTest {
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("findVolunteerHasNewNotification 메서드 실행 시")
+    class FindVolunteerHasNewNotificationTest {
+
+        @Test
+        @DisplayName("성공")
+        void findVolunteerHasNewNotification() {
+            // given
+            FindVolunteerHasNewNotificationResponse expected = FindVolunteerHasNewNotificationResponse.from(true);
+            given(volunteerNotificationRepository.hasNewNotification(anyLong())).willReturn(true);
+
+            // when
+            FindVolunteerHasNewNotificationResponse result = volunteerNotificationService.findVolunteerHasNewNotification(
+                1L);
+
+            // then
+            assertThat(result).isEqualTo(expected);
         }
     }
 

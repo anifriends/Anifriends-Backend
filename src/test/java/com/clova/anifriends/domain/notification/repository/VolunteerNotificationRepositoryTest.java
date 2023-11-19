@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.notification.VolunteerNotification;
 import com.clova.anifriends.domain.notification.support.fixture.VolunteerNotificationFixture;
+import com.clova.anifriends.domain.notification.wrapper.NotificationRead;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.time.LocalDateTime;
@@ -46,6 +47,54 @@ class VolunteerNotificationRepositoryTest extends BaseRepositoryTest {
             // then
             assertThat(expected.get(0)).isEqualTo(notification2);
             assertThat(expected.get(1)).isEqualTo(notification1);
+        }
+    }
+
+    @Nested
+    @DisplayName("hasNewNotification 실행 시")
+    class HasNewNotificationTest {
+
+        @Test
+        @DisplayName("성공: 안 읽은 알림이 없는 경우")
+        void hasNewNotificationFalse() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            VolunteerNotification notification1 = VolunteerNotificationFixture.volunteerNotification(volunteer);
+            VolunteerNotification notification2 = VolunteerNotificationFixture.volunteerNotification(volunteer);
+            NotificationRead notificationRead = new NotificationRead(true);
+            ReflectionTestUtils.setField(notification1, "isRead", notificationRead);
+            ReflectionTestUtils.setField(notification2, "isRead", notificationRead);
+
+            volunteerRepository.save(volunteer);
+            volunteerNotificationRepository.save(notification1);
+            volunteerNotificationRepository.save(notification2);
+
+            // when
+            boolean expected = volunteerNotificationRepository.hasNewNotification(volunteer.getVolunteerId());
+
+            // then
+            assertThat(expected).isFalse();
+        }
+
+        @Test
+        @DisplayName("성공: 안 읽은 알림이 있는 경우")
+        void hasNewNotificationTrue() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            VolunteerNotification notification1 = VolunteerNotificationFixture.volunteerNotification(volunteer);
+            VolunteerNotification notification2 = VolunteerNotificationFixture.volunteerNotification(volunteer);
+            NotificationRead notificationRead = new NotificationRead(true);
+            ReflectionTestUtils.setField(notification2, "isRead", notificationRead);
+
+            volunteerRepository.save(volunteer);
+            volunteerNotificationRepository.save(notification1);
+            volunteerNotificationRepository.save(notification2);
+
+            // when
+            boolean expected = volunteerNotificationRepository.hasNewNotification(volunteer.getVolunteerId());
+
+            // then
+            assertThat(expected).isTrue();
         }
     }
 

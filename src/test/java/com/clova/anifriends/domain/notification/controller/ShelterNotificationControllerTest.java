@@ -11,6 +11,7 @@ import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
@@ -71,7 +72,7 @@ class ShelterNotificationControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("성공")
+    @DisplayName("성공: 보호소 새로운 알림 여부 조회 api 호출 시")
     void findShelterHasNewNotification() throws Exception {
         // given
         FindShelterHasNewNotificationResponse findShelterHasNewNotificationResponse = FindShelterHasNewNotificationResponse.from(
@@ -93,6 +94,25 @@ class ShelterNotificationControllerTest extends BaseControllerTest {
                 ),
                 responseFields(
                     fieldWithPath("hasNewNotification").type(BOOLEAN).description("새로운 알림 존재 여부")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 보호소 알림 읽음 처리 api 호출 시")
+    void updateNotificationRead() throws Exception {
+        // given
+        // when
+        ResultActions result = mockMvc.perform(patch("/api/shelters/notification/read")
+            .header(AUTHORIZATION, shelterAccessToken)
+            .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")
                 )
             ));
     }
