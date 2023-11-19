@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.notification.wrapper;
+package com.clova.anifriends.domain.notification.vo;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

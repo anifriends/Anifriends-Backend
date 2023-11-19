@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.notification.VolunteerNotification;
 import com.clova.anifriends.domain.notification.support.fixture.VolunteerNotificationFixture;
-import com.clova.anifriends.domain.notification.wrapper.NotificationRead;
+import com.clova.anifriends.domain.notification.vo.NotificationRead;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.time.LocalDateTime;

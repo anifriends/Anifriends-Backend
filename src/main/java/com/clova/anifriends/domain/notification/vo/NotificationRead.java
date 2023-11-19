@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.notification.wrapper;
+package com.clova.anifriends.domain.notification.vo;
 
 import com.clova.anifriends.domain.notification.exception.NotificationBadRequestException;
 import jakarta.persistence.Column;
