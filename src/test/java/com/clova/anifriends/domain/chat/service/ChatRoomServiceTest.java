@@ -181,7 +181,6 @@ class ChatRoomServiceTest {
             //when
             FindChatMessagesResponse findchatMessagesResponse = chatRoomService.findChatMessages(1L,
                 pageRequest);
-            
 
             //then
             assertThat(findchatMessagesResponse.chatMessages()).hasSize(1);
@@ -405,7 +404,7 @@ class ChatRoomServiceTest {
             long unreadCount = 10;
 
             given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
-            given(chatMessageRepository.findUnreadCount(any(Volunteer.class)))
+            given(chatMessageRepository.findUnreadCountByVolunteer(any(Volunteer.class)))
                 .willReturn(unreadCount);
 
             //when
@@ -454,6 +453,44 @@ class ChatRoomServiceTest {
             assertThat(findChatRoomDetailResponse.chatPartnerName()).isEqualTo(volunteer.getName());
             assertThat(findChatRoomDetailResponse.chatPartnerImageUrl())
                 .isEqualTo(volunteer.getVolunteerImageUrl());
+        }
+    }
+
+    @Nested
+    @DisplayName("findUnreadCountByShelter 메서드 호출 시")
+    class FindUnreadCountByShelterTest {
+
+        @Test
+        @DisplayName("성공")
+        void findUnreadCountByShelter() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            long unreadCount = 5;
+
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
+            given(chatMessageRepository.findUnreadCountByShelter(any(Shelter.class)))
+                .willReturn(unreadCount);
+
+            //when
+            FindUnreadCountResponse unreadCountByShelter = chatRoomService.findUnreadCountByShelter(
+                1L);
+
+            //then
+            assertThat(unreadCountByShelter.totalUnreadCount()).isEqualTo(unreadCount);
+        }
+
+        @Test
+        @DisplayName("예외(ShelterNotFoundException): 존재하지 않는 보호소")
+        void exceptionWhenShelterNotFound() {
+            //given
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.empty());
+
+            //when
+            Exception exception = catchException(
+                () -> chatRoomService.findUnreadCountByShelter(1L));
+
+            //then
+            assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
         }
     }
 }

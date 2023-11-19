@@ -97,8 +97,15 @@ public class ChatRoomService {
     @Transactional(readOnly = true)
     public FindUnreadCountResponse findUnreadCountByVolunteer(Long volunteerId) {
         Volunteer volunteer = getVolunteer(volunteerId);
-        long unreadCount = chatMessageRepository.findUnreadCount(volunteer);
-        return FindUnreadCountResponse.from(unreadCount);
+        long unreadCountByVolunteer = chatMessageRepository.findUnreadCountByVolunteer(volunteer);
+        return FindUnreadCountResponse.from(unreadCountByVolunteer);
+    }
+
+    @Transactional(readOnly = true)
+    public FindUnreadCountResponse findUnreadCountByShelter(Long shelterId) {
+        Shelter shelter = getShelter(shelterId);
+        long unreadCountByShelter = chatMessageRepository.findUnreadCountByShelter(shelter);
+        return FindUnreadCountResponse.from(unreadCountByShelter);
     }
 
     @Transactional(readOnly = true)
