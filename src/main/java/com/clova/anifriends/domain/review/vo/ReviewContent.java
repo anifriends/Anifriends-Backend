@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.review.wrapper;
+package com.clova.anifriends.domain.review.vo;
 
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import jakarta.persistence.Column;

@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.review.wrapper;
+package com.clova.anifriends.domain.review.vo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
