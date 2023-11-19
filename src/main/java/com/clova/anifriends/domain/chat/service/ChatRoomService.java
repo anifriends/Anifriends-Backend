@@ -34,11 +34,23 @@ public class ChatRoomService {
     private final VolunteerRepository volunteerRepository;
     private final ShelterRepository shelterRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public FindChatRoomDetailResponse findChatRoomDetailByVolunteer(Long chatRoomId) {
         ChatRoom chatRoom = getChatRoomWithShelter(chatRoomId);
         chatMessageRepository.readPartnerMessages(chatRoom, UserRole.ROLE_VOLUNTEER);
         return FindChatRoomDetailResponse.fromVolunteer(chatRoom);
+    }
+
+    @Transactional
+    public FindChatRoomDetailResponse findChatRoomDetailByShelter(Long chatRoomId) {
+        ChatRoom chatRoom = getChatRoomWithVolunteer(chatRoomId);
+        chatMessageRepository.readPartnerMessages(chatRoom, UserRole.ROLE_SHELTER);
+        return FindChatRoomDetailResponse.fromShelter(chatRoom);
+    }
+
+    private ChatRoom getChatRoomWithVolunteer(Long chatRoomId) {
+        return chatRoomRepository.findByIdWithVolunteer(chatRoomId)
+            .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
     }
 
     @Transactional

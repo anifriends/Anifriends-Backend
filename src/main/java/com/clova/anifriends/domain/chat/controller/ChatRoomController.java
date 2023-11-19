@@ -49,6 +49,14 @@ public class ChatRoomController {
         return ResponseEntity.ok(findChatRoomDetailResponse);
     }
 
+    @GetMapping("/shelters/chat/rooms/{chatRoomId}")
+    public ResponseEntity<FindChatRoomDetailResponse> findChatRoomDetailByShelter(
+        @PathVariable Long chatRoomId) {
+        FindChatRoomDetailResponse findChatRoomDetailResponse
+            = chatRoomService.findChatRoomDetailByShelter(chatRoomId);
+        return ResponseEntity.ok(findChatRoomDetailResponse);
+    }
+
     @PostMapping("/volunteers/chat/rooms")
     public ResponseEntity<Void> registerChatRoom(
         @LoginUser Long volunteerId,
