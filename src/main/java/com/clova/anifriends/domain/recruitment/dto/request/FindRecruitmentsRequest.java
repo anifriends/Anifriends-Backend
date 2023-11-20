@@ -1,12 +1,13 @@
 package com.clova.anifriends.domain.recruitment.dto.request;
 
+import com.clova.anifriends.domain.recruitment.controller.RecruitmentStatusFilter;
 import java.time.LocalDate;
 
 public record FindRecruitmentsRequest(
     String keyword,
     LocalDate startDate,
     LocalDate endDate,
-    String isClosed,
+    RecruitmentStatusFilter closedFilter,
     Boolean title,
     Boolean content,
     Boolean shelterName
@@ -14,11 +15,11 @@ public record FindRecruitmentsRequest(
 
     public FindRecruitmentsRequest(String keyword, LocalDate startDate,
         LocalDate endDate,
-        String isClosed, Boolean title, Boolean content, Boolean shelterName) {
+        RecruitmentStatusFilter closedFilter, Boolean title, Boolean content, Boolean shelterName) {
         this.keyword = keyword;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.isClosed = isClosed == null ? "ALL" : isClosed;
+        this.closedFilter = closedFilter;
         this.title = title == null || title;
         this.content = content == null || content;
         this.shelterName = shelterName == null || shelterName;

@@ -179,7 +179,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         params.add("keyword", "겅색어");
         params.add("startDate", LocalDate.now().toString());
         params.add("endDate", LocalDate.now().toString());
-        params.add("isClosed", "IS_OPENED");
+        params.add("closedFilter", "IS_OPENED");
         params.add("title", "true");
         params.add("content", "false");
         params.add("shelterName", "false");
@@ -215,7 +215,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getDateConstraint()),
                     parameterWithName("endDate").description("검색 종료일").optional()
                         .attributes(DocumentationFormatGenerator.getDateConstraint()),
-                    parameterWithName("isClosed").description("마감 여부").optional()
+                    parameterWithName("closedFilter").description("마감 여부").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("IS_OPENED, IS_CLOSED")),
                     parameterWithName("title").description("제목 포함 검색").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("기본값 true")),

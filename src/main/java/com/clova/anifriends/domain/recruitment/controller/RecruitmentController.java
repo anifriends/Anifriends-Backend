@@ -75,7 +75,8 @@ public class RecruitmentController {
             findRecruitmentsRequest.keyword(),
             findRecruitmentsRequest.startDate(),
             findRecruitmentsRequest.endDate(),
-            RecruitmentStatusFilter.valueOf(findRecruitmentsRequest.isClosed()).getIsClosed(),
+            findRecruitmentsRequest.closedFilter() == null ? null
+                : findRecruitmentsRequest.closedFilter().getIsClosed(),
             findRecruitmentsRequest.title(),
             findRecruitmentsRequest.content(),
             findRecruitmentsRequest.shelterName(),

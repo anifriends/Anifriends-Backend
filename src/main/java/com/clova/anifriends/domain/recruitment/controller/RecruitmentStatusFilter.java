@@ -7,8 +7,7 @@ import lombok.RequiredArgsConstructor;
 public enum RecruitmentStatusFilter implements EnumType {
 
     IS_OPENED(false),
-    IS_CLOSED(true),
-    ALL(null);
+    IS_CLOSED(true);
 
     private final Boolean isClosed;
 
