@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.common.PageInfo;
+import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
@@ -33,7 +34,6 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
-import com.clova.anifriends.global.image.S3Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,6 +46,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -64,7 +65,7 @@ class RecruitmentServiceTest {
     RecruitmentRepository recruitmentRepository;
 
     @Mock
-    S3Service s3Service;
+    ApplicationEventPublisher applicationEventPublisher;
 
     @Nested
     @DisplayName("registerRecruitment 메서드 실행 시")
@@ -202,12 +203,12 @@ class RecruitmentServiceTest {
                 pageResult);
 
             when(recruitmentRepository.findRecruitmentsByShelterOrderByCreatedAt(
-                anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), any()))
+                anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), anyBoolean(), any()))
                 .thenReturn(pageResult);
 
             // when
             FindRecruitmentsByShelterResponse result = recruitmentService.findRecruitmentsByShelter(
-                anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), any());
+                anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), anyBoolean(), any());
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
@@ -354,7 +355,9 @@ class RecruitmentServiceTest {
                 newImageUrls);
 
             //then
-            verify(s3Service, times(1)).deleteImages(originalImageUrls);
+            verify(applicationEventPublisher, times(1)).publishEvent(
+                new ImageDeletionEvent(originalImageUrls));
+
             assertThat(recruitment.getTitle()).isEqualTo(newTitle);
             assertThat(recruitment.getStartTime()).isEqualTo(newStartTime);
             assertThat(recruitment.getEndTime()).isEqualTo(newEndTime);

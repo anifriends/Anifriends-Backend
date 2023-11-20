@@ -12,7 +12,8 @@ public interface RecruitmentRepositoryCustom {
         boolean shelterNameContains, Pageable pageable);
 
     Page<Recruitment> findRecruitmentsByShelterOrderByCreatedAt(long shelterId, String keyword,
-        LocalDate startDate, LocalDate endDate, Boolean content, Boolean title, Pageable pageable);
+        LocalDate startDate, LocalDate endDate, Boolean isClosed, Boolean content, Boolean title,
+        Pageable pageable);
 
     Page<Recruitment> findRecruitmentsByShelterId(long shelterId, Pageable pageable);
 }

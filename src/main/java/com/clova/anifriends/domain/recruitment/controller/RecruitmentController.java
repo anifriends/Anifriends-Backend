@@ -93,11 +93,13 @@ public class RecruitmentController {
     ) {
         KeywordConditionByShelter keywordConditionByShelter = findRecruitmentsByShelterRequest.keywordFilter()
             .getKeywordConditionByShelter();
+
         return ResponseEntity.ok(recruitmentService.findRecruitmentsByShelter(
             shelterId,
             findRecruitmentsByShelterRequest.keyword(),
             findRecruitmentsByShelterRequest.startDate(),
             findRecruitmentsByShelterRequest.endDate(),
+            findRecruitmentsByShelterRequest.isClosed(),
             keywordConditionByShelter.contentFilter(),
             keywordConditionByShelter.titleFilter(),
             pageable
