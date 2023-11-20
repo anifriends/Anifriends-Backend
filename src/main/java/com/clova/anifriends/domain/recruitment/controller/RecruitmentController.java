@@ -71,14 +71,16 @@ public class RecruitmentController {
     public ResponseEntity<FindRecruitmentsResponse> findRecruitments(
         @ModelAttribute @Valid FindRecruitmentsRequest findRecruitmentsRequest,
         Pageable pageable) {
+        KeywordCondition keywordCondition = findRecruitmentsRequest.keywordFilter()
+            .getKeywordCondition();
         return ResponseEntity.ok(recruitmentService.findRecruitments(
             findRecruitmentsRequest.keyword(),
             findRecruitmentsRequest.startDate(),
             findRecruitmentsRequest.endDate(),
             findRecruitmentsRequest.isClosed(),
-            findRecruitmentsRequest.title(),
-            findRecruitmentsRequest.content(),
-            findRecruitmentsRequest.shelterName(),
+            keywordCondition.titleFilter(),
+            keywordCondition.contentFilter(),
+            keywordCondition.shelterNameFilter(),
             pageable
         ));
     }

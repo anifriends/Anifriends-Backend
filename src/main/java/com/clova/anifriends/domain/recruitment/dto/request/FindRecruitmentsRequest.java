@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.recruitment.dto.request;
 
+import com.clova.anifriends.domain.recruitment.controller.KeywordFilter;
 import java.time.LocalDate;
 
 public record FindRecruitmentsRequest(
@@ -7,20 +8,16 @@ public record FindRecruitmentsRequest(
     LocalDate startDate,
     LocalDate endDate,
     Boolean isClosed,
-    Boolean title,
-    Boolean content,
-    Boolean shelterName
+    KeywordFilter keywordFilter
 ) {
 
     public FindRecruitmentsRequest(String keyword, LocalDate startDate,
         LocalDate endDate,
-        Boolean isClosed, Boolean title, Boolean content, Boolean shelterName) {
+        Boolean isClosed, KeywordFilter keywordFilter) {
         this.keyword = keyword;
         this.startDate = startDate;
         this.endDate = endDate;
         this.isClosed = isClosed;
-        this.title = title == null || title;
-        this.content = content == null || content;
-        this.shelterName = shelterName == null || shelterName;
+        this.keywordFilter = keywordFilter == null ? KeywordFilter.ALL : keywordFilter;
     }
 }

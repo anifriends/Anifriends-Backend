@@ -50,6 +50,7 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -180,9 +181,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         params.add("startDate", LocalDate.now().toString());
         params.add("endDate", LocalDate.now().toString());
         params.add("isClosed", "false");
-        params.add("title", "true");
-        params.add("content", "false");
-        params.add("shelterName", "false");
+        params.add("keywordFilter", KeywordFilter.IS_CONTENT.getName());
         params.add("pageNumber", "0");
         params.add("pageSize", "10");
         Shelter shelter = shelter();
@@ -217,12 +216,11 @@ class RecruitmentControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getDateConstraint()),
                     parameterWithName("isClosed").description("마감 여부").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("true, false")),
-                    parameterWithName("title").description("제목 포함 검색").optional()
-                        .attributes(DocumentationFormatGenerator.getConstraint("기본값 true")),
-                    parameterWithName("content").description("본문 포함 검색").optional()
-                        .attributes(DocumentationFormatGenerator.getConstraint("기본값 true")),
-                    parameterWithName("shelterName").description("보호소 이름 포함 검색").optional()
-                        .attributes(DocumentationFormatGenerator.getConstraint("기본값 true")),
+                    parameterWithName("keywordFilter").description("검색 필터").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint(
+                            String.join(", ", Arrays.stream(KeywordFilter.values())
+                                .map(KeywordFilter::name)
+                                .toArray(String[]::new)))),
                     parameterWithName("pageNumber").description("페이지 번호"),
                     parameterWithName("pageSize").description("페이지 사이즈")
                 ),
@@ -433,7 +431,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("성공: 봉사 몾집글 수정 api 호출 시")
+    @DisplayName("성공: 봉사 모집글 수정 api 호출 시")
     void updateRecruitment() throws Exception {
         //given
         String title = "title";
