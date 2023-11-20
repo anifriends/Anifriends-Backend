@@ -6,7 +6,7 @@ public record FindRecruitmentsRequest(
     String keyword,
     LocalDate startDate,
     LocalDate endDate,
-    Boolean isClosed,
+    String isClosed,
     Boolean title,
     Boolean content,
     Boolean shelterName
@@ -14,7 +14,7 @@ public record FindRecruitmentsRequest(
 
     public FindRecruitmentsRequest(String keyword, LocalDate startDate,
         LocalDate endDate,
-        Boolean isClosed, Boolean title, Boolean content, Boolean shelterName) {
+        String isClosed, Boolean title, Boolean content, Boolean shelterName) {
         this.keyword = keyword;
         this.startDate = startDate;
         this.endDate = endDate;

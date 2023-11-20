@@ -29,6 +29,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResp
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
+import com.clova.anifriends.domain.recruitment.vo.RecruitmentStatusFilter;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -150,7 +151,7 @@ class RecruitmentServiceTest {
             String keyword = "keyword";
             LocalDate startDate = LocalDate.now();
             LocalDate endDate = LocalDate.now();
-            boolean isClosed = false;
+            String isClosed = "IS_CLOSED";
             boolean title = false;
             boolean content = false;
             boolean shelterName = false;
@@ -159,7 +160,8 @@ class RecruitmentServiceTest {
             Recruitment recruitment = recruitment(shelter);
             PageImpl<Recruitment> recruitments = new PageImpl<>(List.of(recruitment));
 
-            given(recruitmentRepository.findRecruitments(keyword, startDate, endDate, isClosed,
+            given(recruitmentRepository.findRecruitments(keyword, startDate, endDate,
+                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
                 title, content, shelterName, pageRequest)).willReturn(recruitments);
 
             //when

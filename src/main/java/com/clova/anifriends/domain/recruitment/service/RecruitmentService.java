@@ -10,6 +10,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResp
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
+import com.clova.anifriends.domain.recruitment.vo.RecruitmentStatusFilter;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -107,7 +108,7 @@ public class RecruitmentService {
         String keyword,
         LocalDate startDate,
         LocalDate endDate,
-        Boolean isClosed,
+        String isClosed,
         Boolean titleContains,
         Boolean contentContains,
         Boolean shelterNameContains,
@@ -116,7 +117,7 @@ public class RecruitmentService {
             keyword,
             startDate,
             endDate,
-            isClosed,
+            RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
             titleContains,
             contentContains,
             shelterNameContains,
