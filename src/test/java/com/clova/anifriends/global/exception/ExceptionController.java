@@ -1,5 +1,6 @@
 package com.clova.anifriends.global.exception;
 
+import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,5 +57,11 @@ public class ExceptionController {
                 return super.getMessage();
             }
         };
+    }
+
+    @VolunteerOnly
+    @GetMapping("/access-denied")
+    public void accessDenied() {
+
     }
 }
