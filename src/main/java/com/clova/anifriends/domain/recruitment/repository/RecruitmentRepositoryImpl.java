@@ -76,7 +76,8 @@ public class RecruitmentRepositoryImpl implements
         return keyword != null ? recruitment.content.content.contains(keyword) : null;
     }
 
-    private BooleanExpression recruitmentShelterNameContains(String keyword, boolean shelterNameFilter) {
+    private BooleanExpression recruitmentShelterNameContains(String keyword,
+        boolean shelterNameFilter) {
         if (!shelterNameFilter) {
             return null;
         }
@@ -95,7 +96,8 @@ public class RecruitmentRepositoryImpl implements
     }
 
     private BooleanExpression recruitmentStartTimeLoe(LocalDate endDate) {
-        return endDate != null ? recruitment.info.startTime.loe(endDate.plusDays(1).atStartOfDay()) : null;
+        return endDate != null ? recruitment.info.startTime.loe(endDate.plusDays(1).atStartOfDay())
+            : null;
     }
 
     private BooleanBuilder nullSafeBuilder(Supplier<BooleanExpression> supplier) {
@@ -108,12 +110,14 @@ public class RecruitmentRepositoryImpl implements
 
     @Override
     public Page<Recruitment> findRecruitmentsByShelterOrderByCreatedAt(long shelterId,
-        String keyword, LocalDate startDate, LocalDate endDate, Boolean content, Boolean title,
+        String keyword, LocalDate startDate, LocalDate endDate, Boolean isClosed, Boolean content,
+        Boolean title,
         Pageable pageable) {
 
         Predicate predicate = recruitment.shelter.shelterId.eq(shelterId)
             .and(getDateCondition(startDate, endDate))
-            .and(getKeywordCondition(keyword, content, title));
+            .and(getKeywordCondition(keyword, content, title))
+            .and(recruitmentIsClosed(isClosed));
 
         List<Recruitment> recruitments = query.selectFrom(recruitment)
             .where(predicate)
