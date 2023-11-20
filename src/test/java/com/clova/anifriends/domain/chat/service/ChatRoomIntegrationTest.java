@@ -1,11 +1,13 @@
 package com.clova.anifriends.domain.chat.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
 
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.chat.ChatMessage;
 import com.clova.anifriends.domain.chat.ChatRoom;
+import com.clova.anifriends.domain.chat.exception.ChatRoomConflictException;
 import com.clova.anifriends.domain.chat.support.ChatRoomFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -18,7 +20,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ChatIntegrationTest extends BaseIntegrationTest {
+public class ChatRoomIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     ChatRoomService chatRoomService;
@@ -76,5 +78,33 @@ public class ChatIntegrationTest extends BaseIntegrationTest {
                 .hasSize(2)
                 .allSatisfy(message -> assertThat(message.isRead()).isFalse());
         }
+    }
+
+    @Nested
+    @DisplayName("registerChatRoom 메소드 실행 시")
+    class RegisterChatRoom {
+
+        @Test
+        @DisplayName("예외(ChatRoomConflictException): 중복 채팅방")
+        void exceptionWhenDuplicateChatRoom() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            ChatRoom chatRoom = ChatRoomFixture.chatRoom(volunteer, shelter);
+
+            shelterRepository.save(shelter);
+            volunteerRepository.save(volunteer);
+            chatRoomRepository.save(chatRoom);
+
+            // when
+            Exception exception = catchException(
+                () -> chatRoomService.registerChatRoom(volunteer.getVolunteerId(),
+                    shelter.getShelterId()));
+
+            // then
+            assertThat(exception).isInstanceOf(ChatRoomConflictException.class);
+        }
+
+
     }
 }
