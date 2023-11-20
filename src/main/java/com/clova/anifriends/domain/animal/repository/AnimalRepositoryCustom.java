@@ -23,7 +23,7 @@ public interface AnimalRepositoryCustom {
         Pageable pageable
     );
 
-    Page<Animal> findAnimals(
+    Page<Animal> findAnimalsByVolunteer(
         AnimalType type,
         AnimalActive active,
         Boolean isNeutered,

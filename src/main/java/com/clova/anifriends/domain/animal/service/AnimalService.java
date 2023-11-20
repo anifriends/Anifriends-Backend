@@ -76,7 +76,7 @@ public class AnimalService {
     }
 
     @Transactional(readOnly = true)
-    public FindAnimalsResponse findAnimals(
+    public FindAnimalsResponse findAnimalsByVolunteer(
         AnimalType type,
         AnimalActive active,
         Boolean isNeutered,
@@ -84,7 +84,7 @@ public class AnimalService {
         AnimalGender gender,
         AnimalSize size,
         Pageable pageable) {
-        Page<Animal> animalsWithPagination = animalRepository.findAnimals(
+        Page<Animal> animalsWithPagination = animalRepository.findAnimalsByVolunteer(
             type,
             active,
             isNeutered,

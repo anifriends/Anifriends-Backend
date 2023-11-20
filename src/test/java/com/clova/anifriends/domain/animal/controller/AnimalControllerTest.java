@@ -43,6 +43,7 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -164,9 +165,9 @@ class AnimalControllerTest extends BaseControllerTest {
         //given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("keyword", "검색어");
-        params.add("type", "DOG");
-        params.add("gender", "MALE");
-        params.add("isNeutered", "true");
+        params.add("type", AnimalType.DOG.name());
+        params.add("gender", AnimalGender.MALE.name());
+        params.add("neuteredFilter", AnimalNeuteredFilter.IS_NEUTERED.name());
         params.add("active", "ACTIVE");
         params.add("size", "SMALL");
         params.add("age", "BABY");
@@ -206,7 +207,7 @@ class AnimalControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint("DOG, CAT, ETC")),
                     parameterWithName("gender").description("보호 동물 성별").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("MALE, FEMALE")),
-                    parameterWithName("isNeutered").description("보호 동물 중성화 여부").optional()
+                    parameterWithName("neuteredFilter").description("보호 동물 중성화 여부").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("true, false")),
                     parameterWithName("active").description("보호 동물 성격").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint(
@@ -245,7 +246,7 @@ class AnimalControllerTest extends BaseControllerTest {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("type", AnimalType.DOG.name());
         params.add("gender", AnimalGender.FEMALE.name());
-        params.add("isNeutered", String.valueOf(true));
+        params.add("neuteredFilter", AnimalNeuteredFilter.IS_NEUTERED.name());
         params.add("active", AnimalActive.ACTIVE.name());
         params.add("size", AnimalSize.SMALL.name());
         params.add("age", AnimalAge.ADULT.name());
@@ -259,7 +260,7 @@ class AnimalControllerTest extends BaseControllerTest {
         FindAnimalsResponse response = FindAnimalsResponse
             .from(new PageImpl<>(List.of(animal)));
 
-        when(animalService.findAnimals(
+        when(animalService.findAnimalsByVolunteer(
             any(AnimalType.class),
             any(AnimalActive.class),
             anyBoolean(),
@@ -289,7 +290,7 @@ class AnimalControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint(
                             String.join(", ", Arrays.stream(AnimalGender.values()).map(
                                 AnimalGender::name).toArray(String[]::new)))),
-                    parameterWithName("isNeutered").description("보호 동물 중성화 여부").optional()
+                    parameterWithName("neuteredFilter").description("보호 동물 중성화 여부").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("true, false")),
                     parameterWithName("active").description("보호 동물 성격").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint(
