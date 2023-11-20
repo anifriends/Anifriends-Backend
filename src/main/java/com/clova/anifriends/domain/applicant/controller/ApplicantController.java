@@ -8,6 +8,8 @@ import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteers
 import com.clova.anifriends.domain.applicant.service.ApplicantService;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.auth.LoginUser;
+import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
+import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,7 @@ public class ApplicantController {
 
     private final ApplicantService applicantService;
 
+    @VolunteerOnly
     @PostMapping("/volunteers/recruitments/{recruitmentId}/apply")
     public ResponseEntity<Void> registerApplicant(
         @PathVariable Long recruitmentId,
@@ -35,6 +38,7 @@ public class ApplicantController {
         return ResponseEntity.noContent().build();
     }
 
+    @VolunteerOnly
     @GetMapping("/volunteers/applicants")
     public ResponseEntity<FindApplyingVolunteersResponse> findApplyingVolunteers(
         @LoginUser Long volunteerId
@@ -43,6 +47,7 @@ public class ApplicantController {
 
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/recruitments/{recruitmentId}/approval")
     public ResponseEntity<FindApplicantsApprovedResponse> findApplicantApproved(
         @LoginUser Long shelterId,
@@ -51,6 +56,7 @@ public class ApplicantController {
         return ResponseEntity.ok(applicantService.findApplicantsApproved(shelterId, recruitmentId));
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/recruitments/{recruitmentId}/applicants")
     public ResponseEntity<FindApplicantsResponse> findApplicants(
         @LoginUser Long shelterId,
@@ -59,6 +65,7 @@ public class ApplicantController {
         return ResponseEntity.ok(applicantService.findApplicants(shelterId, recruitmentId));
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/recruitments/{recruitmentId}/approval")
     public ResponseEntity<Void> updateApplicantAttendance(
         @LoginUser Long shelterId,
@@ -78,6 +85,7 @@ public class ApplicantController {
         return ResponseEntity.noContent().build();
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/recruitments/{recruitmentId}/applicants/{applicantId}")
     public ResponseEntity<Void> updateApplicantStatus(
         @LoginUser Long shelterId,

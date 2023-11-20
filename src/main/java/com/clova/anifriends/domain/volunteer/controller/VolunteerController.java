@@ -9,6 +9,8 @@ import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVoluntee
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
 import com.clova.anifriends.domain.volunteer.service.VolunteerService;
+import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
+import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +56,7 @@ public class VolunteerController {
         return ResponseEntity.created(location).build();
     }
 
+    @VolunteerOnly
     @GetMapping("/volunteers/me")
     public ResponseEntity<FindVolunteerMyPageResponse> findVolunteerMyPage(
         @LoginUser Long volunteerId
@@ -61,6 +64,7 @@ public class VolunteerController {
         return ResponseEntity.ok(volunteerService.findVolunteerMyPage(volunteerId));
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/volunteers/{volunteerId}/profile")
     public ResponseEntity<FindVolunteerProfileResponse> findVolunteerProfile(
         @PathVariable Long volunteerId
@@ -72,6 +76,7 @@ public class VolunteerController {
         );
     }
 
+    @VolunteerOnly
     @PatchMapping("/volunteers/me")
     public ResponseEntity<Void> updateVolunteerInfo(
         @LoginUser Long volunteerId,
@@ -86,6 +91,7 @@ public class VolunteerController {
         return ResponseEntity.noContent().build();
     }
 
+    @VolunteerOnly
     @PatchMapping("/volunteers/me/passwords")
     public ResponseEntity<Void> updateVolunteerPassword(
         @LoginUser Long volunteerId,

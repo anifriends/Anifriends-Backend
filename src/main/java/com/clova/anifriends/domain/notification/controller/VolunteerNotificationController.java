@@ -5,6 +5,7 @@ import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.notification.dto.response.FindVolunteerHasNewNotificationResponse;
 import com.clova.anifriends.domain.notification.dto.response.FindVolunteerNotificationsResponse;
 import com.clova.anifriends.domain.notification.service.VolunteerNotificationService;
+import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ public class VolunteerNotificationController {
 
     private final VolunteerNotificationService volunteerNotificationService;
 
+    @VolunteerOnly
     @GetMapping("/volunteers/notifications")
     public ResponseEntity<FindVolunteerNotificationsResponse> findShelterNotifications(
         @LoginUser Long volunteerId
@@ -27,6 +29,7 @@ public class VolunteerNotificationController {
             volunteerNotificationService.findVolunteerNotifications(volunteerId));
     }
 
+    @VolunteerOnly
     @GetMapping("/volunteers/notifications/read")
     public ResponseEntity<FindVolunteerHasNewNotificationResponse> findVolunteerHasNewNotification(
         @LoginUser Long volunteerId
@@ -35,6 +38,7 @@ public class VolunteerNotificationController {
             volunteerNotificationService.findVolunteerHasNewNotification(volunteerId));
     }
 
+    @VolunteerOnly
     @PatchMapping("/volunteers/notifications/read")
     public ResponseEntity<Void> updateNotificationRead(
         @LoginUser Long volunteerId

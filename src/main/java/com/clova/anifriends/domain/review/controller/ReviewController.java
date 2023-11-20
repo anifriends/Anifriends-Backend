@@ -8,6 +8,8 @@ import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsRespons
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.service.ReviewService;
+import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
+import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -29,13 +31,16 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    @VolunteerOnly
     @GetMapping("/volunteers/reviews/{reviewId}")
     public ResponseEntity<FindReviewResponse> findReview(
-        @LoginUser Long userId, @PathVariable Long reviewId
+        @LoginUser Long volunteerId,
+        @PathVariable Long reviewId
     ) {
-        return ResponseEntity.ok(reviewService.findReview(userId, reviewId));
+        return ResponseEntity.ok(reviewService.findReview(volunteerId, reviewId));
     }
 
+    @VolunteerOnly
     @PostMapping("/volunteers/reviews")
     public ResponseEntity<Void> registerReview(
         @LoginUser Long userId,
@@ -47,6 +52,7 @@ public class ReviewController {
         return ResponseEntity.created(location).build();
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/me/reviews")
     public ResponseEntity<FindShelterReviewsByShelterResponse> findShelterReviewsByShelter(
         @LoginUser Long shelterId,
@@ -55,6 +61,7 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/volunteers/{volunteerId}/reviews")
     public ResponseEntity<FindVolunteerReviewsResponse> findVolunteerReviewsByShelter(
         @PathVariable("volunteerId") Long volunteerId,
@@ -63,6 +70,7 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.findVolunteerReviews(volunteerId, pageable));
     }
 
+    @VolunteerOnly
     @GetMapping("/volunteers/me/reviews")
     public ResponseEntity<FindVolunteerReviewsResponse> findVolunteerReviewsByVolunteers(
         @LoginUser Long volunteerId,
@@ -81,6 +89,7 @@ public class ReviewController {
         );
     }
 
+    @VolunteerOnly
     @PatchMapping("/volunteers/reviews/{reviewId}")
     public ResponseEntity<Void> updateReview(
         @LoginUser Long volunteerId,
@@ -92,6 +101,7 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
+    @VolunteerOnly
     @DeleteMapping("/volunteers/reviews/{reviewId}")
     public ResponseEntity<Void> deleteReview(
         @LoginUser Long volunteerId,

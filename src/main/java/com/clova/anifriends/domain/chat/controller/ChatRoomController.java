@@ -8,6 +8,9 @@ import com.clova.anifriends.domain.chat.dto.response.FindChatRoomIdResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindUnreadCountResponse;
 import com.clova.anifriends.domain.chat.service.ChatRoomService;
+import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
+import com.clova.anifriends.domain.auth.authorization.UserOnly;
+import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +28,7 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
+    @VolunteerOnly
     @GetMapping("/volunteers/chat/rooms")
     public ResponseEntity<FindChatRoomsResponse> findChatRoomsByVolunteer(
         @LoginUser Long volunteerId) {
@@ -33,6 +37,7 @@ public class ChatRoomController {
         return ResponseEntity.ok(findChatRoomsResponse);
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/chat/rooms")
     public ResponseEntity<FindChatRoomsResponse> findChatRoomsByShelter(
         @LoginUser Long shelterId) {
@@ -41,6 +46,7 @@ public class ChatRoomController {
         return ResponseEntity.ok(findChatRoomsResponse);
     }
 
+    @VolunteerOnly
     @GetMapping("/volunteers/chat/rooms/{chatRoomId}")
     public ResponseEntity<FindChatRoomDetailResponse> findChatRoomDetailByVolunteer(
         @PathVariable Long chatRoomId) {
@@ -49,6 +55,7 @@ public class ChatRoomController {
         return ResponseEntity.ok(findChatRoomDetailResponse);
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/chat/rooms/{chatRoomId}")
     public ResponseEntity<FindChatRoomDetailResponse> findChatRoomDetailByShelter(
         @PathVariable Long chatRoomId) {
@@ -57,6 +64,7 @@ public class ChatRoomController {
         return ResponseEntity.ok(findChatRoomDetailResponse);
     }
 
+    @VolunteerOnly
     @PostMapping("/volunteers/chat/rooms")
     public ResponseEntity<Void> registerChatRoom(
         @LoginUser Long volunteerId,
@@ -69,6 +77,7 @@ public class ChatRoomController {
         return ResponseEntity.created(location).build();
     }
 
+    @VolunteerOnly
     @GetMapping("/volunteers/chat/rooms/unread")
     public ResponseEntity<FindUnreadCountResponse> findUnreadCountByVolunteer(
         @LoginUser Long volunteerId) {
@@ -77,6 +86,7 @@ public class ChatRoomController {
         return ResponseEntity.ok(findUnreadCountResponse);
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/chat/rooms/unread")
     public ResponseEntity<FindUnreadCountResponse> findUnreadCountByShelter(
         @LoginUser Long shelterId) {
@@ -85,6 +95,7 @@ public class ChatRoomController {
         return ResponseEntity.ok(findUnreadCountResponse);
     }
 
+    @UserOnly
     @GetMapping("/chat/rooms/{chatRoomId}/messages")
     public ResponseEntity<FindChatMessagesResponse> findChatMessages(
         @PathVariable Long chatRoomId,
@@ -94,6 +105,7 @@ public class ChatRoomController {
         return ResponseEntity.ok(findChatMessagesResponse);
     }
 
+    @VolunteerOnly
     @GetMapping("/volunteers/chat/rooms/shelters/{shelterId}")
     public ResponseEntity<FindChatRoomIdResponse> findChatRoomId(
         @LoginUser Long volunteerId,
