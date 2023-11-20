@@ -11,6 +11,7 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.service.AnimalService;
 import com.clova.anifriends.domain.auth.LoginUser;
+import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -33,11 +34,12 @@ public class AnimalController {
 
     private final AnimalService animalService;
 
+    @ShelterOnly
     @PostMapping("/shelters/animals")
     public ResponseEntity<Void> registerAnimal(
-        @LoginUser Long userId,
+        @LoginUser Long volunteerId,
         @RequestBody @Valid RegisterAnimalRequest registerAnimalRequest) {
-        RegisterAnimalResponse registerAnimalResponse = animalService.registerAnimal(userId,
+        RegisterAnimalResponse registerAnimalResponse = animalService.registerAnimal(volunteerId,
             registerAnimalRequest);
         URI location = URI.create("/api/shelters/animals/" + registerAnimalResponse.animalId());
         return ResponseEntity.created(location).build();
@@ -49,6 +51,7 @@ public class AnimalController {
         return ResponseEntity.ok(animalService.findAnimalDetail(animalId));
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/animals")
     public ResponseEntity<FindAnimalsByShelterResponse> findAnimalsByShelter(
         @LoginUser Long shelterId,
@@ -84,6 +87,7 @@ public class AnimalController {
         ));
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/animals/{animalId}/status")
     public ResponseEntity<Void> updateAnimalAdoptStatus(
         @LoginUser Long shelterId,
@@ -94,6 +98,7 @@ public class AnimalController {
         return ResponseEntity.noContent().build();
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/animals/{animalId}")
     public ResponseEntity<Void> updateAnimal(
         @LoginUser Long shelterId,
@@ -118,6 +123,7 @@ public class AnimalController {
         return ResponseEntity.noContent().build();
     }
 
+    @ShelterOnly
     @DeleteMapping("/shelters/animals/{animalId}")
     public ResponseEntity<Void> deleteAnimal(
         @LoginUser Long shelterId,

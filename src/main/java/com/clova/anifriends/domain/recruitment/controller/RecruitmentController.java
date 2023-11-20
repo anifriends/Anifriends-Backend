@@ -12,6 +12,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsBySh
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
+import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +35,13 @@ public class RecruitmentController {
 
     private final RecruitmentService recruitmentService;
 
+    @ShelterOnly
     @PostMapping("/shelters/recruitments")
     public ResponseEntity<RegisterRecruitmentResponse> registerRecruitment(
-        @LoginUser Long userId,
+        @LoginUser Long volunteerId,
         @RequestBody @Valid RegisterRecruitmentRequest registerRecruitmentRequest) {
         RegisterRecruitmentResponse response = recruitmentService.registerRecruitment(
-            userId,
+            volunteerId,
             registerRecruitmentRequest.title(),
             registerRecruitmentRequest.startTime(),
             registerRecruitmentRequest.endTime(),
@@ -58,6 +60,7 @@ public class RecruitmentController {
         return ResponseEntity.ok(recruitmentService.findRecruitmentDetail(recruitmentId));
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/volunteers/{volunteerId}/recruitments/completed")
     public ResponseEntity<FindCompletedRecruitmentsResponse> findCompletedRecruitments(
         @PathVariable("volunteerId") Long volunteerId,
@@ -85,6 +88,7 @@ public class RecruitmentController {
         ));
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/recruitments")
     public ResponseEntity<FindRecruitmentsByShelterResponse> findRecruitmentsByShelter(
         @LoginUser Long shelterId,
@@ -115,6 +119,7 @@ public class RecruitmentController {
             recruitmentService.findShelterRecruitmentsByShelter(shelterId, pageable));
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/recruitments/{recruitmentId}/close")
     public ResponseEntity<Void> closeRecruitment(
         @LoginUser Long shelterId,
@@ -123,6 +128,7 @@ public class RecruitmentController {
         return ResponseEntity.noContent().build();
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/recruitments/{recruitmentId}")
     public ResponseEntity<Void> updateRecruitment(
         @LoginUser Long shelterId,
@@ -141,6 +147,7 @@ public class RecruitmentController {
         return ResponseEntity.noContent().build();
     }
 
+    @ShelterOnly
     @DeleteMapping("/shelters/recruitments/{recruitmentId}")
     public ResponseEntity<Void> deleteRecruitment(
         @LoginUser Long shelterId,
