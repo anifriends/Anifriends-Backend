@@ -22,6 +22,7 @@ import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.common.dto.PageInfo;
+import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
@@ -35,7 +36,6 @@ import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
-import com.clova.anifriends.global.image.S3Service;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -45,6 +45,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
@@ -61,7 +62,7 @@ class ReviewServiceTest {
     private ApplicantRepository applicantRepository;
 
     @Mock
-    private S3Service s3Service;
+    private ApplicationEventPublisher applicationEventPublisher;
 
 
     @Nested
@@ -273,9 +274,10 @@ class ReviewServiceTest {
             Recruitment recruitment = recruitment(shelter());
             Volunteer volunteer = volunteer();
             Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer, ATTENDANCE);
-            Review review = ReviewFixture.review(applicant);
+            List<String> originalImageUrls = List.of("url1", "url2");
+            Review review = ReviewFixture.review(applicant, originalImageUrls);
             String newContent = "updatedContent";
-            List<String> newImageUrls = List.of("url1", "url2");
+            List<String> newImageUrls = List.of("url3", "url4");
 
             given(reviewRepository.findByReviewIdAndVolunteerId(anyLong(), anyLong()))
                 .willReturn(Optional.of(review));
@@ -284,7 +286,8 @@ class ReviewServiceTest {
             reviewService.updateReview(anyLong(), anyLong(), newContent, newImageUrls);
 
             // then
-            verify(s3Service, times(1)).deleteImages(any());
+            verify(applicationEventPublisher, times(1)).publishEvent(
+                new ImageDeletionEvent(originalImageUrls));
             assertThat(review.getContent()).isEqualTo(newContent);
             assertThat(review.getImages()).isEqualTo(newImageUrls);
         }

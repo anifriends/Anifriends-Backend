@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.ShelterImage;
 import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterResponse;
@@ -24,7 +25,6 @@ import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.shelter.support.ShelterImageFixture;
-import com.clova.anifriends.global.image.S3Service;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +35,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class ShelterServiceTest {
@@ -46,7 +47,7 @@ class ShelterServiceTest {
     private ShelterRepository shelterRepository;
 
     @Mock
-    private S3Service s3Service;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Spy
     CustomPasswordEncoder passwordEncoder = new MockPasswordEncoder();
@@ -313,7 +314,8 @@ class ShelterServiceTest {
                 newAddressDetail, newPhoneNumber, newSparePhoneNumber, newIsOpenedAddress);
 
             // then
-            verify(s3Service, times(0)).deleteImages(any());
+            verify(applicationEventPublisher, times(0)).publishEvent(any());
+
             assertSoftly(softAssertions -> {
                 softAssertions.assertThat(shelter.getName()).isEqualTo(newName);
                 softAssertions.assertThat(shelter.getImage()).isEqualTo(newImageUrl);
@@ -344,7 +346,8 @@ class ShelterServiceTest {
             ));
 
             // then
-            verify(s3Service, times(1)).deleteImages(List.of(originImageUrl));
+            verify(applicationEventPublisher, times(1)).publishEvent(
+                new ImageDeletionEvent(List.of(originImageUrl)));
             assertThat(exception).isNull();
         }
 
@@ -366,7 +369,7 @@ class ShelterServiceTest {
             ));
 
             // then
-            verify(s3Service, times(0)).deleteImages(any());
+            verify(applicationEventPublisher, times(0)).publishEvent(any());
             assertThat(exception).isNull();
         }
 
@@ -389,7 +392,8 @@ class ShelterServiceTest {
             ));
 
             // then
-            verify(s3Service, times(1)).deleteImages(List.of(originImageUrl));
+            verify(applicationEventPublisher, times(1)).publishEvent(
+                new ImageDeletionEvent(List.of(originImageUrl)));
             assertThat(exception).isNull();
         }
 
@@ -412,7 +416,7 @@ class ShelterServiceTest {
             ));
 
             // then
-            verify(s3Service, times(0)).deleteImages(any());
+            verify(applicationEventPublisher, times(0)).publishEvent(any());
             assertThat(exception).isNull();
         }
 
@@ -434,7 +438,7 @@ class ShelterServiceTest {
             ));
 
             // then
-            verify(s3Service, times(0)).deleteImages(any());
+            verify(applicationEventPublisher, times(0)).publishEvent(any());
             assertThat(exception).isNull();
         }
 

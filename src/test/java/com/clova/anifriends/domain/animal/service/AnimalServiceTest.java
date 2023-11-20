@@ -25,11 +25,11 @@ import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
+import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
-import com.clova.anifriends.global.image.S3Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +41,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -58,7 +59,7 @@ class AnimalServiceTest {
     ShelterRepository shelterRepository;
 
     @Mock
-    S3Service s3Service;
+    ApplicationEventPublisher applicationEventPublisher;
 
     @Nested
     @DisplayName("registerAnimal 메서드 실행 시")
@@ -312,7 +313,8 @@ class AnimalServiceTest {
                 mockImageUrls);
 
             //then
-            verify(s3Service, times(1)).deleteImages(List.of(originImage1, originImage2));
+            verify(applicationEventPublisher, times(1)).publishEvent(
+                new ImageDeletionEvent(List.of(originImage1, originImage2)));
 
             assertThat(animal.getName()).isEqualTo(mockName);
             assertThat(animal.getBirthDate()).isEqualTo(mockBirthDate);
@@ -388,7 +390,8 @@ class AnimalServiceTest {
             animalService.deleteAnimal(1L, 1L);
 
             //then
-            verify(s3Service, times(1)).deleteImages(originImages);
+            verify(applicationEventPublisher, times(1)).publishEvent(
+                new ImageDeletionEvent(originImages));
             then(animalRepository).should().delete(any(Animal.class));
         }
 
