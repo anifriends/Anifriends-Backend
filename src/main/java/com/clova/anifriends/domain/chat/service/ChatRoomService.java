@@ -48,11 +48,6 @@ public class ChatRoomService {
         return FindChatRoomDetailResponse.fromShelter(chatRoom);
     }
 
-    private ChatRoom getChatRoomWithVolunteer(Long chatRoomId) {
-        return chatRoomRepository.findByIdWithVolunteer(chatRoomId)
-            .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
-    }
-
     @Transactional
     public Long registerChatRoom(Long volunteerId, Long shelterId) {
         Volunteer volunteer = getVolunteer(volunteerId);
@@ -84,16 +79,6 @@ public class ChatRoomService {
         return new FindChatRoomIdResponse(chatRoomId);
     }
 
-    private ChatRoom getChatRoomWithShelter(Long chatRoomId) {
-        return chatRoomRepository.findByIdWithShelter(chatRoomId)
-            .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
-    }
-
-    private Volunteer getVolunteer(Long volunteerId) {
-        return volunteerRepository.findById(volunteerId)
-            .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
-    }
-
     @Transactional(readOnly = true)
     public FindUnreadCountResponse findUnreadCountByVolunteer(Long volunteerId) {
         Volunteer volunteer = getVolunteer(volunteerId);
@@ -122,6 +107,21 @@ public class ChatRoomService {
         Page<ChatMessage> chatMessagePage
             = chatMessageRepository.findByChatRoomOrderByCreatedAtDesc(chatRoom, pageable);
         return FindChatMessagesResponse.from(chatMessagePage);
+    }
+
+    private ChatRoom getChatRoomWithShelter(Long chatRoomId) {
+        return chatRoomRepository.findByIdWithShelter(chatRoomId)
+            .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
+    }
+
+    private Volunteer getVolunteer(Long volunteerId) {
+        return volunteerRepository.findById(volunteerId)
+            .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
+    }
+
+    private ChatRoom getChatRoomWithVolunteer(Long chatRoomId) {
+        return chatRoomRepository.findByIdWithVolunteer(chatRoomId)
+            .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
     }
 
     private ChatRoom getChatRoom(Long chatRoomId) {

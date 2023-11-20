@@ -1,5 +1,7 @@
 package com.clova.anifriends.domain.animal.controller;
 
+import static java.util.Objects.nonNull;
+
 import com.clova.anifriends.domain.animal.dto.request.FindAnimalsByShelterRequest;
 import com.clova.anifriends.domain.animal.dto.request.FindAnimalsByVolunteerRequest;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
@@ -76,7 +78,8 @@ public class AnimalController {
         return ResponseEntity.ok(animalService.findAnimalsByVolunteer(
             findAnimalsRequest.type(),
             findAnimalsRequest.active(),
-            findAnimalsRequest.neuteredFilter().isNeutered(),
+            nonNull(findAnimalsRequest.neuteredFilter()) ? findAnimalsRequest.neuteredFilter()
+                .isNeutered() : null,
             findAnimalsRequest.age(),
             findAnimalsRequest.gender(),
             findAnimalsRequest.size(),
