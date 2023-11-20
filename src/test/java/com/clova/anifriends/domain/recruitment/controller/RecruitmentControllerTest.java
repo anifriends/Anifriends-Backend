@@ -179,7 +179,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         params.add("keyword", "겅색어");
         params.add("startDate", LocalDate.now().toString());
         params.add("endDate", LocalDate.now().toString());
-        params.add("isClosed", "false");
+        params.add("closedFilter", "IS_OPENED");
         params.add("title", "true");
         params.add("content", "false");
         params.add("shelterName", "false");
@@ -195,7 +195,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
             List.of(findRecruitmentResponse), pageInfo);
 
         given(recruitmentService.findRecruitments(anyString(), any(), any(),
-            anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), any()))
+            any(), anyBoolean(), anyBoolean(), anyBoolean(), any()))
             .willReturn(response);
 
         //when
@@ -215,8 +215,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getDateConstraint()),
                     parameterWithName("endDate").description("검색 종료일").optional()
                         .attributes(DocumentationFormatGenerator.getDateConstraint()),
-                    parameterWithName("isClosed").description("마감 여부").optional()
-                        .attributes(DocumentationFormatGenerator.getConstraint("true, false")),
+                    parameterWithName("closedFilter").description("마감 여부").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("IS_OPENED, IS_CLOSED")),
                     parameterWithName("title").description("제목 포함 검색").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("기본값 true")),
                     parameterWithName("content").description("본문 포함 검색").optional()
@@ -260,7 +260,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         params.add("keyword", "겅색어");
         params.add("startDate", LocalDate.now().toString());
         params.add("endDate", LocalDate.now().toString());
-        params.add("isClosed", "false");
+        params.add("closedFilter", "IS_OPENED");
         params.add("title", "true");
         params.add("content", "false");
         params.add("pageNumber", "0");
@@ -294,7 +294,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getDateConstraint()),
                     parameterWithName("endDate").description("검색 종료 날짜").optional()
                         .attributes(DocumentationFormatGenerator.getDateConstraint()),
-                    parameterWithName("isClosed").description("마감 여부").optional()
+                    parameterWithName("closedFilter").description("마감 여부").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("기본값 null")),
                     parameterWithName("content").description("내용 검색 여부").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("기본값 null")),
