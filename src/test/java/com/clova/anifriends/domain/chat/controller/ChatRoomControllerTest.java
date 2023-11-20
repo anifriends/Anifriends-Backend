@@ -284,13 +284,17 @@ class ChatRoomControllerTest extends BaseControllerTest {
         ResultActions resultActions = mockMvc.perform(
             get("/api/chat/rooms/{chatRoomId}/messages", chatRoomId)
                 .param("pageNumber", "0")
-                .param("pageSize", "10"));
+                .param("pageSize", "10")
+                .header(AUTHORIZATION, shelterAccessToken));
 
         //then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
                 pathParameters(
                     parameterWithName("chatRoomId").description("채팅방 ID")
+                ),
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("사용자 액세스 토큰")
                 ),
                 queryParameters(
                     parameterWithName("pageNumber").description("페이지 번호"),

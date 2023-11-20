@@ -9,6 +9,8 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.util.Objects;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -79,5 +81,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(BAD_REQUEST)
             .body(new ErrorResponse(ErrorCode.BAD_REQUEST.getValue(),
                 String.format("%s. (%s)", e.getMessage(), e.getParameterName())));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> accessDeniedEx() {
+        ErrorResponse errorResponse
+            = new ErrorResponse(ErrorCode.UN_AUTHORIZATION.getValue(), "권한이 없습니다.");
+        return ResponseEntity.status(FORBIDDEN)
+            .body(errorResponse);
+    }
+
+    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
+    public ResponseEntity<ErrorResponse> authenticationCredentialsNotFoundEx() {
+        ErrorResponse errorResponse
+            = new ErrorResponse(ErrorCode.UN_AUTHENTICATION.getValue(), "인증되지 않은 사용자입니다.");
+        return ResponseEntity.status(UNAUTHORIZED)
+            .body(errorResponse);
     }
 }

@@ -11,6 +11,7 @@ import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailRespons
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
+import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -71,11 +72,13 @@ public class ShelterController {
         return ResponseEntity.ok(shelterService.findShelterSimple(shelterId));
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/me")
     public ResponseEntity<FindShelterMyPageResponse> findShelterMyPage(@LoginUser Long shelterId) {
         return ResponseEntity.ok(shelterService.findShelterMyPage(shelterId));
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/me/passwords")
     public ResponseEntity<Void> updatePassword(
         @LoginUser Long shelterId,
@@ -87,6 +90,7 @@ public class ShelterController {
         return ResponseEntity.noContent().build();
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/me/address/status")
     public ResponseEntity<Void> updateShelterAddressStatus(
         @LoginUser Long shelterId,
@@ -97,6 +101,7 @@ public class ShelterController {
         return ResponseEntity.noContent().build();
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/me")
     public ResponseEntity<Void> updateShelter(
         @LoginUser Long shelterId,

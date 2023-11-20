@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.animal.controller;
 
 import com.clova.anifriends.domain.animal.dto.request.FindAnimalsByShelterRequest;
-import com.clova.anifriends.domain.animal.dto.request.FindAnimalsRequest;
+import com.clova.anifriends.domain.animal.dto.request.FindAnimalsByVolunteerRequest;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.request.UpdateAnimalAdoptStatusRequest;
 import com.clova.anifriends.domain.animal.dto.request.UpdateAnimalRequest;
@@ -11,6 +11,7 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.service.AnimalService;
 import com.clova.anifriends.domain.auth.LoginUser;
+import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -33,11 +34,12 @@ public class AnimalController {
 
     private final AnimalService animalService;
 
+    @ShelterOnly
     @PostMapping("/shelters/animals")
     public ResponseEntity<Void> registerAnimal(
-        @LoginUser Long userId,
+        @LoginUser Long volunteerId,
         @RequestBody @Valid RegisterAnimalRequest registerAnimalRequest) {
-        RegisterAnimalResponse registerAnimalResponse = animalService.registerAnimal(userId,
+        RegisterAnimalResponse registerAnimalResponse = animalService.registerAnimal(volunteerId,
             registerAnimalRequest);
         URI location = URI.create("/api/shelters/animals/" + registerAnimalResponse.animalId());
         return ResponseEntity.created(location).build();
@@ -49,6 +51,7 @@ public class AnimalController {
         return ResponseEntity.ok(animalService.findAnimalDetail(animalId));
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/animals")
     public ResponseEntity<FindAnimalsByShelterResponse> findAnimalsByShelter(
         @LoginUser Long shelterId,
@@ -60,7 +63,7 @@ public class AnimalController {
             findAnimalsByShelterRequest.keyword(),
             findAnimalsByShelterRequest.type(),
             findAnimalsByShelterRequest.gender(),
-            findAnimalsByShelterRequest.isNeutered(),
+            findAnimalsByShelterRequest.neuteredFilter(),
             findAnimalsByShelterRequest.active(),
             findAnimalsByShelterRequest.size(),
             findAnimalsByShelterRequest.age(),
@@ -69,14 +72,14 @@ public class AnimalController {
     }
 
     @GetMapping("/animals")
-    public ResponseEntity<FindAnimalsResponse> findAnimals(
+    public ResponseEntity<FindAnimalsResponse> findAnimalsByVolunteer(
         Pageable pageable,
-        @ModelAttribute FindAnimalsRequest findAnimalsRequest
+        @ModelAttribute FindAnimalsByVolunteerRequest findAnimalsRequest
     ) {
-        return ResponseEntity.ok(animalService.findAnimals(
+        return ResponseEntity.ok(animalService.findAnimalsByVolunteer(
             findAnimalsRequest.type(),
             findAnimalsRequest.active(),
-            findAnimalsRequest.isNeutered(),
+            findAnimalsRequest.neuteredFilter(),
             findAnimalsRequest.age(),
             findAnimalsRequest.gender(),
             findAnimalsRequest.size(),
@@ -84,6 +87,7 @@ public class AnimalController {
         ));
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/animals/{animalId}/status")
     public ResponseEntity<Void> updateAnimalAdoptStatus(
         @LoginUser Long shelterId,
@@ -94,6 +98,7 @@ public class AnimalController {
         return ResponseEntity.noContent().build();
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/animals/{animalId}")
     public ResponseEntity<Void> updateAnimal(
         @LoginUser Long shelterId,
@@ -118,6 +123,7 @@ public class AnimalController {
         return ResponseEntity.noContent().build();
     }
 
+    @ShelterOnly
     @DeleteMapping("/shelters/animals/{animalId}")
     public ResponseEntity<Void> deleteAnimal(
         @LoginUser Long shelterId,

@@ -7,6 +7,7 @@ import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -31,7 +32,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
         String keyword,
         AnimalType type,
         AnimalGender gender,
-        Boolean isNeutered,
+        AnimalNeuteredFilter neuteredFilter,
         AnimalActive active,
         AnimalSize size,
         AnimalAge age,
@@ -44,7 +45,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
                 animalNameContains(keyword),
                 animalTypeContains(type),
                 animalGenderContains(gender),
-                animalIsNeutered(isNeutered),
+                animalIsNeutered(neuteredFilter),
                 animalActiveContains(active),
                 animalSizeContains(size),
                 animalAgeContains(age)
@@ -61,7 +62,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
                 animalNameContains(keyword),
                 animalTypeContains(type),
                 animalGenderContains(gender),
-                animalIsNeutered(isNeutered),
+                animalIsNeutered(neuteredFilter),
                 animalActiveContains(active),
                 animalSizeContains(size),
                 animalAgeContains(age)
@@ -72,10 +73,10 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     }
 
     @Override
-    public Page<Animal> findAnimals(
+    public Page<Animal> findAnimalsByVolunteer(
         AnimalType type,
         AnimalActive active,
-        Boolean isNeutered,
+        AnimalNeuteredFilter neuteredFilter,
         AnimalAge age,
         AnimalGender gender,
         AnimalSize size,
@@ -86,7 +87,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
             .where(
                 animalTypeContains(type),
                 animalActiveContains(active),
-                animalIsNeutered(isNeutered),
+                animalIsNeutered(neuteredFilter),
                 animalAgeContains(age),
                 animalGenderContains(gender),
                 animalSizeContains(size)
@@ -102,7 +103,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
             .where(
                 animalTypeContains(type),
                 animalActiveContains(active),
-                animalIsNeutered(isNeutered),
+                animalIsNeutered(neuteredFilter),
                 animalAgeContains(age),
                 animalGenderContains(gender),
                 animalSizeContains(size)
@@ -129,9 +130,10 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     }
 
     private BooleanExpression animalIsNeutered(
-        Boolean isNeutered
+        AnimalNeuteredFilter neuteredFilter
     ) {
-        return isNeutered != null ? animal.neutered.isNeutered.eq(isNeutered) : null;
+        return neuteredFilter != null ? animal.neutered.isNeutered.eq(neuteredFilter.isNeutered())
+            : null;
     }
 
     private BooleanExpression animalActiveContains(

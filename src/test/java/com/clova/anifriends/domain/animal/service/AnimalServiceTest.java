@@ -24,6 +24,7 @@ import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -156,7 +157,7 @@ class AnimalServiceTest {
             String keyword = "animalName";
             AnimalType type = AnimalType.DOG;
             AnimalGender gender = AnimalGender.MALE;
-            Boolean isNeutered = true;
+            AnimalNeuteredFilter neuteredFilter = AnimalNeuteredFilter.IS_NEUTERED;
             AnimalActive active = AnimalActive.ACTIVE;
             AnimalSize size = AnimalSize.SMALL;
             AnimalAge age = AnimalAge.BABY;
@@ -167,13 +168,13 @@ class AnimalServiceTest {
             FindAnimalsByShelterResponse expected = FindAnimalsByShelterResponse.from(pageResult);
 
             given(
-                animalRepository.findAnimalsByShelter(shelterId, keyword, type, gender, isNeutered,
-                    active, size, age, pageRequest))
+                animalRepository.findAnimalsByShelter(shelterId, keyword, type, gender,
+                    neuteredFilter, active, size, age, pageRequest))
                 .willReturn(pageResult);
 
             // when
             FindAnimalsByShelterResponse animalsByShelter = animalService.findAnimalsByShelter(
-                shelterId, keyword, type, gender, isNeutered,
+                shelterId, keyword, type, gender, neuteredFilter,
                 active, size, age, pageRequest);
 
             // then
@@ -183,11 +184,11 @@ class AnimalServiceTest {
 
     @Nested
     @DisplayName("findAnimals 실행 시")
-    class FindAnimals {
+    class FindAnimalsByVolunteerTest {
 
         @Test
         @DisplayName("성공")
-        void findAnimals() {
+        void findAnimalsByVolunteer() {
             // given
             String mockName = "animalName";
             String mockInformation = "animalInformation";
@@ -196,7 +197,7 @@ class AnimalServiceTest {
 
             AnimalType typeFilter = AnimalType.DOG;
             AnimalActive activeFilter = AnimalActive.ACTIVE;
-            Boolean isNeuteredFilter = true;
+            AnimalNeuteredFilter neuteredFilter = AnimalNeuteredFilter.IS_NEUTERED;
             AnimalAge ageFilter = AnimalAge.ADULT;
             AnimalGender genderFilter = AnimalGender.MALE;
             AnimalSize sizeFilter = AnimalSize.MEDIUM;
@@ -210,7 +211,7 @@ class AnimalServiceTest {
                 typeFilter.getName(),
                 mockBreed,
                 genderFilter.getName(),
-                isNeuteredFilter,
+                neuteredFilter.isNeutered(),
                 activeFilter.getName(),
                 sizeFilter.getMinWeight(),
                 mockInformation,
@@ -223,13 +224,13 @@ class AnimalServiceTest {
             FindAnimalsResponse expected = FindAnimalsResponse.from(
                 pageResult);
 
-            when(animalRepository.findAnimals(typeFilter, activeFilter, isNeuteredFilter,
-                ageFilter, genderFilter, sizeFilter, pageRequest))
+            when(animalRepository.findAnimalsByVolunteer(typeFilter, activeFilter,
+                neuteredFilter, ageFilter, genderFilter, sizeFilter, pageRequest))
                 .thenReturn(pageResult);
 
             // when
-            FindAnimalsResponse result = animalService.findAnimals(
-                typeFilter, activeFilter, isNeuteredFilter,
+            FindAnimalsResponse result = animalService.findAnimalsByVolunteer(
+                typeFilter, activeFilter, neuteredFilter,
                 ageFilter, genderFilter, sizeFilter, pageRequest);
 
             // then

@@ -2,7 +2,6 @@ package com.clova.anifriends.global.config;
 
 import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.global.security.authorize.UnauthorizedEntryPoint;
 import com.clova.anifriends.global.security.passwordencoder.BCryptCustomPasswordEncoder;
 import com.clova.anifriends.global.web.filter.JwtAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -23,10 +22,8 @@ import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
-
-    private static final String ROLE_SHELTER = "SHELTER";
-    private static final String ROLE_VOLUNTEER = "VOLUNTEER";
 
     private final String frontServer;
 
@@ -67,25 +64,8 @@ public class SecurityConfig {
                 config.setAllowedHeaders(List.of("*"));
                 config.setMaxAge(3600L);
                 return config;
-            }))
-            .exceptionHandling(exception ->
-                exception.authenticationEntryPoint(new UnauthorizedEntryPoint(objectMapper)))
-            .authorizeHttpRequests(request ->
-                request
-                    .requestMatchers(HttpMethod.GET, "/api/shelters/me/**").hasRole(ROLE_SHELTER)
-                    .requestMatchers(HttpMethod.GET, "/api/shelters/*/profile/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/shelters/*/reviews").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/volunteers/*/recruitments/completed")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/shelters/*/recruitments").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/volunteers/*/reviews").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/volunteers/email").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/shelters/email").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/volunteers").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/shelters").permitAll()
-                    .requestMatchers("/api/shelters/**").hasRole(ROLE_SHELTER)
-                    .requestMatchers("/api/volunteers/**").hasRole(ROLE_VOLUNTEER)
-                    .requestMatchers("/**").permitAll());
+            }));
         return http.build();
     }
 }
+
