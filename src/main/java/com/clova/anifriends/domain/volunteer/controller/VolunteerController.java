@@ -86,7 +86,7 @@ public class VolunteerController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/volunteers/me/password")
+    @PatchMapping("/volunteers/me/passwords")
     public ResponseEntity<Void> updateVolunteerPassword(
         @LoginUser Long volunteerId,
         @RequestBody @Valid UpdateVolunteerPasswordRequest updateVolunteerPasswordRequest

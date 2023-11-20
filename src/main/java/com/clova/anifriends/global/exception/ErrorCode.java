@@ -10,6 +10,8 @@ public enum ErrorCode implements EnumType {
     // 400
     BAD_REQUEST("AF001"), // 잘못된 입력값
     INVALID_AUTH_INFO("AF002"), // 아이디 비밀번호 매치 안됨
+    NEW_PASSWORD_EQUALS_PREVIOUS("AF003"), // 변경하려는 비밀번호가 이전과 같음
+    OLD_PASSWORD_NOT_EQUALS_PREVIOUS("AF004"), // 비밀번호 입력값이 기존 비밀번호와 일치하지 않음
     // 401
     ACCESS_TOKEN_EXPIRED("AF101"), // 액세스 토큰 만료
     UN_AUTHENTICATION("AF102"), // 인증 안됨

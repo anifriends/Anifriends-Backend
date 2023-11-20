@@ -221,7 +221,7 @@ class VolunteerControllerTest extends BaseControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(
-            RestDocumentationRequestBuilders.patch("/api/volunteers/me/password")
+            RestDocumentationRequestBuilders.patch("/api/volunteers/me/passwords")
                 .header(AUTHORIZATION, volunteerAccessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateVolunteerPasswordRequest)));

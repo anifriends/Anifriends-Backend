@@ -31,11 +31,11 @@ class AuthControllerTest extends BaseControllerTest {
     @DisplayName("성공: 봉사자 로그인 api 호출 시")
     void volunteerLogin() throws Exception {
         //given
-        LoginRequest request = new LoginRequest("email@email.com", "password123!");
+        LoginRequest request = new LoginRequest("email@email.com", "password123!", "token");
         TokenResponse response = new TokenResponse(1L, UserRole.ROLE_VOLUNTEER, "accessToken",
             "refreshToken");
 
-        given(authService.volunteerLogin(any(), any())).willReturn(response);
+        given(authService.volunteerLogin(any(), any(), any())).willReturn(response);
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/auth/volunteers/login")
@@ -47,7 +47,9 @@ class AuthControllerTest extends BaseControllerTest {
             .andDo(restDocs.document(
                 requestFields(
                     fieldWithPath("email").type(STRING).description("봉사자 이메일"),
-                    fieldWithPath("password").type(STRING).description("봉사자 패스워드")
+                    fieldWithPath("password").type(STRING).description("봉사자 패스워드"),
+                    fieldWithPath("deviceToken").type(STRING).description("fcm device token")
+                        .optional()
                 ),
                 responseCookies(
                     cookieWithName("refreshToken").description("리프레시 토큰")
@@ -64,11 +66,11 @@ class AuthControllerTest extends BaseControllerTest {
     @DisplayName("성공: 보호소 로그인 api 호출 시")
     void shelterLogin() throws Exception {
         //given
-        LoginRequest request = new LoginRequest("email@email.com", "password123!");
+        LoginRequest request = new LoginRequest("email@email.com", "password123!", "token");
         TokenResponse response = new TokenResponse(1L, UserRole.ROLE_SHELTER, "accessToken",
             "refreshToken");
 
-        given(authService.shelterLogin(any(), any())).willReturn(response);
+        given(authService.shelterLogin(any(), any(), any())).willReturn(response);
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/auth/shelters/login")
@@ -80,7 +82,9 @@ class AuthControllerTest extends BaseControllerTest {
             .andDo(restDocs.document(
                 requestFields(
                     fieldWithPath("email").type(STRING).description("보호소 이메일"),
-                    fieldWithPath("password").type(STRING).description("보호소 패스워드")
+                    fieldWithPath("password").type(STRING).description("보호소 패스워드"),
+                    fieldWithPath("deviceToken").type(STRING).description("fcm device token")
+                        .optional()
                 ),
                 responseCookies(
                     cookieWithName("refreshToken").description("리프레시 토큰")

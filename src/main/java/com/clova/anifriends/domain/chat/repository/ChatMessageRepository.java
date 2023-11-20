@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.chat.repository;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.chat.ChatMessage;
 import com.clova.anifriends.domain.chat.ChatRoom;
+import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,14 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
         + " and cm.senderRole = com.clova.anifriends.domain.auth.jwt.UserRole.ROLE_SHELTER"
         + " group by cm.isRead"
         + " having cm.isRead = false")
-    long findUnreadCount(@Param("volunteer") Volunteer volunteer);
+    long findUnreadCountByVolunteer(@Param("volunteer") Volunteer volunteer);
+
+    @Query("select count(cm.chatMessageId) from ChatMessage cm"
+        + " where cm.chatRoom.shelter = :shelter"
+        + " and cm.senderRole = com.clova.anifriends.domain.auth.jwt.UserRole.ROLE_SHELTER"
+        + " group by cm.isRead"
+        + " having cm.isRead = false")
+    long findUnreadCountByShelter(@Param("shelter")Shelter shelter);
 
     Page<ChatMessage> findByChatRoomOrderByCreatedAtDesc(ChatRoom chatRoom, Pageable pageable);
 }

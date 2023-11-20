@@ -199,6 +199,16 @@ operation::chat-room-controller-test/find-chat-room-detail-by-shelter[snippets='
 
 operation::chat-room-controller-test/find-chat-room-detail-by-shelter[snippets='http-response,response-fields']
 
+=== 안 읽은 메시지 총 수 조회
+
+==== Request
+
+operation::chat-room-controller-test/find-unread-count-by-shelter[snippets='http-request,request-headers']
+
+==== Response
+
+operation::chat-room-controller-test/find-unread-count-by-shelter[snippets='http-response,response-fields']
+
 = 봉사자
 
 == 1. 봉사자

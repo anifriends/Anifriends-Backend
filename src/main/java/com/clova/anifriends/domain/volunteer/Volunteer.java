@@ -6,6 +6,7 @@ import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerDeviceToken;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerEmail;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerName;
@@ -66,6 +67,9 @@ public class Volunteer extends BaseTimeEntity {
 
     @Embedded
     private VolunteerName name;
+
+    @Embedded
+    private VolunteerDeviceToken deviceToken;
 
     @OneToMany(mappedBy = "volunteer", fetch = FetchType.LAZY)
     private List<Applicant> applicants = new ArrayList<>();
@@ -200,5 +204,13 @@ public class Volunteer extends BaseTimeEntity {
         return Math.toIntExact(applicants.stream()
             .filter(Applicant::isCompleted)
             .count());
+    }
+
+    public String getDeviceToken() {
+        return this.deviceToken == null ? null : this.deviceToken.getDeviceToken();
+    }
+
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceToken = new VolunteerDeviceToken(deviceToken);
     }
 }

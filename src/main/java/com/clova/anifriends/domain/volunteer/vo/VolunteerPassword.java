@@ -57,7 +57,8 @@ public class VolunteerPassword {
         String rawOldPassword,
         CustomPasswordEncoder passwordEncoder) {
         if (passwordEncoder.noneMatchesPassword(rawOldPassword, password)) {
-            throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
+            throw new VolunteerBadRequestException(ErrorCode.OLD_PASSWORD_NOT_EQUALS_PREVIOUS,
+                "비밀번호가 일치하지 않습니다.");
         }
     }
     
@@ -65,7 +66,7 @@ public class VolunteerPassword {
         String rawNewPassword,
         CustomPasswordEncoder passwordEncoder) {
         if (passwordEncoder.matchesPassword(rawNewPassword, password)) {
-            throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST,
+            throw new VolunteerBadRequestException(ErrorCode.NEW_PASSWORD_EQUALS_PREVIOUS,
                 "변경하려는 패스워드와 기존 패스워드가 동일합니다.");
         }
     }
