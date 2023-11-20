@@ -23,7 +23,6 @@ import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
-import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
@@ -47,6 +46,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -91,8 +91,6 @@ class ApplicantServiceTest {
                 Optional.ofNullable(recruitment));
             given(volunteerRepository.findById(anyLong())).willReturn(
                 Optional.ofNullable(volunteer));
-            given(applicantRepository.existsByRecruitmentAndVolunteer(recruitment, volunteer))
-                .willReturn(false);
 
             // when
             applicantService.registerApplicant(recruitment.getRecruitmentId(),
@@ -113,15 +111,15 @@ class ApplicantServiceTest {
                 Optional.ofNullable(recruitment));
             given(volunteerRepository.findById(anyLong())).willReturn(
                 Optional.ofNullable(volunteer));
-            when(applicantRepository.existsByRecruitmentAndVolunteer(recruitment, volunteer))
-                .thenReturn(true);
+            when(applicantRepository.save(any(Applicant.class))).thenThrow(
+                DataIntegrityViolationException.class);
 
             // when
             Exception exception = catchException(() -> applicantService.registerApplicant(
                 recruitment.getRecruitmentId(), volunteer.getVolunteerId()));
 
             // then
-            assertThat(exception).isInstanceOf(ApplicantConflictException.class);
+            assertThat(exception).isInstanceOf(DataIntegrityViolationException.class);
         }
     }
 

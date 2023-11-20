@@ -69,26 +69,6 @@ public class Applicant extends BaseTimeEntity {
         volunteer.addApplicant(this);
     }
 
-    public ApplicantStatus getStatus() {
-        return status;
-    }
-
-    public Recruitment getRecruitment() {
-        return recruitment;
-    }
-
-    public Volunteer getVolunteer() {
-        return volunteer;
-    }
-
-    public Long getApplicantId() {
-        return applicantId;
-    }
-
-    public Review getReview() {
-        return review;
-    }
-
     private void validateRecruitment(Recruitment recruitment) {
         if (recruitment == null) {
             throw new ApplicantBadRequestException("봉사는 필수 입력 항목입니다.");
@@ -131,4 +111,25 @@ public class Applicant extends BaseTimeEntity {
             this.status = isApproved ? ApplicantStatus.ATTENDANCE : ApplicantStatus.REFUSED;
         }
     }
+
+    public ApplicantStatus getStatus() {
+        return status;
+    }
+
+    public Recruitment getRecruitment() {
+        return recruitment;
+    }
+
+    public Volunteer getVolunteer() {
+        return volunteer;
+    }
+
+    public Long getApplicantId() {
+        return applicantId;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
 }

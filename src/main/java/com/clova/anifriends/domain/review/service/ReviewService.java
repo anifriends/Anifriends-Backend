@@ -10,9 +10,10 @@ import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelt
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
-import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
+import com.clova.anifriends.domain.review.exception.ReviewConflictException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
+import com.clova.anifriends.global.aspect.DataIntegrityHandler;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -45,14 +46,13 @@ public class ReviewService {
     }
 
     @Transactional
+    @DataIntegrityHandler(message = "이미 작성한 리뷰가 존재합니다.", exceptionClass = ReviewConflictException.class)
     public Long registerReview(Long userId, Long applicationId, String content,
         List<String> imageUrls) {
         Applicant applicant = getApplicant(userId, applicationId);
 
-        validateNotExistReview(applicant);
         Review review = new Review(applicant, content, imageUrls);
         reviewRepository.save(review);
-
         return review.getReviewId();
     }
 
@@ -103,12 +103,6 @@ public class ReviewService {
     private Review getReview(Long userId, Long reviewId) {
         return reviewRepository.findByReviewIdAndVolunteerId(reviewId, userId)
             .orElseThrow(() -> new ReviewNotFoundException("존재하지 않는 리뷰입니다."));
-    }
-
-    private void validateNotExistReview(Applicant applicant) {
-        if (applicant.hasReview()) {
-            throw new ReviewBadRequestException("이미 작성된 리뷰가 존재합니다.");
-        }
     }
 
     private Applicant getApplicant(Long userId, Long applicationId) {

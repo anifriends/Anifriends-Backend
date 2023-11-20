@@ -30,7 +30,6 @@ import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelt
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
-import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
@@ -46,6 +45,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
@@ -151,15 +151,15 @@ class ReviewServiceTest {
 
             when(applicantRepository.findByApplicantIdAndVolunteerId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(applicant));
-
+            when(reviewRepository.save(any(Review.class)))
+                .thenThrow(DataIntegrityViolationException.class);
             // when
             Exception exception = catchException(
                 () -> reviewService.registerReview(anyLong(), anyLong(), "reviewContent", null));
 
             // then
-            assertThat(exception).isInstanceOf(ReviewBadRequestException.class);
+            assertThat(exception).isInstanceOf(DataIntegrityViolationException.class);
         }
-
 
     }
 

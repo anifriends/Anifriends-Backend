@@ -9,6 +9,7 @@ import com.clova.anifriends.domain.chat.dto.response.FindChatRoomIdResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindUnreadCountResponse;
 import com.clova.anifriends.domain.chat.exception.ChatNotFoundException;
+import com.clova.anifriends.domain.chat.exception.ChatRoomConflictException;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
 import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
 import com.clova.anifriends.domain.chat.repository.response.FindChatRoomResult;
@@ -18,6 +19,7 @@ import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
+import com.clova.anifriends.global.aspect.DataIntegrityHandler;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -48,19 +50,14 @@ public class ChatRoomService {
         return FindChatRoomDetailResponse.fromShelter(chatRoom);
     }
 
-    private ChatRoom getChatRoomWithVolunteer(Long chatRoomId) {
-        return chatRoomRepository.findByIdWithVolunteer(chatRoomId)
-            .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
-    }
-
     @Transactional
+    @DataIntegrityHandler(message = "이미 존재하는 채팅방입니다.", exceptionClass = ChatRoomConflictException.class)
     public Long registerChatRoom(Long volunteerId, Long shelterId) {
         Volunteer volunteer = getVolunteer(volunteerId);
         Shelter shelter = getShelter(shelterId);
 
         ChatRoom chatRoom = new ChatRoom(volunteer, shelter);
         chatRoomRepository.save(chatRoom);
-
         return chatRoom.getChatRoomId();
     }
 
@@ -82,16 +79,6 @@ public class ChatRoomService {
             .orElse(null);
 
         return new FindChatRoomIdResponse(chatRoomId);
-    }
-
-    private ChatRoom getChatRoomWithShelter(Long chatRoomId) {
-        return chatRoomRepository.findByIdWithShelter(chatRoomId)
-            .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
-    }
-
-    private Volunteer getVolunteer(Long volunteerId) {
-        return volunteerRepository.findById(volunteerId)
-            .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
     }
 
     @Transactional(readOnly = true)
@@ -122,6 +109,21 @@ public class ChatRoomService {
         Page<ChatMessage> chatMessagePage
             = chatMessageRepository.findByChatRoomOrderByCreatedAtDesc(chatRoom, pageable);
         return FindChatMessagesResponse.from(chatMessagePage);
+    }
+
+    private ChatRoom getChatRoomWithVolunteer(Long chatRoomId) {
+        return chatRoomRepository.findByIdWithVolunteer(chatRoomId)
+            .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
+    }
+
+    private ChatRoom getChatRoomWithShelter(Long chatRoomId) {
+        return chatRoomRepository.findByIdWithShelter(chatRoomId)
+            .orElseThrow(() -> new ChatNotFoundException("존재하지 않는 채팅방입니다."));
+    }
+
+    private Volunteer getVolunteer(Long volunteerId) {
+        return volunteerRepository.findById(volunteerId)
+            .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
     }
 
     private ChatRoom getChatRoom(Long chatRoomId) {
