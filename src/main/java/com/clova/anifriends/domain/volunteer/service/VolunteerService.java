@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.volunteer.service;
 
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.domain.common.ImageRemover;
+import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
@@ -13,6 +13,7 @@ import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +23,7 @@ public class VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
     private final CustomPasswordEncoder passwordEncoder;
-    private final ImageRemover imageRemover;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional(readOnly = true)
     public CheckDuplicateVolunteerEmailResponse checkDuplicateVolunteerEmail(String email) {
@@ -87,7 +88,8 @@ public class VolunteerService {
 
     private void deleteImageFromS3(Volunteer volunteer, String newImageUrl) {
         volunteer.findImageToDelete(newImageUrl)
-            .ifPresent(imageUrl -> imageRemover.deleteImages(List.of(imageUrl)));
+            .ifPresent(imageUrl -> applicationEventPublisher
+                .publishEvent(new ImageDeletionEvent(List.of(imageUrl))));
     }
 
     private Volunteer getVolunteer(Long volunteerId) {

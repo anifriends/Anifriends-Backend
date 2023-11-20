@@ -14,13 +14,14 @@ import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
-import com.clova.anifriends.domain.common.ImageRemover;
+import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class AnimalService {
 
     private final AnimalRepository animalRepository;
     private final ShelterRepository shelterRepository;
-    private final ImageRemover imageRemover;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public RegisterAnimalResponse registerAnimal(
@@ -119,7 +120,10 @@ public class AnimalService {
         List<String> imageUrls
     ) {
         Animal foundAnimal = getAnimalByAnimalIdAndShelterIdWithImages(animalId, shelterId);
-        imageRemover.deleteImages(foundAnimal.findImagesToDelete(imageUrls));
+
+        List<String> imagesToDelete = foundAnimal.findImagesToDelete(imageUrls);
+        applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
+
         foundAnimal.updateAnimal(name, birthDate, type, breed, gender, isNeutered, active, weight,
             information, imageUrls);
     }
@@ -127,7 +131,8 @@ public class AnimalService {
     @Transactional
     public void deleteAnimal(Long shelterId, Long animalId) {
         Animal animal = getAnimalByAnimalIdAndShelterId(animalId, shelterId);
-        imageRemover.deleteImages(animal.getImages());
+        List<String> imagesToDelete = animal.getImages();
+        applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
         animalRepository.delete(animal);
     }
 

@@ -14,6 +14,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
+import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.dto.request.RegisterVolunteerRequest;
@@ -25,7 +26,6 @@ import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerImageFixture;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
-import com.clova.anifriends.global.image.S3Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +37,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,7 +50,7 @@ class VolunteerServiceTest {
     VolunteerRepository volunteerRepository;
 
     @Mock
-    private S3Service s3Service;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Spy
     CustomPasswordEncoder passwordEncoder = new MockPasswordEncoder();
@@ -182,7 +183,7 @@ class VolunteerServiceTest {
                 newPhoneNumber, newImageUrl);
 
             //then
-            verify(s3Service, times(0)).deleteImages(any());
+            verify(applicationEventPublisher, times(0)).publishEvent(any());
             assertThat(volunteer.getName()).isEqualTo(newName);
             assertThat(volunteer.getGender()).isEqualTo(newGender);
             assertThat(volunteer.getBirthDate()).isEqualTo(newBirthDate);
@@ -206,7 +207,8 @@ class VolunteerServiceTest {
                 volunteer.getPhoneNumber(), newImageUrl));
 
             // then
-            verify(s3Service, times(1)).deleteImages(List.of(originImageUrl));
+            verify(applicationEventPublisher, times(1)).publishEvent(
+                new ImageDeletionEvent(List.of(originImageUrl)));
             assertThat(exception).isNull();
         }
 
@@ -225,7 +227,7 @@ class VolunteerServiceTest {
                 volunteer.getPhoneNumber(), sameImageUrl));
 
             // then
-            verify(s3Service, times(0)).deleteImages(any());
+            verify(applicationEventPublisher, times(0)).publishEvent(any());
             assertThat(exception).isNull();
         }
 
@@ -245,7 +247,8 @@ class VolunteerServiceTest {
                 volunteer.getPhoneNumber(), nullNewImageUrl));
 
             // then
-            verify(s3Service, times(1)).deleteImages(List.of(originImageUrl));
+            verify(applicationEventPublisher, times(1)).publishEvent(
+                new ImageDeletionEvent(List.of(originImageUrl)));
             assertThat(exception).isNull();
         }
 
@@ -265,7 +268,7 @@ class VolunteerServiceTest {
                 volunteer.getPhoneNumber(), newImageUrl));
 
             // then
-            verify(s3Service, times(0)).deleteImages(any());
+            verify(applicationEventPublisher, times(0)).publishEvent(any());
             assertThat(exception).isNull();
         }
 
@@ -284,7 +287,7 @@ class VolunteerServiceTest {
                 volunteer.getPhoneNumber(), nullImageUrl));
 
             // then
-            verify(s3Service, times(0)).deleteImages(any());
+            verify(applicationEventPublisher, times(0)).publishEvent(any());
             assertThat(exception).isNull();
         }
     }
