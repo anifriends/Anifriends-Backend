@@ -13,6 +13,7 @@ import com.clova.anifriends.domain.animal.mapper.AnimalMapper;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -55,7 +56,7 @@ public class AnimalService {
         String keyword,
         AnimalType type,
         AnimalGender gender,
-        Boolean isNeutered,
+        AnimalNeuteredFilter neuteredFilter,
         AnimalActive active,
         AnimalSize size,
         AnimalAge age,
@@ -66,7 +67,7 @@ public class AnimalService {
             keyword,
             type,
             gender,
-            isNeutered,
+            neuteredFilter,
             active,
             size,
             age,
@@ -77,18 +78,18 @@ public class AnimalService {
     }
 
     @Transactional(readOnly = true)
-    public FindAnimalsResponse findAnimals(
+    public FindAnimalsResponse findAnimalsByVolunteer(
         AnimalType type,
         AnimalActive active,
-        Boolean isNeutered,
+        AnimalNeuteredFilter neuteredFilter,
         AnimalAge age,
         AnimalGender gender,
         AnimalSize size,
         Pageable pageable) {
-        Page<Animal> animalsWithPagination = animalRepository.findAnimals(
+        Page<Animal> animalsWithPagination = animalRepository.findAnimalsByVolunteer(
             type,
             active,
-            isNeutered,
+            neuteredFilter,
             age,
             gender,
             size,

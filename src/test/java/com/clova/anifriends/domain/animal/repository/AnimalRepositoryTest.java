@@ -9,6 +9,7 @@ import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -162,7 +163,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
                 "animalName",
                 AnimalType.DOG,
                 AnimalGender.FEMALE,
-                true,
+                AnimalNeuteredFilter.IS_NEUTERED,
                 null,
                 null,
                 null,
@@ -186,7 +187,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             AnimalType nullTypeFilter = null;
             AnimalActive nullActiveFilter = null;
-            Boolean nullIsNeuteredFilter = null;
+            AnimalNeuteredFilter nullIsNeuteredFilter = null;
             AnimalAge nullAgeFilter = null;
             AnimalGender nullGenderFilter = null;
 
@@ -255,7 +256,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             AnimalType nullTypeFilter = null;
             AnimalActive nullActiveFilter = null;
-            Boolean nullIsNeuteredFilter = null;
+            AnimalNeuteredFilter nullIsNeuteredFilter = null;
             AnimalAge nullAgeFilter = null;
             AnimalGender nullGenderFilter = null;
 
@@ -328,7 +329,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             AnimalType typeFilter = AnimalType.DOG;
             AnimalActive activeFilter = AnimalActive.ACTIVE;
-            Boolean isNeuteredFilter = true;
+            AnimalNeuteredFilter neuteredFilter = AnimalNeuteredFilter.IS_NEUTERED;
             AnimalAge ageFilter = AnimalAge.ADULT;
             AnimalGender genderFilter = AnimalGender.MALE;
             AnimalSize sizeFilter = AnimalSize.MEDIUM;
@@ -342,7 +343,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
                 typeFilter.getName(),
                 mockBreed,
                 genderFilter.getName(),
-                isNeuteredFilter,
+                neuteredFilter.isNeutered(),
                 activeFilter.getName(),
                 sizeFilter.getMinWeight(),
                 mockInformation,
@@ -356,7 +357,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
                 typeFilter.getName(),
                 mockBreed,
                 genderFilter.getName(),
-                isNeuteredFilter,
+                neuteredFilter.isNeutered(),
                 activeFilter.getName(),
                 sizeFilter.getMinWeight(),
                 mockInformation,
@@ -370,7 +371,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
                 typeFilter.getName(),
                 mockBreed,
                 genderFilter.getName(),
-                isNeuteredFilter ? false : true,
+                neuteredFilter.isNeutered() ? false : true,
                 activeFilter.getName(),
                 sizeFilter.getMinWeight(),
                 mockInformation,
@@ -383,10 +384,10 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Page<Animal> result = animalRepository.findAnimals(
+            Page<Animal> result = animalRepository.findAnimalsByVolunteer(
                 typeFilter,
                 activeFilter,
-                isNeuteredFilter,
+                neuteredFilter,
                 ageFilter,
                 genderFilter,
                 sizeFilter,
@@ -408,7 +409,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             AnimalType nullTypeFilter = null;
             AnimalActive nullActiveFilter = null;
-            Boolean nullIsNeuteredFilter = null;
+            AnimalNeuteredFilter nullIsNeuteredFilter = null;
             AnimalAge nullAgeFilter = null;
             AnimalGender nullGenderFilter = null;
             AnimalSize nullSizeFilter = null;
@@ -449,7 +450,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Page<Animal> result = animalRepository.findAnimals(
+            Page<Animal> result = animalRepository.findAnimalsByVolunteer(
                 nullTypeFilter,
                 nullActiveFilter,
                 nullIsNeuteredFilter,

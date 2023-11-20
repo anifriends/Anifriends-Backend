@@ -52,16 +52,6 @@ public class ApplicantService {
         return FindApplyingVolunteersResponse.from(applyingVolunteers);
     }
 
-    private Recruitment getRecruitment(Long recruitmentId) {
-        return recruitmentRepository.findById(recruitmentId)
-            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 봉사입니다."));
-    }
-
-    private Volunteer getVolunteer(Long volunteerId) {
-        return volunteerRepository.findById(volunteerId)
-            .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
-    }
-
     @Transactional(readOnly = true)
     public FindApplicantsApprovedResponse findApplicantsApproved(Long shelterId,
         Long recruitmentId) {
@@ -83,6 +73,13 @@ public class ApplicantService {
         List<UpdateApplicantAttendanceCommand> applicantsCommand) {
         updateToAttendance(shelterId, recruitmentId, applicantsCommand);
         updateToNoShow(shelterId, recruitmentId, applicantsCommand);
+    }
+
+    @Transactional
+    public void updateApplicantStatus(Long applicantId, Long recruitmentId, Long shelterId,
+        Boolean isApproved) {
+        Applicant applicant = getApplicant(applicantId, recruitmentId, shelterId);
+        applicant.updateApplicantStatus(isApproved);
     }
 
     private void updateToNoShow(Long shelterId, Long recruitmentId,
@@ -107,16 +104,19 @@ public class ApplicantService {
             ApplicantStatus.ATTENDANCE);
     }
 
-    @Transactional
-    public void updateApplicantStatus(Long applicantId, Long recruitmentId, Long shelterId,
-        Boolean isApproved) {
-        Applicant applicant = getApplicant(applicantId, recruitmentId, shelterId);
-        applicant.updateApplicantStatus(isApproved);
-    }
-
     private Applicant getApplicant(Long applicantId, Long recruitmentId, Long shelterId) {
         return applicantRepository.findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId(
                 applicantId, recruitmentId, shelterId)
             .orElseThrow(() -> new ApplicantNotFoundException("존재하지 않는 봉사 신청입니다."));
+    }
+
+    private Recruitment getRecruitment(Long recruitmentId) {
+        return recruitmentRepository.findById(recruitmentId)
+            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 봉사입니다."));
+    }
+
+    private Volunteer getVolunteer(Long volunteerId) {
+        return volunteerRepository.findById(volunteerId)
+            .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
     }
 }
