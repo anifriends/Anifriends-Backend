@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.applicant;
 
 import com.clova.anifriends.domain.applicant.exception.ApplicantBadRequestException;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;

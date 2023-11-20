@@ -32,7 +32,7 @@ import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageRes
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

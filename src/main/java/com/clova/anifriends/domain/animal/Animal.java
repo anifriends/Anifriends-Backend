@@ -1,15 +1,15 @@
 package com.clova.anifriends.domain.animal;
 
 import com.clova.anifriends.domain.animal.exception.AnimalBadRequestException;
-import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
-import com.clova.anifriends.domain.animal.wrapper.AnimalAdopted;
-import com.clova.anifriends.domain.animal.wrapper.AnimalBreed;
-import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
-import com.clova.anifriends.domain.animal.wrapper.AnimalInformation;
-import com.clova.anifriends.domain.animal.wrapper.AnimalName;
-import com.clova.anifriends.domain.animal.wrapper.AnimalNeutered;
-import com.clova.anifriends.domain.animal.wrapper.AnimalType;
-import com.clova.anifriends.domain.animal.wrapper.AnimalWeight;
+import com.clova.anifriends.domain.animal.vo.AnimalActive;
+import com.clova.anifriends.domain.animal.vo.AnimalAdopted;
+import com.clova.anifriends.domain.animal.vo.AnimalBreed;
+import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalInformation;
+import com.clova.anifriends.domain.animal.vo.AnimalName;
+import com.clova.anifriends.domain.animal.vo.AnimalNeutered;
+import com.clova.anifriends.domain.animal.vo.AnimalType;
+import com.clova.anifriends.domain.animal.vo.AnimalWeight;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.shelter.Shelter;
 import jakarta.persistence.CascadeType;

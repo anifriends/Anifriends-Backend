@@ -6,7 +6,7 @@ import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,11 +1,11 @@
 package com.clova.anifriends.domain.review;
 
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.review.exception.ReviewAuthorizationException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
-import com.clova.anifriends.domain.review.wrapper.ReviewContent;
+import com.clova.anifriends.domain.review.vo.ReviewContent;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

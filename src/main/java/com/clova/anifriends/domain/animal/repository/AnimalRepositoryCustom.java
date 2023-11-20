@@ -3,9 +3,9 @@ package com.clova.anifriends.domain.animal.repository;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
-import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
-import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
-import com.clova.anifriends.domain.animal.wrapper.AnimalType;
+import com.clova.anifriends.domain.animal.vo.AnimalActive;
+import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

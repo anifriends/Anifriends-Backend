@@ -8,7 +8,7 @@ import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.applicant.controller;
 
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.PENDING;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.PENDING;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
