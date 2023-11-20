@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 public enum AnimalNeuteredFilter implements EnumType {
 
     IS_NEUTERED(true),
-    IS_NOT_NEUTERED(false);;
+    IS_NOT_NEUTERED(false),
+    ;
 
     private final boolean isNeutered;
 
