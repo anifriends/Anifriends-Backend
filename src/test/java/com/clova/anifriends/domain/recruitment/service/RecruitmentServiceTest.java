@@ -202,12 +202,12 @@ class RecruitmentServiceTest {
                 pageResult);
 
             when(recruitmentRepository.findRecruitmentsByShelterOrderByCreatedAt(
-                anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), any()))
+                anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), anyBoolean(), any()))
                 .thenReturn(pageResult);
 
             // when
             FindRecruitmentsByShelterResponse result = recruitmentService.findRecruitmentsByShelter(
-                anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), any());
+                anyLong(), any(), any(), any(), anyBoolean(), anyBoolean(), anyBoolean(), any());
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);

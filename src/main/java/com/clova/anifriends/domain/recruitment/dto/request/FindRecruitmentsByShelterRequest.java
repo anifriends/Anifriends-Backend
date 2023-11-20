@@ -6,14 +6,17 @@ public record FindRecruitmentsByShelterRequest(
     String keyword,
     LocalDate startDate,
     LocalDate endDate,
+    Boolean isClosed,
     Boolean content,
     Boolean title
 ) {
 
-    public FindRecruitmentsByShelterRequest(String keyword, LocalDate startDate, LocalDate endDate, Boolean content, Boolean title) {
+    public FindRecruitmentsByShelterRequest(String keyword, LocalDate startDate, LocalDate endDate,
+        Boolean isClosed, Boolean content, Boolean title) {
         this.keyword = keyword;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.isClosed = isClosed;
         this.content = content == null || content;
         this.title = title == null || title;
     }

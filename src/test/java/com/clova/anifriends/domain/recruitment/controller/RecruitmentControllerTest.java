@@ -256,6 +256,15 @@ class RecruitmentControllerTest extends BaseControllerTest {
     @DisplayName("findRecruitmentsByShelter 실행 시")
     void findRecruitmentsByShelter() throws Exception {
         // given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("keyword", "겅색어");
+        params.add("startDate", LocalDate.now().toString());
+        params.add("endDate", LocalDate.now().toString());
+        params.add("isClosed", "false");
+        params.add("title", "true");
+        params.add("content", "false");
+        params.add("pageNumber", "0");
+        params.add("pageSize", "10");
         Shelter shelter = shelter();
         Recruitment recruitment = recruitment(shelter);
         setField(recruitment, "recruitmentId", 1L);
@@ -264,13 +273,14 @@ class RecruitmentControllerTest extends BaseControllerTest {
             pageResult);
 
         when(recruitmentService.findRecruitmentsByShelter(anyLong(), any(), any(), any(),
-            anyBoolean(), anyBoolean(), any()))
+            anyBoolean(), anyBoolean(), anyBoolean(), any()))
             .thenReturn(response);
 
         // when
         ResultActions result = mockMvc.perform(
             get("/api/shelters/recruitments")
                 .header(AUTHORIZATION, shelterAccessToken)
+                .params(params)
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -284,6 +294,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getDateConstraint()),
                     parameterWithName("endDate").description("검색 종료 날짜").optional()
                         .attributes(DocumentationFormatGenerator.getDateConstraint()),
+                    parameterWithName("isClosed").description("마감 여부").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("기본값 null")),
                     parameterWithName("content").description("내용 검색 여부").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("기본값 null")),
                     parameterWithName("title").description("제목 검색 여부").optional()
