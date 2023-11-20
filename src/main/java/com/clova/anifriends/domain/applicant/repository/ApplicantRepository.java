@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.applicant.repository;
 
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.util.List;
@@ -39,7 +39,8 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         + "join fetch r.shelter s "
         + "where r.recruitmentId = :recruitmentId "
         + "and s.shelterId = :shelterId "
-        + "and (a.status = 'ATTENDANCE' or a.status = 'NO_SHOW')")
+        + "and (a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE "
+        + "or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NO_SHOW)")
     List<Applicant> findApprovedByRecruitmentIdAndShelterId(
         @Param("recruitmentId") Long recruitmentId,
         @Param("shelterId") Long shelterId
@@ -60,7 +61,8 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         + "where a.recruitment.recruitmentId = :recruitmentId "
         + "and a.recruitment.shelter.shelterId = :shelterId "
         + "and a.applicantId in :ids "
-        + "and (a.status = 'ATTENDANCE' or a.status = 'NO_SHOW')")
+        + "and (a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE "
+        + "or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NO_SHOW)")
     void updateBulkAttendance(
         @Param("shelterId") Long shelterId,
         @Param("recruitmentId") Long recruitmentId,

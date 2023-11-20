@@ -1,10 +1,10 @@
 package com.clova.anifriends.domain.animal.support.fixture;
 
 import com.clova.anifriends.domain.animal.Animal;
-import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
-import com.clova.anifriends.domain.animal.wrapper.AnimalAdopted;
-import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
-import com.clova.anifriends.domain.animal.wrapper.AnimalType;
+import com.clova.anifriends.domain.animal.vo.AnimalActive;
+import com.clova.anifriends.domain.animal.vo.AnimalAdopted;
+import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
 import java.time.LocalDate;
 import java.util.List;

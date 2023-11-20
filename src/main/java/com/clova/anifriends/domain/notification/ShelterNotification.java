@@ -1,10 +1,10 @@
 package com.clova.anifriends.domain.notification;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
-import com.clova.anifriends.domain.notification.wrapper.NotificationContent;
-import com.clova.anifriends.domain.notification.wrapper.NotificationRead;
-import com.clova.anifriends.domain.notification.wrapper.NotificationTitle;
-import com.clova.anifriends.domain.notification.wrapper.NotificationType;
+import com.clova.anifriends.domain.notification.vo.NotificationContent;
+import com.clova.anifriends.domain.notification.vo.NotificationRead;
+import com.clova.anifriends.domain.notification.vo.NotificationTitle;
+import com.clova.anifriends.domain.notification.vo.NotificationType;
 import com.clova.anifriends.domain.shelter.Shelter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

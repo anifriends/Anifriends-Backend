@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.applicant.dto.response;
 
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 

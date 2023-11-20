@@ -8,7 +8,7 @@ import com.clova.anifriends.domain.auth.support.MockPasswordEncoder;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -270,6 +270,39 @@ class VolunteerTest {
 
             // then
             assertThat(result).isEmpty();
+        }
+    }
+
+    @Nested
+    @DisplayName("updateDeviceToken 실행 시")
+    class UpdateDeviceTokenTest {
+
+        @Test
+        @DisplayName("성공")
+        void updateDeviceToken() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            String updateToken = "update";
+
+            // when
+            volunteer.updateDeviceToken(updateToken);
+
+            // then
+            assertThat(volunteer.getDeviceToken()).isEqualTo(updateToken);
+        }
+
+        @Test
+        @DisplayName("예외(VolunteerBadRequestException): 토큰이 null인 경우")
+        void throwExceptionWhenTokenIsNull() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            String updateToken = null;
+
+            // when
+            Exception exception = catchException(() -> volunteer.updateDeviceToken(updateToken));
+
+            // then
+            assertThat(exception).isInstanceOf(VolunteerBadRequestException.class);
         }
     }
 }

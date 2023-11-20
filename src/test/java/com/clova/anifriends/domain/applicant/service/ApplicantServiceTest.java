@@ -1,10 +1,10 @@
 package com.clova.anifriends.domain.applicant.service;
 
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.NO_SHOW;
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.PENDING;
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.REFUSED;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NO_SHOW;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.PENDING;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.REFUSED;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static com.clova.anifriends.domain.volunteer.support.VolunteerFixture.volunteer;
@@ -30,7 +30,7 @@ import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
-import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentInfo;
+import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;

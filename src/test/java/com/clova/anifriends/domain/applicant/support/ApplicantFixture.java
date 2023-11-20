@@ -1,10 +1,10 @@
 package com.clova.anifriends.domain.applicant.support;
 
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.review.support.ReviewFixture.review;
 
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import org.springframework.test.util.ReflectionTestUtils;

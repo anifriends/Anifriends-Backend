@@ -9,7 +9,7 @@ import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageRespons
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
+import com.clova.anifriends.domain.shelter.vo.ShelterEmail;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;

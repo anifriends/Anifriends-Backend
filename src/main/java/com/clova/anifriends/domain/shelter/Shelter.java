@@ -4,11 +4,12 @@ import static java.util.Objects.nonNull;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterAddressInfo;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterName;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterPassword;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterPhoneNumberInfo;
+import com.clova.anifriends.domain.shelter.vo.ShelterAddressInfo;
+import com.clova.anifriends.domain.shelter.vo.ShelterDeviceToken;
+import com.clova.anifriends.domain.shelter.vo.ShelterEmail;
+import com.clova.anifriends.domain.shelter.vo.ShelterName;
+import com.clova.anifriends.domain.shelter.vo.ShelterPassword;
+import com.clova.anifriends.domain.shelter.vo.ShelterPhoneNumberInfo;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -47,6 +48,9 @@ public class Shelter extends BaseTimeEntity {
 
     @Embedded
     private ShelterAddressInfo addressInfo;
+
+    @Embedded
+    private ShelterDeviceToken deviceToken;
 
     @OneToOne(mappedBy = "shelter", fetch = FetchType.LAZY,
         cascade = CascadeType.ALL, orphanRemoval = true)
@@ -153,5 +157,13 @@ public class Shelter extends BaseTimeEntity {
 
     public String getImage() {
         return this.image == null ? null : this.image.getImageUrl();
+    }
+
+    public String getDeviceToken() {
+        return this.deviceToken == null ? null : this.deviceToken.getDeviceToken();
+    }
+
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceToken = new ShelterDeviceToken(deviceToken);
     }
 }

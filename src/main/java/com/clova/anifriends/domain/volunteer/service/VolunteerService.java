@@ -8,8 +8,8 @@ import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageRes
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerEmail;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
