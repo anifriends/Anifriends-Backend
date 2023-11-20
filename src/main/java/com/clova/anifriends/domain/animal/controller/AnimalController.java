@@ -1,7 +1,5 @@
 package com.clova.anifriends.domain.animal.controller;
 
-import static java.util.Objects.nonNull;
-
 import com.clova.anifriends.domain.animal.dto.request.FindAnimalsByShelterRequest;
 import com.clova.anifriends.domain.animal.dto.request.FindAnimalsByVolunteerRequest;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
@@ -62,7 +60,7 @@ public class AnimalController {
             findAnimalsByShelterRequest.keyword(),
             findAnimalsByShelterRequest.type(),
             findAnimalsByShelterRequest.gender(),
-            findAnimalsByShelterRequest.neuteredFilter().isNeutered(),
+            findAnimalsByShelterRequest.neuteredFilter(),
             findAnimalsByShelterRequest.active(),
             findAnimalsByShelterRequest.size(),
             findAnimalsByShelterRequest.age(),
@@ -71,15 +69,14 @@ public class AnimalController {
     }
 
     @GetMapping("/animals")
-    public ResponseEntity<FindAnimalsResponse> findAnimals(
+    public ResponseEntity<FindAnimalsResponse> findAnimalsByVolunteer(
         Pageable pageable,
         @ModelAttribute FindAnimalsByVolunteerRequest findAnimalsRequest
     ) {
         return ResponseEntity.ok(animalService.findAnimalsByVolunteer(
             findAnimalsRequest.type(),
             findAnimalsRequest.active(),
-            nonNull(findAnimalsRequest.neuteredFilter()) ? findAnimalsRequest.neuteredFilter()
-                .isNeutered() : null,
+            findAnimalsRequest.neuteredFilter(),
             findAnimalsRequest.age(),
             findAnimalsRequest.gender(),
             findAnimalsRequest.size(),

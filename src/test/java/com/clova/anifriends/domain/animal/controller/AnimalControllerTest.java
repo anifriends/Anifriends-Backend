@@ -4,7 +4,6 @@ import static com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixtur
 import static com.clova.anifriends.domain.animal.support.fixture.AnimalFixture.animal;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -187,7 +186,7 @@ class AnimalControllerTest extends BaseControllerTest {
             List.of(findAnimalByShelterResponse), pageInfo);
 
         given(animalService.findAnimalsByShelter(
-            any(), anyString(), any(), any(), anyBoolean(),
+            any(), anyString(), any(), any(), any(),
             any(), any(), any(), any())).willReturn(response);
 
         // when
@@ -263,7 +262,7 @@ class AnimalControllerTest extends BaseControllerTest {
         when(animalService.findAnimalsByVolunteer(
             any(AnimalType.class),
             any(AnimalActive.class),
-            anyBoolean(),
+            any(AnimalNeuteredFilter.class),
             any(AnimalAge.class),
             any(AnimalGender.class),
             any(AnimalSize.class),

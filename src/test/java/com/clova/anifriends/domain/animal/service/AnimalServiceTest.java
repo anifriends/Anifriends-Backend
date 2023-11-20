@@ -168,12 +168,12 @@ class AnimalServiceTest {
 
             given(
                 animalRepository.findAnimalsByShelter(shelterId, keyword, type, gender,
-                    neuteredFilter.isNeutered(), active, size, age, pageRequest))
+                    neuteredFilter, active, size, age, pageRequest))
                 .willReturn(pageResult);
 
             // when
             FindAnimalsByShelterResponse animalsByShelter = animalService.findAnimalsByShelter(
-                shelterId, keyword, type, gender, neuteredFilter.isNeutered(),
+                shelterId, keyword, type, gender, neuteredFilter,
                 active, size, age, pageRequest);
 
             // then
@@ -224,12 +224,12 @@ class AnimalServiceTest {
                 pageResult);
 
             when(animalRepository.findAnimalsByVolunteer(typeFilter, activeFilter,
-                neuteredFilter.isNeutered(), ageFilter, genderFilter, sizeFilter, pageRequest))
+                neuteredFilter, ageFilter, genderFilter, sizeFilter, pageRequest))
                 .thenReturn(pageResult);
 
             // when
             FindAnimalsResponse result = animalService.findAnimalsByVolunteer(
-                typeFilter, activeFilter, neuteredFilter.isNeutered(),
+                typeFilter, activeFilter, neuteredFilter,
                 ageFilter, genderFilter, sizeFilter, pageRequest);
 
             // then
