@@ -17,7 +17,7 @@ class KeywordFilterTest {
         void getKeywordConditionWhenIS_TITLE() {
             //given
             KeywordFilter keywordFilter = KeywordFilter.IS_TITLE;
-            
+
             //when
             KeywordCondition keywordCondition = keywordFilter.getKeywordCondition();
 
