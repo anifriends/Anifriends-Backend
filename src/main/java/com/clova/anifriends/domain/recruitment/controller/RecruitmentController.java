@@ -77,7 +77,7 @@ public class RecruitmentController {
             findRecruitmentsRequest.keyword(),
             findRecruitmentsRequest.startDate(),
             findRecruitmentsRequest.endDate(),
-            findRecruitmentsRequest.isClosed(),
+            findRecruitmentsRequest.closedFilter().getIsClosed(),
             keywordCondition.titleFilter(),
             keywordCondition.contentFilter(),
             keywordCondition.shelterNameFilter(),
@@ -99,7 +99,7 @@ public class RecruitmentController {
             findRecruitmentsByShelterRequest.keyword(),
             findRecruitmentsByShelterRequest.startDate(),
             findRecruitmentsByShelterRequest.endDate(),
-            findRecruitmentsByShelterRequest.isClosed(),
+            findRecruitmentsByShelterRequest.closedFilter().getIsClosed(),
             keywordConditionByShelter.contentFilter(),
             keywordConditionByShelter.titleFilter(),
             pageable
