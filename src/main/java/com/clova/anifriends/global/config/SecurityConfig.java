@@ -25,9 +25,6 @@ import org.springframework.web.cors.CorsConfiguration;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private static final String ROLE_SHELTER = "SHELTER";
-    private static final String ROLE_VOLUNTEER = "VOLUNTEER";
-
     private final String frontServer;
 
     public SecurityConfig(@Value("${front.server}") String frontServer) {
