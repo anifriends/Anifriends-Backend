@@ -251,7 +251,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("findRecruitmentsByShelter 실행 시")
+    @DisplayName("성공: 봉사 모집글 조회(보호소) api 실행 시")
     void findRecruitmentsByShelter() throws Exception {
         // given
         Shelter shelter = shelter();
@@ -282,10 +282,10 @@ class RecruitmentControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getDateConstraint()),
                     parameterWithName("endDate").description("검색 종료 날짜").optional()
                         .attributes(DocumentationFormatGenerator.getDateConstraint()),
-                    parameterWithName("content").description("내용 검색 여부").optional()
-                        .attributes(DocumentationFormatGenerator.getConstraint("기본값 null")),
-                    parameterWithName("title").description("제목 검색 여부").optional()
-                        .attributes(DocumentationFormatGenerator.getConstraint("기본값 null")),
+                    parameterWithName("content").description("내용 검색 여부").optional(),
+                    parameterWithName("keywordFilter").description("검색 필터").optional()
+                        .attributes(
+                            DocumentationFormatGenerator.getConstraint("IS_TITLE, IS_CONTENT")),
                     parameterWithName("pageSize").description("페이지 크기").optional(),
                     parameterWithName("pageNumber").description("페이지 번호").optional()
                 ),

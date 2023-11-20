@@ -91,13 +91,15 @@ public class RecruitmentController {
         @ModelAttribute @Valid FindRecruitmentsByShelterRequest findRecruitmentsByShelterRequest,
         Pageable pageable
     ) {
+        KeywordConditionByShelter keywordConditionByShelter = findRecruitmentsByShelterRequest.keywordFilter()
+            .getKeywordConditionByShelter();
         return ResponseEntity.ok(recruitmentService.findRecruitmentsByShelter(
             shelterId,
             findRecruitmentsByShelterRequest.keyword(),
             findRecruitmentsByShelterRequest.startDate(),
             findRecruitmentsByShelterRequest.endDate(),
-            findRecruitmentsByShelterRequest.content(),
-            findRecruitmentsByShelterRequest.title(),
+            keywordConditionByShelter.contentFilter(),
+            keywordConditionByShelter.titleFilter(),
             pageable
         ));
     }

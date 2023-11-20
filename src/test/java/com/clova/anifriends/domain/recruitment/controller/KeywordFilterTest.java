@@ -72,4 +72,51 @@ class KeywordFilterTest {
             assertThat(keywordCondition.shelterNameFilter()).isTrue();
         }
     }
+
+    @Nested
+    @DisplayName("getKeywordConditionByShelter 메서드 호출 시")
+    class GetKeywordConditionByShelterTest {
+
+        @Test
+        @DisplayName("성공: IS_TITLE 일 시")
+        void getKeywordConditionByShelterWhenIS_TITLE() {
+            //given
+            KeywordFilter keywordFilter = KeywordFilter.IS_TITLE;
+
+            //when
+            KeywordConditionByShelter keywordConditionByShelter = keywordFilter.getKeywordConditionByShelter();
+
+            //then
+            assertThat(keywordConditionByShelter.titleFilter()).isTrue();
+            assertThat(keywordConditionByShelter.contentFilter()).isFalse();
+        }
+
+        @Test
+        @DisplayName("성공: IS_CONTENT 일 시")
+        void getKeywordConditionByShelterWhenIS_CONTENT() {
+            //given
+            KeywordFilter keywordFilter = KeywordFilter.IS_CONTENT;
+
+            //when
+            KeywordConditionByShelter keywordConditionByShelter = keywordFilter.getKeywordConditionByShelter();
+
+            //then
+            assertThat(keywordConditionByShelter.titleFilter()).isFalse();
+            assertThat(keywordConditionByShelter.contentFilter()).isTrue();
+        }
+
+        @Test
+        @DisplayName("성공: ALL 일 시")
+        void getKeywordConditionByShelterWhenALL() {
+            //given
+            KeywordFilter keywordFilter = KeywordFilter.ALL;
+
+            //when
+            KeywordConditionByShelter keywordConditionByShelter = keywordFilter.getKeywordConditionByShelter();
+
+            //then
+            assertThat(keywordConditionByShelter.titleFilter()).isTrue();
+            assertThat(keywordConditionByShelter.contentFilter()).isTrue();
+        }
+    }
 }
