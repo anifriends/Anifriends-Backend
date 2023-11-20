@@ -15,6 +15,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -29,13 +30,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class Review extends BaseTimeEntity {
 
-    public static final int REVIEW_IMAGE_URLS_SIZE = 5;
+    private static final int REVIEW_IMAGE_URLS_SIZE = 5;
+
     @Id
     @Column(name = "review_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "applicant_id", unique = true)
     private Applicant applicant;
 
     @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

@@ -2,7 +2,6 @@ package com.clova.anifriends.domain.applicant.repository;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
-import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.util.List;
 import java.util.Optional;
@@ -12,8 +11,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
-
-    boolean existsByRecruitmentAndVolunteer(Recruitment recruitment, Volunteer volunteer);
 
     @Query(
         "select a "

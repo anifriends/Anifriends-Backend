@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.review.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -12,6 +13,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.ReviewImage;
+import com.clova.anifriends.domain.review.exception.ReviewConflictException;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -75,6 +77,40 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
                     "select ri from ReviewImage ri", ReviewImage.class)
                 .getResultList();
             assertThat(findReviewImages).isEmpty();
+        }
+    }
+
+    @Nested
+    @DisplayName("registerReview 메서드 호출 시")
+    class RegisterReviewTest {
+
+        @Test
+        @DisplayName("예외(ReviewConflictException): 중복된 후기")
+        void exceptionWhenDuplicateReview() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer,
+                ApplicantStatus.ATTENDANCE);
+
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+            volunteerRepository.save(volunteer);
+            applicantRepository.save(applicant);
+
+            Review review = ReviewFixture.review(applicant);
+            reviewRepository.save(review);
+
+            // when
+            Exception exception = catchException(
+                () -> reviewService.registerReview(volunteer.getVolunteerId(),
+                    applicant.getApplicantId(),
+                    "강아지들 진짜 귀여워요 나만 없어 강아지..", List.of("image1", "image2")));
+
+            // then
+            assertThat(exception).isInstanceOf(ReviewConflictException.class);
+
         }
     }
 }

@@ -15,7 +15,7 @@ import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
-import com.clova.anifriends.global.exception.ErrorCode;
+import com.clova.anifriends.global.aspect.DataIntegrityHandler;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,12 +30,11 @@ public class ApplicantService {
     private final VolunteerRepository volunteerRepository;
 
     @Transactional
+    @DataIntegrityHandler(message = "이미 신청한 봉사입니다.", exceptionClass = ApplicantConflictException.class)
     public void registerApplicant(Long recruitmentId, Long volunteerId) {
         Recruitment recruitment = getRecruitment(recruitmentId);
         Volunteer volunteer = getVolunteer(volunteerId);
-        if (applicantRepository.existsByRecruitmentAndVolunteer(recruitment, volunteer)) {
-            throw new ApplicantConflictException(ErrorCode.ALREADY_EXISTS, "이미 신청한 봉사입니다.");
-        }
+
         Applicant applicant = new Applicant(recruitment, volunteer);
         applicantRepository.save(applicant);
     }

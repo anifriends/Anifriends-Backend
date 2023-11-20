@@ -20,13 +20,19 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "applicant")
+@Table(
+    name = "applicant",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"recruitment_id", "volunteer_id"})
+    }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Applicant extends BaseTimeEntity {
 
@@ -63,26 +69,6 @@ public class Applicant extends BaseTimeEntity {
         volunteer.addApplicant(this);
     }
 
-    public ApplicantStatus getStatus() {
-        return status;
-    }
-
-    public Recruitment getRecruitment() {
-        return recruitment;
-    }
-
-    public Volunteer getVolunteer() {
-        return volunteer;
-    }
-
-    public Long getApplicantId() {
-        return applicantId;
-    }
-
-    public Review getReview() {
-        return review;
-    }
-
     private void validateRecruitment(Recruitment recruitment) {
         if (recruitment == null) {
             throw new ApplicantBadRequestException("봉사는 필수 입력 항목입니다.");
@@ -108,10 +94,6 @@ public class Applicant extends BaseTimeEntity {
         return this.status == ApplicantStatus.ATTENDANCE;
     }
 
-    public boolean hasReview() {
-        return review != null;
-    }
-
     public boolean hasNotReview() {
         return getStatus().equals(ApplicantStatus.ATTENDANCE) && Objects.isNull(review);
     }
@@ -129,4 +111,25 @@ public class Applicant extends BaseTimeEntity {
             this.status = isApproved ? ApplicantStatus.ATTENDANCE : ApplicantStatus.REFUSED;
         }
     }
+
+    public ApplicantStatus getStatus() {
+        return status;
+    }
+
+    public Recruitment getRecruitment() {
+        return recruitment;
+    }
+
+    public Volunteer getVolunteer() {
+        return volunteer;
+    }
+
+    public Long getApplicantId() {
+        return applicantId;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
 }
