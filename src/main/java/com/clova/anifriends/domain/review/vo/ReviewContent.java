@@ -13,8 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewContent {
 
-    public static final int CONTENT_MIN_LENGTH = 10;
-    public static final int CONTENT_MAX_LENGTH = 300;
+    private static final int CONTENT_MIN_LENGTH = 10;
+    private static final int CONTENT_MAX_LENGTH = 300;
+
     @Column(name = "content")
     private String content;
 

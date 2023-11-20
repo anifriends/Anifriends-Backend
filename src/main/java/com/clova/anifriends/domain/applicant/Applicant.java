@@ -20,13 +20,19 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "applicant")
+@Table(
+    name = "applicant",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"recruitment_id", "volunteer_id"})
+    }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Applicant extends BaseTimeEntity {
 
@@ -106,10 +112,6 @@ public class Applicant extends BaseTimeEntity {
 
     public boolean isAttendance() {
         return this.status == ApplicantStatus.ATTENDANCE;
-    }
-
-    public boolean hasReview() {
-        return review != null;
     }
 
     public boolean hasNotReview() {

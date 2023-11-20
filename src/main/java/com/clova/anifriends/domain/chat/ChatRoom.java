@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +23,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "chat_room")
+@Table(
+    name = "chat_room",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"volunteer_id", "shelter_id"})
+    }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatRoom {
 
