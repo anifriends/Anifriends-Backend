@@ -19,7 +19,7 @@ public record FindRecruitmentsRequest(
         this.keyword = keyword;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.closedFilter = closedFilter;
+        this.closedFilter = closedFilter == null ? RecruitmentStatusFilter.ALL : closedFilter;
         this.title = title == null || title;
         this.content = content == null || content;
         this.shelterName = shelterName == null || shelterName;
