@@ -170,6 +170,7 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
             LocalDate endDate = LocalDate.now().plusMonths(5);
             boolean content = true;
             boolean title = true;
+            Boolean isClosed = false;
             PageRequest pageable = PageRequest.of(0, 10);
 
             // when
@@ -178,13 +179,14 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
                 keyword,
                 startDate,
                 endDate,
+                isClosed,
                 content,
                 title,
                 pageable
             );
 
             // then
-            assertThat(recruitments).contains(recruitment2, recruitment3);
+            assertThat(recruitments).contains(recruitment3);
         }
 
         @Test
@@ -237,6 +239,7 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
             // when
             Page<Recruitment> recruitments = recruitmentRepository.findRecruitmentsByShelterOrderByCreatedAt(
                 shelter.getShelterId(),
+                null,
                 null,
                 null,
                 null,

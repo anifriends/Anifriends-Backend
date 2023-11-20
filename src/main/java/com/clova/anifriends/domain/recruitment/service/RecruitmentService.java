@@ -60,6 +60,7 @@ public class RecruitmentService {
         String keyword,
         LocalDate startDate,
         LocalDate endDate,
+        Boolean isClosed,
         Boolean content,
         Boolean title,
         Pageable pageable
@@ -69,6 +70,7 @@ public class RecruitmentService {
             keyword,
             startDate,
             endDate,
+            isClosed,
             content,
             title,
             pageable

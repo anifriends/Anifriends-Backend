@@ -95,6 +95,7 @@ public class RecruitmentController {
             findRecruitmentsByShelterRequest.keyword(),
             findRecruitmentsByShelterRequest.startDate(),
             findRecruitmentsByShelterRequest.endDate(),
+            findRecruitmentsByShelterRequest.isClosed(),
             findRecruitmentsByShelterRequest.content(),
             findRecruitmentsByShelterRequest.title(),
             pageable
