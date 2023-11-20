@@ -18,7 +18,7 @@ public record FindRecruitmentsRequest(
         this.keyword = keyword;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.isClosed = isClosed;
+        this.isClosed = isClosed == null ? "ALL" : isClosed;
         this.title = title == null || title;
         this.content = content == null || content;
         this.shelterName = shelterName == null || shelterName;

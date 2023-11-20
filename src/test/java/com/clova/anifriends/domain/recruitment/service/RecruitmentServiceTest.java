@@ -29,7 +29,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResp
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
-import com.clova.anifriends.domain.recruitment.vo.RecruitmentStatusFilter;
+import com.clova.anifriends.domain.recruitment.controller.RecruitmentStatusFilter;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -167,7 +167,8 @@ class RecruitmentServiceTest {
             //when
             FindRecruitmentsResponse recruitmentsByVolunteer
                 = recruitmentService.findRecruitments(keyword, startDate, endDate,
-                isClosed, title, content, shelterName, pageRequest);
+                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), title, content,
+                shelterName, pageRequest);
 
             //then
             PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
