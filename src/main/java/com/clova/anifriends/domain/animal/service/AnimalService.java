@@ -20,11 +20,13 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,6 +99,42 @@ public class AnimalService {
         );
 
         return FindAnimalsResponse.from(animalsWithPagination);
+    }
+
+    @Transactional(readOnly = true)
+    public FindAnimalsResponse findAnimalsByVolunteerV2(
+        AnimalType type,
+        AnimalActive active,
+        AnimalNeuteredFilter neuteredFilter,
+        AnimalAge age,
+        AnimalGender gender,
+        AnimalSize size,
+        LocalDateTime createdAt,
+        Long animalId,
+        Pageable pageable
+    ) {
+        Slice<Animal> animalsWithPagination = animalRepository.findAnimalsByVolunteerV2(
+            type,
+            active,
+            neuteredFilter,
+            age,
+            gender,
+            size,
+            createdAt,
+            animalId,
+            pageable
+        );
+
+        Long count = animalRepository.countAnimalsV2(
+            type,
+            active,
+            neuteredFilter,
+            age,
+            gender,
+            size
+        );
+
+        return FindAnimalsResponse.fromV2(animalsWithPagination, count);
     }
 
     @Transactional

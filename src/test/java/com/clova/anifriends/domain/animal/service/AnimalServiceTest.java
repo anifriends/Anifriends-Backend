@@ -32,6 +32,7 @@ import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +47,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.SliceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class AnimalServiceTest {
@@ -232,6 +234,67 @@ class AnimalServiceTest {
             FindAnimalsResponse result = animalService.findAnimalsByVolunteer(
                 typeFilter, activeFilter, neuteredFilter,
                 ageFilter, genderFilter, sizeFilter, pageRequest);
+
+            // then
+            assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+
+        }
+    }
+
+    @Nested
+    @DisplayName("findAnimalsByVolunteerV2 실행 시")
+    class FindAnimalsByVolunteerV2Test {
+
+        @Test
+        @DisplayName("성공")
+        void findAnimalsByVolunteerV2() {
+            // given
+            String mockName = "animalName";
+            String mockInformation = "animalInformation";
+            String mockBreed = "animalBreed";
+            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
+
+            AnimalType typeFilter = AnimalType.DOG;
+            AnimalActive activeFilter = AnimalActive.ACTIVE;
+            AnimalNeuteredFilter neuteredFilter = AnimalNeuteredFilter.IS_NEUTERED;
+            AnimalAge ageFilter = AnimalAge.ADULT;
+            AnimalGender genderFilter = AnimalGender.MALE;
+            AnimalSize sizeFilter = AnimalSize.MEDIUM;
+
+            Shelter shelter = ShelterFixture.shelter();
+
+            Animal matchAnimal = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now().minusMonths(ageFilter.getMinMonth()),
+                typeFilter.getName(),
+                mockBreed,
+                genderFilter.getName(),
+                neuteredFilter.isNeutered(),
+                activeFilter.getName(),
+                sizeFilter.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            SliceImpl<Animal> pageResult = new SliceImpl<>(List.of(matchAnimal), pageRequest,
+                false);
+
+            FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pageResult, 1L);
+
+            when(animalRepository.findAnimalsByVolunteerV2(typeFilter, activeFilter,
+                neuteredFilter, ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L,
+                pageRequest))
+                .thenReturn(pageResult);
+            when(animalRepository.countAnimalsV2(typeFilter, activeFilter,
+                neuteredFilter, ageFilter, genderFilter, sizeFilter))
+                .thenReturn(1L);
+
+            // when
+            FindAnimalsResponse result = animalService.findAnimalsByVolunteerV2(
+                typeFilter, activeFilter, neuteredFilter,
+                ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L, pageRequest);
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);

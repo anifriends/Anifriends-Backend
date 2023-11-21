@@ -4,6 +4,7 @@ import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.common.PageInfo;
 import java.util.List;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 
 public record FindAnimalsResponse(
     PageInfo pageInfo,
@@ -27,6 +28,7 @@ public record FindAnimalsResponse(
                 animal.getImages().get(0)
             );
         }
+
     }
 
     public static FindAnimalsResponse from(Page<Animal> pagination) {
@@ -35,6 +37,14 @@ public record FindAnimalsResponse(
             .map(FindAnimalByVolunteerResponse::from).toList();
 
         return new FindAnimalsResponse(pageInfo, findAnimalByVolunteerResponses);
+    }
+
+    public static FindAnimalsResponse fromV2(Slice<Animal> animalsWithPagination, Long count) {
+        PageInfo pageInfo = PageInfo.of(count, animalsWithPagination.hasNext());
+        List<FindAnimalByVolunteerResponse> findAnimalsResponses = animalsWithPagination.get()
+            .map(FindAnimalByVolunteerResponse::from).toList();
+
+        return new FindAnimalsResponse(pageInfo, findAnimalsResponses);
     }
 
 }
