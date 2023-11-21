@@ -91,6 +91,8 @@ dependencies {
     // Websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+    // Monitoring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {
