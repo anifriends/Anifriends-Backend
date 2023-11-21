@@ -257,7 +257,7 @@ class RecruitmentServiceTest {
             Recruitment recruitment = recruitment(shelter);
             FindRecruitmentDetailResponse expected = findRecruitmentDetailResponse(recruitment);
 
-            when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.of(recruitment));
+            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(Optional.of(recruitment));
 
             // when
             FindRecruitmentDetailResponse result = recruitmentService.findRecruitmentDetail(
@@ -271,7 +271,7 @@ class RecruitmentServiceTest {
         @DisplayName("예외(RecruitmentNotFoundException): 존재하지 않는 모집글")
         void throwExceptionWhenRecruitmentIsNotExist() {
             // given
-            when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.empty());
+            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(Optional.empty());
 
             // when
             Exception exception = catchException(

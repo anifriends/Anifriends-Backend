@@ -413,7 +413,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
                         .optional(),
                     fieldWithPath("recruitmentUpdatedAt").type(STRING).description("모집글 업데이트 시간")
                         .optional(),
-                    fieldWithPath("recruitmentImageUrls").type(ARRAY).description("모집글 이미지 url 리스트")
+                    fieldWithPath("recruitmentImageUrls").type(ARRAY).description("모집글 이미지 url 리스트"),
+                    fieldWithPath("shelterId").type(NUMBER).description("보호소 ID")
                 )
             ));
     }

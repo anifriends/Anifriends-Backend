@@ -15,7 +15,8 @@ public record FindRecruitmentDetailResponse(
     LocalDateTime recruitmentDeadline,
     LocalDateTime recruitmentCreatedAt,
     LocalDateTime recruitmentUpdatedAt,
-    List<String> recruitmentImageUrls
+    List<String> recruitmentImageUrls,
+    Long shelterId
 
 ) {
 
@@ -31,7 +32,8 @@ public record FindRecruitmentDetailResponse(
             recruitment.getDeadline(),
             recruitment.getCreatedAt(),
             recruitment.getUpdatedAt(),
-            recruitment.getImages()
+            recruitment.getImages(),
+            recruitment.getShelter().getShelterId()
         );
     }
 }
