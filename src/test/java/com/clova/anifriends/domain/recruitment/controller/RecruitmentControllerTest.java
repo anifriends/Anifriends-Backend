@@ -199,15 +199,11 @@ class RecruitmentControllerTest extends BaseControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/recruitments")
-            .header(AUTHORIZATION, volunteerAccessToken)
             .params(params));
 
         //then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
-                requestHeaders(
-                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
-                ),
                 queryParameters(
                     parameterWithName("keyword").description("검색어").optional(),
                     parameterWithName("startDate").description("검색 시작일").optional()
@@ -222,6 +218,85 @@ class RecruitmentControllerTest extends BaseControllerTest {
                             String.join(", ", Arrays.stream(KeywordFilter.values())
                                 .map(KeywordFilter::name)
                                 .toArray(String[]::new)))),
+                    parameterWithName("pageNumber").description("페이지 번호"),
+                    parameterWithName("pageSize").description("페이지 사이즈")
+                ),
+                responseFields(
+                    fieldWithPath("recruitments").type(ARRAY).description("봉사 모집글 리스트"),
+                    fieldWithPath("recruitments[].recruitmentId").type(NUMBER)
+                        .description("봉사 모집글 ID"),
+                    fieldWithPath("recruitments[].recruitmentTitle").type(STRING)
+                        .description("봉사 모집글 제목"),
+                    fieldWithPath("recruitments[].recruitmentStartTime").type(STRING)
+                        .description("봉사 시작 시간"),
+                    fieldWithPath("recruitments[].recruitmentEndTime").type(STRING)
+                        .description("봉사 종료 시간"),
+                    fieldWithPath("recruitments[].recruitmentIsClosed").type(BOOLEAN)
+                        .description("봉사 모집 마감 여부"),
+                    fieldWithPath("recruitments[].recruitmentApplicantCount").type(NUMBER)
+                        .description("봉사 신청 인원"),
+                    fieldWithPath("recruitments[].recruitmentCapacity").type(NUMBER)
+                        .description("봉사 정원"),
+                    fieldWithPath("recruitments[].shelterName").type(STRING).description("보호소 이름"),
+                    fieldWithPath("recruitments[].shelterImageUrl").type(STRING)
+                        .description("보호소 이미지 url").optional(),
+                    fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
+                    fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
+                    fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 봉사 모집글 조회, 검색 V2 API 호출")
+    void findRecruitmentsV2() throws Exception {
+        //given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("keyword", "겅색어");
+        params.add("startDate", LocalDate.now().toString());
+        params.add("endDate", LocalDate.now().toString());
+        params.add("closedFilter", "IS_OPENED");
+        params.add("keywordFilter", KeywordFilter.IS_CONTENT.getName());
+        params.add("recruitmentId", "1");
+        params.add("createdAt", String.valueOf(LocalDateTime.now()));
+        params.add("pageNumber", "0");
+        params.add("pageSize", "10");
+        Shelter shelter = shelter();
+        Recruitment recruitment = recruitment(shelter);
+        ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+        FindRecruitmentResponse findRecruitmentResponse
+            = FindRecruitmentResponse.from(recruitment);
+        PageInfo pageInfo = new PageInfo(1, false);
+        FindRecruitmentsResponse response = new FindRecruitmentsResponse(
+            List.of(findRecruitmentResponse), pageInfo);
+
+        given(recruitmentService.findRecruitmentsV2(anyString(), any(), any(),
+            any(), anyBoolean(), anyBoolean(), anyBoolean(), any(), anyLong(), any()))
+            .willReturn(response);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/api/v2/recruitments")
+            .params(params));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                queryParameters(
+                    parameterWithName("keyword").description("검색어").optional(),
+                    parameterWithName("startDate").description("검색 시작일").optional()
+                        .attributes(DocumentationFormatGenerator.getDateConstraint()),
+                    parameterWithName("endDate").description("검색 종료일").optional()
+                        .attributes(DocumentationFormatGenerator.getDateConstraint()),
+                    parameterWithName("closedFilter").description("마감 여부").optional()
+                        .attributes(
+                            DocumentationFormatGenerator.getConstraint("IS_OPENED, IS_CLOSED")),
+                    parameterWithName("keywordFilter").description("검색 필터").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint(
+                            String.join(", ", Arrays.stream(KeywordFilter.values())
+                                .map(KeywordFilter::name)
+                                .toArray(String[]::new)))),
+                    parameterWithName("recruitmentId").description("보호소 ID"),
+                    parameterWithName("createdAt").description("보호소 생성 날짜"),
                     parameterWithName("pageNumber").description("페이지 번호"),
                     parameterWithName("pageSize").description("페이지 사이즈")
                 ),
