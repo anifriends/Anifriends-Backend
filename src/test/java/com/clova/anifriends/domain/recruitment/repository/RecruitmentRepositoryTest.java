@@ -144,6 +144,31 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
     }
 
     @Nested
+    @DisplayName("countFindRecruitmentsV2 메서드 실행 시")
+    class CountFindRecruitmentsV2Test {
+
+        //todo: 다양한 케이스에 대한 테스트를 작성할 것
+        @Test
+        @DisplayName("성공: 모든 인자가 null")
+        void countFindRecruitmentsV2WhenArgsAreNull() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+
+            //when
+            Long count = recruitmentRepository.countFindRecruitmentsV2(null, null,
+                null, null, false, false, false
+            );
+
+            //then
+            assertThat(count).isEqualTo(1);
+        }
+    }
+
+    @Nested
     @DisplayName("findRecruitmentsByShelterOrderByCreatedAt 메서드 실행 시")
     class FindRecruitmentsByShelterOrderByCreatedAtTest {
 

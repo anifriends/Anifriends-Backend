@@ -2,7 +2,7 @@ name: CD
 
 on:
   push:
-    branches: [ "main", "feat/#267" ]
+    branches: [ "main" ]
 
 jobs:
   build:
