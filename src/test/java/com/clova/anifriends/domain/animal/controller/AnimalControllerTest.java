@@ -47,12 +47,14 @@ import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.shelter.Shelter;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
@@ -239,7 +241,7 @@ class AnimalControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("보호 동물 조회 & 검색 api 호출 시")
+    @DisplayName("보호 동물 조회 & 검색(봉사자) api 호출 시")
     void findAnimals() throws Exception {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -304,6 +306,92 @@ class AnimalControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint(
                             String.join(", ", Arrays.stream(AnimalAge.values()).map(
                                 AnimalAge::name).toArray(String[]::new)))),
+                    parameterWithName("pageNumber").description("페이지 번호"),
+                    parameterWithName("pageSize").description("페이지 사이즈")
+                ),
+                responseFields(
+                    fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
+                    fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
+                    fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
+                    fieldWithPath("animals").type(ARRAY).description("보호 동물 리스트"),
+                    fieldWithPath("animals[].animalId").type(NUMBER).description("보호 동물 ID"),
+                    fieldWithPath("animals[].animalName").type(STRING).description("보호 동물 이름"),
+                    fieldWithPath("animals[].shelterName").type(STRING).description("보호소 이름"),
+                    fieldWithPath("animals[].shelterAddress").type(STRING).description("보호소 주소"),
+                    fieldWithPath("animals[].animalImageUrl").type(STRING)
+                        .description("보호 동물 이미지 url")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("보호 동물 조회 & 검색(봉사자) api 호출 시")
+    void findAnimalsByVolunteerV2() throws Exception {
+        // given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("type", AnimalType.DOG.name());
+        params.add("gender", AnimalGender.FEMALE.name());
+        params.add("neuteredFilter", AnimalNeuteredFilter.IS_NEUTERED.name());
+        params.add("active", AnimalActive.ACTIVE.name());
+        params.add("size", AnimalSize.SMALL.name());
+        params.add("age", AnimalAge.ADULT.name());
+        params.add("animalId", String.valueOf(1L));
+        params.add("createdAt", String.valueOf(LocalDateTime.now()));
+        params.add("pageNumber", String.valueOf(0));
+        params.add("pageSize", String.valueOf(10));
+
+        Shelter shelter = shelter();
+        Animal animal = animal(shelter);
+        ReflectionTestUtils.setField(animal, "animalId", 1L);
+
+        FindAnimalsResponse response = FindAnimalsResponse
+            .fromV2(new SliceImpl<>(List.of(animal)), 1L);
+
+        when(animalService.findAnimalsByVolunteerV2(
+            any(AnimalType.class),
+            any(AnimalActive.class),
+            any(AnimalNeuteredFilter.class),
+            any(AnimalAge.class),
+            any(AnimalGender.class),
+            any(AnimalSize.class),
+            any(LocalDateTime.class),
+            anyLong(),
+            any(Pageable.class))
+        ).thenReturn(response);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/api/v2/animals")
+            .params(params));
+
+        // then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                queryParameters(
+                    parameterWithName("type").description("보호 동물 종류").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint(
+                            String.join(", ", Arrays.stream(AnimalType.values()).map(
+                                AnimalType::name).toArray(String[]::new)))),
+                    parameterWithName("gender").description("보호 동물 성별").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint(
+                            String.join(", ", Arrays.stream(AnimalGender.values()).map(
+                                AnimalGender::name).toArray(String[]::new)))),
+                    parameterWithName("neuteredFilter").description("보호 동물 중성화 여부").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("true, false")),
+                    parameterWithName("active").description("보호 동물 성격").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint(
+                            String.join(", ", Arrays.stream(AnimalActive.values()).map(
+                                AnimalActive::name).toArray(String[]::new)))),
+                    parameterWithName("size").description("보호 동물 크기").optional()
+                        .attributes(
+                            DocumentationFormatGenerator.getConstraint(
+                                String.join(", ", Arrays.stream(AnimalSize.values()).map(
+                                    AnimalSize::name).toArray(String[]::new)))),
+                    parameterWithName("age").description("보호 동물 나이").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint(
+                            String.join(", ", Arrays.stream(AnimalAge.values()).map(
+                                AnimalAge::name).toArray(String[]::new)))),
+                    parameterWithName("animalId").description("페이지 마지막 보호 동물 ID").optional(),
+                    parameterWithName("createdAt").description("페이지 마지막 보호 동물 생일").optional(),
                     parameterWithName("pageNumber").description("페이지 번호"),
                     parameterWithName("pageSize").description("페이지 사이즈")
                 ),
