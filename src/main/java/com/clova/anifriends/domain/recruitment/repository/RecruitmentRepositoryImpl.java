@@ -8,6 +8,7 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -15,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -53,6 +56,66 @@ public class RecruitmentRepositoryImpl implements
                 recruitmentStartTimeLoe(endDate)
             ).fetchOne();
         return new PageImpl<>(content, pageable, count);
+    }
+
+    @Override
+    public Slice<Recruitment> findRecruitmentsV2(String keyword, LocalDate startDate,
+        LocalDate endDate, Boolean isClosed, boolean titleContains, boolean contentContains,
+        boolean shelterNameContains, LocalDateTime createdAt, Long recruitmentId,
+        Pageable pageable) {
+        List<Recruitment> content = query.select(recruitment)
+            .from(recruitment)
+            .join(recruitment.shelter)
+            .leftJoin(recruitment.applicants)
+            .where(
+                keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
+                recruitmentIsClosed(isClosed),
+                recruitmentStartTimeGoe(startDate),
+                recruitmentStartTimeLoe(endDate),
+                cursorId(recruitmentId, createdAt)
+            )
+            .orderBy(recruitment.createdAt.desc())
+            .limit(pageable.getPageSize() + 1)
+            .offset(pageable.getOffset())
+            .fetch();
+
+        boolean hasNext = false;
+
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
+
+    @Override
+    public Long countFindRecruitmentsV2(String keyword, LocalDate startDate,
+        LocalDate endDate, Boolean isClosed, boolean titleContains, boolean contentContains,
+        boolean shelterNameContains) {
+
+        return query.select(recruitment.count())
+            .from(recruitment)
+            .join(recruitment.shelter)
+            .where(
+                keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
+                recruitmentIsClosed(isClosed),
+                recruitmentStartTimeGoe(startDate),
+                recruitmentStartTimeLoe(endDate)
+            ).fetchOne();
+    }
+
+    private BooleanExpression cursorId(Long recruitmentId, LocalDateTime createdAt) {
+        if (recruitmentId == null || createdAt == null) {
+            return null;
+        }
+
+        return recruitment.createdAt.lt(createdAt)
+            .or(
+                recruitment.recruitmentId.lt(recruitmentId)
+                    .and(recruitment.createdAt.eq(createdAt)
+                    )
+            );
     }
 
     private BooleanBuilder keywordSearch(String keyword, boolean titleFilter,

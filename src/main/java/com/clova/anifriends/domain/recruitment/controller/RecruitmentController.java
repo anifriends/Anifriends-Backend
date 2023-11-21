@@ -1,8 +1,10 @@
 package com.clova.anifriends.domain.recruitment.controller;
 
 import com.clova.anifriends.domain.auth.LoginUser;
+import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
 import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsByShelterRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsRequest;
+import com.clova.anifriends.domain.recruitment.dto.request.FindRecruitmentsRequestV2;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.UpdateRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
@@ -12,7 +14,6 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsBySh
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
-import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -84,6 +85,27 @@ public class RecruitmentController {
             keywordCondition.titleFilter(),
             keywordCondition.contentFilter(),
             keywordCondition.shelterNameFilter(),
+            pageable
+        ));
+    }
+
+    @GetMapping("/v2/recruitments")
+    public ResponseEntity<FindRecruitmentsResponse> findRecruitmentsV2(
+        @ModelAttribute @Valid FindRecruitmentsRequestV2 findRecruitmentsRequestV2,
+        Pageable pageable) {
+        KeywordCondition keywordCondition = findRecruitmentsRequestV2.keywordFilter()
+            .getKeywordCondition();
+
+        return ResponseEntity.ok(recruitmentService.findRecruitmentsV2(
+            findRecruitmentsRequestV2.keyword(),
+            findRecruitmentsRequestV2.startDate(),
+            findRecruitmentsRequestV2.endDate(),
+            findRecruitmentsRequestV2.closedFilter().getIsClosed(),
+            keywordCondition.titleFilter(),
+            keywordCondition.contentFilter(),
+            keywordCondition.shelterNameFilter(),
+            findRecruitmentsRequestV2.createdAt(),
+            findRecruitmentsRequestV2.recruitmentId(),
             pageable
         ));
     }
