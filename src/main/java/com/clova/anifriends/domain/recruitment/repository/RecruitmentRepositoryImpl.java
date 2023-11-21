@@ -75,7 +75,7 @@ public class RecruitmentRepositoryImpl implements
                 cursorId(recruitmentId, createdAt)
             )
             .orderBy(recruitment.createdAt.desc())
-            .limit(pageable.getPageSize() + 1)
+            .limit(pageable.getPageSize() + 1L)
             .offset(pageable.getOffset())
             .fetch();
 
@@ -94,7 +94,7 @@ public class RecruitmentRepositoryImpl implements
         LocalDate endDate, Boolean isClosed, boolean titleContains, boolean contentContains,
         boolean shelterNameContains) {
 
-        return query.select(recruitment.count())
+        Long count = query.select(recruitment.count())
             .from(recruitment)
             .join(recruitment.shelter)
             .where(
@@ -103,6 +103,8 @@ public class RecruitmentRepositoryImpl implements
                 recruitmentStartTimeGoe(startDate),
                 recruitmentStartTimeLoe(endDate)
             ).fetchOne();
+
+        return count != null ? count : 0;
     }
 
     private BooleanExpression cursorId(Long recruitmentId, LocalDateTime createdAt) {
