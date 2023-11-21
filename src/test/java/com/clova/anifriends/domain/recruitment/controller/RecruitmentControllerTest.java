@@ -199,15 +199,11 @@ class RecruitmentControllerTest extends BaseControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/recruitments")
-            .header(AUTHORIZATION, volunteerAccessToken)
             .params(params));
 
         //then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
-                requestHeaders(
-                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
-                ),
                 queryParameters(
                     parameterWithName("keyword").description("검색어").optional(),
                     parameterWithName("startDate").description("검색 시작일").optional()
@@ -280,15 +276,11 @@ class RecruitmentControllerTest extends BaseControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/v2/recruitments")
-            .header(AUTHORIZATION, volunteerAccessToken)
             .params(params));
 
         //then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
-                requestHeaders(
-                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
-                ),
                 queryParameters(
                     parameterWithName("keyword").description("검색어").optional(),
                     parameterWithName("startDate").description("검색 시작일").optional()
