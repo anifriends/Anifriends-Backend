@@ -1,7 +1,6 @@
 package com.clova.anifriends.domain.animal.repository;
 
 import static com.clova.anifriends.domain.animal.QAnimal.animal;
-import static com.clova.anifriends.domain.recruitment.QRecruitment.recruitment;
 
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
@@ -149,15 +148,15 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
         return new SliceImpl<>(animals, pageable, hasNext);
     }
 
-    private BooleanExpression cursorId(Long recruitmentId, LocalDateTime createdAt) {
-        if (recruitmentId == null || createdAt == null) {
+    private BooleanExpression cursorId(Long animalId, LocalDateTime createdAt) {
+        if (animalId == null || createdAt == null) {
             return null;
         }
 
-        return recruitment.createdAt.lt(createdAt)
+        return animal.createdAt.lt(createdAt)
             .or(
-                recruitment.recruitmentId.lt(recruitmentId)
-                    .and(recruitment.createdAt.eq(createdAt)
+                animal.animalId.lt(animalId)
+                    .and(animal.createdAt.eq(createdAt)
                     )
             );
     }
