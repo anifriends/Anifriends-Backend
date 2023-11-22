@@ -21,6 +21,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.controller.RecruitmentStatusFilter;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
@@ -30,7 +31,6 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResp
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
-import com.clova.anifriends.domain.recruitment.controller.RecruitmentStatusFilter;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -51,6 +51,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -187,6 +188,61 @@ class RecruitmentServiceTest {
             assertThat(findRecruitment.shelterImageUrl())
                 .isEqualTo(recruitment.getShelter().getImage());
 
+        }
+    }
+
+    @Nested
+    @DisplayName("findRecruitmentsV2 실행 시")
+    class FindRecruitmentsV2Test {
+
+        @Test
+        @DisplayName("성공")
+        void findRecruitments() {
+            //give
+            String keyword = "keyword";
+            LocalDate startDate = LocalDate.now();
+            LocalDate endDate = LocalDate.now();
+            String isClosed = "IS_CLOSED";
+            boolean title = false;
+            boolean content = false;
+            boolean shelterName = false;
+            LocalDateTime createdAt = LocalDateTime.now();
+            Long recruitmentId = 1L;
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
+            SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
+
+            given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
+                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
+                title, content, shelterName, createdAt, recruitmentId, pageRequest)).willReturn(
+                recruitments);
+            given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
+                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
+                title, content, shelterName)).willReturn(Long.valueOf(recruitments.getSize()));
+
+            //when
+            FindRecruitmentsResponse recruitmentsByVolunteer
+                = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
+                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), title, content,
+                shelterName, createdAt, recruitmentId, pageRequest);
+
+            //then
+            PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
+            assertThat(pageInfo.totalElements()).isEqualTo(recruitments.getSize());
+            FindRecruitmentResponse findRecruitment = recruitmentsByVolunteer.recruitments()
+                .get(0);
+            assertThat(findRecruitment.recruitmentTitle()).isEqualTo(recruitment.getTitle());
+            assertThat(findRecruitment.recruitmentStartTime()).isEqualTo(
+                recruitment.getStartTime());
+            assertThat(findRecruitment.recruitmentEndTime()).isEqualTo(recruitment.getEndTime());
+            assertThat(findRecruitment.recruitmentApplicantCount()).isEqualTo(
+                recruitment.getApplicantCount());
+            assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
+            assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
+            assertThat(findRecruitment.shelterImageUrl())
+                .isEqualTo(recruitment.getShelter().getImage());
         }
     }
 

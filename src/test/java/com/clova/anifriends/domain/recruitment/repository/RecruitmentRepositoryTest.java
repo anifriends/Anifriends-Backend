@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.test.util.ReflectionTestUtils;
 
 class RecruitmentRepositoryTest extends BaseRepositoryTest {
@@ -114,6 +115,57 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
             assertThat(recruitments.getTotalElements()).isEqualTo(1);
             Recruitment findRecruitment = recruitments.getContent().get(0);
             assertThat(findRecruitment.getTitle()).isEqualTo(recruitment.getTitle());
+        }
+    }
+
+    @Nested
+    @DisplayName("findRecruitmentsV2 메서드 실행 시")
+    class FindRecruitmentsV2Test {
+
+        //todo: 다양한 케이스에 대한 테스트를 작성할 것
+        @Test
+        @DisplayName("성공: 모든 인자가 null")
+        void findRecruitmentsV2WhenArgsAreNull() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+
+            //when
+            Slice<Recruitment> recruitments = recruitmentRepository.findRecruitmentsV2(null, null,
+                null, null, false, false, false, LocalDateTime.now(),
+                recruitment.getRecruitmentId(),
+                pageRequest);
+
+            //then
+            assertThat(recruitments.getContent().size()).isEqualTo(1);
+        }
+    }
+
+    @Nested
+    @DisplayName("countFindRecruitmentsV2 메서드 실행 시")
+    class CountFindRecruitmentsV2Test {
+
+        //todo: 다양한 케이스에 대한 테스트를 작성할 것
+        @Test
+        @DisplayName("성공: 모든 인자가 null")
+        void countFindRecruitmentsV2WhenArgsAreNull() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+
+            //when
+            Long count = recruitmentRepository.countFindRecruitmentsV2(null, null,
+                null, null, false, false, false
+            );
+
+            //then
+            assertThat(count).isEqualTo(1);
         }
     }
 

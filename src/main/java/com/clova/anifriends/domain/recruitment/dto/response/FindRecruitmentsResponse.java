@@ -5,6 +5,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 
 public record FindRecruitmentsResponse(
     List<FindRecruitmentResponse> recruitments,
@@ -38,6 +39,15 @@ public record FindRecruitmentsResponse(
 
     public static FindRecruitmentsResponse from(Page<Recruitment> recruitments) {
         PageInfo pageInfo = PageInfo.of(recruitments.getTotalElements(), recruitments.hasNext());
+        List<FindRecruitmentResponse> content = recruitments.getContent()
+            .stream()
+            .map(FindRecruitmentResponse::from)
+            .toList();
+        return new FindRecruitmentsResponse(content, pageInfo);
+    }
+
+    public static FindRecruitmentsResponse fromV2(Slice<Recruitment> recruitments, Long count) {
+        PageInfo pageInfo = PageInfo.of(count, recruitments.hasNext());
         List<FindRecruitmentResponse> content = recruitments.getContent()
             .stream()
             .map(FindRecruitmentResponse::from)

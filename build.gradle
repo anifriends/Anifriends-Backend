@@ -91,6 +91,9 @@ dependencies {
     // Websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+    // Monitoring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {

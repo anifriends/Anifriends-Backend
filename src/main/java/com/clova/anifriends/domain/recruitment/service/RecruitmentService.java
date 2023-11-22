@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -126,6 +127,44 @@ public class RecruitmentService {
             shelterNameContains,
             pageable);
         return FindRecruitmentsResponse.from(recruitments);
+    }
+
+    @Transactional(readOnly = true)
+    public FindRecruitmentsResponse findRecruitmentsV2(
+        String keyword,
+        LocalDate startDate,
+        LocalDate endDate,
+        Boolean isClosed,
+        Boolean titleContains,
+        Boolean contentContains,
+        Boolean shelterNameContains,
+        LocalDateTime createdAt,
+        Long recruitmentId,
+        Pageable pageable
+    ) {
+        Slice<Recruitment> recruitments = recruitmentRepository.findRecruitmentsV2(
+            keyword,
+            startDate,
+            endDate,
+            isClosed,
+            titleContains,
+            contentContains,
+            shelterNameContains,
+            createdAt,
+            recruitmentId,
+            pageable);
+
+        Long count = recruitmentRepository.countFindRecruitmentsV2(
+            keyword,
+            startDate,
+            endDate,
+            isClosed,
+            titleContains,
+            contentContains,
+            shelterNameContains
+        );
+
+        return FindRecruitmentsResponse.fromV2(recruitments, count);
     }
 
     @Transactional
