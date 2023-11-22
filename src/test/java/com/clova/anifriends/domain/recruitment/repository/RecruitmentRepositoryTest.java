@@ -16,6 +16,7 @@ import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -363,6 +364,29 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
 
             // then
             assertThat(recruitments).contains(recruitment1, recruitment2, recruitment3);
+        }
+    }
+
+    @Nested
+    @DisplayName("findRecruitmentDetail 메서드 실행 시")
+    class FindRecruitmentDetailTest {
+
+        @Test
+        @DisplayName("성공")
+        void findRecruitmentDetail() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+
+            // when
+            Optional<Recruitment> found = recruitmentRepository.findRecruitmentDetail(
+                recruitment.getRecruitmentId());
+
+            // then
+            assertThat(found.get().getShelter().getShelterId()).isEqualTo(shelter.getShelterId());
         }
     }
 }

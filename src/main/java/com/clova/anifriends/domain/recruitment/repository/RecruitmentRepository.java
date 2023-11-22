@@ -32,4 +32,7 @@ public interface RecruitmentRepository
         + " and r.shelter.shelterId = :shelterId")
     Optional<Recruitment> findByShelterIdAndRecruitmentIdWithImages(
         @Param("shelterId") Long shelterId, @Param("recruitmentId") Long recruitmentId);
+
+    @Query("select r, r.shelter.shelterId from Recruitment r where r.recruitmentId = :recruitmentId")
+    Optional<Recruitment> findRecruitmentDetail(@Param("recruitmentId") Long recruitmentId);
 }

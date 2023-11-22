@@ -93,7 +93,8 @@ public class RecruitmentService {
 
     @Transactional(readOnly = true)
     public FindRecruitmentDetailResponse findRecruitmentDetail(long recruitmentId) {
-        Recruitment recruitment = getRecruitmentById(recruitmentId);
+        Recruitment recruitment = recruitmentRepository.findRecruitmentDetail(recruitmentId)
+            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글입니다."));
         return FindRecruitmentDetailResponse.from(recruitment);
     }
 
