@@ -231,6 +231,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
                         .description("봉사 시작 시간"),
                     fieldWithPath("recruitments[].recruitmentEndTime").type(STRING)
                         .description("봉사 종료 시간"),
+                    fieldWithPath("recruitments[].recruitmentDeadline").type(STRING)
+                            .description("봉사 모집 마감 시간"),
                     fieldWithPath("recruitments[].recruitmentIsClosed").type(BOOLEAN)
                         .description("봉사 모집 마감 여부"),
                     fieldWithPath("recruitments[].recruitmentApplicantCount").type(NUMBER)
@@ -310,6 +312,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
                         .description("봉사 시작 시간"),
                     fieldWithPath("recruitments[].recruitmentEndTime").type(STRING)
                         .description("봉사 종료 시간"),
+                    fieldWithPath("recruitments[].recruitmentDeadline").type(STRING)
+                        .description("봉사 모집 마감 시간"),
                     fieldWithPath("recruitments[].recruitmentIsClosed").type(BOOLEAN)
                         .description("봉사 모집 마감 여부"),
                     fieldWithPath("recruitments[].recruitmentApplicantCount").type(NUMBER)
