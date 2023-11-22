@@ -23,6 +23,7 @@ import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
 import com.clova.anifriends.domain.review.service.ReviewService;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
 import com.clova.anifriends.domain.volunteer.service.VolunteerService;
+import com.clova.anifriends.global.config.RedisConfig;
 import com.clova.anifriends.global.config.SecurityConfig;
 import com.clova.anifriends.global.config.WebMvcConfig;
 import com.clova.anifriends.global.image.S3Service;
@@ -48,7 +49,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 @WebMvcTest
-@Import({SecurityConfig.class, WebMvcConfig.class, RestDocsConfig.class, WebMvcTestConfig.class})
+@Import({SecurityConfig.class, WebMvcConfig.class, RestDocsConfig.class, WebMvcTestConfig.class,
+    RedisConfig.class})
 @ExtendWith(RestDocumentationExtension.class)
 public abstract class BaseControllerTest {
 
