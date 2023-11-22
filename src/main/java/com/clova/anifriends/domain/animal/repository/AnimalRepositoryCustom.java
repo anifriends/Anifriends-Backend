@@ -7,8 +7,10 @@ import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
 import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
+import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface AnimalRepositoryCustom {
 
@@ -33,4 +35,26 @@ public interface AnimalRepositoryCustom {
         AnimalSize size,
         Pageable pageable
     );
+
+    Slice<Animal> findAnimalsByVolunteerV2(
+        AnimalType type,
+        AnimalActive active,
+        AnimalNeuteredFilter neuteredFilter,
+        AnimalAge age,
+        AnimalGender gender,
+        AnimalSize size,
+        LocalDateTime createdAt,
+        Long animalId,
+        Pageable pageable
+    );
+
+    Long countAnimalsV2(
+        AnimalType type,
+        AnimalActive active,
+        AnimalNeuteredFilter neuteredFilter,
+        AnimalAge age,
+        AnimalGender gender,
+        AnimalSize size
+    );
+
 }

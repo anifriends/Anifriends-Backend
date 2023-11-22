@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.animal.controller;
 
+import com.clova.anifriends.domain.animal.dto.FindAnimalsByVolunteerRequestV2;
 import com.clova.anifriends.domain.animal.dto.request.FindAnimalsByShelterRequest;
 import com.clova.anifriends.domain.animal.dto.request.FindAnimalsByVolunteerRequest;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
@@ -83,6 +84,24 @@ public class AnimalController {
             findAnimalsRequest.age(),
             findAnimalsRequest.gender(),
             findAnimalsRequest.size(),
+            pageable
+        ));
+    }
+
+    @GetMapping("/v2/animals")
+    public ResponseEntity<FindAnimalsResponse> findAnimalsByVolunteerV2(
+        Pageable pageable,
+        @ModelAttribute FindAnimalsByVolunteerRequestV2 findAnimalsByVolunteerRequestV2
+    ) {
+        return ResponseEntity.ok(animalService.findAnimalsByVolunteerV2(
+            findAnimalsByVolunteerRequestV2.type(),
+            findAnimalsByVolunteerRequestV2.active(),
+            findAnimalsByVolunteerRequestV2.neuteredFilter(),
+            findAnimalsByVolunteerRequestV2.age(),
+            findAnimalsByVolunteerRequestV2.gender(),
+            findAnimalsByVolunteerRequestV2.size(),
+            findAnimalsByVolunteerRequestV2.createdAt(),
+            findAnimalsByVolunteerRequestV2.animalId(),
             pageable
         ));
     }

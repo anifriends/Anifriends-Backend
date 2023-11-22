@@ -79,14 +79,17 @@ public class RecruitmentRepositoryImpl implements
             .offset(pageable.getOffset())
             .fetch();
 
-        boolean hasNext = false;
+        boolean hasNext = hasNext(pageable.getPageSize(), content);
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
 
-        if (content.size() > pageable.getPageSize()) {
-            content.remove(pageable.getPageSize());
-            hasNext = true;
+    private boolean hasNext(int pageSize, List<Recruitment> recruitments) {
+        if (recruitments.size() <= pageSize) {
+            return false;
         }
 
-        return new SliceImpl<>(content, pageable, hasNext);
+        recruitments.remove(pageSize);
+        return true;
     }
 
     @Override

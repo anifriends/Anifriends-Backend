@@ -12,12 +12,15 @@ import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -111,6 +114,86 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
             .fetchOne();
 
         return new PageImpl<>(animals, pageable, count == null ? 0 : count);
+    }
+
+    @Override
+    public Slice<Animal> findAnimalsByVolunteerV2(
+        AnimalType type,
+        AnimalActive active,
+        AnimalNeuteredFilter neuteredFilter,
+        AnimalAge age,
+        AnimalGender gender,
+        AnimalSize size,
+        LocalDateTime createdAt,
+        Long animalId,
+        Pageable pageable
+    ) {
+        List<Animal> animals = query.selectFrom(animal)
+            .join(animal.shelter)
+            .where(
+                animalTypeContains(type),
+                animalActiveContains(active),
+                animalIsNeutered(neuteredFilter),
+                animalAgeContains(age),
+                animalGenderContains(gender),
+                animalSizeContains(size),
+                cursorId(animalId, createdAt)
+            )
+            .orderBy(animal.createdAt.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize() + 1L)
+            .fetch();
+
+        boolean hasNext = hasNext(pageable.getPageSize(), animals);
+        return new SliceImpl<>(animals, pageable, hasNext);
+    }
+
+    private BooleanExpression cursorId(Long animalId, LocalDateTime createdAt) {
+        if (animalId == null || createdAt == null) {
+            return null;
+        }
+
+        return animal.createdAt.lt(createdAt)
+            .or(
+                animal.animalId.lt(animalId)
+                    .and(animal.createdAt.eq(createdAt)
+                    )
+            );
+    }
+
+    private boolean hasNext(int pageSize, List<Animal> animals) {
+        if (animals.size() <= pageSize) {
+            return false;
+        }
+
+        animals.remove(pageSize);
+        return true;
+    }
+
+
+    @Override
+    public Long countAnimalsV2(
+        AnimalType type,
+        AnimalActive active,
+        AnimalNeuteredFilter neuteredFilter,
+        AnimalAge age,
+        AnimalGender gender,
+        AnimalSize size
+    ) {
+        Long count = query.select(animal.count())
+            .from(animal)
+            .join(animal.shelter)
+            .where(
+                animalTypeContains(type),
+                animalActiveContains(active),
+                animalIsNeutered(neuteredFilter),
+                animalAgeContains(age),
+                animalGenderContains(gender),
+                animalSizeContains(size)
+            )
+            .fetchOne();
+
+        return count == null ? 0 : count;
     }
 
     private BooleanExpression animalNameContains(String keyword) {
