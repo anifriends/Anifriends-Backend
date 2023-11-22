@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.recruitment;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentBadRequestException;
+import com.clova.anifriends.domain.recruitment.vo.RecruitmentApplicantCount;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentContent;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentTitle;
@@ -65,6 +66,8 @@ public class Recruitment extends BaseTimeEntity {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    private RecruitmentApplicantCount applicantCount = new RecruitmentApplicantCount(0);
 
     public Recruitment(
         Shelter shelter,
@@ -157,6 +160,14 @@ public class Recruitment extends BaseTimeEntity {
         info.checkDeletable();
     }
 
+    public void increaseApplicantCount() {
+        this.applicantCount = this.applicantCount.increase();
+    }
+
+    public boolean isFullApplicants() {
+        return applicantCount.getApplicantCount() >= info.getCapacity();
+    }
+
     public Long getRecruitmentId() {
         return recruitmentId;
     }
@@ -189,6 +200,7 @@ public class Recruitment extends BaseTimeEntity {
         return info.getDeadline();
     }
 
+    @Override
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -208,7 +220,7 @@ public class Recruitment extends BaseTimeEntity {
     }
 
     public int getApplicantCount() {
-        return applicants.size();
+        return applicantCount.getApplicantCount();
     }
 
     public List<Applicant> getApplicants() {
