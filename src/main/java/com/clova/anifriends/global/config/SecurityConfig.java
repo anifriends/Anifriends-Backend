@@ -62,6 +62,7 @@ public class SecurityConfig {
                     List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                 config.setAllowCredentials(true);
                 config.setAllowedHeaders(List.of("*"));
+                config.setExposedHeaders(List.of("Authorization"));
                 config.setMaxAge(3600L);
                 return config;
             }));

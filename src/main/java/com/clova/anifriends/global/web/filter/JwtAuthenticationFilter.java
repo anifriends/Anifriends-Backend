@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends GenericFilter {
         return bearerAccessToken.replace(BEARER, "");
     }
 
-    private static void checkTokenContainsBearer(String bearerAccessToken) {
+    private void checkTokenContainsBearer(String bearerAccessToken) {
         if(!bearerAccessToken.contains(BEARER)) {
             throw new InvalidJwtException("올바르지 않는 액세스 토큰 형식입니다.");
         }
