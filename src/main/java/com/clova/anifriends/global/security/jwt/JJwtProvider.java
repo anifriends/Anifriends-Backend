@@ -97,10 +97,10 @@ public class JJwtProvider implements JwtProvider {
             List<String> authorities = userRole.getAuthorities();
             return CustomClaims.of(userId, userRole, authorities);
         } catch (ExpiredJwtException ex) {
-            log.info("[EX] {}: 만료된 JWT입니다.", ex.getClass().getSimpleName());
+            log.info("[Ex] {} 만료된 JWT입니다.", ex.getClass().getSimpleName());
             throw new ExpiredAccessTokenException("만료된 액세스 토큰입니다.");
         } catch (JwtException ex) {
-            log.info("[EX] {}: 잘못된 JWT입니다.", ex.getClass().getSimpleName());
+            log.info("[Ex] {} 잘못된 JWT입니다.", ex.getClass().getSimpleName());
         }
         throw new InvalidJwtException("유효하지 않은 JWT입니다.");
     }
@@ -113,10 +113,10 @@ public class JJwtProvider implements JwtProvider {
             UserRole userRole = UserRole.valueOf(claims.get(ROLE, String.class));
             return createToken(userId, userRole);
         } catch (ExpiredJwtException ex) {
-            log.info("[EX] {}: 만료된 리프레시 토큰입니다.", ex.getClass().getSimpleName());
+            log.info("[EX] {} 만료된 리프레시 토큰입니다.", ex.getClass().getSimpleName());
             throw new ExpiredRefreshTokenException("만료된 리프레시 토큰입니다.");
         } catch (JwtException ex) {
-            log.info("[EX] {}: 잘못된 리프레시 토큰입니다.", ex.getClass().getSimpleName());
+            log.info("[EX] {} 잘못된 리프레시 토큰입니다.", ex.getClass().getSimpleName());
         }
         throw new InvalidJwtException("유효하지 않은 리프레시 토큰입니다.");
     }
