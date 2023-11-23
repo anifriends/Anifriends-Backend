@@ -31,6 +31,19 @@ public class RecruitmentFixture {
         );
     }
 
+    public static Recruitment recruitment(Shelter shelter, int capacity) {
+        return new Recruitment(
+            shelter,
+            RECRUITMENT_TITLE,
+            capacity,
+            RECRUITMENT_CONTENT,
+            START_TIME,
+            END_TIME,
+            DEADLINE,
+            IMAGE_URL_LIST
+        );
+    }
+
     public static Recruitment recruitmentWithImages(Shelter shelter, List<String> imageUrls) {
         return new Recruitment(
             shelter,

@@ -61,11 +61,12 @@ public class Applicant extends BaseTimeEntity {
         Volunteer volunteer
     ) {
         validateRecruitment(recruitment);
-        checkConcurrency(recruitment);
-        this.recruitment = recruitment;
-        recruitment.addApplicant(this);
         validateVolunteer(volunteer);
+        validateApplicantCount(recruitment);
+        recruitment.increaseApplicantCount();
+        this.recruitment = recruitment;
         this.volunteer = volunteer;
+        recruitment.addApplicant(this);
         volunteer.addApplicant(this);
     }
 
@@ -84,8 +85,8 @@ public class Applicant extends BaseTimeEntity {
         }
     }
 
-    private void checkConcurrency(Recruitment recruitment) {
-        if (recruitment.getApplicantCount() >= recruitment.getCapacity()) {
+    private void validateApplicantCount(Recruitment recruitment) {
+        if (recruitment.isFullApplicants()) {
             throw new ApplicantConflictException(ErrorCode.CONCURRENCY, "모집 인원이 초과되었습니다.");
         }
     }

@@ -229,9 +229,4 @@ public class RecruitmentService {
         return recruitmentRepository.findByShelterIdAndRecruitmentId(shelterId, recruitmentId)
             .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글입니다."));
     }
-
-    private Recruitment getRecruitmentById(long id) {
-        return recruitmentRepository.findById(id)
-            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글입니다."));
-    }
 }

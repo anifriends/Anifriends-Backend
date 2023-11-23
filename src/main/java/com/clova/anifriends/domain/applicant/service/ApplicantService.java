@@ -18,9 +18,11 @@ import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.global.aspect.DataIntegrityHandler;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ApplicantService {
@@ -32,11 +34,15 @@ public class ApplicantService {
     @Transactional
     @DataIntegrityHandler(message = "이미 신청한 봉사입니다.", exceptionClass = ApplicantConflictException.class)
     public void registerApplicant(Long recruitmentId, Long volunteerId) {
-        Recruitment recruitment = getRecruitment(recruitmentId);
+        Recruitment recruitmentPessimistic = getRecruitmentPessimistic(recruitmentId);
         Volunteer volunteer = getVolunteer(volunteerId);
-
-        Applicant applicant = new Applicant(recruitment, volunteer);
+        Applicant applicant = new Applicant(recruitmentPessimistic, volunteer);
         applicantRepository.save(applicant);
+    }
+
+    private Recruitment getRecruitmentPessimistic(Long recruitmentId) {
+        return recruitmentRepository.findByIdPessimistic(recruitmentId)
+            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 봉사 모집글입니다."));
     }
 
     @Transactional(readOnly = true)

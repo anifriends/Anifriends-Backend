@@ -87,7 +87,7 @@ class ApplicantServiceTest {
             setField(volunteer, "volunteerId", 1L);
             setField(recruitment, "recruitmentId", 1L);
             setField(recruitment, "info", recruitmentInfo);
-            given(recruitmentRepository.findById(anyLong())).willReturn(
+            given(recruitmentRepository.findByIdPessimistic(anyLong())).willReturn(
                 Optional.ofNullable(recruitment));
             given(volunteerRepository.findById(anyLong())).willReturn(
                 Optional.ofNullable(volunteer));
@@ -107,7 +107,7 @@ class ApplicantServiceTest {
             setField(volunteer, "volunteerId", 1L);
             setField(recruitment, "recruitmentId", 1L);
             setField(recruitment, "info", recruitmentInfo);
-            given(recruitmentRepository.findById(anyLong())).willReturn(
+            given(recruitmentRepository.findByIdPessimistic(anyLong())).willReturn(
                 Optional.ofNullable(recruitment));
             given(volunteerRepository.findById(anyLong())).willReturn(
                 Optional.ofNullable(volunteer));
