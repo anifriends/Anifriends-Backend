@@ -3,7 +3,6 @@ package com.clova.anifriends.domain.recruitment.service;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -42,13 +41,15 @@ public class RecruitmentCacheService {
         }
     }
 
-    public List<FindRecruitmentResponse> findRecruitments() {
-        ZSetOperations<String, FindRecruitmentResponse> stringObjectZSetOperations = redisTemplate.opsForZSet();
-        Set<FindRecruitmentResponse> set = stringObjectZSetOperations.reverseRange(RECRUITMENT_KEY, ZERO,
-            CACHED_SIZE);
-        if(Objects.nonNull(set)) {
-            return new ArrayList<>(set);
+    public List<FindRecruitmentResponse> getCachedRecruitments() {
+        ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
+            = redisTemplate.opsForZSet();
+        Set<FindRecruitmentResponse> recruitments
+            = cachedRecruitments.reverseRange(RECRUITMENT_KEY, ZERO, CACHED_SIZE);
+        if(Objects.isNull(recruitments)) {
+            return List.of();
         }
-        return List.of();
+        return recruitments.stream()
+            .toList();
     }
 }

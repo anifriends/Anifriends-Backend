@@ -9,6 +9,7 @@ import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixtur
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -64,7 +65,7 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             recruitmentCacheService.pushNewRecruitment(recruitment);
 
             //then
-            List<FindRecruitmentResponse> recruitments = recruitmentCacheService.findRecruitments();
+            List<FindRecruitmentResponse> recruitments = recruitmentCacheService.getCachedRecruitments();
             assertThat(recruitments).hasSize(1);
             FindRecruitmentResponse recruitmentResponse = recruitments.get(0);
             assertThat(recruitmentResponse.recruitmentId())
@@ -97,10 +98,75 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
                 .sorted(Comparator.reverseOrder())
                 .toList();
 
+            System.out.println(recruitmentRepository.findAll().size());
             List<FindRecruitmentResponse> findRecruitments
-                = recruitmentCacheService.findRecruitments();
+                = recruitmentCacheService.getCachedRecruitments();
             assertThat(findRecruitments).hasSize(20);
             assertThat(findRecruitments).map(FindRecruitmentResponse::recruitmentId)
+                .containsExactlyElementsOf(recruitmentIdsDesc);
+
+
+        }
+    }
+
+    @Nested
+    @DisplayName("getCachedRecruitments 메서드 호출 시")
+    class GetCachedRecruitmentsTest {
+
+        Shelter shelter;
+
+        @BeforeEach
+        void setUp() {
+            shelter = ShelterFixture.shelter();
+            shelterRepository.save(shelter);
+        }
+
+        @Test
+        @DisplayName("성공: 캐싱된 목록이 없을 시 빈 리스트 반환")
+        void getCachedRecruitments() {
+            //given
+            //when
+            List<FindRecruitmentResponse> cachedRecruitments
+                = recruitmentCacheService.getCachedRecruitments();
+
+            //then
+            assertThat(cachedRecruitments)
+                .isNotNull()
+                .isEmpty();
+        }
+
+        @Test
+        @DisplayName("성공: 캐싱된 목록 반환")
+        void getCachedRecruitmentsWhenCached() {
+            //given
+            List<Recruitment> recruitments = new ArrayList<>();
+            LocalDateTime now = LocalDateTime.now();
+            IntStream.range(0, 100)
+                .forEach(i -> {
+                    Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+                    recruitments.add(recruitment);
+                });
+            recruitmentRepository.saveAll(recruitments);
+            int hour = 0;
+            for (Recruitment recruitment : recruitments) {
+                ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
+                recruitmentCacheService.pushNewRecruitment(recruitment);
+            }
+
+            //when
+            List<FindRecruitmentResponse> cachedRecruitments
+                = recruitmentCacheService.getCachedRecruitments();
+
+            //then
+            List<Long> recruitmentIdsDesc = recruitments.stream()
+                .map(Recruitment::getRecruitmentId)
+                .filter(i -> i > 80)
+                .sorted(Comparator.reverseOrder())
+                .toList();
+
+            assertThat(cachedRecruitments)
+                .hasSize(20)
+                .map(FindRecruitmentResponse::recruitmentId)
                 .containsExactlyElementsOf(recruitmentIdsDesc);
         }
     }
