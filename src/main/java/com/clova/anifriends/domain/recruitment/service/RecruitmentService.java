@@ -31,6 +31,7 @@ public class RecruitmentService {
     private final ShelterRepository shelterRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final RecruitmentCacheService recruitmentCacheService;
 
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
@@ -53,6 +54,7 @@ public class RecruitmentService {
             deadline,
             imageUrls);
         recruitmentRepository.save(recruitment);
+        recruitmentCacheService.registerRecruitment(recruitment);
         return RegisterRecruitmentResponse.from(recruitment);
     }
 

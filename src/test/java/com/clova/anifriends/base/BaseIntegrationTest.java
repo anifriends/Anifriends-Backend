@@ -1,5 +1,6 @@
 package com.clova.anifriends.base;
 
+import com.clova.anifriends.base.config.RedisTestContainerConfig;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
 import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
@@ -7,6 +8,7 @@ import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
+import com.clova.anifriends.global.config.RedisConfig;
 import com.clova.anifriends.global.config.SecurityConfig;
 import jakarta.persistence.EntityManager;
 import java.util.Properties;
@@ -19,7 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("dev")
-@Import({SecurityConfig.class})
+@Import({SecurityConfig.class, RedisTestContainerConfig.class, RedisConfig.class})
 public abstract class BaseIntegrationTest {
 
     @BeforeAll
