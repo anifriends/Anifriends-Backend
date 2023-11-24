@@ -16,27 +16,36 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RecruitmentCacheService {
 
-    public static final String RECRUITMENT_KEY = "recruitment";
+    private static final String RECRUITMENT_KEY = "recruitment";
+    private static final int UNTIL_LAST_ELEMENT = -1;
+    private static final int CACHED_SIZE = 20;
+    private static final int ZERO = 0;
+
     private final RedisTemplate<String, FindRecruitmentResponse> redisTemplate;
 
-    public void registerRecruitment(final Recruitment recruitment) {
+    public void pushNewRecruitment(final Recruitment recruitment) {
         FindRecruitmentResponse recruitmentResponse = FindRecruitmentResponse.from(recruitment);
-        ZSetOperations<String, FindRecruitmentResponse> stringObjectZSetOperations = redisTemplate.opsForZSet();
-        long epochSecond = recruitment.getCreatedAt().toEpochSecond(
-            ZoneOffset.of("+09:00"));
-        System.out.println(epochSecond);
-        stringObjectZSetOperations.add(RECRUITMENT_KEY, recruitmentResponse, epochSecond);
-        Set<FindRecruitmentResponse> set = stringObjectZSetOperations.range(RECRUITMENT_KEY,
-            1, -1);
-        if (Objects.nonNull(set) && set.size() > 20) {
-            stringObjectZSetOperations.popMin(RECRUITMENT_KEY);
+        ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments = redisTemplate.opsForZSet();
+        long createdAtScore = recruitment.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
+        cachedRecruitments.add(RECRUITMENT_KEY, recruitmentResponse, createdAtScore);
+
+        popUntilCachedSize(cachedRecruitments);
+    }
+
+    private void popUntilCachedSize(ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments) {
+        Set<FindRecruitmentResponse> recruitments
+            = cachedRecruitments.range(RECRUITMENT_KEY, ZERO, UNTIL_LAST_ELEMENT);
+        if(Objects.nonNull(recruitments)) {
+            int needToRemoveSize = recruitments.size() - CACHED_SIZE;
+            needToRemoveSize = Math.max(needToRemoveSize, ZERO);
+            cachedRecruitments.popMin(RECRUITMENT_KEY, needToRemoveSize);
         }
     }
 
     public List<FindRecruitmentResponse> findRecruitments() {
         ZSetOperations<String, FindRecruitmentResponse> stringObjectZSetOperations = redisTemplate.opsForZSet();
-        Set<FindRecruitmentResponse> set = stringObjectZSetOperations.reverseRange(RECRUITMENT_KEY, 1,
-            20);
+        Set<FindRecruitmentResponse> set = stringObjectZSetOperations.reverseRange(RECRUITMENT_KEY, ZERO,
+            CACHED_SIZE);
         if(Objects.nonNull(set)) {
             return new ArrayList<>(set);
         }

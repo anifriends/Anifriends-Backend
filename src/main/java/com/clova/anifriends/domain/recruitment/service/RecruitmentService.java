@@ -54,7 +54,6 @@ public class RecruitmentService {
             deadline,
             imageUrls);
         recruitmentRepository.save(recruitment);
-        recruitmentCacheService.registerRecruitment(recruitment);
         return RegisterRecruitmentResponse.from(recruitment);
     }
 
