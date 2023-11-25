@@ -115,6 +115,9 @@ class RecruitmentControllerTest extends BaseControllerTest {
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 리소스에 대한 접근 api")
+                ),
+                responseFields(
+                    fieldWithPath("recruitmentId").type(NUMBER).description("생성된 봉사 모집글 ID")
                 )
             ));
     }

@@ -41,7 +41,8 @@ public class RecruitmentController {
     public ResponseEntity<RegisterRecruitmentResponse> registerRecruitment(
         @LoginUser Long volunteerId,
         @RequestBody @Valid RegisterRecruitmentRequest registerRecruitmentRequest) {
-        RegisterRecruitmentResponse response = recruitmentService.registerRecruitment(
+        RegisterRecruitmentResponse registerRecruitmentResponse
+            = recruitmentService.registerRecruitment(
             volunteerId,
             registerRecruitmentRequest.title(),
             registerRecruitmentRequest.startTime(),
@@ -50,8 +51,9 @@ public class RecruitmentController {
             registerRecruitmentRequest.capacity(),
             registerRecruitmentRequest.content(),
             registerRecruitmentRequest.imageUrls());
-        URI location = URI.create("/api/recruitments/" + response.recruitmentId());
-        return ResponseEntity.created(location).build();
+        URI location
+            = URI.create("/api/recruitments/" + registerRecruitmentResponse.recruitmentId());
+        return ResponseEntity.created(location).body(registerRecruitmentResponse);
     }
 
     @GetMapping("/recruitments/{recruitmentId}")
