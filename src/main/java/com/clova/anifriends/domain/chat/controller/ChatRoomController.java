@@ -1,16 +1,17 @@
 package com.clova.anifriends.domain.chat.controller;
 
 import com.clova.anifriends.domain.auth.LoginUser;
+import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
+import com.clova.anifriends.domain.auth.authorization.UserOnly;
+import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
 import com.clova.anifriends.domain.chat.dto.request.RegisterChatRoomRequest;
 import com.clova.anifriends.domain.chat.dto.response.FindChatMessagesResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomIdResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindUnreadCountResponse;
+import com.clova.anifriends.domain.chat.dto.response.RegisterChatRoomResponse;
 import com.clova.anifriends.domain.chat.service.ChatRoomService;
-import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
-import com.clova.anifriends.domain.auth.authorization.UserOnly;
-import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -66,15 +68,16 @@ public class ChatRoomController {
 
     @VolunteerOnly
     @PostMapping("/volunteers/chat/rooms")
-    public ResponseEntity<Void> registerChatRoom(
+    public ResponseEntity<RegisterChatRoomResponse> registerChatRoom(
         @LoginUser Long volunteerId,
-        RegisterChatRoomRequest registerChatRoomRequest
+        @RequestBody RegisterChatRoomRequest registerChatRoomRequest
     ) {
-        long chatRoomId = chatRoomService.registerChatRoom(volunteerId,
+        RegisterChatRoomResponse registerChatRoomResponse = chatRoomService.registerChatRoom(
+            volunteerId,
             registerChatRoomRequest.shelterId());
-
-        URI location = URI.create("/api/volunteers/chat/rooms/" + chatRoomId);
-        return ResponseEntity.created(location).build();
+        URI location
+            = URI.create("/api/volunteers/chat/rooms/" + registerChatRoomResponse.chatRoomId());
+        return ResponseEntity.created(location).body(registerChatRoomResponse);
     }
 
     @VolunteerOnly
