@@ -8,6 +8,7 @@ import com.clova.anifriends.domain.volunteer.dto.request.UpdateVolunteerPassword
 import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
+import com.clova.anifriends.domain.volunteer.dto.response.RegisterVolunteerResponse;
 import com.clova.anifriends.domain.volunteer.service.VolunteerService;
 import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
 import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
@@ -41,10 +42,10 @@ public class VolunteerController {
     }
 
     @PostMapping("/volunteers")
-    public ResponseEntity<Void> registerVolunteer(
+    public ResponseEntity<RegisterVolunteerResponse> registerVolunteer(
         @RequestBody @Valid RegisterVolunteerRequest registerVolunteerRequest
     ) {
-        Long registeredVolunteerID = volunteerService.registerVolunteer(
+        RegisterVolunteerResponse registerVolunteerResponse = volunteerService.registerVolunteer(
             registerVolunteerRequest.email(),
             registerVolunteerRequest.password(),
             registerVolunteerRequest.name(),
@@ -52,8 +53,8 @@ public class VolunteerController {
             registerVolunteerRequest.phoneNumber(),
             registerVolunteerRequest.gender()
         );
-        URI location = URI.create(BASE_URI + registeredVolunteerID);
-        return ResponseEntity.created(location).build();
+        URI location = URI.create(BASE_URI + registerVolunteerResponse.volunteerId());
+        return ResponseEntity.created(location).body(registerVolunteerResponse);
     }
 
     @VolunteerOnly

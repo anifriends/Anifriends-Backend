@@ -6,6 +6,7 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
+import com.clova.anifriends.domain.volunteer.dto.response.RegisterVolunteerResponse;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerEmail;
@@ -32,7 +33,7 @@ public class VolunteerService {
     }
 
     @Transactional
-    public Long registerVolunteer(
+    public RegisterVolunteerResponse registerVolunteer(
         String email,
         String password,
         String name,
@@ -43,7 +44,7 @@ public class VolunteerService {
         Volunteer volunteer = new Volunteer(email, password, birthDate, phoneNumber, gender, name,
             passwordEncoder);
         volunteerRepository.save(volunteer);
-        return volunteer.getVolunteerId();
+        return RegisterVolunteerResponse.from(volunteer);
     }
 
     @Transactional(readOnly = true)
