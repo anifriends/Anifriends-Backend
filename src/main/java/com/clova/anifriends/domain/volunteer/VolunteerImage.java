@@ -53,7 +53,7 @@ public class VolunteerImage extends BaseTimeEntity {
         }
     }
 
-    public boolean isEqualImageUrl(String imageUrl) {
+    public boolean isSameWith(String imageUrl) {
         return this.imageUrl.equals(imageUrl);
     }
 
