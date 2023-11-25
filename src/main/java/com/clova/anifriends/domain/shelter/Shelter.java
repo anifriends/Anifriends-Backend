@@ -90,13 +90,16 @@ public class Shelter extends BaseTimeEntity {
     }
 
     private ShelterImage updateImage(String imageUrl) {
-        if (nonNull(this.image) && this.image.isSameWith(imageUrl)) {
-            return this.image;
-        }
-        if (nonNull(imageUrl)) {
+        if(nonNull(imageUrl)) {
+            if(imageUrl.isBlank()) {
+                return null;
+            }
+            if(nonNull(image) && image.isSameWith(imageUrl)) {
+                return image;
+            }
             return new ShelterImage(this, imageUrl);
         }
-        return null;
+        return image;
     }
 
     public Optional<String> findImageToDelete(String newImageUrl) {
