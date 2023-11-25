@@ -184,7 +184,7 @@ class ShelterTest {
             );
 
             // then
-            assertThat(shelter.getImage()).isNull();
+            assertThat(shelter.getImage()).isBlank();
         }
 
         @Test
@@ -231,7 +231,7 @@ class ShelterTest {
             );
 
             // then
-            assertThat(shelter.getImage()).isNull();
+            assertThat(shelter.getImage()).isBlank();
         }
 
     }

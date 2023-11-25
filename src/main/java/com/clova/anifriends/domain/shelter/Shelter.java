@@ -29,6 +29,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Shelter extends BaseTimeEntity {
 
+    private static final String BLANK = "";
+
     @Id
     @Column(name = "shelter_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -159,7 +161,7 @@ public class Shelter extends BaseTimeEntity {
     }
 
     public String getImage() {
-        return this.image == null ? null : this.image.getImageUrl();
+        return this.image == null ? BLANK : this.image.getImageUrl();
     }
 
     public String getDeviceToken() {
