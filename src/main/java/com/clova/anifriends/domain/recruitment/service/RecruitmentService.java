@@ -57,7 +57,10 @@ public class RecruitmentService {
             endTime,
             deadline,
             imageUrls);
+
         recruitmentRepository.save(recruitment);
+        recruitmentCacheService.plusOneToRecruitmentCount(RECRUITMENT_CACHE_KEY);
+
         return RegisterRecruitmentResponse.from(recruitment);
     }
 
@@ -163,8 +166,8 @@ public class RecruitmentService {
             RECRUITMENT_CACHE_KEY);
 
         if (Objects.isNull(keyword) && Objects.isNull(startDate) && Objects.isNull(endDate)
-            && Objects.isNull(isClosed) && Objects.isNull(titleContains) && Objects.isNull(
-            contentContains) && Objects.isNull(shelterNameContains)
+            && Objects.isNull(isClosed) && Objects.equals(titleContains, true) && Objects.equals(
+            contentContains, true) && Objects.equals(shelterNameContains, true)
         ) {
             if (!Objects.equals(cachedRecruitmentCount, RECRUITMENT_COUNT_NO_CACHE)) {
                 return FindRecruitmentsResponse.fromV2(recruitments,
