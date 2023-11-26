@@ -37,13 +37,13 @@ public class AnimalController {
 
     @ShelterOnly
     @PostMapping("/shelters/animals")
-    public ResponseEntity<Void> registerAnimal(
+    public ResponseEntity<RegisterAnimalResponse> registerAnimal(
         @LoginUser Long volunteerId,
         @RequestBody @Valid RegisterAnimalRequest registerAnimalRequest) {
         RegisterAnimalResponse registerAnimalResponse = animalService.registerAnimal(volunteerId,
             registerAnimalRequest);
         URI location = URI.create("/api/shelters/animals/" + registerAnimalResponse.animalId());
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(registerAnimalResponse);
     }
 
     @GetMapping("/animals/{animalId}")

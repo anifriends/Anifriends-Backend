@@ -110,6 +110,9 @@ class AnimalControllerTest extends BaseControllerTest {
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 리소스에 접근 가능한 api")
+                ),
+                responseFields(
+                    fieldWithPath("animalId").type(NUMBER).description("생성된 보호 동물 ID")
                 )
             ));
     }

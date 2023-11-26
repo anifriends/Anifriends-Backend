@@ -7,6 +7,7 @@ import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterRes
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleResponse;
+import com.clova.anifriends.domain.shelter.dto.response.RegisterShelterResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.vo.ShelterEmail;
@@ -25,7 +26,7 @@ public class ShelterService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
-    public Long registerShelter(
+    public RegisterShelterResponse registerShelter(
         String email,
         String password,
         String name,
@@ -45,7 +46,7 @@ public class ShelterService {
             isOpenedAddress,
             passwordEncoder);
         shelterRepository.save(shelter);
-        return shelter.getShelterId();
+        return RegisterShelterResponse.from(shelter);
     }
 
     @Transactional
