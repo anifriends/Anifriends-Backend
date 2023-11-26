@@ -127,7 +127,7 @@ public class AnimalService {
             pageable
         );
         if (type == null && active == null && neuteredFilter == null && age == null
-            && gender == null && size == null && createdAt == null && animalId == null && pageable == null) {
+            && gender == null && size == null && createdAt == null && animalId == null) {
             return FindAnimalsResponse.fromV2(animalsWithPagination,
                 animalCacheService.getTotalNumberOfAnimals());
         }
