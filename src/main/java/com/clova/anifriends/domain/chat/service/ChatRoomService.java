@@ -8,6 +8,7 @@ import com.clova.anifriends.domain.chat.dto.response.FindChatRoomDetailResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomIdResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindUnreadCountResponse;
+import com.clova.anifriends.domain.chat.dto.response.RegisterChatRoomResponse;
 import com.clova.anifriends.domain.chat.exception.ChatNotFoundException;
 import com.clova.anifriends.domain.chat.exception.ChatRoomConflictException;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
@@ -52,13 +53,12 @@ public class ChatRoomService {
 
     @Transactional
     @DataIntegrityHandler(message = "이미 존재하는 채팅방입니다.", exceptionClass = ChatRoomConflictException.class)
-    public Long registerChatRoom(Long volunteerId, Long shelterId) {
+    public RegisterChatRoomResponse registerChatRoom(Long volunteerId, Long shelterId) {
         Volunteer volunteer = getVolunteer(volunteerId);
         Shelter shelter = getShelter(shelterId);
-
         ChatRoom chatRoom = new ChatRoom(volunteer, shelter);
         chatRoomRepository.save(chatRoom);
-        return chatRoom.getChatRoomId();
+        return RegisterChatRoomResponse.from(chatRoom);
     }
 
     @Transactional(readOnly = true)

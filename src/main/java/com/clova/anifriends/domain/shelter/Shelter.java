@@ -29,6 +29,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Shelter extends BaseTimeEntity {
 
+    private static final String BLANK = "";
+
     @Id
     @Column(name = "shelter_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -90,13 +92,16 @@ public class Shelter extends BaseTimeEntity {
     }
 
     private ShelterImage updateImage(String imageUrl) {
-        if (nonNull(this.image) && this.image.isSameWith(imageUrl)) {
-            return this.image;
-        }
-        if (nonNull(imageUrl)) {
+        if(nonNull(imageUrl)) {
+            if(imageUrl.isBlank()) {
+                return null;
+            }
+            if(nonNull(image) && image.isSameWith(imageUrl)) {
+                return image;
+            }
             return new ShelterImage(this, imageUrl);
         }
-        return null;
+        return image;
     }
 
     public Optional<String> findImageToDelete(String newImageUrl) {
@@ -156,7 +161,7 @@ public class Shelter extends BaseTimeEntity {
     }
 
     public String getImage() {
-        return this.image == null ? null : this.image.getImageUrl();
+        return this.image == null ? BLANK : this.image.getImageUrl();
     }
 
     public String getDeviceToken() {

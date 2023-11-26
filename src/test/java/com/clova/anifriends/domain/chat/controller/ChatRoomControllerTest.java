@@ -29,6 +29,7 @@ import com.clova.anifriends.domain.chat.dto.response.FindChatRoomIdResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindChatRoomsResponse.FindChatRoomResponse;
 import com.clova.anifriends.domain.chat.dto.response.FindUnreadCountResponse;
+import com.clova.anifriends.domain.chat.dto.response.RegisterChatRoomResponse;
 import com.clova.anifriends.domain.chat.support.ChatRoomFixture;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -130,18 +131,13 @@ class ChatRoomControllerTest extends BaseControllerTest {
     @DisplayName("성공: 채팅방 생성 api 호출")
     void registerChatRoom() throws Exception {
         // given
-        Volunteer volunteer = VolunteerFixture.volunteer();
-        ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
-        Shelter shelter = ShelterFixture.shelter();
-        ReflectionTestUtils.setField(shelter, "shelterId", 1L);
-
-        RegisterChatRoomRequest request = new RegisterChatRoomRequest(
-            shelter.getShelterId());
-
+        RegisterChatRoomRequest request = new RegisterChatRoomRequest(1L);
         long chatRoomId = 1;
+        RegisterChatRoomResponse registerChatRoomResponse = new RegisterChatRoomResponse(
+            chatRoomId);
 
-        when(chatRoomService.registerChatRoom(volunteer.getVolunteerId(), shelter.getShelterId()))
-            .thenReturn(chatRoomId);
+        given(chatRoomService.registerChatRoom(anyLong(), anyLong()))
+            .willReturn(registerChatRoomResponse);
 
         // when
         ResultActions result = mockMvc.perform(post("/api/volunteers/chat/rooms")
@@ -160,6 +156,9 @@ class ChatRoomControllerTest extends BaseControllerTest {
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 채팅방의 URI")
+                ),
+                responseFields(
+                    fieldWithPath("chatRoomId").description("생성된 채팅방 ID")
                 )
             ));
     }

@@ -168,14 +168,14 @@ class ShelterTest {
         void updateExistToNone() {
             // given
             String originImageUrl = "originImageUrl";
-            String nullNewImageUrl = null;
+            String blankImageUrl = "";
 
             Shelter shelter = ShelterFixture.shelter(originImageUrl);
 
             // when
             shelter.updateShelter(
                 shelter.getName(),
-                nullNewImageUrl,
+                blankImageUrl,
                 shelter.getAddress(),
                 shelter.getAddressDetail(),
                 shelter.getPhoneNumber(),
@@ -184,7 +184,7 @@ class ShelterTest {
             );
 
             // then
-            assertThat(shelter.getImage()).isNull();
+            assertThat(shelter.getImage()).isBlank();
         }
 
         @Test
@@ -231,7 +231,7 @@ class ShelterTest {
             );
 
             // then
-            assertThat(shelter.getImage()).isNull();
+            assertThat(shelter.getImage()).isBlank();
         }
 
     }

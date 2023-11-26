@@ -7,6 +7,7 @@ import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.RegisterReviewResponse;
 import com.clova.anifriends.domain.review.service.ReviewService;
 import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
 import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
@@ -42,14 +43,17 @@ public class ReviewController {
 
     @VolunteerOnly
     @PostMapping("/volunteers/reviews")
-    public ResponseEntity<Void> registerReview(
-        @LoginUser Long userId,
+    public ResponseEntity<RegisterReviewResponse> registerReview(
+        @LoginUser Long volunteerId,
         @RequestBody RegisterReviewRequest request
     ) {
-        long reviewId = reviewService.registerReview(userId, request.applicationId(),
-            request.content(), request.imageUrls());
-        URI location = URI.create("/api/volunteers/reviews/" + reviewId);
-        return ResponseEntity.created(location).build();
+        RegisterReviewResponse registerReviewResponse = reviewService.registerReview(
+            volunteerId,
+            request.applicationId(),
+            request.content(),
+            request.imageUrls());
+        URI location = URI.create("/api/volunteers/reviews/" + registerReviewResponse.reviewId());
+        return ResponseEntity.created(location).body(registerReviewResponse);
     }
 
     @ShelterOnly
