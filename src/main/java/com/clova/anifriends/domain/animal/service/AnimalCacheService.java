@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.animal.service;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.requireNonNull;
 
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
@@ -61,13 +62,14 @@ public class AnimalCacheService {
         zSetOperations.remove(ANIMAL_ZSET_KEY, findAnimalResponse);
     }
 
+    @Transactional(readOnly = true)
     public FindAnimalsResponse findAnimals(int size, long count) {
         if (isCached(size)) {
             synchronizeCache();
         }
         Set<Object> cachedResponses = zSetOperations.range(ANIMAL_ZSET_KEY, 0,
             size - LAST_INDEX);
-        List<FindAnimalResponse> responses = cachedResponses.stream()
+        List<FindAnimalResponse> responses = requireNonNull(cachedResponses).stream()
             .map(FindAnimalResponse.class::cast)
             .toList();
         PageInfo pageInfo = PageInfo.of(count, count > size);
