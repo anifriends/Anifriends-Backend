@@ -9,9 +9,11 @@ import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixtur
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -168,6 +171,76 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
                 .hasSize(20)
                 .map(FindRecruitmentResponse::recruitmentId)
                 .containsExactlyElementsOf(recruitmentIdsDesc);
+        }
+    }
+
+    @Nested
+    @DisplayName("updateCachedRecruitments 메서드 호출 시")
+    class UpdateCachedRecruitmentsTest {
+
+        Shelter shelter;
+        List<Recruitment> recruitments;
+
+        @BeforeEach
+        void setUp() {
+            shelter = ShelterFixture.shelter();
+            shelterRepository.save(shelter);
+            recruitments = RecruitmentFixture.recruitments(shelter, 30);
+            recruitmentRepository.saveAll(recruitments); 
+        }
+
+        @Test
+        @DisplayName("성공: 캐시된 Recruitment 업데이트 됨")
+        void updateCachedRecruitment() {
+            //given
+            int hour = 0;
+            LocalDateTime now = LocalDateTime.now();
+            for (Recruitment recruitment : recruitments) {
+                ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
+                recruitmentCacheService.pushNewRecruitment(recruitment);
+            }
+            Recruitment needToUpdateRecruitment = recruitments.get(20);
+            FindRecruitmentResponse oldCachedRecruitment
+                = FindRecruitmentResponse.from(needToUpdateRecruitment);
+            needToUpdateRecruitment.updateRecruitment("update", null, null, null, null, null, null);
+
+            //when
+            recruitmentCacheService.updateCachedRecruitment(needToUpdateRecruitment);
+
+            //then
+            List<FindRecruitmentResponse> cachedRecruitments
+                = recruitmentCacheService.getCachedRecruitments();
+            FindRecruitmentResponse newCachedRecruitment
+                = FindRecruitmentResponse.from(needToUpdateRecruitment);
+            assertThat(cachedRecruitments)
+                .contains(newCachedRecruitment)
+                .doesNotContain(oldCachedRecruitment);
+        }
+
+        @Test
+        @DisplayName("성공: 캐시된 Recruitment 없는 경우 무시됨")
+        void ignoreIfCachedRecruitmentDoesNotExists() {
+            //given
+            int hour = 0;
+            LocalDateTime now = LocalDateTime.now();
+            for (Recruitment recruitment : recruitments) {
+                ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
+                recruitmentCacheService.pushNewRecruitment(recruitment);
+            }
+            Recruitment needToUpdateRecruitment = recruitments.get(0);
+            needToUpdateRecruitment.updateRecruitment("update", null, null, null, null, null, null);
+
+            //when
+            recruitmentCacheService.updateCachedRecruitment(needToUpdateRecruitment);
+
+            //then
+            long createdAtScore
+                = needToUpdateRecruitment.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
+            ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
+                = redisTemplate.opsForZSet();
+            Set<FindRecruitmentResponse> recruitments = cachedRecruitments.rangeByScore(
+                RECRUITMENT_KEY, createdAtScore, createdAtScore);
+            assertThat(recruitments).isEmpty();
         }
     }
 }

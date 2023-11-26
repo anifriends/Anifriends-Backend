@@ -5,6 +5,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResp
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,10 +32,11 @@ public class RecruitmentCacheService {
         popUntilCachedSize(cachedRecruitments);
     }
 
-    private void popUntilCachedSize(ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments) {
+    private void popUntilCachedSize(
+        ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments) {
         Set<FindRecruitmentResponse> recruitments
             = cachedRecruitments.range(RECRUITMENT_KEY, ZERO, UNTIL_LAST_ELEMENT);
-        if(Objects.nonNull(recruitments)) {
+        if (Objects.nonNull(recruitments)) {
             int needToRemoveSize = recruitments.size() - CACHED_SIZE;
             needToRemoveSize = Math.max(needToRemoveSize, ZERO);
             cachedRecruitments.popMin(RECRUITMENT_KEY, needToRemoveSize);
@@ -46,10 +48,35 @@ public class RecruitmentCacheService {
             = redisTemplate.opsForZSet();
         Set<FindRecruitmentResponse> recruitments
             = cachedRecruitments.reverseRange(RECRUITMENT_KEY, ZERO, CACHED_SIZE);
-        if(Objects.isNull(recruitments)) {
+        if (Objects.isNull(recruitments)) {
             return List.of();
         }
         return recruitments.stream()
             .toList();
+    }
+
+    public void updateCachedRecruitment(final Recruitment recruitment) {
+        long createdAtScore = recruitment.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
+        ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
+            = redisTemplate.opsForZSet();
+        Set<FindRecruitmentResponse> recruitments = cachedRecruitments.rangeByScore(
+            RECRUITMENT_KEY, createdAtScore, createdAtScore);
+        if (Objects.nonNull(recruitments)) {
+            Optional<FindRecruitmentResponse> oldCachedRecruitment = recruitments.stream()
+                .filter(findRecruitmentResponse -> isEqualsId(recruitment, findRecruitmentResponse))
+                .findFirst();
+            oldCachedRecruitment.ifPresent(oldRecruitment -> {
+                cachedRecruitments.remove(RECRUITMENT_KEY, oldRecruitment);
+                FindRecruitmentResponse updatedRecruitment
+                    = FindRecruitmentResponse.from(recruitment);
+                cachedRecruitments.add(RECRUITMENT_KEY, updatedRecruitment, createdAtScore);
+            });
+        }
+    }
+
+    private boolean isEqualsId(
+        Recruitment recruitment,
+        FindRecruitmentResponse findRecruitmentResponse) {
+        return findRecruitmentResponse.recruitmentId().equals(recruitment.getRecruitmentId());
     }
 }
