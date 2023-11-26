@@ -68,7 +68,7 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             recruitmentCacheRepository.save(recruitment);
 
             //then
-            List<FindRecruitmentResponse> recruitments = recruitmentCacheRepository.findAll();
+            List<FindRecruitmentResponse> recruitments = recruitmentCacheRepository.findAll(20);
             assertThat(recruitments).hasSize(1);
             FindRecruitmentResponse recruitmentResponse = recruitments.get(0);
             assertThat(recruitmentResponse.recruitmentId())
@@ -76,7 +76,7 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("성공: 새로운 Recruitment 100개 생성, 역순 20개 캐싱")
+        @DisplayName("성공: 새로운 Recruitment 100개 생성, 30개 캐싱")
         void overflowTest() {
             //given
             List<Recruitment> recruitments = IntStream.range(0, 100)
@@ -97,14 +97,13 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             //then
             List<Long> recruitmentIdsDesc = recruitments.stream()
                 .map(Recruitment::getRecruitmentId)
-                .filter(i -> i > 80)
+                .filter(i -> i > 70)
                 .sorted(Comparator.reverseOrder())
                 .toList();
 
-            System.out.println(recruitmentRepository.findAll().size());
-            List<FindRecruitmentResponse> findRecruitments
-                = recruitmentCacheRepository.findAll();
-            assertThat(findRecruitments).hasSize(20);
+            Set<FindRecruitmentResponse> findRecruitments = redisTemplate.opsForZSet()
+                .reverseRange(RECRUITMENT_KEY, 0, -1);
+            assertThat(findRecruitments).hasSize(30);
             assertThat(findRecruitments).map(FindRecruitmentResponse::recruitmentId)
                 .containsExactlyElementsOf(recruitmentIdsDesc);
 
@@ -130,7 +129,7 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             //given
             //when
             List<FindRecruitmentResponse> cachedRecruitments
-                = recruitmentCacheRepository.findAll();
+                = recruitmentCacheRepository.findAll(20);
 
             //then
             assertThat(cachedRecruitments)
@@ -158,7 +157,7 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
 
             //when
             List<FindRecruitmentResponse> cachedRecruitments
-                = recruitmentCacheRepository.findAll();
+                = recruitmentCacheRepository.findAll(20);
 
             //then
             List<Long> recruitmentIdsDesc = recruitments.stream()
@@ -185,7 +184,7 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
         void setUp() {
             shelter = ShelterFixture.shelter();
             shelterRepository.save(shelter);
-            recruitments = RecruitmentFixture.recruitments(shelter, 30);
+            recruitments = RecruitmentFixture.recruitments(shelter, 40);
             recruitmentRepository.saveAll(recruitments);
         }
 
@@ -209,7 +208,7 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
 
             //then
             List<FindRecruitmentResponse> cachedRecruitments
-                = recruitmentCacheRepository.findAll();
+                = recruitmentCacheRepository.findAll(20);
             FindRecruitmentResponse newCachedRecruitment
                 = FindRecruitmentResponse.from(needToUpdateRecruitment);
             assertThat(cachedRecruitments)

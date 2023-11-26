@@ -18,7 +18,8 @@ public class RecruitmentCacheRepository {
 
     private static final String RECRUITMENT_KEY = "recruitment";
     private static final int UNTIL_LAST_ELEMENT = -1;
-    private static final int CACHED_SIZE = 20;
+    private static final int MAX_CACHED_SIZE = 30;
+    private static final int PAGE_SIZE = 20;
     private static final int ZERO = 0;
 
     private final RedisTemplate<String, FindRecruitmentResponse> redisTemplate;
@@ -37,21 +38,31 @@ public class RecruitmentCacheRepository {
         Set<FindRecruitmentResponse> recruitments
             = cachedRecruitments.range(RECRUITMENT_KEY, ZERO, UNTIL_LAST_ELEMENT);
         if (Objects.nonNull(recruitments)) {
-            int needToRemoveSize = recruitments.size() - CACHED_SIZE;
+            int needToRemoveSize = recruitments.size() - MAX_CACHED_SIZE;
             needToRemoveSize = Math.max(needToRemoveSize, ZERO);
             cachedRecruitments.popMin(RECRUITMENT_KEY, needToRemoveSize);
         }
     }
 
-    public List<FindRecruitmentResponse> findAll() {
+    /**
+     * 캐시된 Recruitment dto 리스트를 size만큼 조회합니다.
+     * size가 지정된 최대 size를 초과하는 경우 지정된 최대 size만큼 조회해옵니다.
+     * @param size 조회해 올 리스트의 사이즈. 최대 20.
+     * @return 캐시된 Recruitment dto 리스트
+     */
+    public List<FindRecruitmentResponse> findAll(long size) {
+        if(size > PAGE_SIZE) {
+            size = PAGE_SIZE;
+        }
         ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
             = redisTemplate.opsForZSet();
         Set<FindRecruitmentResponse> recruitments
-            = cachedRecruitments.reverseRange(RECRUITMENT_KEY, ZERO, CACHED_SIZE);
+            = cachedRecruitments.reverseRange(RECRUITMENT_KEY, ZERO, size);
         if (Objects.isNull(recruitments)) {
             return List.of();
         }
         return recruitments.stream()
+            .limit(size)
             .toList();
     }
 
