@@ -20,12 +20,11 @@ public class RecruitmentCacheService {
         String cacheKey
     ) {
         Object cachedCount = redisTemplate.opsForValue().get(cacheKey);
+
         if (Objects.isNull(cachedCount)) {
             return RECRUITMENT_COUNT_NO_CACHE;
         }
-        if (cachedCount instanceof Long) {
-            return (Long) cachedCount;
-        }
+
         return ((Integer) cachedCount).longValue();
     }
 
@@ -39,10 +38,10 @@ public class RecruitmentCacheService {
     public void plusOneToRecruitmentCount(
         String cacheKey
     ) {
-        Long cachedCount = redisTemplate.opsForValue().get(cacheKey);
+        Object cachedCount = redisTemplate.opsForValue().get(cacheKey);
 
         if (Objects.nonNull(cachedCount)) {
-            registerRecruitmentCount(cacheKey, cachedCount + COUNT_ONE);
+            registerRecruitmentCount(cacheKey, (Integer) cachedCount + COUNT_ONE);
         }
 
         long dbRecruitmentCount = recruitmentRepository.count();
@@ -53,10 +52,10 @@ public class RecruitmentCacheService {
     public void minusOneToRecruitmentCount(
         String cacheKey
     ) {
-        Long cachedCount = redisTemplate.opsForValue().get(cacheKey);
+        Object cachedCount = redisTemplate.opsForValue().get(cacheKey);
 
         if (Objects.nonNull(cachedCount)) {
-            registerRecruitmentCount(cacheKey, cachedCount - COUNT_ONE);
+            registerRecruitmentCount(cacheKey, (Integer) cachedCount - COUNT_ONE);
         }
 
         long dbRecruitmentCount = recruitmentRepository.count();

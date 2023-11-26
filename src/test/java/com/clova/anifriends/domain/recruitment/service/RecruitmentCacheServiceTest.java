@@ -39,7 +39,6 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
         shelterRepository.save(shelter);
     }
 
-
     @Nested
     @DisplayName("findRecruitmentsV2 실행 시 recruitmentCount를 가져올 때 ")
     class GetRecruitmentCountTest {
