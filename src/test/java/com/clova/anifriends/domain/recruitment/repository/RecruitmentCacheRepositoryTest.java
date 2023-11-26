@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.recruitment.service;
+package com.clova.anifriends.domain.recruitment.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,14 +27,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-class RecruitmentCacheServiceTest extends BaseIntegrationTest {
+class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
 
     private static final String RECRUITMENT_KEY = "recruitment";
     private static final int ZERO = 0;
     private static final int ALL_ELEMENT = -1;
 
     @Autowired
-    RecruitmentCacheService recruitmentCacheService;
+    RecruitmentCacheRepository recruitmentCacheRepository;
 
     @Autowired
     RedisTemplate<String, FindRecruitmentResponse> redisTemplate;
@@ -65,10 +65,10 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             recruitmentRepository.save(recruitment);
 
             //when
-            recruitmentCacheService.pushNewRecruitment(recruitment);
+            recruitmentCacheRepository.save(recruitment);
 
             //then
-            List<FindRecruitmentResponse> recruitments = recruitmentCacheService.getCachedRecruitments();
+            List<FindRecruitmentResponse> recruitments = recruitmentCacheRepository.findAll();
             assertThat(recruitments).hasSize(1);
             FindRecruitmentResponse recruitmentResponse = recruitments.get(0);
             assertThat(recruitmentResponse.recruitmentId())
@@ -91,7 +91,7 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
 
             //when
             for (Recruitment recruitment : recruitments) {
-                recruitmentCacheService.pushNewRecruitment(recruitment);
+                recruitmentCacheRepository.save(recruitment);
             }
 
             //then
@@ -103,7 +103,7 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
 
             System.out.println(recruitmentRepository.findAll().size());
             List<FindRecruitmentResponse> findRecruitments
-                = recruitmentCacheService.getCachedRecruitments();
+                = recruitmentCacheRepository.findAll();
             assertThat(findRecruitments).hasSize(20);
             assertThat(findRecruitments).map(FindRecruitmentResponse::recruitmentId)
                 .containsExactlyElementsOf(recruitmentIdsDesc);
@@ -130,7 +130,7 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             //given
             //when
             List<FindRecruitmentResponse> cachedRecruitments
-                = recruitmentCacheService.getCachedRecruitments();
+                = recruitmentCacheRepository.findAll();
 
             //then
             assertThat(cachedRecruitments)
@@ -153,12 +153,12 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             int hour = 0;
             for (Recruitment recruitment : recruitments) {
                 ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
-                recruitmentCacheService.pushNewRecruitment(recruitment);
+                recruitmentCacheRepository.save(recruitment);
             }
 
             //when
             List<FindRecruitmentResponse> cachedRecruitments
-                = recruitmentCacheService.getCachedRecruitments();
+                = recruitmentCacheRepository.findAll();
 
             //then
             List<Long> recruitmentIdsDesc = recruitments.stream()
@@ -197,7 +197,7 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             LocalDateTime now = LocalDateTime.now();
             for (Recruitment recruitment : recruitments) {
                 ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
-                recruitmentCacheService.pushNewRecruitment(recruitment);
+                recruitmentCacheRepository.save(recruitment);
             }
             Recruitment needToUpdateRecruitment = recruitments.get(20);
             FindRecruitmentResponse oldCachedRecruitment
@@ -205,11 +205,11 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             needToUpdateRecruitment.updateRecruitment("update", null, null, null, null, null, null);
 
             //when
-            recruitmentCacheService.updateCachedRecruitment(needToUpdateRecruitment);
+            recruitmentCacheRepository.update(needToUpdateRecruitment);
 
             //then
             List<FindRecruitmentResponse> cachedRecruitments
-                = recruitmentCacheService.getCachedRecruitments();
+                = recruitmentCacheRepository.findAll();
             FindRecruitmentResponse newCachedRecruitment
                 = FindRecruitmentResponse.from(needToUpdateRecruitment);
             assertThat(cachedRecruitments)
@@ -225,13 +225,13 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             LocalDateTime now = LocalDateTime.now();
             for (Recruitment recruitment : recruitments) {
                 ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
-                recruitmentCacheService.pushNewRecruitment(recruitment);
+                recruitmentCacheRepository.save(recruitment);
             }
             Recruitment needToUpdateRecruitment = recruitments.get(0);
             needToUpdateRecruitment.updateRecruitment("update", null, null, null, null, null, null);
 
             //when
-            recruitmentCacheService.updateCachedRecruitment(needToUpdateRecruitment);
+            recruitmentCacheRepository.update(needToUpdateRecruitment);
 
             //then
             long createdAtScore
@@ -262,10 +262,10 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             //given
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
             recruitmentRepository.save(recruitment);
-            recruitmentCacheService.pushNewRecruitment(recruitment);
+            recruitmentCacheRepository.save(recruitment);
 
             //when
-            recruitmentCacheService.deleteCachedRecruitment(recruitment);
+            recruitmentCacheRepository.delete(recruitment);
 
             //then
             ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
@@ -284,7 +284,7 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             recruitmentRepository.save(recruitment);
 
             //when
-            recruitmentCacheService.deleteCachedRecruitment(recruitment);
+            recruitmentCacheRepository.delete(recruitment);
 
             //then
             ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments

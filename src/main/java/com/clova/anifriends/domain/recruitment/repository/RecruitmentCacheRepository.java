@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.recruitment.service;
+package com.clova.anifriends.domain.recruitment.repository;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
@@ -10,11 +10,11 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service
+@Repository
 @RequiredArgsConstructor
-public class RecruitmentCacheService {
+public class RecruitmentCacheRepository {
 
     private static final String RECRUITMENT_KEY = "recruitment";
     private static final int UNTIL_LAST_ELEMENT = -1;
@@ -23,7 +23,7 @@ public class RecruitmentCacheService {
 
     private final RedisTemplate<String, FindRecruitmentResponse> redisTemplate;
 
-    public void pushNewRecruitment(final Recruitment recruitment) {
+    public void save(final Recruitment recruitment) {
         FindRecruitmentResponse recruitmentResponse = FindRecruitmentResponse.from(recruitment);
         ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments = redisTemplate.opsForZSet();
         long createdAtScore = getCreatedAtScore(recruitment);
@@ -43,7 +43,7 @@ public class RecruitmentCacheService {
         }
     }
 
-    public List<FindRecruitmentResponse> getCachedRecruitments() {
+    public List<FindRecruitmentResponse> findAll() {
         ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
             = redisTemplate.opsForZSet();
         Set<FindRecruitmentResponse> recruitments
@@ -55,7 +55,7 @@ public class RecruitmentCacheService {
             .toList();
     }
 
-    public void updateCachedRecruitment(final Recruitment recruitment) {
+    public void update(final Recruitment recruitment) {
         long createdAtScore = getCreatedAtScore(recruitment);
         ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
             = redisTemplate.opsForZSet();
@@ -84,7 +84,7 @@ public class RecruitmentCacheService {
         return findRecruitmentResponse.recruitmentId().equals(recruitment.getRecruitmentId());
     }
 
-    public void deleteCachedRecruitment(final Recruitment recruitment) {
+    public void delete(final Recruitment recruitment) {
         ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
             = redisTemplate.opsForZSet();
         FindRecruitmentResponse recruitmentResponse = FindRecruitmentResponse.from(recruitment);
