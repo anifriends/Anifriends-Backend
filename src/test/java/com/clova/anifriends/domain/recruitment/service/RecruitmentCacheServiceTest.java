@@ -186,7 +186,7 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             shelter = ShelterFixture.shelter();
             shelterRepository.save(shelter);
             recruitments = RecruitmentFixture.recruitments(shelter, 30);
-            recruitmentRepository.saveAll(recruitments); 
+            recruitmentRepository.saveAll(recruitments);
         }
 
         @Test
@@ -238,6 +238,58 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
                 = needToUpdateRecruitment.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
             ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
                 = redisTemplate.opsForZSet();
+            Set<FindRecruitmentResponse> recruitments = cachedRecruitments.rangeByScore(
+                RECRUITMENT_KEY, createdAtScore, createdAtScore);
+            assertThat(recruitments).isEmpty();
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteCachedRecruitment 메서드 실행 시")
+    class DeleteCachedRecruitmentTest {
+
+        Shelter shelter;
+
+        @BeforeEach
+        void setUp() {
+            shelter = ShelterFixture.shelter();
+            shelterRepository.save(shelter);
+        }
+
+        @Test
+        @DisplayName("성공: 캐시된 Recruitment 삭제 됨")
+        void deleteCachedRecruitment() {
+            //given
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            recruitmentRepository.save(recruitment);
+            recruitmentCacheService.pushNewRecruitment(recruitment);
+
+            //when
+            recruitmentCacheService.deleteCachedRecruitment(recruitment);
+
+            //then
+            ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
+                = redisTemplate.opsForZSet();
+            long createdAtScore = recruitment.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
+            Set<FindRecruitmentResponse> recruitments = cachedRecruitments.rangeByScore(
+                RECRUITMENT_KEY, createdAtScore, createdAtScore);
+            assertThat(recruitments).isEmpty();
+        }
+
+        @Test
+        @DisplayName("성공: 캐시된 Recruitment 없는 경우 무시 됨")
+        void ignoreWhenCachedRecruitmentDoesNotExists() {
+            //given
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            recruitmentRepository.save(recruitment);
+
+            //when
+            recruitmentCacheService.deleteCachedRecruitment(recruitment);
+
+            //then
+            ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
+                = redisTemplate.opsForZSet();
+            long createdAtScore = recruitment.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
             Set<FindRecruitmentResponse> recruitments = cachedRecruitments.rangeByScore(
                 RECRUITMENT_KEY, createdAtScore, createdAtScore);
             assertThat(recruitments).isEmpty();

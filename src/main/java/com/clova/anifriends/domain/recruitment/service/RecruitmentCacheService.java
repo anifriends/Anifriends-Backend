@@ -26,7 +26,7 @@ public class RecruitmentCacheService {
     public void pushNewRecruitment(final Recruitment recruitment) {
         FindRecruitmentResponse recruitmentResponse = FindRecruitmentResponse.from(recruitment);
         ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments = redisTemplate.opsForZSet();
-        long createdAtScore = recruitment.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
+        long createdAtScore = getCreatedAtScore(recruitment);
         cachedRecruitments.add(RECRUITMENT_KEY, recruitmentResponse, createdAtScore);
 
         popUntilCachedSize(cachedRecruitments);
@@ -56,7 +56,7 @@ public class RecruitmentCacheService {
     }
 
     public void updateCachedRecruitment(final Recruitment recruitment) {
-        long createdAtScore = recruitment.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
+        long createdAtScore = getCreatedAtScore(recruitment);
         ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
             = redisTemplate.opsForZSet();
         Set<FindRecruitmentResponse> recruitments = cachedRecruitments.rangeByScore(
@@ -74,9 +74,20 @@ public class RecruitmentCacheService {
         }
     }
 
+    private long getCreatedAtScore(Recruitment recruitment) {
+        return recruitment.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
+    }
+
     private boolean isEqualsId(
         Recruitment recruitment,
         FindRecruitmentResponse findRecruitmentResponse) {
         return findRecruitmentResponse.recruitmentId().equals(recruitment.getRecruitmentId());
+    }
+
+    public void deleteCachedRecruitment(final Recruitment recruitment) {
+        ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
+            = redisTemplate.opsForZSet();
+        FindRecruitmentResponse recruitmentResponse = FindRecruitmentResponse.from(recruitment);
+        cachedRecruitments.remove(RECRUITMENT_KEY, recruitmentResponse);
     }
 }
