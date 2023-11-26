@@ -21,6 +21,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -68,9 +70,12 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             recruitmentCacheRepository.save(recruitment);
 
             //then
-            List<FindRecruitmentResponse> recruitments = recruitmentCacheRepository.findAll(20);
-            assertThat(recruitments).hasSize(1);
-            FindRecruitmentResponse recruitmentResponse = recruitments.get(0);
+            PageRequest pageRequest = PageRequest.of(0, 20);
+            Slice<FindRecruitmentResponse> recruitments = recruitmentCacheRepository.findAll(
+                pageRequest);
+            List<FindRecruitmentResponse> content = recruitments.getContent();
+            assertThat(content).hasSize(1);
+            FindRecruitmentResponse recruitmentResponse = content.get(0);
             assertThat(recruitmentResponse.recruitmentId())
                 .isEqualTo(recruitment.getRecruitmentId());
         }
@@ -127,13 +132,13 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
         @DisplayName("성공: 캐싱된 목록이 없을 시 빈 리스트 반환")
         void getCachedRecruitments() {
             //given
+            PageRequest pageRequest = PageRequest.of(0, 20);
+
             //when
-            List<FindRecruitmentResponse> cachedRecruitments
-                = recruitmentCacheRepository.findAll(20);
+            Slice<FindRecruitmentResponse> recruitments = recruitmentCacheRepository.findAll(pageRequest);
 
             //then
-            assertThat(cachedRecruitments)
-                .isNotNull()
+            assertThat(recruitments.getContent())
                 .isEmpty();
         }
 
@@ -154,10 +159,11 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
                 ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
                 recruitmentCacheRepository.save(recruitment);
             }
+            PageRequest pageRequest = PageRequest.of(0, 20);
 
             //when
-            List<FindRecruitmentResponse> cachedRecruitments
-                = recruitmentCacheRepository.findAll(20);
+            Slice<FindRecruitmentResponse> cachedRecruitments
+                = recruitmentCacheRepository.findAll(pageRequest);
 
             //then
             List<Long> recruitmentIdsDesc = recruitments.stream()
@@ -207,11 +213,12 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             recruitmentCacheRepository.update(needToUpdateRecruitment);
 
             //then
-            List<FindRecruitmentResponse> cachedRecruitments
-                = recruitmentCacheRepository.findAll(20);
+            PageRequest pageRequest = PageRequest.of(0, 20);
+            Slice<FindRecruitmentResponse> cachedRecruitments = recruitmentCacheRepository.findAll(
+                pageRequest);
             FindRecruitmentResponse newCachedRecruitment
                 = FindRecruitmentResponse.from(needToUpdateRecruitment);
-            assertThat(cachedRecruitments)
+            assertThat(cachedRecruitments.getContent())
                 .contains(newCachedRecruitment)
                 .doesNotContain(oldCachedRecruitment);
         }

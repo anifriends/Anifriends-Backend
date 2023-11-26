@@ -8,6 +8,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
@@ -45,13 +48,14 @@ public class RecruitmentCacheRepository {
     }
 
     /**
-     * 캐시된 Recruitment dto 리스트를 size만큼 조회합니다.
-     * size가 지정된 최대 size를 초과하는 경우 지정된 최대 size만큼 조회해옵니다.
-     * @param size 조회해 올 리스트의 사이즈. 최대 20.
+     * 캐시된 Recruitment dto 리스트를 size만큼 조회합니다. size가 지정된 최대 size를 초과하는 경우 지정된 최대 size만큼 조회해옵니다.
+     *
+     * @param pageable 조회해 올 리스트 pageable. 최대 사이즈 20
      * @return 캐시된 Recruitment dto 리스트
      */
-    public List<FindRecruitmentResponse> findAll(long size) {
-        if(size > PAGE_SIZE) {
+    public Slice<FindRecruitmentResponse> findAll(Pageable pageable) {
+        long size = pageable.getPageSize();
+        if (size > PAGE_SIZE) {
             size = PAGE_SIZE;
         }
         ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
@@ -59,11 +63,13 @@ public class RecruitmentCacheRepository {
         Set<FindRecruitmentResponse> recruitments
             = cachedRecruitments.reverseRange(RECRUITMENT_KEY, ZERO, size);
         if (Objects.isNull(recruitments)) {
-            return List.of();
+            return new SliceImpl<>(List.of());
         }
-        return recruitments.stream()
+        List<FindRecruitmentResponse> content = recruitments.stream()
             .limit(size)
             .toList();
+        boolean hasNext = recruitments.size() > PAGE_SIZE;
+        return new SliceImpl<>(content, pageable, hasNext);
     }
 
     public void update(final Recruitment recruitment) {
