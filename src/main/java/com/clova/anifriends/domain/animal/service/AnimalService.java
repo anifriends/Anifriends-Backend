@@ -126,7 +126,11 @@ public class AnimalService {
             animalId,
             pageable
         );
-
+        if (type == null && active == null && neuteredFilter == null && age == null
+            && gender == null && size == null && createdAt == null && animalId == null && pageable == null) {
+            return FindAnimalsResponse.fromV2(animalsWithPagination,
+                animalCacheService.getTotalNumberOfAnimals());
+        }
         Long count = animalRepository.countAnimalsV2(
             type,
             active,
@@ -143,7 +147,9 @@ public class AnimalService {
     public void updateAnimalAdoptStatus(Long shelterId, Long animalId, Boolean isAdopted) {
         Animal animal = getAnimalByAnimalIdAndShelterId(animalId, shelterId);
         animal.updateAdoptStatus(isAdopted);
-        if (isAdopted) animalCacheService.decreaseTotalNumberOfAnimals();
+        if (isAdopted) {
+            animalCacheService.decreaseTotalNumberOfAnimals();
+        }
     }
 
     @Transactional
