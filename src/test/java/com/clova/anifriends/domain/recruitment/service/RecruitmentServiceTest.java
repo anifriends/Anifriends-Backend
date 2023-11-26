@@ -61,6 +61,9 @@ class RecruitmentServiceTest {
     RecruitmentService recruitmentService;
 
     @Mock
+    RecruitmentCacheService recruitmentCacheService;
+
+    @Mock
     ShelterRepository shelterRepository;
 
     @Mock
@@ -197,8 +200,8 @@ class RecruitmentServiceTest {
 
         @Test
         @DisplayName("성공")
-        void findRecruitments() {
-            //give
+        void findRecruitmentsV2() {
+            //given
             String keyword = "keyword";
             LocalDate startDate = LocalDate.now();
             LocalDate endDate = LocalDate.now();
@@ -218,6 +221,8 @@ class RecruitmentServiceTest {
                 RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
                 title, content, shelterName, createdAt, recruitmentId, pageRequest)).willReturn(
                 recruitments);
+            given(recruitmentCacheService.getRecruitmentCount(any())).willReturn(
+                Long.valueOf(recruitments.getSize()));
             given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                 RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
                 title, content, shelterName)).willReturn(Long.valueOf(recruitments.getSize()));
@@ -313,7 +318,8 @@ class RecruitmentServiceTest {
             Recruitment recruitment = recruitment(shelter);
             FindRecruitmentDetailResponse expected = findRecruitmentDetailResponse(recruitment);
 
-            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(Optional.of(recruitment));
+            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(
+                Optional.of(recruitment));
 
             // when
             FindRecruitmentDetailResponse result = recruitmentService.findRecruitmentDetail(
@@ -327,7 +333,8 @@ class RecruitmentServiceTest {
         @DisplayName("예외(RecruitmentNotFoundException): 존재하지 않는 모집글")
         void throwExceptionWhenRecruitmentIsNotExist() {
             // given
-            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(Optional.empty());
+            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(
+                Optional.empty());
 
             // when
             Exception exception = catchException(

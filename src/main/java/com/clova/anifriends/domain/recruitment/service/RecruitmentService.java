@@ -16,6 +16,7 @@ import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,10 @@ public class RecruitmentService {
     private final ShelterRepository shelterRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final RecruitmentCacheService recruitmentCacheService;
+
+    private static final Long RECRUITMENT_COUNT_NO_CACHE = -1L;
+    private static final String RECRUITMENT_CACHE_KEY = "recruitment:count:";
 
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
@@ -154,7 +159,20 @@ public class RecruitmentService {
             recruitmentId,
             pageable);
 
-        Long count = recruitmentRepository.countFindRecruitmentsV2(
+        Long cachedRecruitmentCount = recruitmentCacheService.getRecruitmentCount(
+            RECRUITMENT_CACHE_KEY);
+
+        if (Objects.isNull(keyword) && Objects.isNull(startDate) && Objects.isNull(endDate)
+            && Objects.isNull(isClosed) && Objects.isNull(titleContains) && Objects.isNull(
+            contentContains) && Objects.isNull(shelterNameContains)
+        ) {
+            if (!Objects.equals(cachedRecruitmentCount, RECRUITMENT_COUNT_NO_CACHE)) {
+                return FindRecruitmentsResponse.fromV2(recruitments,
+                    cachedRecruitmentCount);
+            }
+        }
+
+        Long dbRecruitmentCount = recruitmentRepository.countFindRecruitmentsV2(
             keyword,
             startDate,
             endDate,
@@ -164,7 +182,9 @@ public class RecruitmentService {
             shelterNameContains
         );
 
-        return FindRecruitmentsResponse.fromV2(recruitments, count);
+        recruitmentCacheService.registerRecruitmentCount(RECRUITMENT_CACHE_KEY, dbRecruitmentCount);
+
+        return FindRecruitmentsResponse.fromV2(recruitments, dbRecruitmentCount);
     }
 
     @Transactional
