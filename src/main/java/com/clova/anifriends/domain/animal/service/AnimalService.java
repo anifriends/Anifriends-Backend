@@ -37,6 +37,7 @@ public class AnimalService {
     private final AnimalRepository animalRepository;
     private final ShelterRepository shelterRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final AnimalCacheService animalCacheService;
 
     @Transactional
     public RegisterAnimalResponse registerAnimal(
@@ -44,6 +45,7 @@ public class AnimalService {
         Shelter shelter = getShelterById(shelterId);
         Animal animal = AnimalMapper.toAnimal(shelter, registerAnimalRequest);
         animalRepository.save(animal);
+        animalCacheService.increaseTotalNumberOfAnimals();
         return RegisterAnimalResponse.from(animal);
     }
 
@@ -141,6 +143,7 @@ public class AnimalService {
     public void updateAnimalAdoptStatus(Long shelterId, Long animalId, Boolean isAdopted) {
         Animal animal = getAnimalByAnimalIdAndShelterId(animalId, shelterId);
         animal.updateAdoptStatus(isAdopted);
+        if (isAdopted) animalCacheService.decreaseTotalNumberOfAnimals();
     }
 
     @Transactional
@@ -173,6 +176,7 @@ public class AnimalService {
         List<String> imagesToDelete = animal.getImages();
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
         animalRepository.delete(animal);
+        animalCacheService.decreaseTotalNumberOfAnimals();
     }
 
     private Shelter getShelterById(Long shelterId) {
