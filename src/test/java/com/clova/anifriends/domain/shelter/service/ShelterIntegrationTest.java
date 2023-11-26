@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.shelter.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.clova.anifriends.base.BaseIntegrationTest;
+import com.clova.anifriends.base.config.BaseIntegrationTest;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.shelter.Shelter;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +39,6 @@ public class ShelterIntegrationTest extends BaseIntegrationTest {
                 = shelterService.registerShelter(email, oldRawPassword, shelterName, address,
                 addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress);
             String newRawPassword = oldRawPassword + "a";
-
 
             //when
             shelterService.updatePassword(registeredShelterId, oldRawPassword, newRawPassword);

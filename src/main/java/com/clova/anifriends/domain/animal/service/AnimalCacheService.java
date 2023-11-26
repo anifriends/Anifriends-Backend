@@ -1,75 +1,92 @@
 package com.clova.anifriends.domain.animal.service;
 
-import com.clova.anifriends.domain.animal.dto.response.FindAnimalRedisDto;
+import static java.util.Objects.isNull;
+
+import com.clova.anifriends.domain.animal.Animal;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse.FindAnimalResponse;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
-import java.util.ArrayList;
+import com.clova.anifriends.domain.common.PageInfo;
+import jakarta.annotation.PostConstruct;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class AnimalCacheService {
 
-    public static final String WILD_CARD = "*";
-    private final RedisTemplate<String, FindAnimalRedisDto> redisTemplate;
+    private static final String ANIMAL_ZSET_KEY = "animal";
+    private static final int ANIMAL_CACHE_SIZE = 30;
+    private static final long LAST_INDEX = 1L;
+    public static final double NANO = 1_000_000_000.0;
+
+    private final RedisTemplate<String, Object> redisTemplate;
     private final AnimalRepository animalRepository;
-    private static final String ANIMAL_BASE_KEY = "ANIMAL:";
-    private static final String ANIMAL_COUNT_KEY = "ANIMAL:COUNT";
-    private static final int ANIMAL_MAX_SIZE = 100;
 
-    public void saveAnimal(FindAnimalRedisDto findAnimalRedisDto) {
-        if (!isCachedRight()) {
-            synchronizeAnimals();
+    private ZSetOperations<String, Object> zSetOperations;
+
+    @PostConstruct
+    public void init() {
+        zSetOperations = redisTemplate.opsForZSet();
+    }
+
+    @Transactional(readOnly = true)
+    public void synchronizeCache() {
+        zSetOperations.removeRange(ANIMAL_ZSET_KEY, 0, -1);
+        Pageable pageable = PageRequest.of(0, ANIMAL_CACHE_SIZE);
+        Slice<Animal> animals = animalRepository.findAnimalsByVolunteerV2(null, null, null, null,
+            null, null, null, null, pageable);
+        animals.forEach(this::saveAnimal);
+    }
+
+    public void saveAnimal(Animal animal) {
+        FindAnimalResponse findAnimalResponse = FindAnimalResponse.from(animal);
+        zSetOperations.add(ANIMAL_ZSET_KEY, findAnimalResponse, -getScore(animal.getCreatedAt()));
+        trimCache();
+    }
+
+    public void deleteAnimal(Animal animal) {
+        FindAnimalResponse findAnimalResponse = FindAnimalResponse.from(animal);
+        zSetOperations.remove(ANIMAL_ZSET_KEY, findAnimalResponse);
+    }
+
+    public FindAnimalsResponse findAnimals(int size, long count) {
+        if (isCached(size)) {
+            synchronizeCache();
         }
-        ZSetOperations<String, FindAnimalRedisDto> zSetOperations = redisTemplate.opsForZSet();
-        zSetOperations.add(
-            ANIMAL_BASE_KEY + findAnimalRedisDto.animalId(),
-            findAnimalRedisDto,
-            findAnimalRedisDto.createdAt()
-                .toEpochSecond(java.time.OffsetDateTime.now().getOffset()));
-        if (zSetOperations.size(ANIMAL_BASE_KEY + WILD_CARD) > ANIMAL_MAX_SIZE) {
-            zSetOperations.popMax(ANIMAL_BASE_KEY + "*");
+        Set<Object> cachedResponses = zSetOperations.range(ANIMAL_ZSET_KEY, 0,
+            size - LAST_INDEX);
+        List<FindAnimalResponse> responses = cachedResponses.stream()
+            .map(FindAnimalResponse.class::cast)
+            .toList();
+        PageInfo pageInfo = PageInfo.of(count, count > size);
+        return new FindAnimalsResponse(pageInfo, responses);
+    }
+
+    private void trimCache() {
+        if (zSetOperations.size(ANIMAL_ZSET_KEY) > ANIMAL_CACHE_SIZE) {
+            zSetOperations.removeRange(ANIMAL_ZSET_KEY, LAST_INDEX, LAST_INDEX);
         }
     }
 
-//    public void deleteAnimal(Long animalId) {
-//        ZSetOperations<String, FindAnimalRedisDto> zSetOperations = redisTemplate.opsForZSet();
-//        synchronizeAnimals();
-//
-//        Set<FindAnimalRedisDto> lastAnimal = zSetOperations.range(ANIMAL_BASE_KEY + WILD_CARD, -1, -1).;
-////        zSetOperations.remove(ANIMAL_BASE_KEY + WILD_CARD, animalId);
-//    }
-
-    public List<FindAnimalRedisDto> findAnimals(int size) {
-        if (!isCachedRight()) {
-            synchronizeAnimals();
-        }
-        ZSetOperations<String, FindAnimalRedisDto> zSetOperations = redisTemplate.opsForZSet();
-        Set<FindAnimalRedisDto> result = zSetOperations.reverseRange(ANIMAL_BASE_KEY + WILD_CARD, 0,
-            size - 1L);
-        return new ArrayList<>(result);
+    private boolean isCached(int size) {
+        Long count = zSetOperations.size(ANIMAL_ZSET_KEY);
+        return isNull(count) || count < size;
     }
 
-    private void synchronizeAnimals() {
-        Pageable pageable = PageRequest.of(0, ANIMAL_MAX_SIZE);
-        ZSetOperations<String, FindAnimalRedisDto> zSetOperations = redisTemplate.opsForZSet();
-        zSetOperations.removeRange(ANIMAL_BASE_KEY + WILD_CARD, 0, -1);
-        animalRepository.findAnimalOrderByCreatedAtDescWithLimit(pageable)
-            .stream()
-            .map(FindAnimalRedisDto::from)
-            .forEach(this::saveAnimal);
-    }
-
-    private boolean isCachedRight() {
-        ZSetOperations<String, FindAnimalRedisDto> zSetOperations = redisTemplate.opsForZSet();
-        Long count = zSetOperations.zCard(ANIMAL_COUNT_KEY + WILD_CARD);
-        return Objects.nonNull(count) && count > 0;
+    private double getScore(LocalDateTime createdAt) {
+        Instant instant = createdAt.toInstant(ZoneOffset.UTC);
+        return instant.getEpochSecond() + instant.getNano() / NANO;
     }
 }

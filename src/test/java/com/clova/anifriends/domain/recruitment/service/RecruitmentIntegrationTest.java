@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.clova.anifriends.base.BaseIntegrationTest;
+import com.clova.anifriends.base.config.BaseIntegrationTest;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.RecruitmentImage;
