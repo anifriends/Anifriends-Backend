@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.recruitment.service;
 
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.controller.RecruitmentStatusFilter;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
@@ -35,7 +36,7 @@ public class RecruitmentService {
     private final RecruitmentCacheService recruitmentCacheService;
 
     private static final Long RECRUITMENT_COUNT_NO_CACHE = -1L;
-    private static final String RECRUITMENT_CACHE_KEY = "recruitment:count:";
+    private static final String RECRUITMENT_CACHE_KEY = "recruitment:count";
 
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
@@ -165,9 +166,13 @@ public class RecruitmentService {
         Long cachedRecruitmentCount = recruitmentCacheService.getRecruitmentCount(
             RECRUITMENT_CACHE_KEY);
 
-        if (Objects.isNull(keyword) && Objects.isNull(startDate) && Objects.isNull(endDate)
-            && Objects.isNull(isClosed) && Objects.equals(titleContains, true) && Objects.equals(
-            contentContains, true) && Objects.equals(shelterNameContains, true)
+        if (Objects.isNull(keyword) &&
+            Objects.isNull(startDate) &&
+            Objects.isNull(endDate) &&
+            Objects.equals(isClosed, RecruitmentStatusFilter.ALL.getIsClosed()) &&
+            Objects.equals(titleContains, true) &&
+            Objects.equals(contentContains, true) &&
+            Objects.equals(shelterNameContains, true)
         ) {
             if (!Objects.equals(cachedRecruitmentCount, RECRUITMENT_COUNT_NO_CACHE)) {
                 return FindRecruitmentsResponse.fromV2(recruitments,

@@ -34,7 +34,7 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        RECRUITMENT_CACHE_KEY = "recruitment:count:";
+        RECRUITMENT_CACHE_KEY = "recruitment:count";
         shelter = ShelterFixture.shelter();
         shelterRepository.save(shelter);
     }

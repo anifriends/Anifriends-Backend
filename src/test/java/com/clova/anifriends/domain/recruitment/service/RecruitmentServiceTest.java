@@ -249,6 +249,55 @@ class RecruitmentServiceTest {
             assertThat(findRecruitment.shelterImageUrl())
                 .isEqualTo(recruitment.getShelter().getImage());
         }
+
+        @Test
+        @DisplayName("성공: Request Param이 다 null인 경우")
+        void findRecruitmentsV2WhenArgsAreNull() {
+            //given
+            String keyword = null;
+            LocalDate startDate = null;
+            LocalDate endDate = null;
+            String isClosed = RecruitmentStatusFilter.ALL.getName();
+            boolean title = true;
+            boolean content = true;
+            boolean shelterName = true;
+            LocalDateTime createdAt = LocalDateTime.now();
+            Long recruitmentId = 1L;
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
+            SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
+
+            given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
+                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
+                title, content, shelterName, createdAt, recruitmentId, pageRequest)).willReturn(
+                recruitments);
+            given(recruitmentCacheService.getRecruitmentCount(any())).willReturn(
+                Long.valueOf(recruitments.getSize()));
+
+            //when
+            FindRecruitmentsResponse recruitmentsByVolunteer
+                = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
+                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), title, content,
+                shelterName, createdAt, recruitmentId, pageRequest);
+
+            //then
+            PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
+            assertThat(pageInfo.totalElements()).isEqualTo(recruitments.getSize());
+            FindRecruitmentResponse findRecruitment = recruitmentsByVolunteer.recruitments()
+                .get(0);
+            assertThat(findRecruitment.recruitmentTitle()).isEqualTo(recruitment.getTitle());
+            assertThat(findRecruitment.recruitmentStartTime()).isEqualTo(
+                recruitment.getStartTime());
+            assertThat(findRecruitment.recruitmentEndTime()).isEqualTo(recruitment.getEndTime());
+            assertThat(findRecruitment.recruitmentApplicantCount()).isEqualTo(
+                recruitment.getApplicantCount());
+            assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
+            assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
+            assertThat(findRecruitment.shelterImageUrl())
+                .isEqualTo(recruitment.getShelter().getImage());
+        }
     }
 
     @Nested
