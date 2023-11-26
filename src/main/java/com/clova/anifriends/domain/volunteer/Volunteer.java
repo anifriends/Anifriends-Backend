@@ -41,6 +41,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Volunteer extends BaseTimeEntity {
 
+    private static final String BLANK = "";
+
     @Id
     @Column(name = "volunteer_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -145,13 +147,16 @@ public class Volunteer extends BaseTimeEntity {
     }
 
     private VolunteerImage updateVolunteerImage(String imageUrl) {
-        if (Objects.nonNull(image) && image.isEqualImageUrl(imageUrl)) {
-            return this.image;
+        if(Objects.nonNull(imageUrl)) {
+            if(imageUrl.isBlank()) {
+                return null;
+            }
+            if (Objects.nonNull(image) && image.isSameWith(imageUrl)) {
+                return image;
+            }
+            return new VolunteerImage(this, imageUrl);
         }
-        if (Objects.isNull(imageUrl)) {
-            return null;
-        }
-        return new VolunteerImage(this, imageUrl);
+        return image;
     }
 
     public long getReviewCount() {
@@ -193,7 +198,7 @@ public class Volunteer extends BaseTimeEntity {
     }
 
     public String getVolunteerImageUrl() {
-        return this.image == null ? null : image.getImageUrl();
+        return this.image == null ? BLANK : image.getImageUrl();
     }
 
     public List<Applicant> getApplicants() {
