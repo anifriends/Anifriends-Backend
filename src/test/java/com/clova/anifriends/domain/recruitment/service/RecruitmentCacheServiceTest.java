@@ -30,20 +30,22 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
     RecruitmentService recruitmentService;
 
     Shelter shelter;
+    String RECRUITMENT_CACHE_KEY;
+
+    @BeforeEach
+    void setUp() {
+        RECRUITMENT_CACHE_KEY = "recruitment:count:";
+        shelter = ShelterFixture.shelter();
+        shelterRepository.save(shelter);
+    }
 
 
     @Nested
     @DisplayName("findRecruitmentsV2 실행 시 recruitmentCount를 가져올 때 ")
-    class findRecruitments {
-
-        @BeforeEach
-        void setUp() {
-            shelter = ShelterFixture.shelter();
-            shelterRepository.save(shelter);
-        }
+    class GetRecruitmentCount {
 
         @Test
-        @DisplayName("성공: db에 없으면 redis에서 가져온다.")
+        @DisplayName("성공: redis에 없으면 db에서 가져오고 redis에 있으면 캐시에서 가져온다.")
         void getCachedRecruitmentCount() {
             // given
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
@@ -53,9 +55,9 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             LocalDate startDate = null;
             LocalDate endDate = null;
             String isClosed = RecruitmentStatusFilter.ALL.getName();
-            boolean title = true;
-            boolean content = true;
-            boolean shelterName = true;
+            Boolean title = true;
+            Boolean content = true;
+            Boolean shelterName = true;
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
@@ -77,7 +79,34 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             assertThat(dbRecruitmentCountResponse.pageInfo().totalElements()).isEqualTo(
                 cachedRecruitmentCountResponse.pageInfo().totalElements());
         }
+    }
 
+    @Nested
+    @DisplayName("registerRecruitment 실행 시 ")
+    class PlusOneToRecruitmentCount {
+
+        @Test
+        @DisplayName("성공: redis에 값이 없으면 값을 갱신하고 redis에 값이 있으면 count를 +1 증가시킨다.")
+        void plusOneToRecruitmentCount() {
+            // given
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+
+            // when
+            recruitmentService.registerRecruitment(
+                shelter.getShelterId(),
+                recruitment.getTitle(),
+                recruitment.getStartTime(),
+                recruitment.getEndTime(),
+                recruitment.getDeadline(),
+                recruitment.getCapacity(),
+                recruitment.getContent(),
+                recruitment.getImages()
+            );
+
+            // then
+            assertThat(recruitmentRepository.count()).isEqualTo(
+                recruitmentCacheService.getRecruitmentCount(RECRUITMENT_CACHE_KEY));
+        }
     }
 
 }
