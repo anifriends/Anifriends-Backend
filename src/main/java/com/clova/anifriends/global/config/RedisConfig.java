@@ -33,4 +33,14 @@ public class RedisConfig {
         template.setValueSerializer(new GenericToStringSerializer<>(Integer.class));
         return template;
     }
+
+    @Bean
+    public RedisTemplate<String, Long> longRedisTemplate() {
+        RedisTemplate<String, Long> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(
+            new GenericToStringSerializer<>(Long.class));
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        return redisTemplate;
+    }
 }

@@ -22,4 +22,7 @@ public interface AnimalRepository extends JpaRepository<Animal, Long>, AnimalRep
     Optional<Animal> findByAnimalIdAndShelterIdWithImages(
         @Param("animalId") Long animalId,
         @Param("shelterId") Long shelterId);
+
+    @Query("select count(a.animalId) from Animal a where a.adopted = false order by a.createdAt desc")
+    Long countAllAnimalsExceptAdopted();
 }
