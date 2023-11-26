@@ -14,6 +14,7 @@ public class RecruitmentCacheService {
     private final RecruitmentRepository recruitmentRepository;
 
     private static final Long RECRUITMENT_COUNT_NO_CACHE = -1L;
+    private static final Long COUNT_ONE = 1L;
 
     public Long getRecruitmentCount(
         String cacheKey
@@ -41,7 +42,21 @@ public class RecruitmentCacheService {
         Long cachedCount = redisTemplate.opsForValue().get(cacheKey);
 
         if (Objects.nonNull(cachedCount)) {
-            registerRecruitmentCount(cacheKey, cachedCount + 1L);
+            registerRecruitmentCount(cacheKey, cachedCount + COUNT_ONE);
+        }
+
+        long dbRecruitmentCount = recruitmentRepository.count();
+
+        registerRecruitmentCount(cacheKey, dbRecruitmentCount);
+    }
+
+    public void minusOneToRecruitmentCount(
+        String cacheKey
+    ) {
+        Long cachedCount = redisTemplate.opsForValue().get(cacheKey);
+
+        if (Objects.nonNull(cachedCount)) {
+            registerRecruitmentCount(cacheKey, cachedCount - COUNT_ONE);
         }
 
         long dbRecruitmentCount = recruitmentRepository.count();

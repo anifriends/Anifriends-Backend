@@ -42,7 +42,7 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
 
     @Nested
     @DisplayName("findRecruitmentsV2 실행 시 recruitmentCount를 가져올 때 ")
-    class GetRecruitmentCount {
+    class GetRecruitmentCountTest {
 
         @Test
         @DisplayName("성공: redis에 없으면 db에서 가져오고 redis에 있으면 캐시에서 가져온다.")
@@ -83,10 +83,10 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
 
     @Nested
     @DisplayName("registerRecruitment 실행 시 ")
-    class PlusOneToRecruitmentCount {
+    class PlusOneToRecruitmentCountTest {
 
         @Test
-        @DisplayName("성공: redis에 값이 없으면 값을 갱신하고 redis에 값이 있으면 count를 +1 증가시킨다.")
+        @DisplayName("성공: redis에 값이 없으면 값을 갱신하고 redis에 값이 있으면 count를 하나 증가시킨다.")
         void plusOneToRecruitmentCount() {
             // given
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
@@ -109,4 +109,26 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
         }
     }
 
+    @Nested
+    @DisplayName("deleteRecruitment 실행 시 ")
+    class MinusOneToRecruitmentCountTest {
+
+        @Test
+        @DisplayName("성공: redis에 값이 없으면 값을 갱신하고 redis에 값이 있으면 count를 하나 감소시킨다.")
+        void MinusOneToRecruitmentCount() {
+            // given
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            Recruitment savedRecruitment = recruitmentRepository.save(recruitment);
+
+            // when
+            recruitmentService.deleteRecruitment(
+                shelter.getShelterId(),
+                savedRecruitment.getRecruitmentId()
+            );
+
+            // then
+            assertThat(recruitmentRepository.count()).isEqualTo(
+                recruitmentCacheService.getRecruitmentCount(RECRUITMENT_CACHE_KEY));
+        }
+    }
 }

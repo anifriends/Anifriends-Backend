@@ -233,6 +233,7 @@ public class RecruitmentService {
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
 
         recruitmentRepository.delete(recruitment);
+        recruitmentCacheService.minusOneToRecruitmentCount(RECRUITMENT_CACHE_KEY);
     }
 
     private Recruitment getRecruitmentByShelterWithImages(Long shelterId, Long recruitmentId) {
