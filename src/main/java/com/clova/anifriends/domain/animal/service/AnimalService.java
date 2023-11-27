@@ -126,8 +126,7 @@ public class AnimalService {
             animalId,
             pageable
         );
-        if (type == null && active == null && neuteredFilter == null && age == null
-            && gender == null && size == null && createdAt == null && animalId == null) {
+        if (isFirstPage(type, active, neuteredFilter, age, gender, size, createdAt, animalId)) {
             return FindAnimalsResponse.fromV2(animalsWithPagination,
                 animalCacheService.getTotalNumberOfAnimals());
         }
@@ -203,5 +202,12 @@ public class AnimalService {
     private Animal getAnimalByAnimalIdAndShelterIdWithImages(Long animalId, Long shelterId) {
         return animalRepository.findByAnimalIdAndShelterIdWithImages(animalId, shelterId)
             .orElseThrow(() -> new AnimalNotFoundException("존재하지 않는 보호 동물입니다."));
+    }
+
+    private boolean isFirstPage(AnimalType type, AnimalActive active,
+        AnimalNeuteredFilter neuteredFilter, AnimalAge age, AnimalGender gender, AnimalSize size,
+        LocalDateTime createdAt, Long animalId) {
+        return type == null && active == null && neuteredFilter == null && age == null
+            && gender == null && size == null && createdAt == null && animalId == null;
     }
 }

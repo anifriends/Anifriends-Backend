@@ -797,4 +797,27 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
         }
 
     }
+
+    @Nested
+    @DisplayName("countAllAnimalsExceptAdopted 실행 시")
+    class CountAllAnimalsExceptAdoptedTest {
+
+        @Test
+        @DisplayName("성공")
+        void countAllAnimalsExceptAdopted() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            Animal animal1 = AnimalFixture.animal(shelter);
+            Animal animal2 = AnimalFixture.animal(shelter);
+            Animal animal3 = AnimalFixture.animal(shelter, true);
+            shelterRepository.save(shelter);
+            animalRepository.saveAll(List.of(animal1, animal2, animal3));
+
+            // when
+            long count = animalRepository.countAllAnimalsExceptAdopted();
+
+            // then
+            assertThat(count).isEqualTo(2L);
+        }
+    }
 }

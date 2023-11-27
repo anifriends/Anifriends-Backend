@@ -57,4 +57,5 @@ public interface AnimalRepositoryCustom {
         AnimalSize size
     );
 
+    long countAllAnimalsExceptAdopted();
 }
