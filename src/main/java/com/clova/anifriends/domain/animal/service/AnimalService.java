@@ -10,6 +10,7 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.mapper.AnimalMapper;
+import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
@@ -27,6 +28,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,7 @@ public class AnimalService {
 
     private final AnimalRepository animalRepository;
     private final ShelterRepository shelterRepository;
+    private final AnimalCacheRepository animalCacheRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
@@ -44,6 +47,7 @@ public class AnimalService {
         Shelter shelter = getShelterById(shelterId);
         Animal animal = AnimalMapper.toAnimal(shelter, registerAnimalRequest);
         animalRepository.save(animal);
+        animalCacheRepository.saveAnimal(animal);
         return RegisterAnimalResponse.from(animal);
     }
 
@@ -111,8 +115,22 @@ public class AnimalService {
         AnimalSize size,
         LocalDateTime createdAt,
         Long animalId,
-        Pageable pageable
+        @PageableDefault() Pageable pageable
     ) {
+
+        long count = animalRepository.countAnimalsV2(
+            type,
+            active,
+            neuteredFilter,
+            age,
+            gender,
+            size
+        );
+
+        if (isFirstPage(type, active, neuteredFilter, age, gender, size, createdAt, animalId)) {
+            return animalCacheRepository.findAnimals(pageable.getPageSize(), count);
+        }
+
         Slice<Animal> animalsWithPagination = animalRepository.findAnimalsByVolunteerV2(
             type,
             active,
@@ -125,15 +143,6 @@ public class AnimalService {
             pageable
         );
 
-        Long count = animalRepository.countAnimalsV2(
-            type,
-            active,
-            neuteredFilter,
-            age,
-            gender,
-            size
-        );
-
         return FindAnimalsResponse.fromV2(animalsWithPagination, count);
     }
 
@@ -141,6 +150,9 @@ public class AnimalService {
     public void updateAnimalAdoptStatus(Long shelterId, Long animalId, Boolean isAdopted) {
         Animal animal = getAnimalByAnimalIdAndShelterId(animalId, shelterId);
         animal.updateAdoptStatus(isAdopted);
+        if (isAdopted == true) {
+            animalCacheRepository.deleteAnimal(animal);
+        }
     }
 
     @Transactional
@@ -159,12 +171,14 @@ public class AnimalService {
         List<String> imageUrls
     ) {
         Animal foundAnimal = getAnimalByAnimalIdAndShelterIdWithImages(animalId, shelterId);
+        animalCacheRepository.deleteAnimal(foundAnimal);
 
         List<String> imagesToDelete = foundAnimal.findImagesToDelete(imageUrls);
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
 
         foundAnimal.updateAnimal(name, birthDate, type, breed, gender, isNeutered, active, weight,
             information, imageUrls);
+        animalCacheRepository.saveAnimal(foundAnimal);
     }
 
     @Transactional
@@ -173,6 +187,14 @@ public class AnimalService {
         List<String> imagesToDelete = animal.getImages();
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
         animalRepository.delete(animal);
+        animalCacheRepository.deleteAnimal(animal);
+    }
+
+    private boolean isFirstPage(AnimalType type, AnimalActive active,
+        AnimalNeuteredFilter neuteredFilter, AnimalAge age, AnimalGender gender, AnimalSize size,
+        LocalDateTime createdAt, Long animalId) {
+        return type == null && active == null && neuteredFilter == null && age == null
+            && gender == null && size == null && createdAt == null && animalId == null;
     }
 
     private Shelter getShelterById(Long shelterId) {
