@@ -1,157 +1,64 @@
 package com.clova.anifriends.domain.recruitment.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
-import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.controller.RecruitmentStatusFilter;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
+import com.clova.anifriends.domain.recruitment.repository.RecruitmentCacheRepository;
+import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
-import java.time.LocalDate;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.springframework.data.domain.SliceImpl;
 
-@Transactional
-@Testcontainers
-class RecruitmentCacheServiceTest extends BaseIntegrationTest {
+@ExtendWith(MockitoExtension.class)
+class RecruitmentCacheServiceTest {
 
-    @Autowired
+    @InjectMocks
     RecruitmentCacheService recruitmentCacheService;
 
-    @Autowired
-    RecruitmentService recruitmentService;
+    @Mock
+    RecruitmentRepository recruitmentRepository;
 
-    @Autowired
-    RedisTemplate<String, Long> redisTemplate;
-
-    Shelter shelter;
-    String RECRUITMENT_CACHE_KEY;
-
-    @BeforeEach
-    void setUp() {
-        RECRUITMENT_CACHE_KEY = "recruitment:count";
-        shelter = ShelterFixture.shelter();
-        shelterRepository.save(shelter);
-    }
+    @Mock
+    RecruitmentCacheRepository recruitmentCacheRepository;
 
     @Nested
-    @DisplayName("findRecruitmentsV2 실행 시 recruitmentCount를 가져올 때 ")
-    class GetRecruitmentCountTest {
-
-        @AfterEach
-        void tearDown() {
-            redisTemplate.delete(RECRUITMENT_CACHE_KEY);
-        }
+    @DisplayName("synchronizeCache 메서드 실행 시")
+    class SynchronizeCacheTest {
 
         @Test
-        @DisplayName("성공: redis에 없으면 db에서 가져오고 redis에 있으면 캐시에서 가져온다.")
-        void getCachedRecruitmentCount() {
-            // given
-            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-            Recruitment savedRecruitment = recruitmentRepository.save(recruitment);
+        @DisplayName("성공")
+        void synchronizeCache() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            List<Recruitment> recruitments = RecruitmentFixture.recruitments(shelter, 30);
+            PageRequest pageRequest = PageRequest.of(0, 30);
+            SliceImpl<Recruitment> recruitmentSlice = new SliceImpl<>(recruitments, pageRequest,
+                true);
 
-            String keyword = null;
-            LocalDate startDate = null;
-            LocalDate endDate = null;
-            String isClosed = RecruitmentStatusFilter.ALL.getName();
-            Boolean title = true;
-            Boolean content = true;
-            Boolean shelterName = true;
-            PageRequest pageRequest = PageRequest.of(0, 10);
+            given(recruitmentRepository.findRecruitmentsV2(null, null, null, null, true, true, true,
+                    null, null, pageRequest))
+                .willReturn(recruitmentSlice);
 
-            // when
-            FindRecruitmentsResponse dbRecruitmentCountResponse = recruitmentService.findRecruitmentsV2(
-                keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), title, content,
-                shelterName, savedRecruitment.getCreatedAt(),
-                savedRecruitment.getRecruitmentId(), pageRequest
-            );
+            //when
+            recruitmentCacheService.synchronizeCache();
 
-            FindRecruitmentsResponse cachedRecruitmentCountResponse = recruitmentService.findRecruitmentsV2(
-                keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), title, content,
-                shelterName, savedRecruitment.getCreatedAt(),
-                savedRecruitment.getRecruitmentId(), pageRequest
-            );
+            //then
+            then(recruitmentCacheRepository).should(times(30))
+                .save(any(Recruitment.class));
 
-            // then
-            assertThat(dbRecruitmentCountResponse.pageInfo().totalElements()).isEqualTo(
-                cachedRecruitmentCountResponse.pageInfo().totalElements());
-        }
-
-        @Test
-        @DisplayName("성공: redis에 없으면 -1을 반환한다.")
-        void getCachedRecruitmentCountWhenNotExistInRedis() {
-            // given
-            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-            recruitmentRepository.save(recruitment);
-
-            // when
-            Long recruitmentCount = recruitmentCacheService.getRecruitmentCount();
-
-            // then
-            assertThat(recruitmentCount).isEqualTo(-1L);
-        }
-    }
-
-    @Nested
-    @DisplayName("registerRecruitment 실행 시 ")
-    class PlusOneToRecruitmentCountTest {
-
-        @Test
-        @DisplayName("성공: redis에 값이 없으면 값을 갱신하고 redis에 값이 있으면 count를 하나 증가시킨다.")
-        void plusOneToRecruitmentCount() {
-            // given
-            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-
-            // when
-            recruitmentService.registerRecruitment(
-                shelter.getShelterId(),
-                recruitment.getTitle(),
-                recruitment.getStartTime(),
-                recruitment.getEndTime(),
-                recruitment.getDeadline(),
-                recruitment.getCapacity(),
-                recruitment.getContent(),
-                recruitment.getImages()
-            );
-
-            // then
-            assertThat(recruitmentRepository.count()).isEqualTo(
-                recruitmentCacheService.getRecruitmentCount());
-        }
-    }
-
-    @Nested
-    @DisplayName("deleteRecruitment 실행 시 ")
-    class MinusOneToRecruitmentCountTest {
-
-        @Test
-        @DisplayName("성공: redis에 값이 없으면 값을 갱신하고 redis에 값이 있으면 count를 하나 감소시킨다.")
-        void MinusOneToRecruitmentCount() {
-            // given
-            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-            Recruitment savedRecruitment = recruitmentRepository.save(recruitment);
-
-            // when
-            recruitmentService.deleteRecruitment(
-                shelter.getShelterId(),
-                savedRecruitment.getRecruitmentId()
-            );
-
-            // then
-            assertThat(recruitmentRepository.count()).isEqualTo(
-                recruitmentCacheService.getRecruitmentCount());
         }
     }
 }

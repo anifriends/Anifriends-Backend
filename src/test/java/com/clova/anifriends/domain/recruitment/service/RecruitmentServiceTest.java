@@ -29,6 +29,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsBySh
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
+import com.clova.anifriends.domain.recruitment.repository.RecruitmentCacheRepository;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -61,9 +62,6 @@ class RecruitmentServiceTest {
     RecruitmentService recruitmentService;
 
     @Mock
-    RecruitmentCacheService recruitmentCacheService;
-
-    @Mock
     ShelterRepository shelterRepository;
 
     @Mock
@@ -71,6 +69,12 @@ class RecruitmentServiceTest {
 
     @Mock
     ApplicationEventPublisher applicationEventPublisher;
+
+    @Mock
+    RecruitmentCacheRepository recruitmentCacheRepository;
+
+    @Mock
+    RecruitmentCacheService recruitmentCacheService;
 
     @Nested
     @DisplayName("registerRecruitment 메서드 실행 시")
@@ -198,261 +202,233 @@ class RecruitmentServiceTest {
     @DisplayName("findRecruitmentsV2 실행 시")
     class FindRecruitmentsV2Test {
 
-        @Test
-        @DisplayName("성공: 모든 필터가 존재")
-        void findRecruitmentsV2() {
-            //given
-            String keyword = "keyword";
-            LocalDate startDate = LocalDate.now();
-            LocalDate endDate = LocalDate.now();
-            String isClosed = "IS_CLOSED";
-            boolean title = false;
-            boolean content = false;
-            boolean shelterName = false;
-            LocalDateTime createdAt = LocalDateTime.now();
-            Long recruitmentId = 1L;
-            PageRequest pageRequest = PageRequest.of(0, 10);
-            Shelter shelter = shelter();
-            Recruitment recruitment = recruitment(shelter);
-            ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
-            SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
+        Shelter shelter;
 
-            given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
-                title, content, shelterName, createdAt, recruitmentId, pageRequest)).willReturn(
-                recruitments);
-            given(recruitmentCacheService.getRecruitmentCount()).willReturn(
-                Long.valueOf(recruitments.getSize()));
-            given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
-                title, content, shelterName)).willReturn(Long.valueOf(recruitments.getSize()));
-
-            //when
-            FindRecruitmentsResponse recruitmentsByVolunteer
-                = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), title, content,
-                shelterName, createdAt, recruitmentId, pageRequest);
-
-            //then
-            PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
-            assertThat(pageInfo.totalElements()).isEqualTo(recruitments.getSize());
-            FindRecruitmentResponse findRecruitment = recruitmentsByVolunteer.recruitments()
-                .get(0);
-            assertThat(findRecruitment.recruitmentTitle()).isEqualTo(recruitment.getTitle());
-            assertThat(findRecruitment.recruitmentStartTime()).isEqualTo(
-                recruitment.getStartTime());
-            assertThat(findRecruitment.recruitmentEndTime()).isEqualTo(recruitment.getEndTime());
-            assertThat(findRecruitment.recruitmentApplicantCount()).isEqualTo(
-                recruitment.getApplicantCount());
-            assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
-            assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
-            assertThat(findRecruitment.shelterImageUrl())
-                .isEqualTo(recruitment.getShelter().getImage());
+        @BeforeEach
+        void setUp() {
+            shelter = ShelterFixture.shelter();
         }
 
-        @Test
-        @DisplayName("성공: Request Param이 모두 null")
-        void findRecruitmentsV2WhenArgsAreNull() {
-            //given
-            String keyword = null;
-            LocalDate startDate = null;
-            LocalDate endDate = null;
-            String isClosed = RecruitmentStatusFilter.ALL.getName();
-            boolean title = true;
-            boolean content = true;
-            boolean shelterName = true;
-            LocalDateTime createdAt = LocalDateTime.now();
-            Long recruitmentId = 1L;
-            PageRequest pageRequest = PageRequest.of(0, 10);
-            Shelter shelter = shelter();
-            Recruitment recruitment = recruitment(shelter);
-            ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
-            SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
+        @Nested
+        @DisplayName("검색 조건이 하나라도 주어진 경우")
+        class WithCondition {
 
-            given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
-                title, content, shelterName, createdAt, recruitmentId, pageRequest)).willReturn(
-                recruitments);
-            given(recruitmentCacheService.getRecruitmentCount()).willReturn(
-                Long.valueOf(recruitments.getSize()));
+            String keyword;
+            LocalDate startDate;
+            LocalDate endDate;
+            Boolean isClosed;
+            boolean titleContains;
+            boolean contentContains;
+            boolean shelterNameContains;
+            LocalDateTime createdAt;
+            Long recruitmentId;
 
-            //when
-            FindRecruitmentsResponse recruitmentsByVolunteer
-                = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), title, content,
-                shelterName, createdAt, recruitmentId, pageRequest);
+            @BeforeEach
+            void setUp() {
+                keyword = null;
+                startDate = null;
+                endDate = null;
+                isClosed = null;
+                titleContains = true;
+                contentContains = true;
+                shelterNameContains = true;
+                createdAt = null;
+                recruitmentId = null;
+            }
 
-            //then
-            PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
-            assertThat(pageInfo.totalElements()).isEqualTo(recruitments.getSize());
-            FindRecruitmentResponse findRecruitment = recruitmentsByVolunteer.recruitments()
-                .get(0);
-            assertThat(findRecruitment.recruitmentTitle()).isEqualTo(recruitment.getTitle());
-            assertThat(findRecruitment.recruitmentStartTime()).isEqualTo(
-                recruitment.getStartTime());
-            assertThat(findRecruitment.recruitmentEndTime()).isEqualTo(recruitment.getEndTime());
-            assertThat(findRecruitment.recruitmentApplicantCount()).isEqualTo(
-                recruitment.getApplicantCount());
-            assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
-            assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
-            assertThat(findRecruitment.shelterImageUrl())
-                .isEqualTo(recruitment.getShelter().getImage());
+            @Test
+            @DisplayName("성공: db에서 조회")
+            void findRecruitments() {
+                //give
+                startDate = LocalDate.now();
+                endDate = LocalDate.now();
+                PageRequest pageRequest = PageRequest.of(0, 10);
+                Recruitment recruitment = recruitment(shelter);
+                ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
+                SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
+
+                given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
+                    isClosed, titleContains, contentContains, shelterNameContains, createdAt, recruitmentId, pageRequest))
+                    .willReturn(recruitments);
+                given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
+                    isClosed, titleContains, contentContains, shelterNameContains))
+                    .willReturn(Long.valueOf(recruitments.getSize()));
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(-1L);
+
+                //when
+                FindRecruitmentsResponse recruitmentsByVolunteer
+                    = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
+                    isClosed, titleContains, contentContains, shelterNameContains, createdAt, recruitmentId, pageRequest);
+
+                //then
+                PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
+                assertThat(pageInfo.totalElements()).isEqualTo(recruitments.getSize());
+                FindRecruitmentResponse findRecruitment = recruitmentsByVolunteer.recruitments()
+                    .get(0);
+                assertThat(findRecruitment.recruitmentTitle()).isEqualTo(recruitment.getTitle());
+                assertThat(findRecruitment.recruitmentStartTime()).isEqualTo(
+                    recruitment.getStartTime());
+                assertThat(findRecruitment.recruitmentEndTime()).isEqualTo(recruitment.getEndTime());
+                assertThat(findRecruitment.recruitmentApplicantCount()).isEqualTo(
+                    recruitment.getApplicantCount());
+                assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
+                assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
+                assertThat(findRecruitment.shelterImageUrl())
+                    .isEqualTo(recruitment.getShelter().getImage());
+            }
+
+            @Test
+            @DisplayName("성공: db에서 조회")
+            void findRecruitmentsWithOtherConditions() {
+                //given
+                keyword = "keyword";
+                isClosed = true;
+                titleContains = true;
+                contentContains = false;
+                shelterNameContains = false;
+                PageRequest pageRequest = PageRequest.of(0, 10);
+                Recruitment recruitment = recruitment(shelter);
+                ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
+                SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
+
+                given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
+                    isClosed, titleContains, contentContains, shelterNameContains, createdAt,
+                    recruitmentId, pageRequest))
+                    .willReturn(recruitments);
+                given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
+                    isClosed, titleContains, contentContains, shelterNameContains))
+                    .willReturn(Long.valueOf(recruitments.getSize()));
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(-1L);
+
+                //when
+                FindRecruitmentsResponse recruitmentsByVolunteer
+                    = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
+                    isClosed, titleContains, contentContains, shelterNameContains, createdAt,
+                    recruitmentId, pageRequest);
+
+                //then
+                then(recruitmentRepository).should()
+                    .findRecruitmentsV2(keyword, startDate, endDate, isClosed, titleContains,
+                        contentContains, shelterNameContains, createdAt, recruitmentId,
+                        pageRequest);
+            }
+
+            @Test
+            @DisplayName("성공: db에서 조회")
+            void findRecruitmentsWithAnotherCondition() {
+                //given
+                keyword = "keyword";
+                recruitmentId = 1L;
+                createdAt = LocalDateTime.now();
+                PageRequest pageRequest = PageRequest.of(0, 10);
+                Recruitment recruitment = recruitment(shelter);
+                ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
+                SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
+
+                given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
+                    isClosed, titleContains, contentContains, shelterNameContains, createdAt,
+                    recruitmentId, pageRequest))
+                    .willReturn(recruitments);
+                given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
+                    isClosed, titleContains, contentContains, shelterNameContains))
+                    .willReturn(Long.valueOf(recruitments.getSize()));
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(-1L);
+
+                //when
+                FindRecruitmentsResponse recruitmentsByVolunteer
+                    = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
+                    isClosed, titleContains, contentContains, shelterNameContains, createdAt,
+                    recruitmentId, pageRequest);
+
+                //then
+                then(recruitmentRepository).should()
+                    .findRecruitmentsV2(keyword, startDate, endDate, isClosed, titleContains,
+                        contentContains, shelterNameContains, createdAt, recruitmentId,
+                        pageRequest);
+            }
         }
 
-        @Test
-        @DisplayName("성공: startDate, endDate만 null이 아닌 경우")
-        void findRecruitmentsV2WhenArgsAreNull3() {
-            //given
-            String keyword = null;
-            LocalDate startDate = LocalDate.now();
-            LocalDate endDate = LocalDate.now();
-            String isClosed = RecruitmentStatusFilter.ALL.getName();
-            boolean title = true;
-            boolean content = true;
-            boolean shelterName = true;
-            LocalDateTime createdAt = LocalDateTime.now();
-            Long recruitmentId = 1L;
-            PageRequest pageRequest = PageRequest.of(0, 10);
-            Shelter shelter = shelter();
-            Recruitment recruitment = recruitment(shelter);
-            ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
-            SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
+        @Nested
+        @DisplayName("검색 조건이 주어지지 않은 경우")
+        class WithoutCondition {
 
-            given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
-                title, content, shelterName, createdAt, recruitmentId, pageRequest)).willReturn(
-                recruitments);
-            given(recruitmentCacheService.getRecruitmentCount()).willReturn(
-                Long.valueOf(recruitments.getSize()));
-            given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
-                title, content, shelterName)).willReturn(Long.valueOf(recruitments.getSize()));
+            final String nullKeyword = null;
+            final LocalDate nullStartDate = null;
+            final LocalDate nullEndDate = null;
+            final Boolean nullIsClosed = null;
+            final boolean trueTitleContains = true;
+            final boolean trueContentContains = true;
+            final boolean trueShelterNameContains = true;
+            final LocalDateTime nullCreatedAt = null;
+            final Long nullRecruitmentId = null;
 
-            //when
-            FindRecruitmentsResponse recruitmentsByVolunteer
-                = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), title, content,
-                shelterName, createdAt, recruitmentId, pageRequest);
+            @Test
+            @DisplayName("성공: 캐시된 봉사 모집글 목록 사이즈가 요청 사이즈를 초과하는 경우 캐시된 목록을 이용")
+            void findRecruitmentsWhenCached() {
+                //given
+                List<Recruitment> recruitments = RecruitmentFixture.recruitments(shelter, 20);
+                List<FindRecruitmentResponse> recruitmentResponses = recruitments.stream()
+                    .map(FindRecruitmentResponse::from).toList();
+                PageRequest pageRequest = PageRequest.of(0, 10);
+                boolean hasNext = true;
+                SliceImpl<FindRecruitmentResponse> cachedRecruitments
+                    = new SliceImpl<>(recruitmentResponses, pageRequest, hasNext);
 
-            //then
-            PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
-            assertThat(pageInfo.totalElements()).isEqualTo(recruitments.getSize());
-            FindRecruitmentResponse findRecruitment = recruitmentsByVolunteer.recruitments()
-                .get(0);
-            assertThat(findRecruitment.recruitmentTitle()).isEqualTo(recruitment.getTitle());
-            assertThat(findRecruitment.recruitmentStartTime()).isEqualTo(
-                recruitment.getStartTime());
-            assertThat(findRecruitment.recruitmentEndTime()).isEqualTo(recruitment.getEndTime());
-            assertThat(findRecruitment.recruitmentApplicantCount()).isEqualTo(
-                recruitment.getApplicantCount());
-            assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
-            assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
-            assertThat(findRecruitment.shelterImageUrl())
-                .isEqualTo(recruitment.getShelter().getImage());
-        }
+                given(recruitmentCacheRepository.findAll(any(PageRequest.class)))
+                    .willReturn(cachedRecruitments);
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
 
-        @Test
-        @DisplayName("성공: title만 true고 나머지는 null인 경우")
-        void findRecruitmentsV2WhenArgsAreNull4() {
-            //given
-            String keyword = null;
-            LocalDate startDate = null;
-            LocalDate endDate = null;
-            String isClosed = RecruitmentStatusFilter.ALL.getName();
-            boolean title = true;
-            boolean content = false;
-            boolean shelterName = false;
-            LocalDateTime createdAt = LocalDateTime.now();
-            Long recruitmentId = 1L;
-            PageRequest pageRequest = PageRequest.of(0, 10);
-            Shelter shelter = shelter();
-            Recruitment recruitment = recruitment(shelter);
-            ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
-            SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
+                //when
+                FindRecruitmentsResponse recruitmentsV2 = recruitmentService.findRecruitmentsV2(
+                    nullKeyword, nullStartDate, nullEndDate, nullIsClosed, trueTitleContains,
+                    trueContentContains, trueShelterNameContains, nullCreatedAt, nullRecruitmentId,
+                    pageRequest);
 
-            given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
-                title, content, shelterName, createdAt, recruitmentId, pageRequest)).willReturn(
-                recruitments);
-            given(recruitmentCacheService.getRecruitmentCount()).willReturn(
-                Long.valueOf(recruitments.getSize()));
-            given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
-                title, content, shelterName)).willReturn(Long.valueOf(recruitments.getSize()));
+                //then
+                then(recruitmentCacheRepository).should().findAll(pageRequest);
+                then(recruitmentRepository).should(times(0))
+                    .findRecruitmentsV2(nullKeyword, nullStartDate, nullEndDate, nullIsClosed,
+                        trueTitleContains, trueContentContains, trueShelterNameContains, nullCreatedAt,
+                        nullRecruitmentId, pageRequest);
+            }
 
-            //when
-            FindRecruitmentsResponse recruitmentsByVolunteer
-                = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), title, content,
-                shelterName, createdAt, recruitmentId, pageRequest);
+            @Test
+            @DisplayName("성공: 캐신된 봉사 모집글 사이즈가 요청 사이즈 이하인 경우 캐시된 목록을 이용하지 않음")
+            void findRecruitmentsWhenCachedSizeLTRequestPageSize() {
+                //given
+                List<Recruitment> recruitments = RecruitmentFixture.recruitments(shelter, 10);
+                List<FindRecruitmentResponse> recruitmentResponses = recruitments.stream()
+                    .map(FindRecruitmentResponse::from).toList();
+                PageRequest pageRequest = PageRequest.of(0, 10);
+                boolean hasNext = false;
+                SliceImpl<FindRecruitmentResponse> cachedRecruitments = new SliceImpl<>(
+                    recruitmentResponses, pageRequest, hasNext);
+                SliceImpl<Recruitment> findRecruitments = new SliceImpl<>(recruitments, pageRequest,
+                    hasNext);
 
-            //then
-            PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
-            assertThat(pageInfo.totalElements()).isEqualTo(recruitments.getSize());
-            FindRecruitmentResponse findRecruitment = recruitmentsByVolunteer.recruitments()
-                .get(0);
-            assertThat(findRecruitment.recruitmentTitle()).isEqualTo(recruitment.getTitle());
-            assertThat(findRecruitment.recruitmentStartTime()).isEqualTo(
-                recruitment.getStartTime());
-            assertThat(findRecruitment.recruitmentEndTime()).isEqualTo(recruitment.getEndTime());
-            assertThat(findRecruitment.recruitmentApplicantCount()).isEqualTo(
-                recruitment.getApplicantCount());
-            assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
-            assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
-            assertThat(findRecruitment.shelterImageUrl())
-                .isEqualTo(recruitment.getShelter().getImage());
-        }
+                given(recruitmentCacheRepository.findAll(pageRequest))
+                    .willReturn(cachedRecruitments);
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
+                given(recruitmentRepository.findRecruitmentsV2(nullKeyword, nullStartDate,
+                    nullEndDate, nullIsClosed, trueTitleContains, trueContentContains,
+                    trueShelterNameContains, nullCreatedAt, nullRecruitmentId, pageRequest))
+                    .willReturn(findRecruitments);
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
 
-        @Test
-        @DisplayName("성공: content만 true고 나머지는 null인 경우")
-        void findRecruitmentsV2WhenArgsAreNull5() {
-            //given
-            String keyword = null;
-            LocalDate startDate = null;
-            LocalDate endDate = null;
-            String isClosed = RecruitmentStatusFilter.ALL.getName();
-            boolean title = false;
-            boolean content = true;
-            boolean shelterName = false;
-            LocalDateTime createdAt = LocalDateTime.now();
-            Long recruitmentId = 1L;
-            PageRequest pageRequest = PageRequest.of(0, 10);
-            Shelter shelter = shelter();
-            Recruitment recruitment = recruitment(shelter);
-            ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
-            SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
+                //when
+                FindRecruitmentsResponse recruitmentsV2 = recruitmentService.findRecruitmentsV2(
+                    nullKeyword, nullStartDate, nullEndDate,
+                    nullIsClosed, trueTitleContains, trueContentContains, trueShelterNameContains,
+                    nullCreatedAt, nullRecruitmentId, pageRequest);
 
-            given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
-                title, content, shelterName, createdAt, recruitmentId, pageRequest)).willReturn(
-                recruitments);
-            given(recruitmentCacheService.getRecruitmentCount()).willReturn(
-                Long.valueOf(recruitments.getSize()));
-            given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
-                title, content, shelterName)).willReturn(Long.valueOf(recruitments.getSize()));
-
-            //when
-            FindRecruitmentsResponse recruitmentsByVolunteer
-                = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), title, content,
-                shelterName, createdAt, recruitmentId, pageRequest);
-
-            //then
-            PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
-            assertThat(pageInfo.totalElements()).isEqualTo(recruitments.getSize());
-            FindRecruitmentResponse findRecruitment = recruitmentsByVolunteer.recruitments()
-                .get(0);
-            assertThat(findRecruitment.recruitmentTitle()).isEqualTo(recruitment.getTitle());
-            assertThat(findRecruitment.recruitmentStartTime()).isEqualTo(
-                recruitment.getStartTime());
-            assertThat(findRecruitment.recruitmentEndTime()).isEqualTo(recruitment.getEndTime());
-            assertThat(findRecruitment.recruitmentApplicantCount()).isEqualTo(
-                recruitment.getApplicantCount());
-            assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
-            assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
-            assertThat(findRecruitment.shelterImageUrl())
-                .isEqualTo(recruitment.getShelter().getImage());
+                //then
+                then(recruitmentCacheRepository).should().findAll(pageRequest);
+                then(recruitmentRepository).should()
+                    .findRecruitmentsV2(nullKeyword, nullStartDate, nullEndDate, nullIsClosed,
+                        trueTitleContains, trueContentContains, trueShelterNameContains,
+                        nullCreatedAt, nullRecruitmentId, pageRequest);
+            }
         }
     }
 
@@ -523,8 +499,7 @@ class RecruitmentServiceTest {
             Recruitment recruitment = recruitment(shelter);
             FindRecruitmentDetailResponse expected = findRecruitmentDetailResponse(recruitment);
 
-            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(
-                Optional.of(recruitment));
+            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(Optional.of(recruitment));
 
             // when
             FindRecruitmentDetailResponse result = recruitmentService.findRecruitmentDetail(
@@ -538,8 +513,7 @@ class RecruitmentServiceTest {
         @DisplayName("예외(RecruitmentNotFoundException): 존재하지 않는 모집글")
         void throwExceptionWhenRecruitmentIsNotExist() {
             // given
-            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(
-                Optional.empty());
+            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(Optional.empty());
 
             // when
             Exception exception = catchException(
