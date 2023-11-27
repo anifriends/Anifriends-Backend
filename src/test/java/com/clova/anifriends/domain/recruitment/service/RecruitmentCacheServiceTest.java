@@ -10,12 +10,14 @@ import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixtur
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -28,6 +30,9 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
 
     @Autowired
     RecruitmentService recruitmentService;
+
+    @Autowired
+    RedisTemplate<String, Long> redisTemplate;
 
     Shelter shelter;
     String RECRUITMENT_CACHE_KEY;
@@ -42,6 +47,11 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
     @Nested
     @DisplayName("findRecruitmentsV2 실행 시 recruitmentCount를 가져올 때 ")
     class GetRecruitmentCountTest {
+
+        @AfterEach
+        void tearDown() {
+            redisTemplate.delete(RECRUITMENT_CACHE_KEY);
+        }
 
         @Test
         @DisplayName("성공: redis에 없으면 db에서 가져오고 redis에 있으면 캐시에서 가져온다.")
@@ -77,6 +87,21 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             // then
             assertThat(dbRecruitmentCountResponse.pageInfo().totalElements()).isEqualTo(
                 cachedRecruitmentCountResponse.pageInfo().totalElements());
+        }
+
+        @Test
+        @DisplayName("성공: redis에 없으면 -1을 반환한다.")
+        void getCachedRecruitmentCountWhenNotExistInRedis() {
+            // given
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            recruitmentRepository.save(recruitment);
+
+            // when
+            Long recruitmentCount = recruitmentCacheService.getRecruitmentCount(
+                RECRUITMENT_CACHE_KEY);
+
+            // then
+            assertThat(recruitmentCount).isEqualTo(-1L);
         }
     }
 
