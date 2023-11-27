@@ -10,6 +10,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
@@ -20,7 +21,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
@@ -29,7 +29,7 @@ import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantStatusRequest;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest.UpdateApplicantAttendanceRequest;
-import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
@@ -65,12 +65,17 @@ class ApplicantControllerTest extends BaseControllerTest {
         // then
         resultActions.andExpect(status().isNoContent())
             .andDo(restDocs.document(
-                requestHeaders(headerWithName("Authorization").description("액세스 토큰"))
+                requestHeaders(
+                    headerWithName("Authorization").description("액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("recruitmentId").description("봉사 모집글 ID")
+                )
             ));
     }
 
     @Test
-    @DisplayName("findApplyingVolunteers 실행 시")
+    @DisplayName("봉사 신청 목록 조회 API 실행 시")
     void findApplyingVolunteers() throws Exception {
         // given
         Long shelterId = 1L;
@@ -117,6 +122,9 @@ class ApplicantControllerTest extends BaseControllerTest {
         // then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
                 responseFields(
                     fieldWithPath("findApplyingVolunteerResponses").type(JsonFieldType.ARRAY)
                         .description("신청한 봉사 리스트"),
@@ -150,12 +158,12 @@ class ApplicantControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("봉사 신청 승인자 조회 API 호출 시")
-    void findApplicantApproved() throws Exception {
+    void findApprovedApplicants() throws Exception {
         // given
-        FindApplicantsApprovedResponse.from(List.of());
+        FindApprovedApplicantsResponse.from(List.of());
 
-        when(applicantService.findApplicantsApproved(anyLong(), anyLong()))
-            .thenReturn(FindApplicantsApprovedResponse.from(List.of()));
+        when(applicantService.findApprovedApplicants(anyLong(), anyLong()))
+            .thenReturn(FindApprovedApplicantsResponse.from(List.of()));
 
         // when
         ResultActions result = mockMvc.perform(

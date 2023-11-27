@@ -65,7 +65,7 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
 
             // when
             List<Applicant> result = applicantRepository
-                .findApprovedByRecruitmentIdAndShelterId(recruitment.getRecruitmentId(),
+                .findApprovedApplicants(recruitment.getRecruitmentId(),
                     shelter.getShelterId());
 
             // then
@@ -95,7 +95,7 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
 
             // when
             List<Applicant> result = applicantRepository
-                .findApprovedByRecruitmentIdAndShelterId(recruitment.getRecruitmentId(),
+                .findApprovedApplicants(recruitment.getRecruitmentId(),
                     shelter.getShelterId());
 
             // then
