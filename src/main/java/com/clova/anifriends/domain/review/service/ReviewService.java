@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ReviewService {
 
+    public static final int REVIEW_BONUS_TEMPERATURE = 3;
     private final ReviewRepository reviewRepository;
 
     private final ApplicantRepository applicantRepository;
@@ -54,6 +55,7 @@ public class ReviewService {
 
         Review review = new Review(applicant, content, imageUrls);
         reviewRepository.save(review);
+        applicant.increaseTemperature(REVIEW_BONUS_TEMPERATURE);
         return RegisterReviewResponse.from(review);
     }
 

@@ -147,8 +147,8 @@ public class Volunteer extends BaseTimeEntity {
     }
 
     private VolunteerImage updateVolunteerImage(String imageUrl) {
-        if(Objects.nonNull(imageUrl)) {
-            if(imageUrl.isBlank()) {
+        if (Objects.nonNull(imageUrl)) {
+            if (imageUrl.isBlank()) {
                 return null;
             }
             if (Objects.nonNull(image) && image.isSameWith(imageUrl)) {
@@ -157,6 +157,15 @@ public class Volunteer extends BaseTimeEntity {
             return new VolunteerImage(this, imageUrl);
         }
         return image;
+    }
+
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceToken = new VolunteerDeviceToken(deviceToken);
+    }
+
+    public void increaseTemperature(int temperature) {
+        this.temperature = this.temperature.increase(temperature);
+
     }
 
     public long getReviewCount() {
@@ -213,9 +222,5 @@ public class Volunteer extends BaseTimeEntity {
 
     public String getDeviceToken() {
         return this.deviceToken == null ? null : this.deviceToken.getDeviceToken();
-    }
-
-    public void updateDeviceToken(String deviceToken) {
-        this.deviceToken = new VolunteerDeviceToken(deviceToken);
     }
 }

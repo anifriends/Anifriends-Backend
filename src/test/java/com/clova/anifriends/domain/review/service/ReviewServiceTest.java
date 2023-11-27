@@ -35,6 +35,7 @@ import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerTemperature;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -48,6 +49,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceTest {
@@ -115,7 +117,14 @@ class ReviewServiceTest {
         void registerReview() {
             // given
             Shelter shelter = shelter();
-            Applicant applicant = applicant(recruitment(shelter), volunteer(), ATTENDANCE);
+            int originTemperature = 36;
+            int reviewBonusTemperature = 3;
+
+            Volunteer volunteer = volunteer();
+            ReflectionTestUtils.setField(volunteer, "temperature",
+                new VolunteerTemperature(originTemperature));
+
+            Applicant applicant = applicant(recruitment(shelter), volunteer, ATTENDANCE);
 
             when(applicantRepository.findByApplicantIdAndVolunteerId(anyLong(), anyLong()))
                 .thenReturn(Optional.of(applicant));
@@ -125,6 +134,8 @@ class ReviewServiceTest {
 
             // then
             verify(reviewRepository, times(1)).save(any(Review.class));
+            assertThat(volunteer.getTemperature())
+                .isEqualTo(originTemperature + reviewBonusTemperature);
         }
 
         @Test
