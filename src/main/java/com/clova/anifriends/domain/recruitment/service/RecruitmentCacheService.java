@@ -23,6 +23,10 @@ public class RecruitmentCacheService {
 
         if (Objects.isNull(cachedCount)) {
             return RECRUITMENT_COUNT_NO_CACHE;
+        }
+
+        if (cachedCount instanceof Long) {
+            return (Long) cachedCount;
         } else {
             return ((Integer) cachedCount).longValue();
         }

@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.volunteer.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.clova.anifriends.base.config.BaseIntegrationTest;
+import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import com.clova.anifriends.domain.volunteer.dto.response.RegisterVolunteerResponse;

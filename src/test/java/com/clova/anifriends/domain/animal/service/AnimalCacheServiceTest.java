@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.animal.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.clova.anifriends.base.config.BaseIntegrationTest;
+import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse.FindAnimalResponse;
 import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
