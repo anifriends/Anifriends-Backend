@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.chat.controller;
 import static com.clova.anifriends.domain.auth.jwt.UserRole.ROLE_VOLUNTEER;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.clova.anifriends.base.TestContainerStarter;
 import com.clova.anifriends.domain.chat.ChatMessage;
 import com.clova.anifriends.domain.chat.ChatRoom;
 import com.clova.anifriends.domain.chat.dto.request.ChatMessageRequest;
@@ -43,7 +44,7 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class WebSocketStompTest {
+class WebSocketStompTest extends TestContainerStarter {
 
     @LocalServerPort
     private int port;
