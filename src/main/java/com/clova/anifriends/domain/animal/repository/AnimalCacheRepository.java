@@ -107,11 +107,13 @@ public class AnimalCacheRepository {
         return instant.getEpochSecond() + instant.getNano() / NANO;
     }
 
+    @Transactional(readOnly = true)
     public void increaseTotalNumberOfAnimals() {
         Long cachedCount = getTotalNumberOfAnimals();
         redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, cachedCount + 1);
     }
 
+    @Transactional(readOnly = true)
     public void decreaseTotalNumberOfAnimals() {
         Long cachedCount = getTotalNumberOfAnimals();
         redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, cachedCount - 1);
