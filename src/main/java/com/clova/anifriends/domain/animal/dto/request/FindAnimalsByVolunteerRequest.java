@@ -12,7 +12,7 @@ public record FindAnimalsByVolunteerRequest(
     AnimalGender gender,
     AnimalNeuteredFilter neuteredFilter,
     AnimalActive active,
-    AnimalSize size,
+    AnimalSize animalSize,
     AnimalAge age
 ) {
 

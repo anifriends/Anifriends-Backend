@@ -66,7 +66,7 @@ public class AnimalController {
             findAnimalsByShelterRequest.gender(),
             findAnimalsByShelterRequest.neuteredFilter(),
             findAnimalsByShelterRequest.active(),
-            findAnimalsByShelterRequest.size(),
+            findAnimalsByShelterRequest.animalSize(),
             findAnimalsByShelterRequest.age(),
             pageable
         ));
@@ -83,7 +83,7 @@ public class AnimalController {
             findAnimalsRequest.neuteredFilter(),
             findAnimalsRequest.age(),
             findAnimalsRequest.gender(),
-            findAnimalsRequest.size(),
+            findAnimalsRequest.animalSize(),
             pageable
         ));
     }
@@ -99,7 +99,7 @@ public class AnimalController {
             findAnimalsByVolunteerRequestV2.neuteredFilter(),
             findAnimalsByVolunteerRequestV2.age(),
             findAnimalsByVolunteerRequestV2.gender(),
-            findAnimalsByVolunteerRequestV2.size(),
+            findAnimalsByVolunteerRequestV2.animalSize(),
             findAnimalsByVolunteerRequestV2.createdAt(),
             findAnimalsByVolunteerRequestV2.animalId(),
             pageable
