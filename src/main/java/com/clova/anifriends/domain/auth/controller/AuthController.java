@@ -55,9 +55,9 @@ public class AuthController {
             .from(REFRESH_TOKEN_COOKIE, tokenResponse.refreshToken())
             .path("/api/auth")
             .httpOnly(true)
-            // .secure(true) todo: https 적용 후 활성화할 것
+            .secure(true)
             .sameSite("None")
-            .domain("localhost")
+            .domain(".anifriends.site")
             .build();
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
     }
