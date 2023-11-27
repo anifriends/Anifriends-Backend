@@ -198,9 +198,11 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
 
     @Override
     public long countAllAnimalsExceptAdopted() {
-        return query.selectFrom(animal)
+        Long count = query.select(animal.count())
+            .from(animal)
             .where(animal.adopted.isAdopted.eq(false))
-            .fetchCount();
+            .fetchOne();
+        return count != null ? count : 0;
     }
 
     private BooleanExpression animalNameContains(String keyword) {
