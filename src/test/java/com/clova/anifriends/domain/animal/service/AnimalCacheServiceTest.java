@@ -299,7 +299,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
     class FindAnimalsTest {
 
         @Test
-        @DisplayName("성공: 30개 캐싱, size 20 -> 20개 반환")
+        @DisplayName("성공: 30개 캐싱, animalSize 20 -> 20개 반환")
         void findAnimals1() {
             // given
             Shelter shelter = ShelterFixture.shelter();
@@ -327,7 +327,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("성공: 20개 캐싱, size 20 -> 20개 반환")
+        @DisplayName("성공: 20개 캐싱, animalSize 20 -> 20개 반환")
         void findAnimals2() {
             // given
             Shelter shelter = ShelterFixture.shelter();
@@ -354,7 +354,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("성공: 10개 캐싱, size 20 -> 10개 반환")
+        @DisplayName("성공: 10개 캐싱, animalSize 20 -> 10개 반환")
         void findAnimals3() {
             // given
             Shelter shelter = ShelterFixture.shelter();
@@ -381,7 +381,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("성공: 0개 캐싱, size 20 -> 0개 반환")
+        @DisplayName("성공: 0개 캐싱, animalSize 20 -> 0개 반환")
         void findAnimals4() {
             // given
             int animalCount = 0;
