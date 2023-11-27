@@ -13,7 +13,7 @@ public record FindAnimalsByVolunteerRequestV2(
     AnimalGender gender,
     AnimalNeuteredFilter neuteredFilter,
     AnimalActive active,
-    AnimalSize size,
+    AnimalSize animalSize,
     AnimalAge age,
     Long animalId,
     LocalDateTime createdAt

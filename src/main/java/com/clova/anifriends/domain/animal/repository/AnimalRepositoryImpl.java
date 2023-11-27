@@ -172,7 +172,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
 
 
     @Override
-    public Long countAnimalsV2(
+    public long countAnimalsV2(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,

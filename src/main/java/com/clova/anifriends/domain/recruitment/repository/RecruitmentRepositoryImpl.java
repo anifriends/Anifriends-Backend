@@ -55,7 +55,7 @@ public class RecruitmentRepositoryImpl implements
                 recruitmentStartTimeGoe(startDate),
                 recruitmentStartTimeLoe(endDate)
             ).fetchOne();
-        return new PageImpl<>(content, pageable, count);
+        return new PageImpl<>(content, pageable, count != null ? count : 0);
     }
 
     @Override

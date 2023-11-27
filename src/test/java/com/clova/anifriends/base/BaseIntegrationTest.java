@@ -1,6 +1,5 @@
 package com.clova.anifriends.base;
 
-import com.clova.anifriends.base.config.RedisTestContainerConfig;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
@@ -23,7 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @ActiveProfiles("dev")
 @Import({SecurityConfig.class, RedisConfig.class})
-public abstract class BaseIntegrationTest extends RedisTestContainerConfig {
+public abstract class BaseIntegrationTest extends TestContainerStarter {
 
     @BeforeAll
     static void beforeAll() {

@@ -41,7 +41,6 @@ public class ShelterIntegrationTest extends BaseIntegrationTest {
                 addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress);
             String newRawPassword = oldRawPassword + "a";
 
-
             //when
             shelterService.updatePassword(registerShelterResponse.shelterId(), oldRawPassword,
                 newRawPassword);
