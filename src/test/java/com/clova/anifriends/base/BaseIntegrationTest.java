@@ -1,7 +1,5 @@
-package com.clova.anifriends.base.config;
+package com.clova.anifriends.base;
 
-import com.clova.anifriends.base.DatabaseCleaner;
-import com.clova.anifriends.base.TestContainerStarter;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;

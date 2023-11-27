@@ -3,7 +3,7 @@ package com.clova.anifriends.domain.chat.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
-import com.clova.anifriends.base.config.BaseIntegrationTest;
+import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.chat.ChatMessage;
 import com.clova.anifriends.domain.chat.ChatRoom;

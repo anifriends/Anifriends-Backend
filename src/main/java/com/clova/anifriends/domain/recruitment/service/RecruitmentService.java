@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.recruitment.service;
 
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.controller.RecruitmentStatusFilter;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
@@ -16,6 +17,7 @@ import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -31,6 +33,9 @@ public class RecruitmentService {
     private final ShelterRepository shelterRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final RecruitmentCacheService recruitmentCacheService;
+
+    private static final Long RECRUITMENT_COUNT_NO_CACHE = -1L;
 
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
@@ -52,7 +57,10 @@ public class RecruitmentService {
             endTime,
             deadline,
             imageUrls);
+
         recruitmentRepository.save(recruitment);
+        recruitmentCacheService.plusOneToRecruitmentCount();
+
         return RegisterRecruitmentResponse.from(recruitment);
     }
 
@@ -154,7 +162,24 @@ public class RecruitmentService {
             recruitmentId,
             pageable);
 
-        Long count = recruitmentRepository.countFindRecruitmentsV2(
+        Long cachedRecruitmentCount = recruitmentCacheService.getRecruitmentCount(
+        );
+
+        if (Objects.isNull(keyword) &&
+            Objects.isNull(startDate) &&
+            Objects.isNull(endDate) &&
+            Objects.equals(isClosed, RecruitmentStatusFilter.ALL.getIsClosed()) &&
+            Objects.equals(titleContains, true) &&
+            Objects.equals(contentContains, true) &&
+            Objects.equals(shelterNameContains, true)
+        ) {
+            if (!Objects.equals(cachedRecruitmentCount, RECRUITMENT_COUNT_NO_CACHE)) {
+                return FindRecruitmentsResponse.fromV2(recruitments,
+                    cachedRecruitmentCount);
+            }
+        }
+
+        Long dbRecruitmentCount = recruitmentRepository.countFindRecruitmentsV2(
             keyword,
             startDate,
             endDate,
@@ -164,7 +189,9 @@ public class RecruitmentService {
             shelterNameContains
         );
 
-        return FindRecruitmentsResponse.fromV2(recruitments, count);
+        recruitmentCacheService.registerRecruitmentCount(dbRecruitmentCount);
+
+        return FindRecruitmentsResponse.fromV2(recruitments, dbRecruitmentCount);
     }
 
     @Transactional
@@ -210,6 +237,7 @@ public class RecruitmentService {
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
 
         recruitmentRepository.delete(recruitment);
+        recruitmentCacheService.minusOneToRecruitmentCount();
     }
 
     private Recruitment getRecruitmentByShelterWithImages(Long shelterId, Long recruitmentId) {

@@ -3,7 +3,7 @@ package com.clova.anifriends.domain.applicant.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
-import com.clova.anifriends.base.config.BaseIntegrationTest;
+import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
