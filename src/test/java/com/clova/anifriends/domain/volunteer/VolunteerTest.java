@@ -100,7 +100,7 @@ class VolunteerTest {
         }
 
         @Test
-        @DisplayName("성공: 이미지 url 입력값이 null이고, 봉사자 이미지가 null인 경우 현재 이미지는 null이다.")
+        @DisplayName("성공: 이미지 url 입력값이 null이고, 봉사자 이미지가 null인 경우 현재 이미지는 공백이다.")
         void updateVolunteerNullImage() {
             //given
             String nullImageUrl = null;
@@ -110,7 +110,7 @@ class VolunteerTest {
                 volunteer.getBirthDate(), volunteer.getPhoneNumber(), nullImageUrl);
 
             //then
-            assertThat(volunteer.getVolunteerImageUrl()).isNull();
+            assertThat(volunteer.getVolunteerImageUrl()).isBlank();
         }
 
         @Test
@@ -165,6 +165,25 @@ class VolunteerTest {
 
             //then
             assertThat(volunteer.getVolunteerImageUrl()).isEqualTo(notEqualsImageUrl);
+        }
+
+        @Test
+        @DisplayName("성공: 이미지 url 입력값이 공백이고, 봉사자 이미지가 존재한다면 현재 이미지는 공백이다.")
+        void updateVolunteerWhenImageUrlIsBlank() {
+            //given
+            String imageUrl = "asdf";
+            volunteer.updateVolunteerInfo(volunteer.getName(),
+                volunteer.getGender(), volunteer.getBirthDate(), volunteer.getPhoneNumber(),
+                imageUrl);
+            String blankImageUrl = "";
+
+            //when
+            volunteer.updateVolunteerInfo(
+                volunteer.getName(), volunteer.getGender(), volunteer.getBirthDate(),
+                volunteer.getPhoneNumber(), blankImageUrl);
+
+            //then
+            assertThat(volunteer.getVolunteerImageUrl()).isBlank();
         }
     }
 

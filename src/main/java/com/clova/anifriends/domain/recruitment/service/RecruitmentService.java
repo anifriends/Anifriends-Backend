@@ -31,10 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RecruitmentService {
 
+    private static final Long RECRUITMENT_COUNT_NO_CACHE = -1L;
+
     private final ShelterRepository shelterRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final RecruitmentCacheRepository recruitmentCacheRepository;
+    private final RecruitmentCacheService recruitmentCacheService;
 
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
@@ -56,8 +59,11 @@ public class RecruitmentService {
             endTime,
             deadline,
             imageUrls);
+
         recruitmentRepository.save(recruitment);
         recruitmentCacheRepository.save(recruitment);
+        recruitmentCacheService.plusOneToRecruitmentCount();
+
         return RegisterRecruitmentResponse.from(recruitment);
     }
 
@@ -147,15 +153,32 @@ public class RecruitmentService {
         Long recruitmentId,
         Pageable pageable
     ) {
-        Long count = recruitmentRepository.countFindRecruitmentsV2(
-            keyword,
-            startDate,
-            endDate,
-            isClosed,
-            titleContains,
-            contentContains,
-            shelterNameContains
-        );
+        Long count = recruitmentCacheService.getRecruitmentCount();
+        if (findRecruitmentsWithoutCondition(keyword, startDate, endDate, isClosed, titleContains,
+            contentContains, shelterNameContains, recruitmentId)) {
+            if(Objects.equals(count, RECRUITMENT_COUNT_NO_CACHE)) {
+                count = recruitmentRepository.countFindRecruitmentsV2(
+                    keyword,
+                    startDate,
+                    endDate,
+                    isClosed,
+                    titleContains,
+                    contentContains,
+                    shelterNameContains
+                );
+                recruitmentCacheService.registerRecruitmentCount(count);
+            }
+        } else {
+            count = recruitmentRepository.countFindRecruitmentsV2(
+                keyword,
+                startDate,
+                endDate,
+                isClosed,
+                titleContains,
+                contentContains,
+                shelterNameContains
+            );
+        }
 
         if (findRecruitmentsWithoutCondition(keyword, startDate, endDate, isClosed, titleContains,
             contentContains, shelterNameContains, recruitmentId)) {
@@ -237,6 +260,7 @@ public class RecruitmentService {
 
         recruitmentRepository.delete(recruitment);
         recruitmentCacheRepository.delete(recruitment);
+        recruitmentCacheService.minusOneToRecruitmentCount();
     }
 
     private Recruitment getRecruitmentByShelterWithImages(Long shelterId, Long recruitmentId) {

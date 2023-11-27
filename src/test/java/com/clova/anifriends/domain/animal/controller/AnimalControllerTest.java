@@ -110,6 +110,9 @@ class AnimalControllerTest extends BaseControllerTest {
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 리소스에 접근 가능한 api")
+                ),
+                responseFields(
+                    fieldWithPath("animalId").type(NUMBER).description("생성된 보호 동물 ID")
                 )
             ));
     }
@@ -170,10 +173,10 @@ class AnimalControllerTest extends BaseControllerTest {
         params.add("gender", AnimalGender.MALE.name());
         params.add("neuteredFilter", AnimalNeuteredFilter.IS_NEUTERED.name());
         params.add("active", "ACTIVE");
-        params.add("size", "SMALL");
+        params.add("animalSize", "SMALL");
         params.add("age", "BABY");
-        params.add("pageNumber", "0");
-        params.add("pageSize", "10");
+        params.add("page", "0");
+        params.add("size", "10");
 
         Long shelterId = 1L;
         Shelter shelter = shelter();
@@ -213,14 +216,14 @@ class AnimalControllerTest extends BaseControllerTest {
                     parameterWithName("active").description("보호 동물 성격").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint(
                             "QUIET, NORMAL, ACTIVE, VERY_ACTIVE")),
-                    parameterWithName("size").description("보호 동물 크기").optional()
+                    parameterWithName("animalSize").description("보호 동물 크기").optional()
                         .attributes(
                             DocumentationFormatGenerator.getConstraint("SMALL, MEDIUM, LARGE")),
                     parameterWithName("age").description("보호 동물 나이").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint(
                             "BABY, JUNIOR, ADULT, SENIOR")),
-                    parameterWithName("pageNumber").description("페이지 번호"),
-                    parameterWithName("pageSize").description("페이지 사이즈")
+                    parameterWithName("page").description("페이지 번호"),
+                    parameterWithName("size").description("페이지 사이즈")
                 ),
                 responseFields(
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
@@ -249,10 +252,10 @@ class AnimalControllerTest extends BaseControllerTest {
         params.add("gender", AnimalGender.FEMALE.name());
         params.add("neuteredFilter", AnimalNeuteredFilter.IS_NEUTERED.name());
         params.add("active", AnimalActive.ACTIVE.name());
-        params.add("size", AnimalSize.SMALL.name());
+        params.add("animalSize", AnimalSize.SMALL.name());
         params.add("age", AnimalAge.ADULT.name());
-        params.add("pageNumber", String.valueOf(0));
-        params.add("pageSize", String.valueOf(10));
+        params.add("page", String.valueOf(0));
+        params.add("animalSize", String.valueOf(10));
 
         Shelter shelter = shelter();
         Animal animal = animal(shelter);
@@ -297,7 +300,7 @@ class AnimalControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint(
                             String.join(", ", Arrays.stream(AnimalActive.values()).map(
                                 AnimalActive::name).toArray(String[]::new)))),
-                    parameterWithName("size").description("보호 동물 크기").optional()
+                    parameterWithName("animalSize").description("보호 동물 크기").optional()
                         .attributes(
                             DocumentationFormatGenerator.getConstraint(
                                 String.join(", ", Arrays.stream(AnimalSize.values()).map(
@@ -306,8 +309,8 @@ class AnimalControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint(
                             String.join(", ", Arrays.stream(AnimalAge.values()).map(
                                 AnimalAge::name).toArray(String[]::new)))),
-                    parameterWithName("pageNumber").description("페이지 번호"),
-                    parameterWithName("pageSize").description("페이지 사이즈")
+                    parameterWithName("page").description("페이지 번호"),
+                    parameterWithName("animalSize").description("페이지 사이즈")
                 ),
                 responseFields(
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
@@ -333,12 +336,12 @@ class AnimalControllerTest extends BaseControllerTest {
         params.add("gender", AnimalGender.FEMALE.name());
         params.add("neuteredFilter", AnimalNeuteredFilter.IS_NEUTERED.name());
         params.add("active", AnimalActive.ACTIVE.name());
-        params.add("size", AnimalSize.SMALL.name());
+        params.add("animalSize", AnimalSize.SMALL.name());
         params.add("age", AnimalAge.ADULT.name());
         params.add("animalId", String.valueOf(1L));
         params.add("createdAt", String.valueOf(LocalDateTime.now()));
-        params.add("pageNumber", String.valueOf(0));
-        params.add("pageSize", String.valueOf(10));
+        params.add("page", String.valueOf(0));
+        params.add("animalSize", String.valueOf(10));
 
         Shelter shelter = shelter();
         Animal animal = animal(shelter);
@@ -381,7 +384,7 @@ class AnimalControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint(
                             String.join(", ", Arrays.stream(AnimalActive.values()).map(
                                 AnimalActive::name).toArray(String[]::new)))),
-                    parameterWithName("size").description("보호 동물 크기").optional()
+                    parameterWithName("animalSize").description("보호 동물 크기").optional()
                         .attributes(
                             DocumentationFormatGenerator.getConstraint(
                                 String.join(", ", Arrays.stream(AnimalSize.values()).map(
@@ -392,8 +395,8 @@ class AnimalControllerTest extends BaseControllerTest {
                                 AnimalAge::name).toArray(String[]::new)))),
                     parameterWithName("animalId").description("페이지 마지막 보호 동물 ID").optional(),
                     parameterWithName("createdAt").description("페이지 마지막 보호 동물 생일").optional(),
-                    parameterWithName("pageNumber").description("페이지 번호"),
-                    parameterWithName("pageSize").description("페이지 사이즈")
+                    parameterWithName("page").description("페이지 번호"),
+                    parameterWithName("animalSize").description("페이지 사이즈")
                 ),
                 responseFields(
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),

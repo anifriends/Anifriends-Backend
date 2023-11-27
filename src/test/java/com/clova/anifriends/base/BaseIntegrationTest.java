@@ -1,5 +1,6 @@
 package com.clova.anifriends.base;
 
+import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
 import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
@@ -47,6 +48,9 @@ public abstract class BaseIntegrationTest extends TestContainerStarter {
 
     @Autowired
     protected ChatMessageRepository chatMessageRepository;
+
+    @Autowired
+    protected AnimalRepository animalRepository;
 
     @BeforeEach
     void setUp() {

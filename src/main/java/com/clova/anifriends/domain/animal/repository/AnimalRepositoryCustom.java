@@ -48,7 +48,7 @@ public interface AnimalRepositoryCustom {
         Pageable pageable
     );
 
-    Long countAnimalsV2(
+    long countAnimalsV2(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,

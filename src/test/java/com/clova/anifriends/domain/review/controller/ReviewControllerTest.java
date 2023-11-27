@@ -47,6 +47,7 @@ import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.RegisterReviewResponse;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.time.LocalDateTime;
@@ -161,15 +162,17 @@ class ReviewControllerTest extends BaseControllerTest {
     @DisplayName("성공: 리뷰 등록 api 호출")
     void registerReview() throws Exception {
         //given
+        long reviewId = 1L;
         Applicant applicant = applicant(recruitment(shelter()), volunteer(), ATTENDANCE);
         ReflectionTestUtils.setField(applicant, "applicantId", 1L);
         Review review = review(applicant);
-        ReflectionTestUtils.setField(review, "reviewId", 1L);
+        ReflectionTestUtils.setField(review, "reviewId", reviewId);
         RegisterReviewRequest request = registerReviewRequest(review(applicant));
+        RegisterReviewResponse registerReviewResponse = new RegisterReviewResponse(reviewId);
 
         when(reviewService.registerReview(anyLong(), eq(applicant.getApplicantId()),
             eq(review.getContent()), eq(review.getImages())))
-            .thenReturn(review.getReviewId());
+            .thenReturn(registerReviewResponse);
 
         //when
         ResultActions result = mockMvc.perform(
@@ -195,6 +198,9 @@ class ReviewControllerTest extends BaseControllerTest {
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 리소스에 대한 접근 api")
+                ),
+                responseFields(
+                    fieldWithPath("reviewId").type(NUMBER).description("생성된 리뷰 ID")
                 )
             ));
     }

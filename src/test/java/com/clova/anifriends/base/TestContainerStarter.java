@@ -3,7 +3,9 @@ package com.clova.anifriends.base;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
+@Testcontainers
 public class TestContainerStarter {
 
     private static final String REDIS_IMAGE = "redis:7.0.8-alpine";

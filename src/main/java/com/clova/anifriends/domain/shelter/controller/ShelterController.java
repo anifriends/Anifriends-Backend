@@ -10,6 +10,7 @@ import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterRes
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleResponse;
+import com.clova.anifriends.domain.shelter.dto.response.RegisterShelterResponse;
 import com.clova.anifriends.domain.shelter.service.ShelterService;
 import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
 import jakarta.validation.Valid;
@@ -40,9 +41,9 @@ public class ShelterController {
     }
 
     @PostMapping("/shelters")
-    public ResponseEntity<Void> registerShelter(
+    public ResponseEntity<RegisterShelterResponse> registerShelter(
         @RequestBody @Valid RegisterShelterRequest registerShelterRequest) {
-        Long shelterId = shelterService.registerShelter(
+        RegisterShelterResponse registerShelterResponse = shelterService.registerShelter(
             registerShelterRequest.email(),
             registerShelterRequest.password(),
             registerShelterRequest.name(),
@@ -51,8 +52,8 @@ public class ShelterController {
             registerShelterRequest.phoneNumber(),
             registerShelterRequest.sparePhoneNumber(),
             registerShelterRequest.isOpenedAddress());
-        URI location = URI.create("/api/shelters/" + shelterId);
-        return ResponseEntity.created(location).build();
+        URI location = URI.create("/api/shelters/" + registerShelterResponse.shelterId());
+        return ResponseEntity.created(location).body(registerShelterResponse);
     }
 
     @GetMapping("/shelters/{shelterId}/profile")

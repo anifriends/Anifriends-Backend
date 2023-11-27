@@ -30,6 +30,7 @@ import com.clova.anifriends.domain.volunteer.dto.request.UpdateVolunteerPassword
 import com.clova.anifriends.domain.volunteer.dto.response.CheckDuplicateVolunteerEmailResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerMyPageResponse;
 import com.clova.anifriends.domain.volunteer.dto.response.FindVolunteerProfileResponse;
+import com.clova.anifriends.domain.volunteer.dto.response.RegisterVolunteerResponse;
 import com.clova.anifriends.domain.volunteer.support.VolunteerDtoFixture;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
@@ -78,8 +79,9 @@ class VolunteerControllerTest extends BaseControllerTest {
     void registerVolunteer() throws Exception {
         // given
         RegisterVolunteerRequest registerVolunteerRequest = VolunteerDtoFixture.registerVolunteerRequest();
+        RegisterVolunteerResponse registerVolunteerResponse = new RegisterVolunteerResponse(1L);
         given(volunteerService.registerVolunteer(any(), any(), any(), any(), any(),
-            any())).willReturn(1L);
+            any())).willReturn(registerVolunteerResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -100,6 +102,9 @@ class VolunteerControllerTest extends BaseControllerTest {
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 리소스 위치")
+                ),
+                responseFields(
+                    fieldWithPath("volunteerId").type(NUMBER).description("생성된 봉사자 ID")
                 )
             ));
     }

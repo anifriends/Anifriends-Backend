@@ -8,10 +8,10 @@ import org.springframework.data.domain.Slice;
 
 public record FindAnimalsResponse(
     PageInfo pageInfo,
-    List<FindAnimalByVolunteerResponse> animals
+    List<FindAnimalResponse> animals
 ) {
 
-    public record FindAnimalByVolunteerResponse(
+    public record FindAnimalResponse(
         Long animalId,
         String animalName,
         String shelterName,
@@ -19,8 +19,8 @@ public record FindAnimalsResponse(
         String animalImageUrl
     ) {
 
-        public static FindAnimalByVolunteerResponse from(Animal animal) {
-            return new FindAnimalByVolunteerResponse(
+        public static FindAnimalResponse from(Animal animal) {
+            return new FindAnimalResponse(
                 animal.getAnimalId(),
                 animal.getName(),
                 animal.getShelter().getName(),
@@ -33,18 +33,17 @@ public record FindAnimalsResponse(
 
     public static FindAnimalsResponse from(Page<Animal> pagination) {
         PageInfo pageInfo = PageInfo.of(pagination.getTotalElements(), pagination.hasNext());
-        List<FindAnimalByVolunteerResponse> findAnimalByVolunteerResponses = pagination.get()
-            .map(FindAnimalByVolunteerResponse::from).toList();
+        List<FindAnimalResponse> findAnimalByVolunteerResponses = pagination.get()
+            .map(FindAnimalResponse::from).toList();
 
         return new FindAnimalsResponse(pageInfo, findAnimalByVolunteerResponses);
     }
 
     public static FindAnimalsResponse fromV2(Slice<Animal> animalsWithPagination, Long count) {
         PageInfo pageInfo = PageInfo.of(count, animalsWithPagination.hasNext());
-        List<FindAnimalByVolunteerResponse> findAnimalsResponses = animalsWithPagination.get()
-            .map(FindAnimalByVolunteerResponse::from).toList();
+        List<FindAnimalResponse> findAnimalsResponses = animalsWithPagination.get()
+            .map(FindAnimalResponse::from).toList();
 
         return new FindAnimalsResponse(pageInfo, findAnimalsResponses);
     }
-
 }

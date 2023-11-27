@@ -37,13 +37,13 @@ public class AnimalController {
 
     @ShelterOnly
     @PostMapping("/shelters/animals")
-    public ResponseEntity<Void> registerAnimal(
+    public ResponseEntity<RegisterAnimalResponse> registerAnimal(
         @LoginUser Long volunteerId,
         @RequestBody @Valid RegisterAnimalRequest registerAnimalRequest) {
         RegisterAnimalResponse registerAnimalResponse = animalService.registerAnimal(volunteerId,
             registerAnimalRequest);
         URI location = URI.create("/api/shelters/animals/" + registerAnimalResponse.animalId());
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(registerAnimalResponse);
     }
 
     @GetMapping("/animals/{animalId}")
@@ -66,7 +66,7 @@ public class AnimalController {
             findAnimalsByShelterRequest.gender(),
             findAnimalsByShelterRequest.neuteredFilter(),
             findAnimalsByShelterRequest.active(),
-            findAnimalsByShelterRequest.size(),
+            findAnimalsByShelterRequest.animalSize(),
             findAnimalsByShelterRequest.age(),
             pageable
         ));
@@ -83,7 +83,7 @@ public class AnimalController {
             findAnimalsRequest.neuteredFilter(),
             findAnimalsRequest.age(),
             findAnimalsRequest.gender(),
-            findAnimalsRequest.size(),
+            findAnimalsRequest.animalSize(),
             pageable
         ));
     }
@@ -99,7 +99,7 @@ public class AnimalController {
             findAnimalsByVolunteerRequestV2.neuteredFilter(),
             findAnimalsByVolunteerRequestV2.age(),
             findAnimalsByVolunteerRequestV2.gender(),
-            findAnimalsByVolunteerRequestV2.size(),
+            findAnimalsByVolunteerRequestV2.animalSize(),
             findAnimalsByVolunteerRequestV2.createdAt(),
             findAnimalsByVolunteerRequestV2.animalId(),
             pageable

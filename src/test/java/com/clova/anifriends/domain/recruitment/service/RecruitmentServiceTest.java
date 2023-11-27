@@ -73,6 +73,9 @@ class RecruitmentServiceTest {
     @Mock
     RecruitmentCacheRepository recruitmentCacheRepository;
 
+    @Mock
+    RecruitmentCacheService recruitmentCacheService;
+
     @Nested
     @DisplayName("registerRecruitment 메서드 실행 시")
     class RegisterRecruitmentTest {
@@ -250,6 +253,7 @@ class RecruitmentServiceTest {
                 given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                     isClosed, titleContains, contentContains, shelterNameContains))
                     .willReturn(Long.valueOf(recruitments.getSize()));
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(-1L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsByVolunteer
@@ -294,6 +298,7 @@ class RecruitmentServiceTest {
                 given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                     isClosed, titleContains, contentContains, shelterNameContains))
                     .willReturn(Long.valueOf(recruitments.getSize()));
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(-1L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsByVolunteer
@@ -327,6 +332,7 @@ class RecruitmentServiceTest {
                 given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                     isClosed, titleContains, contentContains, shelterNameContains))
                     .willReturn(Long.valueOf(recruitments.getSize()));
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(-1L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsByVolunteer
@@ -370,10 +376,8 @@ class RecruitmentServiceTest {
 
                 given(recruitmentCacheRepository.findAll(any(PageRequest.class)))
                     .willReturn(cachedRecruitments);
-                given(recruitmentRepository.countFindRecruitmentsV2(nullKeyword, nullStartDate,
-                    nullEndDate, nullIsClosed, trueTitleContains, trueContentContains,
-                    trueShelterNameContains))
-                    .willReturn(20L);
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsV2 = recruitmentService.findRecruitmentsV2(
@@ -405,14 +409,12 @@ class RecruitmentServiceTest {
 
                 given(recruitmentCacheRepository.findAll(pageRequest))
                     .willReturn(cachedRecruitments);
-                given(recruitmentRepository.countFindRecruitmentsV2(nullKeyword, nullStartDate,
-                    nullEndDate, nullIsClosed, trueTitleContains, trueContentContains,
-                    trueShelterNameContains))
-                    .willReturn(10L);
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
                 given(recruitmentRepository.findRecruitmentsV2(nullKeyword, nullStartDate,
                     nullEndDate, nullIsClosed, trueTitleContains, trueContentContains,
                     trueShelterNameContains, nullCreatedAt, nullRecruitmentId, pageRequest))
                     .willReturn(findRecruitments);
+                given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsV2 = recruitmentService.findRecruitmentsV2(

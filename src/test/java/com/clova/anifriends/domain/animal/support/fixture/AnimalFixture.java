@@ -8,6 +8,7 @@ import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class AnimalFixture {
@@ -37,6 +38,12 @@ public class AnimalFixture {
             ANIMAL_INFORMATION,
             IMAGE_URLS
         );
+    }
+
+    public static List<Animal> animals(Shelter shelter, long count) {
+        return IntStream.range(0, (int) count)
+            .mapToObj(i -> animal(shelter))
+            .toList();
     }
 
     public static Animal animal(Shelter shelter, List<String> imageUrls) {
