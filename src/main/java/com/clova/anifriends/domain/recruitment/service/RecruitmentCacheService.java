@@ -23,9 +23,9 @@ public class RecruitmentCacheService {
 
         if (Objects.isNull(cachedCount)) {
             return RECRUITMENT_COUNT_NO_CACHE;
+        } else {
+            return ((Integer) cachedCount).longValue();
         }
-
-        return ((Integer) cachedCount).longValue();
     }
 
     public void registerRecruitmentCount(
