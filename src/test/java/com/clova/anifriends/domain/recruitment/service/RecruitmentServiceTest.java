@@ -29,6 +29,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsBySh
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
+import com.clova.anifriends.domain.recruitment.repository.RecruitmentCacheRepository;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -68,6 +69,9 @@ class RecruitmentServiceTest {
 
     @Mock
     ApplicationEventPublisher applicationEventPublisher;
+
+    @Mock
+    RecruitmentCacheRepository recruitmentCacheRepository;
 
     @Nested
     @DisplayName("registerRecruitment 메서드 실행 시")
@@ -195,6 +199,13 @@ class RecruitmentServiceTest {
     @DisplayName("findRecruitmentsV2 실행 시")
     class FindRecruitmentsV2Test {
 
+        Shelter shelter;
+
+        @BeforeEach
+        void setUp() {
+            shelter = ShelterFixture.shelter();
+        }
+
         @Test
         @DisplayName("성공")
         void findRecruitments() {
@@ -209,7 +220,6 @@ class RecruitmentServiceTest {
             LocalDateTime createdAt = LocalDateTime.now();
             Long recruitmentId = 1L;
             PageRequest pageRequest = PageRequest.of(0, 10);
-            Shelter shelter = shelter();
             Recruitment recruitment = recruitment(shelter);
             ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
             SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
@@ -243,6 +253,106 @@ class RecruitmentServiceTest {
             assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
             assertThat(findRecruitment.shelterImageUrl())
                 .isEqualTo(recruitment.getShelter().getImage());
+        }
+
+        @Nested
+        @DisplayName("검색 조건이 주어지지 않은 경우")
+        class FindWithoutConditionTest {
+
+            String nullKeyword = null;
+            LocalDate nullStartDate = null;
+            LocalDate nullEndDate = null;
+            Boolean nullIsClosed = null;
+            boolean trueTitleContains = true;
+            boolean trueContentContains = true;
+            boolean trueShelterNameContains = true;
+            LocalDateTime nullCreatedAt = null;
+            Long nullRecruitmentId = null;
+
+            @BeforeEach
+            void setUp() {
+                nullKeyword = null;
+                nullStartDate = null;
+                nullEndDate = null;
+                nullIsClosed = null;
+                trueTitleContains = true;
+                trueContentContains = true;
+                trueShelterNameContains = true;
+                nullCreatedAt = null;
+                nullRecruitmentId = null;
+            }
+
+            @Test
+            @DisplayName("성공: 캐시된 봉사 모집글 목록 사이즈가 요청 사이즈를 초과하는 경우 캐시된 목록을 이용")
+            void findRecruitmentsWhenCached() {
+                //given
+                List<Recruitment> recruitments = RecruitmentFixture.recruitments(shelter, 20);
+                List<FindRecruitmentResponse> recruitmentResponses = recruitments.stream()
+                    .map(FindRecruitmentResponse::from).toList();
+                PageRequest pageRequest = PageRequest.of(0, 10);
+                boolean hasNext = true;
+                SliceImpl<FindRecruitmentResponse> cachedRecruitments
+                    = new SliceImpl<>(recruitmentResponses, pageRequest, hasNext);
+
+                given(recruitmentCacheRepository.findAll(any(PageRequest.class)))
+                    .willReturn(cachedRecruitments);
+                given(recruitmentRepository.countFindRecruitmentsV2(nullKeyword, nullStartDate,
+                    nullEndDate, nullIsClosed, trueTitleContains, trueContentContains,
+                    trueShelterNameContains))
+                    .willReturn(20L);
+
+                //when
+                FindRecruitmentsResponse recruitmentsV2 = recruitmentService.findRecruitmentsV2(
+                    nullKeyword, nullStartDate, nullEndDate, nullIsClosed, trueTitleContains,
+                    trueContentContains, trueShelterNameContains, nullCreatedAt, nullRecruitmentId,
+                    pageRequest);
+
+                //then
+                then(recruitmentCacheRepository).should().findAll(pageRequest);
+                then(recruitmentRepository).should(times(0))
+                    .findRecruitmentsV2(nullKeyword, nullStartDate, nullEndDate, nullIsClosed,
+                        trueTitleContains, trueContentContains, trueShelterNameContains, nullCreatedAt,
+                        nullRecruitmentId, pageRequest);
+            }
+
+            @Test
+            @DisplayName("성공: 캐신된 봉사 모집글 사이즈가 요청 사이즈 이하인 경우 캐시된 목록을 이용하지 않음")
+            void findRecruitmentsWhenCachedSizeLTRequestPageSize() {
+                //given
+                List<Recruitment> recruitments = RecruitmentFixture.recruitments(shelter, 10);
+                List<FindRecruitmentResponse> recruitmentResponses = recruitments.stream()
+                    .map(FindRecruitmentResponse::from).toList();
+                PageRequest pageRequest = PageRequest.of(0, 10);
+                boolean hasNext = false;
+                SliceImpl<FindRecruitmentResponse> cachedRecruitments = new SliceImpl<>(
+                    recruitmentResponses, pageRequest, hasNext);
+                SliceImpl<Recruitment> findRecruitments = new SliceImpl<>(recruitments, pageRequest,
+                    hasNext);
+
+                given(recruitmentCacheRepository.findAll(pageRequest))
+                    .willReturn(cachedRecruitments);
+                given(recruitmentRepository.countFindRecruitmentsV2(nullKeyword, nullStartDate,
+                    nullEndDate, nullIsClosed, trueTitleContains, trueContentContains,
+                    trueShelterNameContains))
+                    .willReturn(10L);
+                given(recruitmentRepository.findRecruitmentsV2(nullKeyword, nullStartDate,
+                    nullEndDate, nullIsClosed, trueTitleContains, trueContentContains,
+                    trueShelterNameContains, nullCreatedAt, nullRecruitmentId, pageRequest))
+                    .willReturn(findRecruitments);
+
+                //when
+                FindRecruitmentsResponse recruitmentsV2 = recruitmentService.findRecruitmentsV2(
+                    nullKeyword, nullStartDate, nullEndDate,
+                    nullIsClosed, trueTitleContains, trueContentContains, trueShelterNameContains,
+                    nullCreatedAt, nullRecruitmentId, pageRequest);
+
+                //then
+                then(recruitmentCacheRepository).should().findAll(pageRequest);
+                then(recruitmentRepository).should()
+                    .findRecruitmentsV2(nullKeyword, nullStartDate, nullEndDate, nullIsClosed,
+                        trueTitleContains, trueContentContains, trueShelterNameContains,
+                        nullCreatedAt, nullRecruitmentId, pageRequest);
+            }
         }
     }
 

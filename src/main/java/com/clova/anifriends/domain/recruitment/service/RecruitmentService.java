@@ -7,6 +7,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetai
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentCacheRepository;
@@ -17,6 +18,7 @@ import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -55,6 +57,7 @@ public class RecruitmentService {
             deadline,
             imageUrls);
         recruitmentRepository.save(recruitment);
+        recruitmentCacheRepository.save(recruitment);
         return RegisterRecruitmentResponse.from(recruitment);
     }
 
@@ -144,6 +147,24 @@ public class RecruitmentService {
         Long recruitmentId,
         Pageable pageable
     ) {
+        Long count = recruitmentRepository.countFindRecruitmentsV2(
+            keyword,
+            startDate,
+            endDate,
+            isClosed,
+            titleContains,
+            contentContains,
+            shelterNameContains
+        );
+
+        if (findRecruitmentsWithoutCondition(keyword, startDate, endDate, isClosed, titleContains,
+            contentContains, shelterNameContains, recruitmentId)) {
+            Slice<FindRecruitmentResponse> cachedRecruitments
+                = recruitmentCacheRepository.findAll(pageable);
+            if(canTrustCached(cachedRecruitments)) {
+                return FindRecruitmentsResponse.fromCached(cachedRecruitments, count);
+            }
+        }
         Slice<Recruitment> recruitments = recruitmentRepository.findRecruitmentsV2(
             keyword,
             startDate,
@@ -155,23 +176,25 @@ public class RecruitmentService {
             createdAt,
             recruitmentId,
             pageable);
-
-        Long count = recruitmentRepository.countFindRecruitmentsV2(
-            keyword,
-            startDate,
-            endDate,
-            isClosed,
-            titleContains,
-            contentContains,
-            shelterNameContains
-        );
-
         return FindRecruitmentsResponse.fromV2(recruitments, count);
+    }
+
+    private boolean canTrustCached(Slice<FindRecruitmentResponse> cachedRecruitments) {
+        return cachedRecruitments.hasNext();
+    }
+
+    private boolean findRecruitmentsWithoutCondition(String keyword, LocalDate startDate,
+        LocalDate endDate, Boolean isClosed, Boolean titleContains, Boolean contentContains,
+        Boolean shelterNameContains, Long recruitmentId) {
+        return Objects.isNull(keyword) && titleContains && contentContains && shelterNameContains
+            && Objects.isNull(startDate) && Objects.isNull(endDate) && Objects.isNull(isClosed)
+            && Objects.isNull(recruitmentId);
     }
 
     @Transactional
     public void closeRecruitment(Long shelterId, Long recruitmentId) {
         Recruitment recruitment = getRecruitmentByShelter(shelterId, recruitmentId);
+        recruitmentCacheRepository.update(recruitment);
         recruitment.closeRecruitment();
     }
 
@@ -201,6 +224,7 @@ public class RecruitmentService {
             content,
             imageUrls
         );
+        recruitmentCacheRepository.update(recruitment);
     }
 
     @Transactional
@@ -212,6 +236,7 @@ public class RecruitmentService {
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
 
         recruitmentRepository.delete(recruitment);
+        recruitmentCacheRepository.delete(recruitment);
     }
 
     private Recruitment getRecruitmentByShelterWithImages(Long shelterId, Long recruitmentId) {
