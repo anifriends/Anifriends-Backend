@@ -93,7 +93,27 @@ operation::recruitment-controller-test/find-shelter-recruitments[snippets='http-
 
 operation::recruitment-controller-test/find-shelter-recruitments[snippets='http-response,response-fields']
 
+== 봉사 신청
 
+=== 봉사 신청
+
+==== Request
+
+operation::applicant-controller-test/register-applicant[snippets='http-request,request-headers,path-parameters']
+
+==== Response
+
+operation::applicant-controller-test/register-applicant[snippets='http-response']
+
+=== 봉사 신청 목록 조회
+
+==== Request
+
+operation::applicant-controller-test/find-applying-volunteers[snippets='http-request,request-headers']
+
+==== Response
+
+operation::applicant-controller-test/find-applying-volunteers[snippets='http-response,response-fields']
 
 == 보호 동물
 
@@ -216,6 +236,46 @@ operation::recruitment-controller-test/find-completed-recruitments[snippets='htt
 operation::recruitment-controller-test/find-completed-recruitments[snippets='http-response,response-fields']
 
 == 4. 봉사 신청
+
+=== 봉사 신청자 목록 조회
+
+==== Request
+
+operation::applicant-controller-test/find-applicants[snippets='http-request,request-headers,path-parameters']
+
+==== Response
+
+operation::applicant-controller-test/find-applicants[snippets='http-response,response-fields']
+
+=== 봉사 신청 승인자 출석 상태 수정
+
+==== Request
+
+operation::applicant-controller-test/update-applicant-attendance[snippets='http-request,request-headers,path-parameters,request-fields']
+
+==== Response
+
+operation::applicant-controller-test/update-applicant-attendance[snippets='http-response']
+
+=== 봉사 신청자 승인 여부 수정
+
+==== Request
+
+operation::applicant-controller-test/update-applicant-status[snippets='http-request,request-headers,path-parameters,request-fields']
+
+==== Response
+
+operation::applicant-controller-test/update-applicant-status[snippets='http-response']
+
+=== 봉사 신청 승인자 목록 조회
+
+==== Request
+
+operation::applicant-controller-test/find-approved-applicants[snippets='http-request,request-headers,path-parameters']
+
+==== Response
+
+operation::applicant-controller-test/find-approved-applicants[snippets='http-response,response-fields']
 
 == 5. 봉사 후기
 
