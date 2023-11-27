@@ -3,9 +3,12 @@ package com.clova.anifriends.domain.auth.controller;
 import com.clova.anifriends.domain.auth.dto.request.LoginRequest;
 import com.clova.anifriends.domain.auth.dto.response.LoginResponse;
 import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
+import com.clova.anifriends.domain.auth.exception.AuthAuthenticationException;
 import com.clova.anifriends.domain.auth.service.AuthService;
+import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -64,8 +67,12 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponse> refreshAccessToken(
-        @CookieValue(REFRESH_TOKEN_COOKIE) String refreshToken,
+        @CookieValue(value = REFRESH_TOKEN_COOKIE, required = false) String refreshToken,
         HttpServletResponse response) {
+        if(Objects.isNull(refreshToken)) {
+            throw new AuthAuthenticationException(ErrorCode.NOT_EXISTS_REFRESH_TOKEN,
+                "리프레시 토큰이 존재하지 않습니다.");
+        }
         TokenResponse tokenResponse = authService.refreshAccessToken(refreshToken);
         addRefreshTokenCookie(response, tokenResponse);
         LoginResponse loginResponse = LoginResponse.from(tokenResponse);
