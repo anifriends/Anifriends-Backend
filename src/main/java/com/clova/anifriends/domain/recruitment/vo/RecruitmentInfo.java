@@ -71,7 +71,7 @@ public class RecruitmentInfo {
     private void validateDeadlineIsBetweenNowAndStartTime(LocalDateTime deadline,
         LocalDateTime startTime) {
         if (deadline.isBefore(LocalDateTime.now()) || deadline.isAfter(startTime)) {
-            throw new RecruitmentBadRequestException("봉사 마감 시간은 현재 시간 이후, 봉시 시작 시간 이전이어야 합니다.");
+            throw new RecruitmentBadRequestException("봉사 신청 마감 시간은 현재 시간 이후, 봉사 시작 시간 이전이어야 합니다.");
         }
     }
 
@@ -92,7 +92,7 @@ public class RecruitmentInfo {
         LocalDateTime endTime,
         LocalDateTime deadline,
         Integer capacity) {
-        if(isNullArguments(startTime, endTime, deadline, capacity)) {
+        if (isNullArguments(startTime, endTime, deadline, capacity)) {
             return this;
         }
         return new RecruitmentInfo(

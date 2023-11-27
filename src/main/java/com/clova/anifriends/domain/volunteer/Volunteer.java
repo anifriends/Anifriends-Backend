@@ -168,6 +168,10 @@ public class Volunteer extends BaseTimeEntity {
 
     }
 
+    public void decreaseTemperature(int temperature) {
+        this.temperature = this.temperature.decrease(temperature);
+    }
+
     public long getReviewCount() {
         return applicants.stream()
             .filter(applicant -> Objects.nonNull(applicant.getReview()))
