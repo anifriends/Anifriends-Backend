@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -16,7 +15,6 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@RequiredArgsConstructor
 public class RecruitmentCacheRepository {
 
     private static final String RECRUITMENT_KEY = "recruitment";
@@ -25,19 +23,21 @@ public class RecruitmentCacheRepository {
     private static final int PAGE_SIZE = 20;
     private static final int ZERO = 0;
 
-    private final RedisTemplate<String, FindRecruitmentResponse> redisTemplate;
+    private final ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments;
+
+    public RecruitmentCacheRepository(RedisTemplate<String, FindRecruitmentResponse> redisTemplate) {
+        this.cachedRecruitments = redisTemplate.opsForZSet();
+    }
 
     public void save(final Recruitment recruitment) {
         FindRecruitmentResponse recruitmentResponse = FindRecruitmentResponse.from(recruitment);
-        ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments = redisTemplate.opsForZSet();
         long createdAtScore = getCreatedAtScore(recruitment);
         cachedRecruitments.add(RECRUITMENT_KEY, recruitmentResponse, createdAtScore);
 
-        popUntilCachedSize(cachedRecruitments);
+        popUntilCachedSize();
     }
 
-    private void popUntilCachedSize(
-        ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments) {
+    private void popUntilCachedSize() {
         Set<FindRecruitmentResponse> recruitments
             = cachedRecruitments.range(RECRUITMENT_KEY, ZERO, UNTIL_LAST_ELEMENT);
         if (Objects.nonNull(recruitments)) {
@@ -58,8 +58,6 @@ public class RecruitmentCacheRepository {
         if (size > PAGE_SIZE) {
             size = PAGE_SIZE;
         }
-        ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
-            = redisTemplate.opsForZSet();
         Set<FindRecruitmentResponse> recruitments
             = cachedRecruitments.reverseRange(RECRUITMENT_KEY, ZERO, size);
         if (Objects.isNull(recruitments)) {
@@ -74,8 +72,6 @@ public class RecruitmentCacheRepository {
 
     public void update(final Recruitment recruitment) {
         long createdAtScore = getCreatedAtScore(recruitment);
-        ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
-            = redisTemplate.opsForZSet();
         Set<FindRecruitmentResponse> recruitments = cachedRecruitments.rangeByScore(
             RECRUITMENT_KEY, createdAtScore, createdAtScore);
         if (Objects.nonNull(recruitments)) {
@@ -102,8 +98,6 @@ public class RecruitmentCacheRepository {
     }
 
     public void delete(final Recruitment recruitment) {
-        ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
-            = redisTemplate.opsForZSet();
         FindRecruitmentResponse recruitmentResponse = FindRecruitmentResponse.from(recruitment);
         cachedRecruitments.remove(RECRUITMENT_KEY, recruitmentResponse);
     }
