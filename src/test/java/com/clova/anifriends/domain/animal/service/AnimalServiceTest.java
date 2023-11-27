@@ -22,6 +22,7 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
+import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
@@ -58,7 +59,7 @@ class AnimalServiceTest {
     AnimalService animalService;
 
     @Mock
-    AnimalCacheService animalCacheService;
+    AnimalCacheRepository animalCacheRepository;
 
     @Mock
     AnimalRepository animalRepository;
@@ -98,7 +99,7 @@ class AnimalServiceTest {
             animalService.registerAnimal(1L, registerAnimalRequest);
 
             //then
-            then(animalCacheService).should().saveAnimal(any());
+            then(animalCacheRepository).should().saveAnimal(any());
             then(animalRepository).should().save(any());
             then(animalRepository).should().save(any());
         }
@@ -270,7 +271,7 @@ class AnimalServiceTest {
                 ageFilter, genderFilter, sizeFilter, createdAt, animalId, PageRequest.of(0, 10));
 
             // then
-            verify(animalCacheService, times(1)).findAnimals(anyInt(), anyLong());
+            verify(animalCacheRepository, times(1)).findAnimals(anyInt(), anyLong());
         }
 
         @Test
@@ -297,7 +298,7 @@ class AnimalServiceTest {
                 ageFilter, genderFilter, sizeFilter, createdAt, animalId, PageRequest.of(0, 10));
 
             // then
-            verify(animalCacheService, times(0)).findAnimals(anyInt(), anyLong());
+            verify(animalCacheRepository, times(0)).findAnimals(anyInt(), anyLong());
         }
 
     }
@@ -384,7 +385,7 @@ class AnimalServiceTest {
                 () -> animalService.updateAnimalAdoptStatus(anyLong(), anyLong(), updateStatus));
 
             // then
-            verify(animalCacheService, never()).deleteAnimal(any());
+            verify(animalCacheRepository, never()).deleteAnimal(any());
             assertThat(exception).isNull();
         }
 
@@ -405,7 +406,7 @@ class AnimalServiceTest {
                 () -> animalService.updateAnimalAdoptStatus(anyLong(), anyLong(), updateStatus));
 
             // then
-            verify(animalCacheService, times(1)).deleteAnimal(any(Animal.class));
+            verify(animalCacheRepository, times(1)).deleteAnimal(any(Animal.class));
             assertThat(exception).isNull();
         }
     }

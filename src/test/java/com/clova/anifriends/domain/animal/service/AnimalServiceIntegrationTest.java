@@ -11,6 +11,7 @@ import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse.FindAnimalResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
+import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
@@ -36,7 +37,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
     AnimalService animalService;
 
     @Autowired
-    AnimalCacheService animalCacheService;
+    AnimalCacheRepository animalCacheRepository;
 
     @MockBean
     S3Service s3Service;
@@ -146,7 +147,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
                 animalCount);
 
-            animalCacheService.synchronizeCache();
+            animalCacheRepository.synchronizeCache();
 
             // when
             FindAnimalsResponse result = animalService.findAnimalsByVolunteerV2(
@@ -178,7 +179,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
                 animalCount);
 
-            animalCacheService.synchronizeCache();
+            animalCacheRepository.synchronizeCache();
 
             // when
             FindAnimalsResponse result = animalService.findAnimalsByVolunteerV2(
@@ -204,7 +205,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
             animalRepository.saveAll(animals);
 
-            animalCacheService.synchronizeCache();
+            animalCacheRepository.synchronizeCache();
 
             Animal animalToDelete = animals.get((int) animalCount - 1);
             FindAnimalResponse responseToDelete = FindAnimalResponse.from(animalToDelete);
@@ -242,7 +243,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
             animalRepository.saveAll(animals);
 
-            animalCacheService.synchronizeCache();
+            animalCacheRepository.synchronizeCache();
 
             Animal animalToDelete = animals.get((int) animalCount - 1);
             FindAnimalResponse responseToDelete = FindAnimalResponse.from(animalToDelete);
@@ -279,7 +280,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
             animalRepository.saveAll(animals);
 
-            animalCacheService.synchronizeCache();
+            animalCacheRepository.synchronizeCache();
 
             Animal animalToAdd = AnimalFixture.animal(shelter);
 

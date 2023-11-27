@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.animal.service;
+package com.clova.anifriends.domain.animal.repository;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
@@ -6,7 +6,6 @@ import static java.util.Objects.requireNonNull;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse.FindAnimalResponse;
-import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.common.PageInfo;
 import jakarta.annotation.PostConstruct;
 import java.time.Instant;
@@ -20,12 +19,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Repository
 @RequiredArgsConstructor
-public class AnimalCacheService {
+public class AnimalCacheRepository {
 
     private static final String ANIMAL_ZSET_KEY = "animal";
     private static final int ANIMAL_CACHE_SIZE = 30;
@@ -64,7 +63,7 @@ public class AnimalCacheService {
 
     @Transactional(readOnly = true)
     public FindAnimalsResponse findAnimals(int size, long count) {
-        if (isCached(size)) {
+        if (requiresCacheUpdate(size)) {
             synchronizeCache();
         }
         Set<Object> cachedResponses = zSetOperations.range(ANIMAL_ZSET_KEY, 0,
@@ -82,7 +81,7 @@ public class AnimalCacheService {
         }
     }
 
-    private boolean isCached(int size) {
+    private boolean requiresCacheUpdate(int size) {
         Long count = zSetOperations.size(ANIMAL_ZSET_KEY);
         return isNull(count) || count < size;
     }
