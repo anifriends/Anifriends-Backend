@@ -4,7 +4,7 @@ import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindShelterRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
@@ -93,13 +93,13 @@ public class RecruitmentService {
     }
 
     @Transactional(readOnly = true)
-    public FindRecruitmentsByShelterIdResponse findShelterRecruitmentsByShelter(
+    public FindShelterRecruitmentsResponse findShelterRecruitments(
         long shelterId, Pageable pageable
     ) {
-        Page<Recruitment> pagination = recruitmentRepository.findRecruitmentsByShelterId(
+        Page<Recruitment> pagination = recruitmentRepository.findShelterRecruitments(
             shelterId, pageable
         );
-        return FindRecruitmentsByShelterIdResponse.from(pagination);
+        return FindShelterRecruitmentsResponse.from(pagination);
     }
 
     @Transactional(readOnly = true)
