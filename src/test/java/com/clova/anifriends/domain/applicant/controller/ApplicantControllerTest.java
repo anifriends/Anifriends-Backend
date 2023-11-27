@@ -200,7 +200,7 @@ class ApplicantControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("봉사 신청자 리스트 조회 API 호출 시")
-    void findApplicant() throws Exception {
+    void findApplicants() throws Exception {
         // given
         Shelter shelter = ShelterFixture.shelter();
         ReflectionTestUtils.setField(shelter, "shelterId", 1L);
