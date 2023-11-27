@@ -68,7 +68,7 @@ public class RecruitmentCacheRepository {
         List<FindRecruitmentResponse> content = recruitments.stream()
             .limit(size)
             .toList();
-        boolean hasNext = recruitments.size() > PAGE_SIZE;
+        boolean hasNext = recruitments.size() > size;
         return new SliceImpl<>(content, pageable, hasNext);
     }
 

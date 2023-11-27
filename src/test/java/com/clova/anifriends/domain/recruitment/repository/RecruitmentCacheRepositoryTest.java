@@ -117,8 +117,8 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
     }
 
     @Nested
-    @DisplayName("getCachedRecruitments 메서드 호출 시")
-    class GetCachedRecruitmentsTest {
+    @DisplayName("findAll 메서드 호출 시")
+    class FindAllTest {
 
         Shelter shelter;
 
@@ -130,7 +130,7 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
 
         @Test
         @DisplayName("성공: 캐싱된 목록이 없을 시 빈 리스트 반환")
-        void getCachedRecruitments() {
+        void findAllWhenEmpty() {
             //given
             PageRequest pageRequest = PageRequest.of(0, 20);
 
@@ -143,8 +143,8 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("성공: 캐싱된 목록 반환")
-        void getCachedRecruitmentsWhenCached() {
+        @DisplayName("성공: 캐싱된 목록이 있을 시 캐싱된 리스트 반환")
+        void findAllWhenCached() {
             //given
             List<Recruitment> recruitments = new ArrayList<>();
             LocalDateTime now = LocalDateTime.now();
@@ -172,10 +172,59 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
                 .sorted(Comparator.reverseOrder())
                 .toList();
 
-            assertThat(cachedRecruitments)
+            assertThat(cachedRecruitments.getContent())
                 .hasSize(20)
                 .map(FindRecruitmentResponse::recruitmentId)
                 .containsExactlyElementsOf(recruitmentIdsDesc);
+        }
+
+        @Test
+        @DisplayName("성공: 캐싱된 목록은 최대 20개까지만 조회 가능")
+        void findAllMax20() {
+            //given
+            int pageSize = 30;
+            PageRequest pageRequest = PageRequest.of(0, pageSize);
+            List<Recruitment> recruitments = RecruitmentFixture.recruitments(shelter, 100);
+            recruitmentRepository.saveAll(recruitments);
+            int hour = 0;
+            LocalDateTime now = LocalDateTime.now();
+            for (Recruitment recruitment : recruitments) {
+                ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
+                recruitmentCacheRepository.save(recruitment);
+            }
+
+            //when
+            Slice<FindRecruitmentResponse> cachedRecruitments = recruitmentCacheRepository.findAll(
+                pageRequest);
+
+            //then
+            assertThat(cachedRecruitments.getContent())
+                .hasSizeLessThan(pageSize)
+                .hasSize(20);
+            assertThat(cachedRecruitments.hasNext()).isTrue();
+        }
+
+        @Test
+        @DisplayName("성공: 캐싱된 목록이 요청 개수 이하인 경우 hasNext는 false")
+        void findAllWhenLTRequestPageSizeThenHasNextIsFalse() {
+            //given
+            int pageSize = 10;
+            PageRequest pageRequest = PageRequest.of(0, pageSize);
+            List<Recruitment> recruitments = RecruitmentFixture.recruitments(shelter, 10);
+            recruitmentRepository.saveAll(recruitments);
+            int hour = 0;
+            LocalDateTime now = LocalDateTime.now();
+            for (Recruitment recruitment : recruitments) {
+                ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
+                recruitmentCacheRepository.save(recruitment);
+            }
+
+            //when
+            Slice<FindRecruitmentResponse> cachedRecruitments = recruitmentCacheRepository.findAll(
+                pageRequest);
+
+            //then
+            assertThat(cachedRecruitments.hasNext()).isFalse();
         }
     }
 
