@@ -16,10 +16,10 @@ public class RecruitmentCacheService {
     private static final Long RECRUITMENT_COUNT_NO_CACHE = -1L;
     private static final Long COUNT_ONE = 1L;
 
-    public Long getRecruitmentCount(
-        String cacheKey
-    ) {
-        Object cachedCount = redisTemplate.opsForValue().get(cacheKey);
+    private static final String RECRUITMENT_CACHE_KEY = "recruitment:count";
+
+    public Long getRecruitmentCount() {
+        Object cachedCount = redisTemplate.opsForValue().get(RECRUITMENT_CACHE_KEY);
 
         if (Objects.isNull(cachedCount)) {
             return RECRUITMENT_COUNT_NO_CACHE;
@@ -33,37 +33,32 @@ public class RecruitmentCacheService {
     }
 
     public void registerRecruitmentCount(
-        String cacheKey,
         Long count
     ) {
-        redisTemplate.opsForValue().set(cacheKey, count);
+        redisTemplate.opsForValue().set(RECRUITMENT_CACHE_KEY, count);
     }
 
-    public void plusOneToRecruitmentCount(
-        String cacheKey
-    ) {
-        Object cachedCount = redisTemplate.opsForValue().get(cacheKey);
+    public void plusOneToRecruitmentCount() {
+        Object cachedCount = redisTemplate.opsForValue().get(RECRUITMENT_CACHE_KEY);
 
         if (Objects.nonNull(cachedCount)) {
-            registerRecruitmentCount(cacheKey, (Integer) cachedCount + COUNT_ONE);
+            registerRecruitmentCount((Integer) cachedCount + COUNT_ONE);
         }
 
         long dbRecruitmentCount = recruitmentRepository.count();
 
-        registerRecruitmentCount(cacheKey, dbRecruitmentCount);
+        registerRecruitmentCount(dbRecruitmentCount);
     }
 
-    public void minusOneToRecruitmentCount(
-        String cacheKey
-    ) {
-        Object cachedCount = redisTemplate.opsForValue().get(cacheKey);
+    public void minusOneToRecruitmentCount() {
+        Object cachedCount = redisTemplate.opsForValue().get(RECRUITMENT_CACHE_KEY);
 
         if (Objects.nonNull(cachedCount)) {
-            registerRecruitmentCount(cacheKey, (Integer) cachedCount - COUNT_ONE);
+            registerRecruitmentCount((Integer) cachedCount - COUNT_ONE);
         }
 
         long dbRecruitmentCount = recruitmentRepository.count();
 
-        registerRecruitmentCount(cacheKey, dbRecruitmentCount);
+        registerRecruitmentCount(dbRecruitmentCount);
     }
 }

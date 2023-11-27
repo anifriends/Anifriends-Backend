@@ -36,7 +36,6 @@ public class RecruitmentService {
     private final RecruitmentCacheService recruitmentCacheService;
 
     private static final Long RECRUITMENT_COUNT_NO_CACHE = -1L;
-    private static final String RECRUITMENT_CACHE_KEY = "recruitment:count";
 
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
@@ -60,7 +59,7 @@ public class RecruitmentService {
             imageUrls);
 
         recruitmentRepository.save(recruitment);
-        recruitmentCacheService.plusOneToRecruitmentCount(RECRUITMENT_CACHE_KEY);
+        recruitmentCacheService.plusOneToRecruitmentCount();
 
         return RegisterRecruitmentResponse.from(recruitment);
     }
@@ -164,7 +163,7 @@ public class RecruitmentService {
             pageable);
 
         Long cachedRecruitmentCount = recruitmentCacheService.getRecruitmentCount(
-            RECRUITMENT_CACHE_KEY);
+        );
 
         if (Objects.isNull(keyword) &&
             Objects.isNull(startDate) &&
@@ -190,7 +189,7 @@ public class RecruitmentService {
             shelterNameContains
         );
 
-        recruitmentCacheService.registerRecruitmentCount(RECRUITMENT_CACHE_KEY, dbRecruitmentCount);
+        recruitmentCacheService.registerRecruitmentCount(dbRecruitmentCount);
 
         return FindRecruitmentsResponse.fromV2(recruitments, dbRecruitmentCount);
     }
@@ -238,7 +237,7 @@ public class RecruitmentService {
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
 
         recruitmentRepository.delete(recruitment);
-        recruitmentCacheService.minusOneToRecruitmentCount(RECRUITMENT_CACHE_KEY);
+        recruitmentCacheService.minusOneToRecruitmentCount();
     }
 
     private Recruitment getRecruitmentByShelterWithImages(Long shelterId, Long recruitmentId) {

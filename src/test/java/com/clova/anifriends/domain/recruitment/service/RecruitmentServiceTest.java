@@ -221,7 +221,7 @@ class RecruitmentServiceTest {
                 RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
                 title, content, shelterName, createdAt, recruitmentId, pageRequest)).willReturn(
                 recruitments);
-            given(recruitmentCacheService.getRecruitmentCount(any())).willReturn(
+            given(recruitmentCacheService.getRecruitmentCount()).willReturn(
                 Long.valueOf(recruitments.getSize()));
             given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                 RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
@@ -273,7 +273,7 @@ class RecruitmentServiceTest {
                 RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
                 title, content, shelterName, createdAt, recruitmentId, pageRequest)).willReturn(
                 recruitments);
-            given(recruitmentCacheService.getRecruitmentCount(any())).willReturn(
+            given(recruitmentCacheService.getRecruitmentCount()).willReturn(
                 Long.valueOf(recruitments.getSize()));
 
             //when
@@ -322,7 +322,7 @@ class RecruitmentServiceTest {
                 RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
                 title, content, shelterName, createdAt, recruitmentId, pageRequest)).willReturn(
                 recruitments);
-            given(recruitmentCacheService.getRecruitmentCount(any())).willReturn(
+            given(recruitmentCacheService.getRecruitmentCount()).willReturn(
                 Long.valueOf(recruitments.getSize()));
             given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                 RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
@@ -374,7 +374,7 @@ class RecruitmentServiceTest {
                 RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
                 title, content, shelterName, createdAt, recruitmentId, pageRequest)).willReturn(
                 recruitments);
-            given(recruitmentCacheService.getRecruitmentCount(any())).willReturn(
+            given(recruitmentCacheService.getRecruitmentCount()).willReturn(
                 Long.valueOf(recruitments.getSize()));
             given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                 RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
@@ -426,7 +426,7 @@ class RecruitmentServiceTest {
                 RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
                 title, content, shelterName, createdAt, recruitmentId, pageRequest)).willReturn(
                 recruitments);
-            given(recruitmentCacheService.getRecruitmentCount(any())).willReturn(
+            given(recruitmentCacheService.getRecruitmentCount()).willReturn(
                 Long.valueOf(recruitments.getSize()));
             given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                 RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),

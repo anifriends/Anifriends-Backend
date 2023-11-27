@@ -97,8 +97,7 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
             recruitmentRepository.save(recruitment);
 
             // when
-            Long recruitmentCount = recruitmentCacheService.getRecruitmentCount(
-                RECRUITMENT_CACHE_KEY);
+            Long recruitmentCount = recruitmentCacheService.getRecruitmentCount();
 
             // then
             assertThat(recruitmentCount).isEqualTo(-1L);
@@ -129,7 +128,7 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
 
             // then
             assertThat(recruitmentRepository.count()).isEqualTo(
-                recruitmentCacheService.getRecruitmentCount(RECRUITMENT_CACHE_KEY));
+                recruitmentCacheService.getRecruitmentCount());
         }
     }
 
@@ -152,7 +151,7 @@ class RecruitmentCacheServiceTest extends BaseIntegrationTest {
 
             // then
             assertThat(recruitmentRepository.count()).isEqualTo(
-                recruitmentCacheService.getRecruitmentCount(RECRUITMENT_CACHE_KEY));
+                recruitmentCacheService.getRecruitmentCount());
         }
     }
 }
