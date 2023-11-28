@@ -141,7 +141,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
             animalRepository.saveAll(animals);
 
-            Slice<Animal> pagination = animalRepository.findAnimalsByVolunteerV2(null,
+            Slice<Animal> pagination = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
@@ -150,7 +150,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             animalCacheRepository.synchronizeCache();
 
             // when
-            FindAnimalsResponse result = animalService.findAnimalsByVolunteerV2(
+            FindAnimalsResponse result = animalService.findAnimalsV2(
                 null, null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
 
@@ -173,7 +173,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
             animalRepository.saveAll(animals);
 
-            Slice<Animal> pagination = animalRepository.findAnimalsByVolunteerV2(null,
+            Slice<Animal> pagination = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
@@ -182,7 +182,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             animalCacheRepository.synchronizeCache();
 
             // when
-            FindAnimalsResponse result = animalService.findAnimalsByVolunteerV2(
+            FindAnimalsResponse result = animalService.findAnimalsV2(
                 null, null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
 
@@ -212,14 +212,14 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
 
             animalService.deleteAnimal(shelter.getShelterId(), animalToDelete.getAnimalId());
 
-            Slice<Animal> pagination = animalRepository.findAnimalsByVolunteerV2(null,
+            Slice<Animal> pagination = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
                 animalCount - 1);
 
             // when
-            FindAnimalsResponse result = animalService.findAnimalsByVolunteerV2(
+            FindAnimalsResponse result = animalService.findAnimalsV2(
                 null, null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
 
@@ -250,14 +250,14 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
 
             animalService.deleteAnimal(shelter.getShelterId(), animalToDelete.getAnimalId());
 
-            Slice<Animal> pagination = animalRepository.findAnimalsByVolunteerV2(null,
+            Slice<Animal> pagination = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
                 animalCount - 1);
 
             // when
-            FindAnimalsResponse result = animalService.findAnimalsByVolunteerV2(
+            FindAnimalsResponse result = animalService.findAnimalsV2(
                 null, null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
 
@@ -287,14 +287,14 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             animalService.registerAnimal(shelter.getShelterId(),
                 AnimalDtoFixture.registerAnimal(animalToAdd));
 
-            Slice<Animal> pagination = animalRepository.findAnimalsByVolunteerV2(null,
+            Slice<Animal> pagination = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
                 animalCount + 1);
 
             // when
-            FindAnimalsResponse result = animalService.findAnimalsByVolunteerV2(
+            FindAnimalsResponse result = animalService.findAnimalsV2(
                 null, null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
 

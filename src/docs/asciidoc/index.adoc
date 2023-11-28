@@ -43,16 +43,6 @@ operation::auth-controller-test/refresh-access-token[snippets='http-response,res
 
 == -- 공통 --
 
-=== 봉사자 회원 가입
-
-==== Request
-
-operation::volunteer-controller-test/register-volunteer[snippets='http-request,request-fields']
-
-==== Response
-
-operation::volunteer-controller-test/register-volunteer[snippets='http-response,response-fields,response-headers']
-
 === 봉사자 이메일 중복 확인
 
 ==== Request
@@ -62,6 +52,16 @@ operation::volunteer-controller-test/check-duplicate-volunteer-email[snippets='h
 ==== Response
 
 operation::volunteer-controller-test/check-duplicate-volunteer-email[snippets='http-response,response-fields']
+
+=== 봉사자 회원 가입
+
+==== Request
+
+operation::volunteer-controller-test/register-volunteer[snippets='http-request,request-fields']
+
+==== Response
+
+operation::volunteer-controller-test/register-volunteer[snippets='http-response,response-fields,response-headers']
 
 == -- 봉사자 --
 
@@ -172,7 +172,7 @@ operation::shelter-controller-test/update-password[snippets='http-request,reques
 
 operation::shelter-controller-test/update-password[snippets='http-response']
 
-=== 보호소 상세 주소 상태 변경
+=== 보호소 상세 주소 공개 여부 변경
 
 ==== Request
 
@@ -238,7 +238,7 @@ operation::recruitment-controller-test/find-shelter-recruitments[snippets='http-
 
 == -- 보호소 --
 
-=== 봉사 모집글 목록 조회 & 검색
+=== 내(보호소)가 작성한 봉사 모집글 목록 조회 & 검색
 
 ==== Request
 
@@ -312,7 +312,7 @@ operation::applicant-controller-test/register-applicant[snippets='http-request,r
 
 operation::applicant-controller-test/register-applicant[snippets='http-response']
 
-=== 봉사 신청 목록 조회
+=== 내(봉사자)가 신청한 봉사 신청 목록 조회
 
 ==== Request
 
@@ -334,15 +334,15 @@ operation::applicant-controller-test/find-applicants[snippets='http-request,requ
 
 operation::applicant-controller-test/find-applicants[snippets='http-response,response-fields']
 
-=== 봉사 신청 승인자 출석 상태 수정
+=== 봉사 신청 승인자 목록 조회
 
 ==== Request
 
-operation::applicant-controller-test/update-applicant-attendance[snippets='http-request,request-headers,path-parameters,request-fields']
+operation::applicant-controller-test/find-approved-applicants[snippets='http-request,request-headers,path-parameters']
 
 ==== Response
 
-operation::applicant-controller-test/update-applicant-attendance[snippets='http-response']
+operation::applicant-controller-test/find-approved-applicants[snippets='http-response,response-fields']
 
 === 봉사 신청자 승인 여부 수정
 
@@ -354,15 +354,15 @@ operation::applicant-controller-test/update-applicant-status[snippets='http-requ
 
 operation::applicant-controller-test/update-applicant-status[snippets='http-response']
 
-=== 봉사 신청 승인자 목록 조회
+=== 봉사 신청 승인자 출석 상태 수정
 
 ==== Request
 
-operation::applicant-controller-test/find-approved-applicants[snippets='http-request,request-headers,path-parameters']
+operation::applicant-controller-test/update-applicant-attendance[snippets='http-request,request-headers,path-parameters,request-fields']
 
 ==== Response
 
-operation::applicant-controller-test/find-approved-applicants[snippets='http-response,response-fields']
+operation::applicant-controller-test/update-applicant-attendance[snippets='http-response']
 
 == 봉사 후기
 
@@ -456,6 +456,26 @@ operation::review-controller-test/find-shelter-reviews-by-shelter[snippets='http
 
 == -- 공통 --
 
+=== 보호 동물 검색 & 조회
+
+==== Request
+
+operation::animal-controller-test/find-animals[snippets='http-request,query-parameters']
+
+==== Response
+
+operation::animal-controller-test/find-animals[snippets='http-response,response-fields']
+
+=== 보호 동물 검색 & 조회 v2
+
+==== Request
+
+operation::animal-controller-test/find-animals-v2[snippets='http-request,query-parameters']
+
+==== Response
+
+operation::animal-controller-test/find-animals-v2[snippets='http-response,response-fields']
+
 === 보호 동물 상세 조회
 
 ==== Request
@@ -467,6 +487,46 @@ operation::animal-controller-test/find-animal-detail-test[snippets='http-request
 operation::animal-controller-test/find-animal-detail-test[snippets='http-response,response-fields']
 
 == -- 보호소 --
+
+=== 보호 동물 등록
+
+==== Request
+
+operation::animal-controller-test/register-animal[snippets='http-request,request-headers']
+
+==== Response
+
+operation::animal-controller-test/register-animal[snippets='http-response']
+
+=== 내(보호소)가 작성한 보호 동물 목록 조회
+
+==== Request
+
+operation::animal-controller-test/find-animals-by-shelter[snippets='http-request,request-headers']
+
+==== Response
+
+operation::animal-controller-test/find-animals-by-shelter[snippets='http-request,request-headers']
+
+=== 보호 동물 수정
+
+==== Request
+
+operation::animal-controller-test/update-animal[snippets='http-request,request-headers']
+
+==== Response
+
+operation::animal-controller-test/update-animal[snippets='http-response']
+
+=== 보호 동물 입양 상태 변경
+
+==== Request
+
+operation::animal-controller-test/update-animal-adopt-status[snippets='http-request,request-headers']
+
+==== Response
+
+operation::animal-controller-test/update-animal-adopt-status[snippets='http-response']
 
 === 보호 동물 삭제
 
