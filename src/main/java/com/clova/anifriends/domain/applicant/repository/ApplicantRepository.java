@@ -15,9 +15,10 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
     @Query(
         "select a "
             + "from Applicant a "
-            + "left join fetch a.recruitment "
-            + "left join fetch a.volunteer "
+            + "join fetch a.recruitment r "
+            + "join fetch a.volunteer "
             + "left join fetch a.review "
+            + "join fetch r.shelter "
             + "where a.volunteer = :volunteer"
     )
     List<Applicant> findApplyingVolunteers(
@@ -34,6 +35,7 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
     @Query("select a from Applicant a "
         + "join fetch a.recruitment r "
         + "join fetch r.shelter s "
+        + "join fetch a.volunteer v "
         + "where r.recruitmentId = :recruitmentId "
         + "and s.shelterId = :shelterId "
         + "and (a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE "
