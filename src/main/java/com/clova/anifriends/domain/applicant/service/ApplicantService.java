@@ -49,6 +49,10 @@ public class ApplicantService {
         Applicant applicant = new Applicant(recruitmentPessimistic, volunteer);
         applicantRepository.save(applicant);
         shelterNotificationRepository.save(makeNewApplicantNotification(applicant));
+        if (recruitmentPessimistic.isFullApplicants()) {
+            shelterNotificationRepository.save(
+                makeClosedRecruitmentNotification(recruitmentPessimistic));
+        }
     }
 
     @Transactional(readOnly = true)
@@ -192,6 +196,15 @@ public class ApplicantService {
             null,
             NO_SHOW_TEMP_REDUCTION + NotificationType.INCREASE_VOLUNTEER_TEMPERATURE.getMessage(),
             NotificationType.INCREASE_VOLUNTEER_TEMPERATURE.getName()
+        );
+    }
+
+    private ShelterNotification makeClosedRecruitmentNotification(Recruitment recruitment) {
+        return new ShelterNotification(
+            recruitment.getShelter(),
+            recruitment.getTitle(),
+            NotificationType.APPLICANT_FULL.getMessage(),
+            NotificationType.APPLICANT_FULL.getName()
         );
     }
 }

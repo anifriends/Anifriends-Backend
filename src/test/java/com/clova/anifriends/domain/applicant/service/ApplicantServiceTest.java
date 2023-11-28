@@ -31,6 +31,7 @@ import com.clova.anifriends.domain.notification.repository.VolunteerNotification
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
+import com.clova.anifriends.domain.recruitment.vo.RecruitmentApplicantCount;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -107,6 +108,29 @@ class ApplicantServiceTest {
             // then
             then(applicantRepository).should().save(any());
             then(shelterNotificationRepository).should().save(any());
+        }
+
+        @Test
+        @DisplayName("성공: 마지막 모집 인원이 신청한 경우")
+        void registerLastApplicant() {
+            // given
+            setField(volunteer, "volunteerId", 1L);
+            setField(recruitment, "recruitmentId", 1L);
+            setField(recruitment, "info", recruitmentInfo);
+            RecruitmentApplicantCount recruitmentApplicantCount = new RecruitmentApplicantCount(29);
+            setField(recruitment, "applicantCount", recruitmentApplicantCount);
+            given(recruitmentRepository.findByIdPessimistic(anyLong())).willReturn(
+                Optional.ofNullable(recruitment));
+            given(volunteerRepository.findById(anyLong())).willReturn(
+                Optional.ofNullable(volunteer));
+
+            // when
+            applicantService.registerApplicant(recruitment.getRecruitmentId(),
+                volunteer.getVolunteerId());
+
+            // then
+            then(applicantRepository).should().save(any());
+            verify(shelterNotificationRepository, times(2)).save(any());
         }
 
         @Test
