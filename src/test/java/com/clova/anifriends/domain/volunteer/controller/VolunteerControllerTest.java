@@ -169,6 +169,7 @@ class VolunteerControllerTest extends BaseControllerTest {
         // then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(headerWithName(AUTHORIZATION).description("보호소 액세스 토큰")),
                 pathParameters(
                     parameterWithName("volunteerId").description("봉사자 ID")
                 ),
