@@ -23,6 +23,8 @@ import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
+import com.clova.anifriends.domain.notification.ShelterNotification;
+import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
@@ -65,6 +67,9 @@ class ReviewServiceTest {
 
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
+
+    @Mock
+    private ShelterNotificationRepository shelterNotificationRepository;
 
 
     @Nested
@@ -134,6 +139,7 @@ class ReviewServiceTest {
 
             // then
             verify(reviewRepository, times(1)).save(any(Review.class));
+            verify(shelterNotificationRepository, times(1)).save(any(ShelterNotification.class));
             assertThat(volunteer.getTemperature())
                 .isEqualTo(originTemperature + reviewBonusTemperature);
         }

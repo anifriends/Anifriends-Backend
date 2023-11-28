@@ -4,6 +4,9 @@ import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
+import com.clova.anifriends.domain.notification.ShelterNotification;
+import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
+import com.clova.anifriends.domain.notification.vo.NotificationType;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
@@ -34,6 +37,8 @@ public class ReviewService {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
+    private final ShelterNotificationRepository shelterNotificationRepository;
+
     @Transactional(readOnly = true)
     public FindReviewResponse findReview(Long userId, Long reviewId) {
         return FindReviewResponse.from(getReview(userId, reviewId));
@@ -56,6 +61,7 @@ public class ReviewService {
         Review review = new Review(applicant, content, imageUrls);
         reviewRepository.save(review);
         applicant.increaseTemperature(REVIEW_BONUS_TEMPERATURE);
+        shelterNotificationRepository.save(makeNewReviewNotification(applicant));
         return RegisterReviewResponse.from(review);
     }
 
@@ -112,5 +118,14 @@ public class ReviewService {
         return applicantRepository.findByApplicantIdAndVolunteerId(
                 applicationId, userId)
             .orElseThrow(() -> new ApplicantNotFoundException("봉사 신청 내역이 존재하지 않습니다."));
+    }
+
+    private ShelterNotification makeNewReviewNotification(Applicant applicant) {
+        return new ShelterNotification(
+            applicant.getRecruitment().getShelter(),
+            applicant.getRecruitment().getTitle(),
+            NotificationType.NEW_SHELTER_REVIEW.getMessage(),
+            NotificationType.NEW_SHELTER_REVIEW.getName()
+        );
     }
 }
