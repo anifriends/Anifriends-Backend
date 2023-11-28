@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.chat.controller;
+package com.clova.anifriends.domain.chat.dto.response;
 
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.chat.ChatMessage;

@@ -7,6 +7,7 @@ import com.clova.anifriends.base.TestContainerStarter;
 import com.clova.anifriends.domain.chat.ChatMessage;
 import com.clova.anifriends.domain.chat.ChatRoom;
 import com.clova.anifriends.domain.chat.dto.request.ChatMessageRequest;
+import com.clova.anifriends.domain.chat.dto.response.ChatMessageResponse;
 import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
 import com.clova.anifriends.domain.chat.support.ChatMessageFixture;
 import com.clova.anifriends.domain.chat.support.ChatRoomFixture;

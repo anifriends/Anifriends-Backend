@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.chat.service;
 
 import static java.util.Objects.requireNonNull;
 
-import com.clova.anifriends.domain.chat.controller.ChatMessageResponse;
+import com.clova.anifriends.domain.chat.dto.response.ChatMessageResponse;
 import com.clova.anifriends.domain.chat.exception.MessageJsonMappingException;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.databind.ObjectMapper;

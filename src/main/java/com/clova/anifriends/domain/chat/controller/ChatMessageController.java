@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.chat.controller;
 
 import com.clova.anifriends.domain.chat.dto.request.ChatMessageRequest;
+import com.clova.anifriends.domain.chat.dto.response.ChatMessageResponse;
 import com.clova.anifriends.domain.chat.service.ChatMessageService;
 import com.clova.anifriends.domain.chat.service.MessagePublisher;
 import lombok.RequiredArgsConstructor;

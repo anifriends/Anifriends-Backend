@@ -3,7 +3,7 @@ package com.clova.anifriends.domain.chat.service;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.chat.ChatMessage;
 import com.clova.anifriends.domain.chat.ChatRoom;
-import com.clova.anifriends.domain.chat.controller.ChatMessageResponse;
+import com.clova.anifriends.domain.chat.dto.response.ChatMessageResponse;
 import com.clova.anifriends.domain.chat.exception.ChatRoomNotFoundException;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
 import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
