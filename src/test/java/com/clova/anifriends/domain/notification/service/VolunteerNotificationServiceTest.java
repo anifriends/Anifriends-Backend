@@ -113,11 +113,6 @@ class VolunteerNotificationServiceTest {
         @DisplayName("성공")
         void notifyADayBeforeVolunteer() {
             // given
-            Volunteer volunteer = VolunteerFixture.volunteer();
-            ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
-            VolunteerNotification volunteerNotification = VolunteerNotificationFixture.volunteerNotification(
-                volunteer);
-
             // when
             volunteerNotificationService.notifyADayBeforeVolunteer();
 
@@ -137,11 +132,6 @@ class VolunteerNotificationServiceTest {
         @DisplayName("성공")
         void notifyThreeDayBeforeVolunteer() {
             // given
-            Volunteer volunteer = VolunteerFixture.volunteer();
-            ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
-            VolunteerNotification volunteerNotification = VolunteerNotificationFixture.volunteerNotification(
-                volunteer);
-
             // when
             volunteerNotificationService.notifyThreeDayBeforeVolunteer();
 
