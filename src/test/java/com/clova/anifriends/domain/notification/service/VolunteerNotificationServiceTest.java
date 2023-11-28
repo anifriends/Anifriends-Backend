@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.notification.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -11,6 +12,7 @@ import com.clova.anifriends.domain.notification.dto.response.FindVolunteerHasNew
 import com.clova.anifriends.domain.notification.dto.response.FindVolunteerNotificationsResponse;
 import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
 import com.clova.anifriends.domain.notification.support.fixture.VolunteerNotificationFixture;
+import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.util.List;
@@ -31,6 +33,9 @@ class VolunteerNotificationServiceTest {
 
     @Mock
     VolunteerNotificationRepository volunteerNotificationRepository;
+
+    @Mock
+    RecruitmentRepository recruitmentRepository;
 
     @Nested
     @DisplayName("findVolunteerNotifications 메서드 실행 시")
@@ -67,7 +72,8 @@ class VolunteerNotificationServiceTest {
         @DisplayName("성공")
         void findVolunteerHasNewNotification() {
             // given
-            FindVolunteerHasNewNotificationResponse expected = FindVolunteerHasNewNotificationResponse.from(true);
+            FindVolunteerHasNewNotificationResponse expected = FindVolunteerHasNewNotificationResponse.from(
+                true);
             given(volunteerNotificationRepository.hasNewNotification(anyLong())).willReturn(true);
 
             // when
@@ -96,6 +102,54 @@ class VolunteerNotificationServiceTest {
             // then
             verify(volunteerNotificationRepository, times(1))
                 .updateBulkRead(volunteer.getVolunteerId());
+        }
+    }
+
+    @Nested
+    @DisplayName("notifyADayBeforeVolunteer 메서드 실행 시")
+    class NotifyADayBeforeVolunteerTest {
+
+        @Test
+        @DisplayName("성공")
+        void notifyADayBeforeVolunteer() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
+            VolunteerNotification volunteerNotification = VolunteerNotificationFixture.volunteerNotification(
+                volunteer);
+
+            // when
+            volunteerNotificationService.notifyADayBeforeVolunteer();
+
+            // then
+            verify(recruitmentRepository, times(1))
+                .findRecruitmentByStartTime(any(), any());
+            verify(volunteerNotificationRepository, times(1))
+                .saveAll(any());
+        }
+    }
+
+    @Nested
+    @DisplayName("notifyThreeDayBeforeVolunteer 메서드 실행 시")
+    class NotifyThreeDayBeforeVolunteerTest {
+
+        @Test
+        @DisplayName("성공")
+        void notifyThreeDayBeforeVolunteer() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
+            VolunteerNotification volunteerNotification = VolunteerNotificationFixture.volunteerNotification(
+                volunteer);
+
+            // when
+            volunteerNotificationService.notifyThreeDayBeforeVolunteer();
+
+            // then
+            verify(recruitmentRepository, times(1))
+                .findRecruitmentByStartTime(any(), any());
+            verify(volunteerNotificationRepository, times(1))
+                .saveAll(any());
         }
     }
 }
