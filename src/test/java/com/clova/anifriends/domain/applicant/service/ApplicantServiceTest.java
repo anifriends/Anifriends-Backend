@@ -27,6 +27,7 @@ import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
+import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
@@ -67,6 +68,9 @@ class ApplicantServiceTest {
 
     @Mock
     ShelterNotificationRepository shelterNotificationRepository;
+
+    @Mock
+    VolunteerNotificationRepository volunteerNotificationRepository;
 
     @Nested
     @DisplayName("registerApplicant 메서드 실행 시")
@@ -372,6 +376,7 @@ class ApplicantServiceTest {
 
             // then
             assertThat(applicant.getStatus()).isEqualTo(REFUSED);
+            then(volunteerNotificationRepository).should().save(any());
         }
 
         @Test

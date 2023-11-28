@@ -9,7 +9,9 @@ import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.notification.ShelterNotification;
+import com.clova.anifriends.domain.notification.VolunteerNotification;
 import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
+import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
 import com.clova.anifriends.domain.notification.vo.NotificationType;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
@@ -36,6 +38,7 @@ public class ApplicantService {
     private final RecruitmentRepository recruitmentRepository;
     private final VolunteerRepository volunteerRepository;
     private final ShelterNotificationRepository shelterNotificationRepository;
+    private final VolunteerNotificationRepository volunteerNotificationRepository;
 
     @Transactional
     @DataIntegrityHandler(message = "이미 신청한 봉사입니다.", exceptionClass = ApplicantConflictException.class)
@@ -112,6 +115,8 @@ public class ApplicantService {
         Boolean isApproved) {
         Applicant applicant = getApplicant(applicantId, recruitmentId, shelterId);
         applicant.updateApplicantStatus(isApproved);
+        volunteerNotificationRepository.save(
+            makeNewUpdateApplicantStatusNotification(applicant, isApproved));
     }
 
     private List<Long> getNoShowIds(List<UpdateApplicantAttendanceCommand> applicantsCommand) {
@@ -155,6 +160,18 @@ public class ApplicantService {
             applicant.getRecruitment().getTitle(),
             applicant.getVolunteer().getName() + NotificationType.NEW_APPLICANT.getMessage(),
             NotificationType.NEW_APPLICANT.getName()
+        );
+    }
+
+    private VolunteerNotification makeNewUpdateApplicantStatusNotification(Applicant applicant,
+        boolean isApproved) {
+        return new VolunteerNotification(
+            applicant.getVolunteer(),
+            applicant.getRecruitment().getShelter().getName(),
+            isApproved ? NotificationType.VOLUNTEER_APPROVED.getMessage()
+                : NotificationType.VOLUNTEER_REFUSED.getMessage(),
+            isApproved ? NotificationType.VOLUNTEER_APPROVED.getName()
+                : NotificationType.VOLUNTEER_REFUSED.getName()
         );
     }
 }
