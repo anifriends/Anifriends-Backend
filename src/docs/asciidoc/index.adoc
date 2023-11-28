@@ -63,6 +63,26 @@ operation::animal-controller-test/find-animal-detail-test[snippets='http-request
 
 operation::animal-controller-test/find-animal-detail-test[snippets='http-response,response-fields']
 
+=== 보호 동물 검색 & 조회
+
+==== Request
+
+operation::animal-controller-test/find-animals-by-volunteer[snippets='http-request']
+
+==== Response
+
+operation::animal-controller-test/find-animals-by-volunteer[snippets='http-response,response-fields']
+
+=== 보호 동물 검색 & 조회 v2
+
+==== Request
+
+operation::animal-controller-test/find-animals-by-volunteer-v2[snippets='http-request']
+
+==== Response
+
+operation::animal-controller-test/find-animals-by-volunteer-v2[snippets='http-response,response-fields']
+
 == 채팅
 
 === 채팅방 메시지 목록 조회
@@ -94,9 +114,11 @@ operation::volunteer-controller-test/find-volunteer-profile[snippets='http-respo
 === 보호소 비밀 번호 변경
 
 ==== Request
+
 operation::shelter-controller-test/update-password[snippets='http-request,request-headers,request-fields']
 
 ==== Response
+
 operation::shelter-controller-test/update-password[snippets='http-response']
 
 === 보호소 마이 페이지 조회
@@ -177,6 +199,36 @@ operation::review-controller-test/find-shelter-reviews[snippets='http-response,r
 
 == 6. 보호 동물
 
+=== 보호 동물 등록
+
+==== Request
+
+operation::animal-controller-test/register-animal[snippets='http-request,request-headers']
+
+==== Response
+
+operation::animal-controller-test/register-animal[snippets='http-response']
+
+=== 보호 동물 수정
+
+==== Request
+
+operation::animal-controller-test/update-animal[snippets='http-request,request-headers']
+
+==== Response
+
+operation::animal-controller-test/update-animal[snippets='http-response']
+
+=== 보호 동물 입양 상태 변경
+
+==== Request
+
+operation::animal-controller-test/update-animal-adopt-status[snippets='http-request,request-headers']
+
+==== Response
+
+operation::animal-controller-test/update-animal-adopt-status[snippets='http-response']
+
 === 보호 동물 삭제
 
 ==== Request
@@ -186,6 +238,16 @@ operation::animal-controller-test/delete-animal[snippets='http-request,request-h
 ==== Response
 
 operation::animal-controller-test/delete-animal[snippets='http-response']
+
+=== 보호 동물 조회(보호소)
+
+==== Request
+
+operation::animal-controller-test/find-animals-by-shelter[snippets='http-request,request-headers']
+
+==== Response
+
+operation::animal-controller-test/find-animals-by-shelter[snippets='http-request,request-headers']
 
 == 7. 채팅
 
@@ -258,9 +320,11 @@ operation::shelter-notification-controller-test/update-notification-read[snippet
 === 봉사자 계정 정보 수정
 
 ==== Request
+
 operation::volunteer-controller-test/update-volunteer-info[snippets='http-request,request-headers,request-fields']
 
 ==== Response
+
 operation::volunteer-controller-test/update-volunteer-info[snippets='http-response']
 
 === 봉사자 회원 가입
