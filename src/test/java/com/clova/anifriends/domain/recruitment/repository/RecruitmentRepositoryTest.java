@@ -7,6 +7,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -400,6 +401,8 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
         void findRecruitmentByStartTime() {
             // given
             Shelter shelter = ShelterFixture.shelter();
+            Volunteer volunteer1 = VolunteerFixture.volunteer();
+            Volunteer volunteer2 = VolunteerFixture.volunteer();
             Recruitment recruitment1 = new Recruitment(
                 shelter,
                 "a",
@@ -410,6 +413,7 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
                 LocalDateTime.now().plusDays(1),
                 List.of()
             );
+            Applicant applicant1 = ApplicantFixture.applicant(recruitment1, volunteer1);
 
             Recruitment recruitment2 = new Recruitment(
                 shelter,
@@ -421,8 +425,11 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
                 LocalDateTime.now().plusDays(1),
                 List.of()
             );
+            Applicant applicant2 = ApplicantFixture.applicant(recruitment2, volunteer2);
             shelterRepository.save(shelter);
+            volunteerRepository.saveAll(List.of(volunteer1, volunteer2));
             recruitmentRepository.saveAll(List.of(recruitment1, recruitment2));
+            applicantRepository.saveAll(List.of(applicant1, applicant2));
             LocalDateTime time1 = LocalDateTime.now().plusDays(2).with(LocalTime.of(0, 1));
             LocalDateTime time2 = LocalDateTime.now().plusDays(2).with(LocalTime.of(23, 59));
 
@@ -445,6 +452,8 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
         void findRecruitmentsByEndTime() {
             // given
             Shelter shelter = ShelterFixture.shelter();
+            Volunteer volunteer1 = VolunteerFixture.volunteer();
+            Volunteer volunteer2 = VolunteerFixture.volunteer();
             Recruitment recruitment1 = new Recruitment(
                 shelter,
                 "a",
@@ -455,6 +464,7 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
                 LocalDateTime.now().plusDays(1),
                 List.of()
             );
+            Applicant applicant1 = ApplicantFixture.applicant(recruitment1, volunteer1);
 
             Recruitment recruitment2 = new Recruitment(
                 shelter,
@@ -466,8 +476,11 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
                 LocalDateTime.now().plusDays(1),
                 List.of()
             );
+            Applicant applicant2 = ApplicantFixture.applicant(recruitment2, volunteer2);
             shelterRepository.save(shelter);
+            volunteerRepository.saveAll(List.of(volunteer1, volunteer2));
             recruitmentRepository.saveAll(List.of(recruitment1, recruitment2));
+            applicantRepository.saveAll(List.of(applicant1, applicant2));
             LocalDateTime time1 = LocalDateTime.now().plusDays(2).withHour(12).withMinute(0)
                 .withSecond(0).withNano(0);
             LocalDateTime time2 = LocalDateTime.now().plusDays(2).withHour(12).withMinute(59)
