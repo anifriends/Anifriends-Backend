@@ -40,4 +40,15 @@ class NotificationScheduledTest {
                     atLeastOnce()).notifyThreeDayBeforeVolunteer();
             });
     }
+
+    @Test
+    @DisplayName("notifyEncourageWriteReview 메서드 실행 시")
+    void notifyEncourageWriteReview() {
+        Awaitility.await()
+            .atMost(3, TimeUnit.SECONDS)
+            .untilAsserted(() -> {
+                verify(volunteerNotificationService,
+                    atLeastOnce()).notifyEncourageWriteReview();
+            });
+    }
 }

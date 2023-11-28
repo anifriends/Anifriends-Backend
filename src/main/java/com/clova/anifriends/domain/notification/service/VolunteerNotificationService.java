@@ -32,7 +32,8 @@ public class VolunteerNotificationService {
     }
 
     @Transactional(readOnly = true)
-    public FindVolunteerHasNewNotificationResponse findVolunteerHasNewNotification(Long volunteerId) {
+    public FindVolunteerHasNewNotificationResponse findVolunteerHasNewNotification(
+        Long volunteerId) {
         return FindVolunteerHasNewNotificationResponse.from(
             volunteerNotificationRepository.hasNewNotification(volunteerId));
     }
@@ -49,11 +50,12 @@ public class VolunteerNotificationService {
         LocalDateTime time2 = LocalDateTime.now().plusDays(1).with(LocalTime.of(23, 59));
 
         List<VolunteerNotification> volunteerNotifications = recruitmentRepository
-            .findRecruitmentByStartTime(time1, time2)
+            .findRecruitmentsByStartTime(time1, time2)
             .stream()
             .flatMap(recruitment ->
                 recruitment.getApplicants().stream()
-                    .map(applicant -> makeNewADayBeforeVolunteerNotification(applicant, recruitment))
+                    .map(
+                        applicant -> makeNewADayBeforeVolunteerNotification(applicant, recruitment))
             )
             .collect(Collectors.toList());
 
@@ -67,13 +69,31 @@ public class VolunteerNotificationService {
         LocalDateTime time2 = LocalDateTime.now().plusDays(3).with(LocalTime.of(23, 59));
 
         List<VolunteerNotification> volunteerNotifications = recruitmentRepository
-            .findRecruitmentByStartTime(time1, time2)
+            .findRecruitmentsByStartTime(time1, time2)
             .stream()
             .flatMap(recruitment ->
                 recruitment.getApplicants().stream()
-                    .map(applicant -> makeThreeDayBeforeVolunteerNotification(applicant, recruitment))
-            )
-            .collect(Collectors.toList());
+                    .map(applicant -> makeThreeDayBeforeVolunteerNotification(applicant,
+                        recruitment))
+            ).toList();
+
+        volunteerNotificationRepository.saveAll(volunteerNotifications);
+    }
+
+    @Transactional
+    @Scheduled(cron = "${schedules.cron.notification.encourage-write-review}")
+    public void notifyEncourageWriteReview() {
+        LocalDateTime time1 = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime time2 = LocalDateTime.now().withMinute(59).withSecond(59)
+            .withNano(999_999_999);
+
+        List<VolunteerNotification> volunteerNotifications = recruitmentRepository
+            .findRecruitmentsByEndTime(time1, time2)
+            .stream()
+            .flatMap(recruitment ->
+                recruitment.getApplicants().stream()
+                    .map(applicant -> makeNewEncourageReviewNotification(applicant, recruitment))
+            ).toList();
 
         volunteerNotificationRepository.saveAll(volunteerNotifications);
     }
@@ -95,6 +115,16 @@ public class VolunteerNotificationService {
             recruitment.getTitle(),
             NotificationType.THREE_DAY_BEFORE_VOLUNTEER.getMessage(),
             NotificationType.THREE_DAY_BEFORE_VOLUNTEER.getName()
+        );
+    }
+
+    private VolunteerNotification makeNewEncourageReviewNotification(
+        Applicant applicant, Recruitment recruitment) {
+        return new VolunteerNotification(
+            applicant.getVolunteer(),
+            recruitment.getShelter().getName(),
+            NotificationType.ENCOURAGE_WRITE_REVIEW.getMessage(),
+            NotificationType.ENCOURAGE_WRITE_REVIEW.getName()
         );
     }
 }

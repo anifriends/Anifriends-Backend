@@ -37,3 +37,4 @@ schedules:
     notification:
       a-day-before-volunteer: 0/2 * * * * ?
       three-day-before-volunteer: 0/2 * * * * ?
+      encourage-write-review: 0/2 * * * * ?

@@ -118,7 +118,7 @@ class VolunteerNotificationServiceTest {
 
             // then
             verify(recruitmentRepository, times(1))
-                .findRecruitmentByStartTime(any(), any());
+                .findRecruitmentsByStartTime(any(), any());
             verify(volunteerNotificationRepository, times(1))
                 .saveAll(any());
         }
@@ -137,7 +137,26 @@ class VolunteerNotificationServiceTest {
 
             // then
             verify(recruitmentRepository, times(1))
-                .findRecruitmentByStartTime(any(), any());
+                .findRecruitmentsByStartTime(any(), any());
+            verify(volunteerNotificationRepository, times(1))
+                .saveAll(any());
+        }
+    }
+
+    @Nested
+    @DisplayName("notifyEncourageWriteReview 메서드 실행 시")
+    class NotifyEncourageWriteReviewTest {
+
+        @Test
+        @DisplayName("성공")
+        void notifyEncourageWriteReview() {
+            // given
+            // when
+            volunteerNotificationService.notifyEncourageWriteReview();
+
+            // then
+            verify(recruitmentRepository, times(1))
+                .findRecruitmentsByEndTime(any(), any());
             verify(volunteerNotificationRepository, times(1))
                 .saveAll(any());
         }
