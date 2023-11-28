@@ -52,7 +52,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @Import({SecurityConfig.class, WebMvcConfig.class, RestDocsConfig.class, WebMvcTestConfig.class,
     RedisConfig.class})
 @ExtendWith(RestDocumentationExtension.class)
-public abstract class BaseControllerTest {
+public abstract class BaseControllerTest extends TestContainerStarter {
 
     protected static final String AUTHORIZATION = "Authorization";
 
