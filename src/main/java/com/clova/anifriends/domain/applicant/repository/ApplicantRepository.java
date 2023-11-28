@@ -53,7 +53,7 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         @Param("shelterId") Long shelterId
     );
 
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Modifying
     @Query("update Applicant a set a.status = :status "
         + "where a.recruitment.recruitmentId = :recruitmentId "
         + "and a.recruitment.shelter.shelterId = :shelterId "

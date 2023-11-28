@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class VolunteerTemperature {
 
     private static final int MAX_VOLUNTEER_TEMPERATURE = 99;
+    private static final int MIN_VOLUNTEER_TEMPERATURE = -99;
 
     @Column(name = "temperature")
     private Integer temperature;
@@ -34,6 +35,12 @@ public class VolunteerTemperature {
     public VolunteerTemperature increase(int temperature) {
         return new VolunteerTemperature(
             Math.min(this.temperature + temperature, MAX_VOLUNTEER_TEMPERATURE)
+        );
+    }
+
+    public VolunteerTemperature decrease(int temperature) {
+        return new VolunteerTemperature(
+            Math.max(this.temperature - temperature, MIN_VOLUNTEER_TEMPERATURE)
         );
     }
 }

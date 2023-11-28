@@ -80,4 +80,43 @@ class VolunteerTemperatureTest {
                 maxTemperature);
         }
     }
+
+    @Nested
+    @DisplayName("decrease() 메서드 호출 시")
+    class DecreaseTest {
+
+        @Test
+        @DisplayName("성공: 36 -> 26")
+        void increase1() {
+            // given
+            int originTemperature = 36;
+            int decreaseTemperature = 10;
+            VolunteerTemperature volunteerTemperature = new VolunteerTemperature(originTemperature);
+
+            // when
+            VolunteerTemperature updateVolunteerTemperature = volunteerTemperature.decrease(
+                decreaseTemperature);
+
+            // then
+            assertThat(updateVolunteerTemperature.getTemperature()).isEqualTo(
+                originTemperature - decreaseTemperature);
+        }
+
+        @Test
+        @DisplayName("성공: -99 -> -99")
+        void decrease2() {
+            // given
+            int minTemperature = -99;
+            int decreaseTemperature = 10;
+            VolunteerTemperature volunteerTemperature = new VolunteerTemperature(minTemperature);
+
+            // when
+            VolunteerTemperature updateVolunteerTemperature = volunteerTemperature.decrease(
+                decreaseTemperature);
+
+            // then
+            assertThat(updateVolunteerTemperature.getTemperature()).isEqualTo(
+                minTemperature);
+        }
+    }
 }
