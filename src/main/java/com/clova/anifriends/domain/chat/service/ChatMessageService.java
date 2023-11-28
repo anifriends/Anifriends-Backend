@@ -23,23 +23,16 @@ public class ChatMessageService {
         UserRole senderRole,
         String message
     ) {
-        ChatMessage chatMessage = saveChatMessage(chatRoomId, senderId, senderRole, message);
-        return ChatMessageResponse.from(chatMessage);
-    }
-
-    private ChatMessage saveChatMessage(
-        Long chatRoomId,
-        Long senderId,
-        UserRole senderRole,
-        String message
-    ) {
         ChatRoom chatRoom = getChatRoom(chatRoomId);
+
         ChatMessage chatMessage = new ChatMessage(chatRoom, senderId, senderRole, message);
-        return chatMessageRepository.save(chatMessage);
+        ChatMessage persistChatMessage = chatMessageRepository.save(chatMessage);
+
+        return ChatMessageResponse.from(persistChatMessage);
     }
 
     private ChatRoom getChatRoom(Long chatRoomId) {
         return chatRoomRepository.findById(chatRoomId)
-            .orElseThrow(() -> new ChatRoomNotFoundException("존재하지 않는 채팅방입니다."));
+            .orElseThrow(() -> new ChatRoomNotFoundException("존재 하지 않는 채팅 방입니다."));
     }
 }
