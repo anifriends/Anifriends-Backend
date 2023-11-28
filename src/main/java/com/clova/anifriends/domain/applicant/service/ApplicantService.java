@@ -8,6 +8,11 @@ import com.clova.anifriends.domain.applicant.exception.ApplicantConflictExceptio
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
+import com.clova.anifriends.domain.notification.ShelterNotification;
+import com.clova.anifriends.domain.notification.VolunteerNotification;
+import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
+import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
+import com.clova.anifriends.domain.notification.vo.NotificationType;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -17,6 +22,7 @@ import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundExceptio
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.global.aspect.DataIntegrityHandler;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,6 +38,8 @@ public class ApplicantService {
     private final ApplicantRepository applicantRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final VolunteerRepository volunteerRepository;
+    private final ShelterNotificationRepository shelterNotificationRepository;
+    private final VolunteerNotificationRepository volunteerNotificationRepository;
 
     @Transactional
     @DataIntegrityHandler(message = "이미 신청한 봉사입니다.", exceptionClass = ApplicantConflictException.class)
@@ -40,6 +48,11 @@ public class ApplicantService {
         Volunteer volunteer = getVolunteer(volunteerId);
         Applicant applicant = new Applicant(recruitmentPessimistic, volunteer);
         applicantRepository.save(applicant);
+        shelterNotificationRepository.save(makeNewApplicantNotification(applicant));
+        if (recruitmentPessimistic.isFullApplicants()) {
+            shelterNotificationRepository.save(
+                makeClosedRecruitmentNotification(recruitmentPessimistic));
+        }
     }
 
     @Transactional(readOnly = true)
@@ -78,6 +91,8 @@ public class ApplicantService {
 
         updateVolunteersTemperature(shelterId, recruitmentId, noShowIds, attendedIds);
         updateAttendanceStatus(shelterId, recruitmentId, noShowIds, attendedIds);
+        volunteerNotificationRepository.saveAll(
+            makeNewAttendanceNotifications(shelterId, recruitmentId, attendedIds));
     }
 
     private void updateVolunteersTemperature(Long shelterId, Long recruitmentId,
@@ -107,6 +122,8 @@ public class ApplicantService {
         Boolean isApproved) {
         Applicant applicant = getApplicant(applicantId, recruitmentId, shelterId);
         applicant.updateApplicantStatus(isApproved);
+        volunteerNotificationRepository.save(
+            makeNewUpdateApplicantStatusNotification(applicant, isApproved));
     }
 
     private List<Long> getNoShowIds(List<UpdateApplicantAttendanceCommand> applicantsCommand) {
@@ -142,5 +159,52 @@ public class ApplicantService {
     private Volunteer getVolunteer(Long volunteerId) {
         return volunteerRepository.findById(volunteerId)
             .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
+    }
+
+    private ShelterNotification makeNewApplicantNotification(Applicant applicant) {
+        return new ShelterNotification(
+            applicant.getRecruitment().getShelter(),
+            applicant.getRecruitment().getTitle(),
+            applicant.getVolunteer().getName() + NotificationType.NEW_APPLICANT.getMessage(),
+            NotificationType.NEW_APPLICANT.getName()
+        );
+    }
+
+    private VolunteerNotification makeNewUpdateApplicantStatusNotification(Applicant applicant,
+        boolean isApproved) {
+        return new VolunteerNotification(
+            applicant.getVolunteer(),
+            applicant.getRecruitment().getShelter().getName(),
+            isApproved ? NotificationType.VOLUNTEER_APPROVED.getMessage()
+                : NotificationType.VOLUNTEER_REFUSED.getMessage(),
+            isApproved ? NotificationType.VOLUNTEER_APPROVED.getName()
+                : NotificationType.VOLUNTEER_REFUSED.getName()
+        );
+    }
+
+    private List<VolunteerNotification> makeNewAttendanceNotifications(Long shelterId,
+        Long recruitmentId, List<Long> attendedIds) {
+        return volunteerRepository.findNoShowByAttendedIds(shelterId, recruitmentId, attendedIds)
+            .stream()
+            .map(this::makeNewAttendanceNotification)
+            .collect(Collectors.toList());
+    }
+
+    private VolunteerNotification makeNewAttendanceNotification(Volunteer volunteer) {
+        return new VolunteerNotification(
+            volunteer,
+            null,
+            NO_SHOW_TEMP_REDUCTION + NotificationType.INCREASE_VOLUNTEER_TEMPERATURE.getMessage(),
+            NotificationType.INCREASE_VOLUNTEER_TEMPERATURE.getName()
+        );
+    }
+
+    private ShelterNotification makeClosedRecruitmentNotification(Recruitment recruitment) {
+        return new ShelterNotification(
+            recruitment.getShelter(),
+            recruitment.getTitle(),
+            NotificationType.APPLICANT_FULL.getMessage(),
+            NotificationType.APPLICANT_FULL.getName()
+        );
     }
 }

@@ -26,9 +26,12 @@ import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteers
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
+import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
+import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
+import com.clova.anifriends.domain.recruitment.vo.RecruitmentApplicantCount;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -64,6 +67,12 @@ class ApplicantServiceTest {
     @Mock
     VolunteerRepository volunteerRepository;
 
+    @Mock
+    ShelterNotificationRepository shelterNotificationRepository;
+
+    @Mock
+    VolunteerNotificationRepository volunteerNotificationRepository;
+
     @Nested
     @DisplayName("registerApplicant 메서드 실행 시")
     class RegisterApplicantTest {
@@ -98,6 +107,30 @@ class ApplicantServiceTest {
 
             // then
             then(applicantRepository).should().save(any());
+            then(shelterNotificationRepository).should().save(any());
+        }
+
+        @Test
+        @DisplayName("성공: 마지막 모집 인원이 신청한 경우")
+        void registerLastApplicant() {
+            // given
+            setField(volunteer, "volunteerId", 1L);
+            setField(recruitment, "recruitmentId", 1L);
+            setField(recruitment, "info", recruitmentInfo);
+            RecruitmentApplicantCount recruitmentApplicantCount = new RecruitmentApplicantCount(29);
+            setField(recruitment, "applicantCount", recruitmentApplicantCount);
+            given(recruitmentRepository.findByIdPessimistic(anyLong())).willReturn(
+                Optional.ofNullable(recruitment));
+            given(volunteerRepository.findById(anyLong())).willReturn(
+                Optional.ofNullable(volunteer));
+
+            // when
+            applicantService.registerApplicant(recruitment.getRecruitmentId(),
+                volunteer.getVolunteerId());
+
+            // then
+            then(applicantRepository).should().save(any());
+            verify(shelterNotificationRepository, times(2)).save(any());
         }
 
         @Test
@@ -338,6 +371,9 @@ class ApplicantServiceTest {
                     List.of(applicantAttendanceToNoShow.getApplicantId(),
                         applicantNoShow.getApplicantId()), NO_SHOW);
 
+            verify(volunteerNotificationRepository, times(1))
+                .saveAll(any(List.class));
+
         }
     }
 
@@ -367,6 +403,7 @@ class ApplicantServiceTest {
 
             // then
             assertThat(applicant.getStatus()).isEqualTo(REFUSED);
+            then(volunteerNotificationRepository).should().save(any());
         }
 
         @Test
