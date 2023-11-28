@@ -79,29 +79,19 @@ operation::chat-room-controller-test/find-chat-messages-response[snippets='http-
 
 == 1. 봉사자
 
-=== 1) 봉사 모집글 조회 & 검색
+=== 봉사자 프로필 조회
 
 ==== Request
 
-operation::recruitment-controller-test/find-recruitments[snippets='http-request,request-headers,query-parameters']
+operation::volunteer-controller-test/find-volunteer-profile[snippets='http-request,path-parameters,request-headers']
 
 ==== Response
 
-operation::recruitment-controller-test/find-recruitments[snippets='http-response,response-fields']
-
-=== 보호소에 달린 후기 리스트 조회
-
-==== Request
-
-operation::review-controller-test/find-shelter-reviews[snippets='http-request,path-parameters,query-parameters']
-
-==== Response
-
-operation::review-controller-test/find-shelter-reviews[snippets='http-response,response-fields']
+operation::volunteer-controller-test/find-volunteer-profile[snippets='http-response,response-fields']
 
 == 2. 보호소
 
-=== 보호소 비밀번호 변경
+=== 보호소 비밀 번호 변경
 
 ==== Request
 operation::shelter-controller-test/update-password[snippets='http-request,request-headers,request-fields']
@@ -121,7 +111,7 @@ operation::shelter-controller-test/find-shelter-my-page[snippets='http-response,
 
 == 3. 봉사 모집
 
-=== 1) 봉사 모집글 등록
+=== 봉사 모집글 등록
 
 ==== Request
 
@@ -161,9 +151,29 @@ operation::recruitment-controller-test/delete-recruitment[snippets='http-request
 
 operation::recruitment-controller-test/delete-recruitment[snippets='http-response']
 
+=== 봉사 모집글 조회 & 검색
+
+==== Request
+
+operation::recruitment-controller-test/find-recruitments[snippets='http-request,request-headers,query-parameters']
+
+==== Response
+
+operation::recruitment-controller-test/find-recruitments[snippets='http-response,response-fields']
+
 == 4. 봉사 신청
 
 == 5. 봉사 후기
+
+=== 보호소에 달린 후기 리스트 조회
+
+==== Request
+
+operation::review-controller-test/find-shelter-reviews[snippets='http-request,path-parameters,query-parameters']
+
+==== Response
+
+operation::review-controller-test/find-shelter-reviews[snippets='http-response,response-fields']
 
 == 6. 보호 동물
 
@@ -252,6 +262,46 @@ operation::volunteer-controller-test/update-volunteer-info[snippets='http-reques
 
 ==== Response
 operation::volunteer-controller-test/update-volunteer-info[snippets='http-response']
+
+=== 봉사자 회원 가입
+
+==== Request
+
+operation::volunteer-controller-test/register-volunteer[snippets='http-request,request-headers,request-fields']
+
+==== Response
+
+operation::volunteer-controller-test/register-volunteer[snippets='http-response,response-fields,response-headers']
+
+=== 봉사자 이메일 중복 확인
+
+==== Request
+
+operation::volunteer-controller-test/check-duplicate-volunteer-email[snippets='http-request,request-headers,request-fields']
+
+==== Response
+
+operation::volunteer-controller-test/check-duplicate-volunteer-email[snippets='http-response,response-fields']
+
+=== 봉사자 마이 페이지 조회
+
+==== Request
+
+operation::volunteer-controller-test/find-volunteer-my-page[snippets='http-request,request-headers']
+
+==== Response
+
+operation::volunteer-controller-test/find-volunteer-my-page[snippets='http-response,response-fields']
+
+=== 봉사자 비밀 번호 변경
+
+==== Request
+
+operation::volunteer-controller-test/update-password[snippets='http-request,request-headers,request-fields']
+
+==== Response
+
+operation::volunteer-controller-test/update-password[snippets='http-response']
 
 == 2. 보호소
 
