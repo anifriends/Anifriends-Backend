@@ -27,10 +27,15 @@ import org.springframework.web.filter.CorsFilter;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String frontServer;
+    private final String frontVolunteerServer;
+    private final String frontShelterServer;
 
-    public SecurityConfig(@Value("${front.server}") String frontServer) {
-        this.frontServer = frontServer;
+    public SecurityConfig(
+        @Value("${front.volunteer.server}") String frontVolunteerServer,
+        @Value("${front.shelter.server}") String frontShelterServer
+    ) {
+        this.frontVolunteerServer = frontVolunteerServer;
+        this.frontShelterServer = frontShelterServer;
     }
 
     @Bean
@@ -67,7 +72,8 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(
-            List.of("http://localhost:5173", "http://localhost:5174", frontServer));
+            List.of("http://localhost:5173", "http://localhost:5174", frontShelterServer,
+                frontVolunteerServer));
         config.setAllowedMethods(
             List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowCredentials(true);

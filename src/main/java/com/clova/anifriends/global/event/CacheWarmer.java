@@ -1,7 +1,7 @@
 package com.clova.anifriends.global.event;
 
-import com.clova.anifriends.domain.recruitment.service.RecruitmentCacheService;
 import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
+import com.clova.anifriends.domain.recruitment.service.RecruitmentCacheService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;

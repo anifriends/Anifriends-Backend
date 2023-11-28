@@ -476,26 +476,30 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#_1_봉사자_2">1. 봉사자</a>
 <ul class="sectlevel2">
-<li><a href="#_1_봉사_모집글_조회_검색">1) 봉사 모집글 조회 &amp; 검색</a></li>
-<li><a href="#_보호소에_달린_후기_리스트_조회">보호소에 달린 후기 리스트 조회</a></li>
+<li><a href="#_봉사자_프로필_조회">봉사자 프로필 조회</a></li>
 </ul>
 </li>
 <li><a href="#_2_보호소">2. 보호소</a>
 <ul class="sectlevel2">
-<li><a href="#_보호소_비밀번호_변경">보호소 비밀번호 변경</a></li>
+<li><a href="#_보호소_비밀_번호_변경">보호소 비밀 번호 변경</a></li>
 <li><a href="#_보호소_마이_페이지_조회">보호소 마이 페이지 조회</a></li>
 </ul>
 </li>
 <li><a href="#_3_봉사_모집">3. 봉사 모집</a>
 <ul class="sectlevel2">
-<li><a href="#_1_봉사_모집글_등록">1) 봉사 모집글 등록</a></li>
+<li><a href="#_봉사_모집글_등록">봉사 모집글 등록</a></li>
 <li><a href="#_봉사_모집글_마감">봉사 모집글 마감</a></li>
 <li><a href="#_봉사_모집글_수정">봉사 모집글 수정</a></li>
 <li><a href="#_봉사_모집글_삭제">봉사 모집글 삭제</a></li>
+<li><a href="#_봉사_모집글_조회_검색">봉사 모집글 조회 &amp; 검색</a></li>
 </ul>
 </li>
 <li><a href="#_4_봉사_신청">4. 봉사 신청</a></li>
-<li><a href="#_5_봉사_후기">5. 봉사 후기</a></li>
+<li><a href="#_5_봉사_후기">5. 봉사 후기</a>
+<ul class="sectlevel2">
+<li><a href="#_보호소에_달린_후기_리스트_조회">보호소에 달린 후기 리스트 조회</a></li>
+</ul>
+</li>
 <li><a href="#_6_보호_동물">6. 보호 동물</a>
 <ul class="sectlevel2">
 <li><a href="#_보호_동물_삭제">보호 동물 삭제</a></li>
@@ -515,6 +519,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_1_봉사자_3">1. 봉사자</a>
 <ul class="sectlevel2">
 <li><a href="#_봉사자_계정_정보_수정">봉사자 계정 정보 수정</a></li>
+<li><a href="#_봉사자_회원_가입">봉사자 회원 가입</a></li>
+<li><a href="#_봉사자_이메일_중복_확인">봉사자 이메일 중복 확인</a></li>
+<li><a href="#_봉사자_마이_페이지_조회">봉사자 마이 페이지 조회</a></li>
+<li><a href="#_봉사자_비밀_번호_변경">봉사자 비밀 번호 변경</a></li>
 </ul>
 </li>
 <li><a href="#_2_보호소_2">2. 보호소</a></li>
@@ -563,7 +571,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/shelters/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 91
-X-CSRF-TOKEN: ojHL1q--8GNt-WkuU5dE0qM2JmzX8dhu1DCGO0c7i70A1G4tk1Dz5Z-PxVFAz1AeYLpw5pUOCw7lkutD4QTgWiNfvo0wtVwV
+X-CSRF-TOKEN: SYkbZgsumXZkXgXi90h-6j8D1WVSoA_KUYN0ylr_on9hGjvjL-1-VD4e_UdJPWaHw2VK2w0y-AQ2xm3nZbQQ-mLOlE0HfgyH
 Host: localhost:8080
 
 {
@@ -629,7 +637,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/api/auth; Domain=localhost; HttpOnly; SameSite=None
+Set-Cookie: refreshToken=refreshToken; Path=/api/auth; Domain=.anifriends.site; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 78
 
@@ -709,7 +717,7 @@ Content-Length: 78
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/volunteers/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 91
-X-CSRF-TOKEN: nRVQLzpR5mLQmz-X43mpyU1orhbuWtBEnR-5KdIMhu9iZAGU-HdmH1ww11D9rguu21Sdry8Jgy-KbrFppX2IHORov9tXUjSi
+X-CSRF-TOKEN: 0qaiJ_bMz3lctQ-x7UAwWU0IV92lsmr2G7Rt8e8uY-D8qR9a68XHFpX0rhxx0T3QjG0EaXk6er_D11nbeNZZlIoeB4Wdmilo
 Host: localhost:8080
 
 {
@@ -775,7 +783,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/api/auth; Domain=localhost; HttpOnly; SameSite=None
+Set-Cookie: refreshToken=refreshToken; Path=/api/auth; Domain=.anifriends.site; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 80
 
@@ -853,9 +861,9 @@ Content-Length: 80
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/refresh HTTP/1.1
-X-CSRF-TOKEN: Rp32fsTYaWFWYSkRDkEL9bQAis1ViCph1SF_ZleII_HsaZ4tdq_AHaLtWAJ7UBx3aGw_l9cxp_RjsRtM5hJNAm_rQMndWv9O
+X-CSRF-TOKEN: oZbKquaFuPGOgPbri0Mmz6CKdq1MJViMDpsfHHuo16W3ZlDlk67zmoTmiZSj5c7ZuW4S_cGyW5R_RmmhPKonf02Z5pKPAmfR
 Host: localhost:8080
-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjUsInN1YiI6IjEiLCJleHAiOjE3MDEwODY1NjUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.3EJZT543sGuOL-RJHvfrttP6_VYdXt490RJzSzZuCV3iyUvH8imzm3xgSQWugJw3
+Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjYsInN1YiI6IjEiLCJleHAiOjE3MDExNjM2NjYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.3-47GUIIMwGE3PxEihAmq1JE8n6kTK-NdXrUNOUz7fDX9vsVGiiEF5yVWBigp88t
 Content-Type: application/x-www-form-urlencoded</code></pre>
 </div>
 </div>
@@ -892,14 +900,14 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjUsInN1YiI6IjEiLCJleHAiOjE3MDEwODY1NjUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.3EJZT543sGuOL-RJHvfrttP6_VYdXt490RJzSzZuCV3iyUvH8imzm3xgSQWugJw3; Path=/api/auth; Domain=localhost; HttpOnly; SameSite=None
+Set-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjYsInN1YiI6IjEiLCJleHAiOjE3MDExNjM2NjYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.3-47GUIIMwGE3PxEihAmq1JE8n6kTK-NdXrUNOUz7fDX9vsVGiiEF5yVWBigp88t; Path=/api/auth; Domain=.anifriends.site; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 267
 
 {
   "userId" : 1,
   "role" : "ROLE_VOLUNTEER",
-  "accessToken" : "eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjUsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NjUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.KhRKcELxXk-ASd29AgIvda4BJ87IRK3VPIrYVFJlMXnXWWrjbz9MSR35jXr9ViGz"
+  "accessToken" : "eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjYsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NjYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.u-1nlOb_J2m2bfKHYRaJEvyB2M-vyBjnsLHEGxsMSIuXM3oPOXMrgLE_BELHD__X"
 }</code></pre>
 </div>
 </div>
@@ -975,8 +983,8 @@ Content-Length: 267
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/volunteers/1/recruitments/completed?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjksInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NjksInJvbGUiOiJST0xFX1NIRUxURVIifQ.mngFIrPZpy_HCwH2NFMOTfhAgd6VKlIe4wXxAD97_uebLaOlqTCxbTVYOr5AK1r3
-X-CSRF-TOKEN: wi77i7tbzPBSRpCrtnR_AJiCP5o1Q6__stKFhxDPAqYUJB989xyd7Ypursl_J_SY11lLY6i7EvsNJ83ShODjtyT7YMAiF31L
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjksInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NjksInJvbGUiOiJST0xFX1NIRUxURVIifQ.c-ok1Bt_zuODwl4rsS3maJBxL04Ra-GiV0e1AsTTslS8ZXquujI-_f79BgV9x43f
+X-CSRF-TOKEN: W4EgwBrkp-5ysDCfK4d3QJ4Mq6FDDo4_ppn8kxy_W8zu3zetYuBF8yPQk4hf0wn8SqpDcKhohsNwargSlfueoXmJbv-MuwCU
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1054,7 +1062,7 @@ Content-Length: 264
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-12-27T18:16:05.025407",
+    "recruitmentStartTime" : "2023-12-28T15:41:04.944341",
     "shelterName" : "shelterName"
   } ],
   "pageInfo" : {
@@ -1141,8 +1149,8 @@ Content-Length: 264
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/animals/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NTgsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NTgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.2Jlt61dxA-_wj2UDl2vbH1wnSfv7fVe0AqsSe31Efd02TMe3UiwPTrznmLUbcAKK
-X-CSRF-TOKEN: b4jmzPxzmJb8kR8kvmPG4eO9qqkVTXcyI5XlzPZEIAoRrW7zVumAqMoQofLRpS0Thk7y0YKOh5EtfhIfR_bT_sF2Rjx3zw2S
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NTcsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NTcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.fCzQwU5xybo20Lo-TIRlYY0zzU68KF0EZJFlZxrm3LLa_pYfjtJjvzXxNQferHiT
+X-CSRF-TOKEN: o5poE2pBP-fZlt99YamFmSTD1IgCCZu8xbU5jxKz3IrZpNhOkq0JIFpwCNf0o-ZLVISxrBSh-bAxbKqR_dRfuiHR67rrwe8t
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1186,7 +1194,7 @@ Content-Length: 395
 {
   "animalId" : 1,
   "animalName" : "animalName",
-  "animalBirthDate" : "2023-11-27",
+  "animalBirthDate" : "2023-11-28",
   "animalType" : "DOG",
   "animalBreed" : "animalBreed",
   "animalGender" : "FEMALE",
@@ -1295,8 +1303,8 @@ Content-Length: 395
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/chat/rooms/1/messages?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjcsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NjcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.SmagfRWwpWPDlbPXrAhn40CzXcmp2iF9sL-H8LH7sWFMucmyvvURh78wJONko2-_
-X-CSRF-TOKEN: BgDQDI-pZE9Ti5fcGKmNidKx3lGcXoq4LPjWQCyXmkf1YnlKPzO0aL2QAnx-u6bpL4S56OLT82mqO--VFMzmdR6goyTGAU8v
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjcsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NjcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.h13dnnHMVeSs82y5MnurkVeTKHistdyquJuA9rP7h_mBAUgbUJGl9reZxFN1D4eW
+X-CSRF-TOKEN: tiRYW7jMqfc7R6Bd1Ml_zoTd88PfQWBIXvpaGyiNl2IcQE33jhE6Yov0yMUWfpQ54eRL9r3s3vq9dlhlZ55uLkzppVQpdn6T
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1368,14 +1376,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 243
+Content-Length: 244
 
 {
   "chatMessages" : [ {
     "chatSenderId" : 1,
     "chatSenderRole" : "ROLE_VOLUNTEER",
     "chatMessage" : "message",
-    "createdAt" : "2023-11-27T18:16:07.53027"
+    "createdAt" : "2023-11-28T15:41:07.417775"
   } ],
   "pageInfo" : {
     "totalElements" : 1,
@@ -1453,27 +1461,878 @@ Content-Length: 243
 <h2 id="_1_봉사자_2"><a class="link" href="#_1_봉사자_2">1. 봉사자</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_1_봉사_모집글_조회_검색"><a class="link" href="#_1_봉사_모집글_조회_검색">1) 봉사 모집글 조회 &amp; 검색</a></h3>
+<h3 id="_봉사자_프로필_조회"><a class="link" href="#_봉사자_프로필_조회">봉사자 프로필 조회</a></h3>
 <div class="sect3">
 <h4 id="_request_7"><a class="link" href="#_request_7">Request</a></h4>
 <div class="sect4">
 <h5 id="_request_7_http_request"><a class="link" href="#_request_7_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-11-27&amp;endDate=2023-11-27&amp;closedFilter=IS_OPENED&amp;keywordFilter=IS_CONTENT&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
-X-CSRF-TOKEN: wUtwnNQNLVy_bb-59zzBhPc4SYIYxmIT63j_U8zknOpc8W-6p3xF_uc9Tz6SCdyMwBH1s5MLZLt-9FU-2kCZav3Wrt5vxw3f
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/volunteers/1/profile HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NzIsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NzIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.0_gtzHfcH0ESgncCR0Os46VMN3H3M_OMI0gf-A60-5dbrLN_wh_iAjOG9TtR0cCF
+X-CSRF-TOKEN: C0SbveCnjcVwsbSBI9v-mzwEc29FWRW3UPSZoQ0Jlirod7V4biCrjtiSuKddh9WwFPbKowtgXld9aiWaaJX8wG868B-NRNcb
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
+<h5 id="_request_7_path_parameters"><a class="link" href="#_request_7_path_parameters">Path parameters</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/shelters/volunteers/{volunteerId}/profile</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사자 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
 <h5 id="_request_7_request_headers"><a class="link" href="#_request_7_request_headers">Request headers</a></h5>
-<div class="paragraph">
-<p>Snippet request-headers not found for operation::recruitment-controller-test/find-recruitments</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_7"><a class="link" href="#_response_7">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_7_http_response"><a class="link" href="#_response_7_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 177
+
+{
+  "volunteerEmail" : "asdf@gmail.com",
+  "volunteerName" : "김봉사",
+  "volunteerTemperature" : 36,
+  "volunteerPhoneNumber" : "010-1234-5678",
+  "volunteerImageUrl" : ""
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_7_query_parameters"><a class="link" href="#_request_7_query_parameters">Query parameters</a></h5>
+<h5 id="_response_7_response_fields"><a class="link" href="#_response_7_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerEmail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerTemperature</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">온도</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerPhoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전화번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerImageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 이미지 URL</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_보호소"><a class="link" href="#_2_보호소">2. 보호소</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_보호소_비밀_번호_변경"><a class="link" href="#_보호소_비밀_번호_변경">보호소 비밀 번호 변경</a></h3>
+<div class="sect3">
+<h4 id="_request_8"><a class="link" href="#_request_8">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_8_http_request"><a class="link" href="#_request_8_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/me/passwords HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NzIsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NzIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.0_gtzHfcH0ESgncCR0Os46VMN3H3M_OMI0gf-A60-5dbrLN_wh_iAjOG9TtR0cCF
+Content-Length: 76
+X-CSRF-TOKEN: DSIWv9tlMLgeiyGXTlMA3ca0AylRhRT-b4rzYWkxhy1DxW2xPxsv2ehQVY0z7xOiLH406KeCLks0vSfTWuzKBw8C4R0loF6E
+Host: localhost:8080
+
+{
+  "oldPassword" : "oldPassword123!",
+  "newPassword" : "newPassword123!"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_8_request_headers"><a class="link" href="#_request_8_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_request_8_request_fields"><a class="link" href="#_request_8_request_fields">Request fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">제약</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oldPassword</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6자 이상, 16자 이하</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 비밀번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newPassword</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6자 이상, 16자 이하</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">변경할 비밀번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_8"><a class="link" href="#_response_8">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_8_http_response"><a class="link" href="#_response_8_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_보호소_마이_페이지_조회"><a class="link" href="#_보호소_마이_페이지_조회">보호소 마이 페이지 조회</a></h3>
+<div class="sect3">
+<h4 id="_request_9"><a class="link" href="#_request_9">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_9_http_request"><a class="link" href="#_request_9_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/me HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NzEsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NzEsInJvbGUiOiJST0xFX1NIRUxURVIifQ.BJSJGP_KfIoidHrVLG3PRVsETalEblNI0CoR2UE7YccG1MmniWH5sPwjOTuVUCoN
+X-CSRF-TOKEN: WENEBGJN8vmI8LUj21v8RV5_1MJ3-paz2lSRVRPUGNuA40SaanBwMAcvxZylk9EU6XbIcz9I-aATyKae4mKmZCa1fuO22ib5
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_9_request_headers"><a class="link" href="#_request_9_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_9"><a class="link" href="#_response_9">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_9_http_response"><a class="link" href="#_response_9_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 339
+
+{
+  "shelterId" : 1,
+  "shelterName" : "shelterName",
+  "shelterEmail" : "shelterEmail@email.com",
+  "shelterAddress" : "shelterAddress",
+  "shelterAddressDetail" : "shelterAddressDetail",
+  "shelterIsOpenedAddress" : true,
+  "shelterPhoneNumber" : "010-1234-5678",
+  "shelterSparePhoneNumber" : "010-8765-4321",
+  "shelterImageUrl" : ""
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_response_9_response_fields"><a class="link" href="#_response_9_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterEmail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 이메일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterAddress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 주소</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterAddressDetail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 상세주소</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterIsOpenedAddress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 상세 주소 공개 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterPhoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 전화번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterSparePhoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 임시 전화번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterImageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 이미지 Url</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_봉사_모집"><a class="link" href="#_3_봉사_모집">3. 봉사 모집</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_봉사_모집글_등록"><a class="link" href="#_봉사_모집글_등록">봉사 모집글 등록</a></h3>
+<div class="sect3">
+<h4 id="_request_10"><a class="link" href="#_request_10">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_10_http_request"><a class="link" href="#_request_10_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/shelters/recruitments HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjksInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NjksInJvbGUiOiJST0xFX1NIRUxURVIifQ.c-ok1Bt_zuODwl4rsS3maJBxL04Ra-GiV0e1AsTTslS8ZXquujI-_f79BgV9x43f
+Content-Length: 223
+X-CSRF-TOKEN: wASSRW_RYhiTWCeZ62VP5uQsoZa2rbLY5pCtsoUcfe9TZcxA9mCjJlzjU36-ax6q0kh70NYdjK7Vm9P13_WVh-N_TYlgB6ki
+Host: localhost:8080
+
+{
+  "title" : "title",
+  "startTime" : "2023-11-29T15:41:09.577177",
+  "endTime" : "2023-11-29T16:41:09.577177",
+  "deadline" : "2023-11-28T20:41:09.577177",
+  "capacity" : 10,
+  "content" : "content",
+  "imageUrls" : [ ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_10_request_headers"><a class="link" href="#_request_10_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_request_10_request_fields"><a class="link" href="#_request_10_request_fields">Request fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">제약</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1자 이상, 50자 이하</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd&#8217;T&#8217;HH:mm:ss</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 시작 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd&#8217;T&#8217;HH:mm:ss</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 종료 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deadline</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd&#8217;T&#8217;HH:mm:ss</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집 마감 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>capacity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1명 이상, 99명 이하</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집 정원</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1자 이상, 1000자 이하</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 본문</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageUrls</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0장 이상, 5장 이하</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 이미지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_10"><a class="link" href="#_response_10">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_10_http_response"><a class="link" href="#_response_10_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Location: /api/recruitments/1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 25
+
+{
+  "recruitmentId" : 1
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_response_10_response_headers"><a class="link" href="#_response_10_response_headers">Response headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성된 리소스에 대한 접근 api</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_봉사_모집글_마감"><a class="link" href="#_봉사_모집글_마감">봉사 모집글 마감</a></h3>
+<div class="sect3">
+<h4 id="_request_11"><a class="link" href="#_request_11">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_11_http_request"><a class="link" href="#_request_11_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1/close HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjksInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NjksInJvbGUiOiJST0xFX1NIRUxURVIifQ.c-ok1Bt_zuODwl4rsS3maJBxL04Ra-GiV0e1AsTTslS8ZXquujI-_f79BgV9x43f
+X-CSRF-TOKEN: blFVEKn2yJ9Lg3N8QHzI3T6MWr_uPk8qwQ3fs1oKdY846odZDDAxJ5DOrf5ms0FOI1H86l3vd97XCnsH8DS9gT8-Q-kIjuNs
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_11_request_headers"><a class="link" href="#_request_11_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_request_11_path_parameters"><a class="link" href="#_request_11_path_parameters">Path parameters</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/shelters/recruitments/{recruitmentId}/close</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recruitmentId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_11"><a class="link" href="#_response_11">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_11_http_response"><a class="link" href="#_response_11_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_봉사_모집글_수정"><a class="link" href="#_봉사_모집글_수정">봉사 모집글 수정</a></h3>
+<div class="sect3">
+<h4 id="_request_12"><a class="link" href="#_request_12">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_12_http_request"><a class="link" href="#_request_12_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjksInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NjksInJvbGUiOiJST0xFX1NIRUxURVIifQ.c-ok1Bt_zuODwl4rsS3maJBxL04Ra-GiV0e1AsTTslS8ZXquujI-_f79BgV9x43f
+Content-Length: 234
+X-CSRF-TOKEN: umozwHgXozYI6E6sc5Xl92G87YCEw6dxl6ganHPpb6rg18t2glIF9Et2kAMljH6fRbjRkwDfwOG295Fcrs17pUTYWJrZsalF
+Host: localhost:8080
+
+{
+  "title" : "title",
+  "startTime" : "2023-12-28T15:41:09.562953",
+  "endTime" : "2023-12-28T16:41:09.562953",
+  "deadline" : "2023-12-27T15:41:09.562953",
+  "capacity" : 10,
+  "content" : "content",
+  "imageUrls" : [ "a1", "a2" ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_12_request_headers"><a class="link" href="#_request_12_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_request_12_path_parameters"><a class="link" href="#_request_12_path_parameters">Path parameters</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/shelters/recruitments/{recruitmentId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recruitmentId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_request_12_request_fields"><a class="link" href="#_request_12_request_fields">Request fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">제약</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1자 이상, 100자 이하</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd&#8217;T&#8217;HH:mm:ss</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 시작 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd&#8217;T&#8217;HH:mm:ss</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 종료 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deadline</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd&#8217;T&#8217;HH:mm:ss</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 마감 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>capacity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1명 이상, 99명 이하</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 정원</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1자 이상, 1000자 이하</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageUrls</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5장 이하</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 이미지 리스트</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_12"><a class="link" href="#_response_12">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_12_http_response"><a class="link" href="#_response_12_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_봉사_모집글_삭제"><a class="link" href="#_봉사_모집글_삭제">봉사 모집글 삭제</a></h3>
+<div class="sect3">
+<h4 id="_request_13"><a class="link" href="#_request_13">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_13_http_request"><a class="link" href="#_request_13_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/shelters/recruitments/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjksInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NjksInJvbGUiOiJST0xFX1NIRUxURVIifQ.c-ok1Bt_zuODwl4rsS3maJBxL04Ra-GiV0e1AsTTslS8ZXquujI-_f79BgV9x43f
+X-CSRF-TOKEN: uxZlP_FmN9_wfzfdLEYYqrPeCwad3F7-aWX8IhWVL-cXCauNiyEGXpdfBuvdTlK-G2ssy4C8JmSqv2_TUQCeFXGmHdNxbZ-7
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_13_request_headers"><a class="link" href="#_request_13_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_request_13_path_parameters"><a class="link" href="#_request_13_path_parameters">Path parameters</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/shelters/recruitments/{recruitmentId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recruitmentId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_13"><a class="link" href="#_response_13">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_13_http_response"><a class="link" href="#_response_13_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_봉사_모집글_조회_검색"><a class="link" href="#_봉사_모집글_조회_검색">봉사 모집글 조회 &amp; 검색</a></h3>
+<div class="sect3">
+<h4 id="_request_14"><a class="link" href="#_request_14">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_14_http_request"><a class="link" href="#_request_14_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-11-28&amp;endDate=2023-11-28&amp;closedFilter=IS_OPENED&amp;keywordFilter=IS_CONTENT&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
+X-CSRF-TOKEN: kJG3x2kbkwhgTNS9YXgLRKqZMTaMCwmnfDqoXVII7GnXspG5pqXV9lEiqj9NfOeLBVU_Ip2uHFfpPj2KSgufZWdp2F3ggKeP
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_14_request_headers"><a class="link" href="#_request_14_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사자 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_request_14_query_parameters"><a class="link" href="#_request_14_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -1537,9 +2396,9 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_7"><a class="link" href="#_response_7">Response</a></h4>
+<h4 id="_response_14"><a class="link" href="#_response_14">Response</a></h4>
 <div class="sect4">
-<h5 id="_response_7_http_response"><a class="link" href="#_response_7_http_response">HTTP response</a></h5>
+<h5 id="_response_14_http_response"><a class="link" href="#_response_14_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1553,9 +2412,9 @@ Content-Length: 511
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-12-27T18:16:05.025407",
-    "recruitmentEndTime" : "2023-12-27T20:16:05.025407",
-    "recruitmentDeadline" : "2023-12-26T18:16:05.025407",
+    "recruitmentStartTime" : "2023-12-28T15:41:04.944341",
+    "recruitmentEndTime" : "2023-12-28T17:41:04.944341",
+    "recruitmentDeadline" : "2023-12-27T15:41:04.944341",
     "recruitmentIsClosed" : false,
     "recruitmentApplicantCount" : 0,
     "recruitmentCapacity" : 10,
@@ -1571,7 +2430,7 @@ Content-Length: 511
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_7_response_fields"><a class="link" href="#_response_7_response_fields">Response fields</a></h5>
+<h5 id="_response_14_response_fields"><a class="link" href="#_response_14_response_fields">Response fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1661,22 +2520,33 @@ Content-Length: 511
 </div>
 </div>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_봉사_신청"><a class="link" href="#_4_봉사_신청">4. 봉사 신청</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_봉사_후기"><a class="link" href="#_5_봉사_후기">5. 봉사 후기</a></h2>
+<div class="sectionbody">
 <div class="sect2">
 <h3 id="_보호소에_달린_후기_리스트_조회"><a class="link" href="#_보호소에_달린_후기_리스트_조회">보호소에 달린 후기 리스트 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_8"><a class="link" href="#_request_8">Request</a></h4>
+<h4 id="_request_15"><a class="link" href="#_request_15">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_8_http_request"><a class="link" href="#_request_8_http_request">HTTP request</a></h5>
+<h5 id="_request_15_http_request"><a class="link" href="#_request_15_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/1/reviews?pageNumber=0&amp;pageSize=10 HTTP/1.1
-X-CSRF-TOKEN: X89fSh0dMakSvoVBEZ0B4EdL0L5ZqxmLslawXgzgqiQYA5S0b6pmLy17U8o_ieF2KbA1gSN8_YZtmi2m1GWCaDjWnxR7Oq2E
+X-CSRF-TOKEN: T6zgYaMeIuwNdL0bye41S1aG5nomAhhH3uddZggUubTsmeThec2FUZEmGtsgTd8j_sMBfWW1yxgRMy1q74JqVzglgYXaoIKC
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_8_path_parameters"><a class="link" href="#_request_8_path_parameters">Path parameters</a></h5>
+<h5 id="_request_15_path_parameters"><a class="link" href="#_request_15_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/{shelterId}/reviews</caption>
 <colgroup>
@@ -1698,7 +2568,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_8_query_parameters"><a class="link" href="#_request_8_query_parameters">Query parameters</a></h5>
+<h5 id="_request_15_query_parameters"><a class="link" href="#_request_15_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -1732,9 +2602,9 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_8"><a class="link" href="#_response_8">Response</a></h4>
+<h4 id="_response_15"><a class="link" href="#_response_15">Response</a></h4>
 <div class="sect4">
-<h5 id="_response_8_http_response"><a class="link" href="#_response_8_http_response">HTTP response</a></h5>
+<h5 id="_response_15_http_response"><a class="link" href="#_response_15_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1748,7 +2618,7 @@ Content-Length: 336
   "reviews" : [ {
     "reviewId" : 1,
     "volunteerTemperature" : 36,
-    "reviewCreatedAt" : "2023-11-27T18:16:10.311007",
+    "reviewCreatedAt" : "2023-11-28T15:41:11.706797",
     "reviewContent" : "reviewContent",
     "volunteerEmail" : "asdf@gmail.com",
     "reviewImageUrls" : [ "imageUrl1", "imageUrl2" ]
@@ -1762,7 +2632,7 @@ Content-Length: 336
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_8_response_fields"><a class="link" href="#_response_8_response_fields">Response fields</a></h5>
+<h5 id="_response_15_response_fields"><a class="link" href="#_response_15_response_fields">Response fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1835,817 +2705,19 @@ Content-Length: 336
 </div>
 </div>
 <div class="sect1">
-<h2 id="_2_보호소"><a class="link" href="#_2_보호소">2. 보호소</a></h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_보호소_비밀번호_변경"><a class="link" href="#_보호소_비밀번호_변경">보호소 비밀번호 변경</a></h3>
-<div class="sect3">
-<h4 id="_request_9"><a class="link" href="#_request_9">Request</a></h4>
-<div class="sect4">
-<h5 id="_request_9_http_request"><a class="link" href="#_request_9_http_request">HTTP request</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/me/passwords HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NzAsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NzAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.Ul2A8RbJbjEx8w9Ivd5e79_SNfLK9BwWbi_n9lvQ0JYH4-K8h7gEW5A6mfXVIAsE
-Content-Length: 76
-X-CSRF-TOKEN: yzw4eU8ScFCKelGgh50jrAjJtbXNWcaU6Etq1PrXxl44xSV_8g8JGnsrRDKnQmOT5rAXyTr6mNSubqC50Xhdtp_m92gNp0dP
-Host: localhost:8080
-
-{
-  "oldPassword" : "oldPassword123!",
-  "newPassword" : "newPassword123!"
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_request_9_request_headers"><a class="link" href="#_request_9_request_headers">Request headers</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_request_9_request_fields"><a class="link" href="#_request_9_request_fields">Request fields</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">제약</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oldPassword</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">6자 이상, 16자 이하</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">현재 비밀번호</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newPassword</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">6자 이상, 16자 이하</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">변경할 비밀번호</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_9"><a class="link" href="#_response_9">Response</a></h4>
-<div class="sect4">
-<h5 id="_response_9_http_response"><a class="link" href="#_response_9_http_response">HTTP response</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_보호소_마이_페이지_조회"><a class="link" href="#_보호소_마이_페이지_조회">보호소 마이 페이지 조회</a></h3>
-<div class="sect3">
-<h4 id="_request_10"><a class="link" href="#_request_10">Request</a></h4>
-<div class="sect4">
-<h5 id="_request_10_http_request"><a class="link" href="#_request_10_http_request">HTTP request</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/me HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NzAsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NzAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.Ul2A8RbJbjEx8w9Ivd5e79_SNfLK9BwWbi_n9lvQ0JYH4-K8h7gEW5A6mfXVIAsE
-X-CSRF-TOKEN: KyllLvJXdu7DAZTHGuzl1MF6qStqND8TpOM31Ne0-MZfRaQgHRBUHJNhEtzuZff1IsHR4adPhEoJVg0-wYIP47aCzPBndpYU
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_request_10_request_headers"><a class="link" href="#_request_10_request_headers">Request headers</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_10"><a class="link" href="#_response_10">Response</a></h4>
-<div class="sect4">
-<h5 id="_response_10_http_response"><a class="link" href="#_response_10_http_response">HTTP response</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Content-Type: application/json;charset=UTF-8
-Content-Length: 339
-
-{
-  "shelterId" : 1,
-  "shelterName" : "shelterName",
-  "shelterEmail" : "shelterEmail@email.com",
-  "shelterAddress" : "shelterAddress",
-  "shelterAddressDetail" : "shelterAddressDetail",
-  "shelterIsOpenedAddress" : true,
-  "shelterPhoneNumber" : "010-1234-5678",
-  "shelterSparePhoneNumber" : "010-8765-4321",
-  "shelterImageUrl" : ""
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_response_10_response_fields"><a class="link" href="#_response_10_response_fields">Response fields</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterEmail</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 이메일</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterAddress</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 주소</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterAddressDetail</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 상세주소</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterIsOpenedAddress</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 상세 주소 공개 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterPhoneNumber</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 전화번호</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterSparePhoneNumber</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 임시 전화번호</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterImageUrl</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 이미지 Url</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_3_봉사_모집"><a class="link" href="#_3_봉사_모집">3. 봉사 모집</a></h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_1_봉사_모집글_등록"><a class="link" href="#_1_봉사_모집글_등록">1) 봉사 모집글 등록</a></h3>
-<div class="sect3">
-<h4 id="_request_11"><a class="link" href="#_request_11">Request</a></h4>
-<div class="sect4">
-<h5 id="_request_11_http_request"><a class="link" href="#_request_11_http_request">HTTP request</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/shelters/recruitments HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjksInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NjksInJvbGUiOiJST0xFX1NIRUxURVIifQ.mngFIrPZpy_HCwH2NFMOTfhAgd6VKlIe4wXxAD97_uebLaOlqTCxbTVYOr5AK1r3
-Content-Length: 223
-X-CSRF-TOKEN: QKKV78qGCJQ_0f9ITQ6Yp1CyTx9AIBhBDETHoww-NeZyv8ywd5ejiqy-PqQS4JkueyOslmmGYid5RXpsOSChxT4JBINE2vrV
-Host: localhost:8080
-
-{
-  "title" : "title",
-  "startTime" : "2023-11-28T18:16:09.703223",
-  "endTime" : "2023-11-28T19:16:09.703223",
-  "deadline" : "2023-11-27T23:16:09.703223",
-  "capacity" : 10,
-  "content" : "content",
-  "imageUrls" : [ ]
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_request_11_request_headers"><a class="link" href="#_request_11_request_headers">Request headers</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_request_11_request_fields"><a class="link" href="#_request_11_request_fields">Request fields</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">제약</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1자 이상, 50자 이하</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 제목</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd&#8217;T&#8217;HH:mm:ss</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 시작 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd&#8217;T&#8217;HH:mm:ss</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 종료 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deadline</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd&#8217;T&#8217;HH:mm:ss</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집 마감 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>capacity</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1명 이상, 99명 이하</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집 정원</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1자 이상, 1000자 이하</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 본문</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageUrls</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0장 이상, 5장 이하</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 이미지</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_11"><a class="link" href="#_response_11">Response</a></h4>
-<div class="sect4">
-<h5 id="_response_11_http_response"><a class="link" href="#_response_11_http_response">HTTP response</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Location: /api/recruitments/1
-Content-Type: application/json;charset=UTF-8
-Content-Length: 25
-
-{
-  "recruitmentId" : 1
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_response_11_response_headers"><a class="link" href="#_response_11_response_headers">Response headers</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">생성된 리소스에 대한 접근 api</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_봉사_모집글_마감"><a class="link" href="#_봉사_모집글_마감">봉사 모집글 마감</a></h3>
-<div class="sect3">
-<h4 id="_request_12"><a class="link" href="#_request_12">Request</a></h4>
-<div class="sect4">
-<h5 id="_request_12_http_request"><a class="link" href="#_request_12_http_request">HTTP request</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1/close HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjksInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NjksInJvbGUiOiJST0xFX1NIRUxURVIifQ.mngFIrPZpy_HCwH2NFMOTfhAgd6VKlIe4wXxAD97_uebLaOlqTCxbTVYOr5AK1r3
-X-CSRF-TOKEN: 6NMpB-s8DhUu3FzPepsef0Rs86jY5TfoQODxH-5V8fGReZkX2ecdM4hYbSID5T6rHLYqTnxd3sm50QDFeYPDJ9xtwsepQPt0
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_request_12_request_headers"><a class="link" href="#_request_12_request_headers">Request headers</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_request_12_path_parameters"><a class="link" href="#_request_12_path_parameters">Path parameters</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /api/shelters/recruitments/{recruitmentId}/close</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recruitmentId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 ID</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_12"><a class="link" href="#_response_12">Response</a></h4>
-<div class="sect4">
-<h5 id="_response_12_http_response"><a class="link" href="#_response_12_http_response">HTTP response</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_봉사_모집글_수정"><a class="link" href="#_봉사_모집글_수정">봉사 모집글 수정</a></h3>
-<div class="sect3">
-<h4 id="_request_13"><a class="link" href="#_request_13">Request</a></h4>
-<div class="sect4">
-<h5 id="_request_13_http_request"><a class="link" href="#_request_13_http_request">HTTP request</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1 HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjksInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NjksInJvbGUiOiJST0xFX1NIRUxURVIifQ.mngFIrPZpy_HCwH2NFMOTfhAgd6VKlIe4wXxAD97_uebLaOlqTCxbTVYOr5AK1r3
-Content-Length: 234
-X-CSRF-TOKEN: hNoNcd7YS0D84JsQuDRSnnrQ0zX5tEl5goGVlbJwrL-xK7wGvLxsRby9LXTR0qopjBlm_0Ln_gzM1nBUsLDzrYMWn4aJTo43
-Host: localhost:8080
-
-{
-  "title" : "title",
-  "startTime" : "2023-12-27T18:16:09.689107",
-  "endTime" : "2023-12-27T19:16:09.689107",
-  "deadline" : "2023-12-26T18:16:09.689107",
-  "capacity" : 10,
-  "content" : "content",
-  "imageUrls" : [ "a1", "a2" ]
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_request_13_request_headers"><a class="link" href="#_request_13_request_headers">Request headers</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_request_13_path_parameters"><a class="link" href="#_request_13_path_parameters">Path parameters</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /api/shelters/recruitments/{recruitmentId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recruitmentId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 ID</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_request_13_request_fields"><a class="link" href="#_request_13_request_fields">Request fields</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">제약</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1자 이상, 100자 이하</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 제목</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd&#8217;T&#8217;HH:mm:ss</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 시작 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd&#8217;T&#8217;HH:mm:ss</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 종료 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deadline</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd&#8217;T&#8217;HH:mm:ss</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 마감 시간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>capacity</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1명 이상, 99명 이하</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 정원</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1자 이상, 1000자 이하</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 내용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageUrls</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5장 이하</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 이미지 리스트</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_13"><a class="link" href="#_response_13">Response</a></h4>
-<div class="sect4">
-<h5 id="_response_13_http_response"><a class="link" href="#_response_13_http_response">HTTP response</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_봉사_모집글_삭제"><a class="link" href="#_봉사_모집글_삭제">봉사 모집글 삭제</a></h3>
-<div class="sect3">
-<h4 id="_request_14"><a class="link" href="#_request_14">Request</a></h4>
-<div class="sect4">
-<h5 id="_request_14_http_request"><a class="link" href="#_request_14_http_request">HTTP request</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/shelters/recruitments/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjksInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NjksInJvbGUiOiJST0xFX1NIRUxURVIifQ.mngFIrPZpy_HCwH2NFMOTfhAgd6VKlIe4wXxAD97_uebLaOlqTCxbTVYOr5AK1r3
-X-CSRF-TOKEN: NSySpiugSM5wUyq9kYc41gOM5l0BaTfQLhjreH66KDriljkUBhyhxxPBfKxdYUuMoKoMsze7y2RjWA79SiuKQEyLEQ3V8wgi
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_request_14_request_headers"><a class="link" href="#_request_14_request_headers">Request headers</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_request_14_path_parameters"><a class="link" href="#_request_14_path_parameters">Path parameters</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /api/shelters/recruitments/{recruitmentId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recruitmentId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 모집글 ID</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_14"><a class="link" href="#_response_14">Response</a></h4>
-<div class="sect4">
-<h5 id="_response_14_http_response"><a class="link" href="#_response_14_http_response">HTTP response</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_4_봉사_신청"><a class="link" href="#_4_봉사_신청">4. 봉사 신청</a></h2>
-<div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
-<h2 id="_5_봉사_후기"><a class="link" href="#_5_봉사_후기">5. 봉사 후기</a></h2>
-<div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
 <h2 id="_6_보호_동물"><a class="link" href="#_6_보호_동물">6. 보호 동물</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_보호_동물_삭제"><a class="link" href="#_보호_동물_삭제">보호 동물 삭제</a></h3>
-<div class="sect3">
-<h4 id="_request_15"><a class="link" href="#_request_15">Request</a></h4>
-<div class="sect4">
-<h5 id="_request_15_http_request"><a class="link" href="#_request_15_http_request">HTTP request</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/shelters/animals/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NTgsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NTgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.6254yiYWn0kqyPSWCYQIsZZkxtpIfrsjmO12_UTvi5ZHB3ep3YMy566QeNTZeNML
-X-CSRF-TOKEN: 9tJFYTLex_TFWThjwaMKq3qKYPQYWrFZYVgH82N-eJ0MyEkewOd3WQXppZboYFoG-Y4-mU-yTcx5a4F0AGBkwlFOSvhuqnsm
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_request_15_request_headers"><a class="link" href="#_request_15_request_headers">Request headers</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_request_15_path_parameters"><a class="link" href="#_request_15_path_parameters">Path parameters</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /api/shelters/animals/{animalId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>animalId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호 동물 ID</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_15"><a class="link" href="#_response_15">Response</a></h4>
-<div class="sect4">
-<h5 id="_response_15_http_response"><a class="link" href="#_response_15_http_response">HTTP response</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_7_채팅"><a class="link" href="#_7_채팅">7. 채팅</a></h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_채팅방_목록_조회"><a class="link" href="#_채팅방_목록_조회">채팅방 목록 조회</a></h3>
 <div class="sect3">
 <h4 id="_request_16"><a class="link" href="#_request_16">Request</a></h4>
 <div class="sect4">
 <h5 id="_request_16_http_request"><a class="link" href="#_request_16_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/chat/rooms HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjcsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NjcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.SmagfRWwpWPDlbPXrAhn40CzXcmp2iF9sL-H8LH7sWFMucmyvvURh78wJONko2-_
-X-CSRF-TOKEN: KTuJvuSoNgA8a1Z0qesjLOj4xjdWJ-2ZnpWNIdvYVcKzpHXPSA7vi4KfVzERXGQVm8YXStnN6w5nFYu0-qe1Gbm9NPTWkBeq
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/shelters/animals/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NTcsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NTcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.JwKc9iTSRXMooNsg9AXQpyESZWqkY5eRYGkmwv7HKFlBECCr-vVR-mtphzVCqshf
+X-CSRF-TOKEN: YNeJJdZIkGfS5VBCSOdYNq8SwVp-11-ODZWxGB1DyWdgxAB0U7PsE-V5qAL_h2AjK8psU8lx7DsatDmjPqGJLi8g_V5W_DdE
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2671,6 +2743,28 @@ Host: localhost:8080</code></pre>
 </tbody>
 </table>
 </div>
+<div class="sect4">
+<h5 id="_request_16_path_parameters"><a class="link" href="#_request_16_path_parameters">Path parameters</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/shelters/animals/{animalId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>animalId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호 동물 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_response_16"><a class="link" href="#_response_16">Response</a></h4>
@@ -2678,12 +2772,69 @@ Host: localhost:8080</code></pre>
 <h5 id="_response_16_http_response"><a class="link" href="#_response_16_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_7_채팅"><a class="link" href="#_7_채팅">7. 채팅</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_채팅방_목록_조회"><a class="link" href="#_채팅방_목록_조회">채팅방 목록 조회</a></h3>
+<div class="sect3">
+<h4 id="_request_17"><a class="link" href="#_request_17">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_17_http_request"><a class="link" href="#_request_17_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/chat/rooms HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjcsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NjcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.h13dnnHMVeSs82y5MnurkVeTKHistdyquJuA9rP7h_mBAUgbUJGl9reZxFN1D4eW
+X-CSRF-TOKEN: JXDv4pAYT7Pcl6bCjWWM5X-jmovpJ6s9yBjWzbJWdBTN-5gcE0KLgaV5e9fxo8PwuEi4h0eUt-mKHs0Qqy3i-oVmECb5zqwv
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_17_request_headers"><a class="link" href="#_request_17_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_17"><a class="link" href="#_response_17">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_17_http_response"><a class="link" href="#_response_17_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 284
+Content-Length: 283
 
 {
   "chatRooms" : [ {
@@ -2691,7 +2842,7 @@ Content-Length: 284
     "chatRecentMessage" : "최근 메시지",
     "chatPartnerName" : "채팅 상대방 이름",
     "charPartnerImageUrl" : "채팅 상대방 이미지 url",
-    "createdAt" : "2023-11-27T18:16:07.545775",
+    "createdAt" : "2023-11-28T15:41:07.43392",
     "chatUnReadCount" : 5
   } ]
 }</code></pre>
@@ -2699,7 +2850,7 @@ Content-Length: 284
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_16_response_fields"><a class="link" href="#_response_16_response_fields">Response fields</a></h5>
+<h5 id="_response_17_response_fields"><a class="link" href="#_response_17_response_fields">Response fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2757,102 +2908,14 @@ Content-Length: 284
 <div class="sect2">
 <h3 id="_채팅방_상세_조회보호소"><a class="link" href="#_채팅방_상세_조회보호소">채팅방 상세 조회(보호소)</a></h3>
 <div class="sect3">
-<h4 id="_request_17"><a class="link" href="#_request_17">Request</a></h4>
-<div class="sect4">
-<h5 id="_request_17_http_request"><a class="link" href="#_request_17_http_request">HTTP request</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/chat/rooms/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjcsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NjcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.SmagfRWwpWPDlbPXrAhn40CzXcmp2iF9sL-H8LH7sWFMucmyvvURh78wJONko2-_
-X-CSRF-TOKEN: Iz6Pbde39JvpOKL2XEHDdHmZ_QrdwHQCT3rU8etwBbhHItKYRwfpX-eDlaPEAJfFbmz3FRj90DLv8UQvdhvswd9FMdslE-Oq
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_request_17_request_headers"><a class="link" href="#_request_17_request_headers">Request headers</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_17"><a class="link" href="#_response_17">Response</a></h4>
-<div class="sect4">
-<h5 id="_response_17_http_response"><a class="link" href="#_response_17_http_response">HTTP response</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Content-Type: application/json;charset=UTF-8
-Content-Length: 89
-
-{
-  "chatPartnerImageUrl" : "imageUrl",
-  "chatPartnerName" : "채팅 상대방 이름"
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_response_17_response_fields"><a class="link" href="#_response_17_response_fields">Response fields</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>chatPartnerImageUrl</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 상대방 이미지 URL</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>chatPartnerName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 상대방 이름</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_안_읽은_메시지_총_수_조회"><a class="link" href="#_안_읽은_메시지_총_수_조회">안 읽은 메시지 총 수 조회</a></h3>
-<div class="sect3">
 <h4 id="_request_18"><a class="link" href="#_request_18">Request</a></h4>
 <div class="sect4">
 <h5 id="_request_18_http_request"><a class="link" href="#_request_18_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/chat/rooms/unread HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjcsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NjcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.SmagfRWwpWPDlbPXrAhn40CzXcmp2iF9sL-H8LH7sWFMucmyvvURh78wJONko2-_
-X-CSRF-TOKEN: FjrKBVexgY2pIb5aYf5SV_RqeB2pFOV8QjOthIgHyVRuDNY7IF6uZGOHtLqERN1iVNNmYJFTVX-RIodRdgLOtbxirGVWb-RZ
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/chat/rooms/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjcsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NjcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.h13dnnHMVeSs82y5MnurkVeTKHistdyquJuA9rP7h_mBAUgbUJGl9reZxFN1D4eW
+X-CSRF-TOKEN: mBGNHkg-gasV1BD_39XMU8zA1yQ29PN8f2kewnAbX7w_15kt_SS9Knpbt5s44iCe6vj4Y_vy-hwGzZZRR18roUAibYpZs_gf
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2890,6 +2953,94 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
+Content-Length: 89
+
+{
+  "chatPartnerImageUrl" : "imageUrl",
+  "chatPartnerName" : "채팅 상대방 이름"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_response_18_response_fields"><a class="link" href="#_response_18_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>chatPartnerImageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 상대방 이미지 URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>chatPartnerName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 상대방 이름</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_안_읽은_메시지_총_수_조회"><a class="link" href="#_안_읽은_메시지_총_수_조회">안 읽은 메시지 총 수 조회</a></h3>
+<div class="sect3">
+<h4 id="_request_19"><a class="link" href="#_request_19">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_19_http_request"><a class="link" href="#_request_19_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/chat/rooms/unread HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjcsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NjcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.h13dnnHMVeSs82y5MnurkVeTKHistdyquJuA9rP7h_mBAUgbUJGl9reZxFN1D4eW
+X-CSRF-TOKEN: P566CLuXpUkQubsbngioOOs7d_Jha4Pdx_FxG9XHFklJcEhJWv2NOdinkS09iIkp_CWcXdoIWpADD7bw_5RCeePwcnBxEnx5
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_19_request_headers"><a class="link" href="#_request_19_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보호소 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_19"><a class="link" href="#_response_19">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_19_http_response"><a class="link" href="#_response_19_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
 Content-Length: 28
 
 {
@@ -2899,7 +3050,7 @@ Content-Length: 28
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_18_response_fields"><a class="link" href="#_response_18_response_fields">Response fields</a></h5>
+<h5 id="_response_19_response_fields"><a class="link" href="#_response_19_response_fields">Response fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2933,22 +3084,22 @@ Content-Length: 28
 <div class="sect2">
 <h3 id="_봉사자_계정_정보_수정"><a class="link" href="#_봉사자_계정_정보_수정">봉사자 계정 정보 수정</a></h3>
 <div class="sect3">
-<h4 id="_request_19"><a class="link" href="#_request_19">Request</a></h4>
+<h4 id="_request_20"><a class="link" href="#_request_20">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_19_http_request"><a class="link" href="#_request_19_http_request">HTTP request</a></h5>
+<h5 id="_request_20_http_request"><a class="link" href="#_request_20_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/volunteers/me HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NzEsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NzEsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.GLUUe9M3bTYtQ8B615jam25VANIcA1S-XwT6Kj-75_4osKXTX8ahgBG3axQ306-5
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NzIsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NzIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.agpwgqQLb6ccnYeyYq7k0KpdzSKMmGuY3-h8UWkpYYxSdTzskovGv9AFcIF5ORMv
 Content-Length: 153
-X-CSRF-TOKEN: 0v3Lko8-ViObbODq5_ocFdIP-DimLO3nXZ1WfF766xE2u6ojt8X-p71aMEa2DYHZhdcodOc81VqRHozKbag1Tjue2iEF35IX
+X-CSRF-TOKEN: N2EtAvG2V_EW5FN55AjTRQtHtak01tGPZg2wzsp1T8XUhP6zDldMZ5SONZc7gGdMhSXnITxxmMsN4eaiAjnU9vtHffW34M2K
 Host: localhost:8080
 
 {
   "name" : "새로운이름",
   "gender" : "MALE",
-  "birthDate" : "2023-11-27",
+  "birthDate" : "2023-11-28",
   "phoneNumber" : "010-9999-9999",
   "imageUrl" : "www.aws.s3.com/2"
 }</code></pre>
@@ -2956,7 +3107,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_19_request_headers"><a class="link" href="#_request_19_request_headers">Request headers</a></h5>
+<h5 id="_request_20_request_headers"><a class="link" href="#_request_20_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2977,7 +3128,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_19_request_fields"><a class="link" href="#_request_19_request_fields">Request fields</a></h5>
+<h5 id="_request_20_request_fields"><a class="link" href="#_request_20_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -3036,9 +3187,502 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_19"><a class="link" href="#_response_19">Response</a></h4>
+<h4 id="_response_20"><a class="link" href="#_response_20">Response</a></h4>
 <div class="sect4">
-<h5 id="_response_19_http_response"><a class="link" href="#_response_19_http_response">HTTP response</a></h5>
+<h5 id="_response_20_http_response"><a class="link" href="#_response_20_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_봉사자_회원_가입"><a class="link" href="#_봉사자_회원_가입">봉사자 회원 가입</a></h3>
+<div class="sect3">
+<h4 id="_request_21"><a class="link" href="#_request_21">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_21_http_request"><a class="link" href="#_request_21_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/volunteers HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 169
+X-CSRF-TOKEN: ysdupmexBU5UXdkS3AyuPAIYmv9KTwokg5deklvionmAKl3Lq6ILxF-JNnp5auohvSGaDTEqt8cpeTkJsfJuoW7XlkGySzn6
+Host: localhost:8080
+
+{
+  "email" : "asdf@gmail.com",
+  "password" : "asdf1234",
+  "name" : "김봉사",
+  "birthDate" : "1999-03-23",
+  "phoneNumber" : "010-1234-5678",
+  "gender" : "MALE"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_21_request_headers"><a class="link" href="#_request_21_request_headers">Request headers</a></h5>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::volunteer-controller-test/register-volunteer</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_21_request_fields"><a class="link" href="#_request_21_request_fields">Request fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">제약</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>birthDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생년월일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>phoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전화번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gender</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성별</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_21"><a class="link" href="#_response_21">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_21_http_response"><a class="link" href="#_response_21_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Location: /api/volunteers/1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 23
+
+{
+  "volunteerId" : 1
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_response_21_response_fields"><a class="link" href="#_response_21_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성된 봉사자 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_response_21_response_headers"><a class="link" href="#_response_21_response_headers">Response headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성된 리소스 위치</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_봉사자_이메일_중복_확인"><a class="link" href="#_봉사자_이메일_중복_확인">봉사자 이메일 중복 확인</a></h3>
+<div class="sect3">
+<h4 id="_request_22"><a class="link" href="#_request_22">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_22_http_request"><a class="link" href="#_request_22_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/volunteers/email HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 32
+X-CSRF-TOKEN: 0ZB24MJ5WjEKKKmRJn4HqQnGGpMfn-lmlVhwODYc5y1EJkxU5PUT0_dPblInS5ihE1Mzymv-N_F9-tlL82wWW1J60R8lEy5i
+Host: localhost:8080
+
+{
+  "email" : "asdf@gmail.com"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_22_request_headers"><a class="link" href="#_request_22_request_headers">Request headers</a></h5>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::volunteer-controller-test/check-duplicate-volunteer-email</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_22_request_fields"><a class="link" href="#_request_22_request_fields">Request fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">제약</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@를 포함한 이메일 형식</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용자 이메일</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_22"><a class="link" href="#_response_22">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_22_http_response"><a class="link" href="#_response_22_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 28
+
+{
+  "isDuplicated" : false
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_response_22_response_fields"><a class="link" href="#_response_22_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isDuplicated</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일 중복 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_봉사자_마이_페이지_조회"><a class="link" href="#_봉사자_마이_페이지_조회">봉사자 마이 페이지 조회</a></h3>
+<div class="sect3">
+<h4 id="_request_23"><a class="link" href="#_request_23">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_23_http_request"><a class="link" href="#_request_23_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/me HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NzIsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NzIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.agpwgqQLb6ccnYeyYq7k0KpdzSKMmGuY3-h8UWkpYYxSdTzskovGv9AFcIF5ORMv
+X-CSRF-TOKEN: -79t6w-8q2-N7nuS3kxPe3hgKqJDAhKl-ysOJSkT4kb7xJ2vmYcLim2Mnlyg1h2rumF7QhlTB5p6YyOImBg4QB8nhCWe9f7M
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_23_request_headers"><a class="link" href="#_request_23_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_23"><a class="link" href="#_response_23">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_23_http_response"><a class="link" href="#_response_23_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 300
+
+{
+  "volunteerId" : 1,
+  "volunteerEmail" : "asdf@gmail.com",
+  "volunteerName" : "김봉사",
+  "volunteerBirthDate" : "1999-03-23",
+  "volunteerPhoneNumber" : "010-1234-5678",
+  "volunteerTemperature" : 36,
+  "completedVolunteerCount" : 0,
+  "volunteerImageUrl" : "",
+  "volunteerGender" : "MALE"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_response_23_response_fields"><a class="link" href="#_response_23_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사자 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerEmail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerBirthDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생년월일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerPhoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전화번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerTemperature</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">온도</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>completedVolunteerCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerImageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 이미지 URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerGender</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성별</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_봉사자_비밀_번호_변경"><a class="link" href="#_봉사자_비밀_번호_변경">봉사자 비밀 번호 변경</a></h3>
+<div class="sect3">
+<h4 id="_request_24"><a class="link" href="#_request_24">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_24_http_request"><a class="link" href="#_request_24_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/volunteers/me/passwords HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NzIsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NzIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.agpwgqQLb6ccnYeyYq7k0KpdzSKMmGuY3-h8UWkpYYxSdTzskovGv9AFcIF5ORMv
+Content-Length: 76
+X-CSRF-TOKEN: gAz1o9KL4Rc4071U-mh1UsK9UwlzXUBzpsuxHr6Z9R2QKPJzuGnDk7G70yIV5I42n0VBN_WMfjBHOHZek6qJJ4yol3vzEctA
+Host: localhost:8080
+
+{
+  "oldPassword" : "oldPassword123!",
+  "newPassword" : "newPassword123!"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_24_request_headers"><a class="link" href="#_request_24_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사자 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_request_24_request_fields"><a class="link" href="#_request_24_request_fields">Request fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">제약</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oldPassword</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6자 이상, 16자 이하</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 비밀번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newPassword</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6자 이상, 16자 이하</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">변경할 비밀번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_24"><a class="link" href="#_response_24">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_24_http_response"><a class="link" href="#_response_24_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -3076,20 +3720,20 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_봉사_후기_삭제"><a class="link" href="#_봉사_후기_삭제">봉사 후기 삭제</a></h3>
 <div class="sect3">
-<h4 id="_request_20"><a class="link" href="#_request_20">Request</a></h4>
+<h4 id="_request_25"><a class="link" href="#_request_25">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_20_http_request"><a class="link" href="#_request_20_http_request">HTTP request</a></h5>
+<h5 id="_request_25_http_request"><a class="link" href="#_request_25_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/volunteers/reviews/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NzAsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NzAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.WvyOicNwajEHsKMJvabdSAE37G3VkpG-1LPGdwCsuTzfN7xvx-z3BBC5IG00qZlD
-X-CSRF-TOKEN: L55dQ2O78xOf9hrNPBnuC3j_KVKBr_9vK4ugwycq2d48DVMGFqZlIgLdxHCylyj-WTTabUnMBDDjnsdCTurFpUMe6-lfbDdn
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NzEsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NzEsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.2NVb-O9Myp2Wm6KpqJpgvun3OIX_mVpQC0yKmVhZrx7WFr8aLfIhdx_W_zxeLLts
+X-CSRF-TOKEN: y9IG35djw14V2Wudcanil4DwcxOYNYOtE7k_l9uBzj6NDjQCqeVn6fQG9zo4v1moSITW8rnAXnKhVLuAK4sHobng-w_sOgUw
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_20_request_headers"><a class="link" href="#_request_20_request_headers">Request headers</a></h5>
+<h5 id="_request_25_request_headers"><a class="link" href="#_request_25_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3110,7 +3754,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_20_path_parameters"><a class="link" href="#_request_20_path_parameters">Path parameters</a></h5>
+<h5 id="_request_25_path_parameters"><a class="link" href="#_request_25_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/volunteers/reviews/{reviewId}</caption>
 <colgroup>
@@ -3133,9 +3777,9 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_20"><a class="link" href="#_response_20">Response</a></h4>
+<h4 id="_response_25"><a class="link" href="#_response_25">Response</a></h4>
 <div class="sect4">
-<h5 id="_response_20_http_response"><a class="link" href="#_response_20_http_response">HTTP response</a></h5>
+<h5 id="_response_25_http_response"><a class="link" href="#_response_25_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -3161,20 +3805,20 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_채팅방_상세_조회"><a class="link" href="#_채팅방_상세_조회">채팅방 상세 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_21"><a class="link" href="#_request_21">Request</a></h4>
+<h4 id="_request_26"><a class="link" href="#_request_26">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_21_http_request"><a class="link" href="#_request_21_http_request">HTTP request</a></h5>
+<h5 id="_request_26_http_request"><a class="link" href="#_request_26_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/chat/rooms/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjcsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NjcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.jsHpp7kBZou0eDLl1zViwMgw1RqmdScmZVzXNKGnVKVFjx-Zr3fa2SwonZWzJ7EA
-X-CSRF-TOKEN: wfR3Pu4sBzMdf0vgEDUS0R2NRUSUf-L4UyqvWg4LnTNXG0_p9sBCWo9KMAswT3mEdRgm43y1aCagHNDVN0-aazxu-ANvLCvQ
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjcsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NjcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.JnB0ErwbdkpGg8Bwh-Z0zpvLz0WXLi-urTWFBaWZ3wwrsI9TvfRKnpPYY8gudPJH
+X-CSRF-TOKEN: cfenpFddkLMSNeioHkPiAQOrVwGKk9gRkOkq8iF2RYt9eHW8RZWXx28-qYU_BdvJLG7WOTrNejiyoeE8pIpIwURHdrNFHELY
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_21_request_headers"><a class="link" href="#_request_21_request_headers">Request headers</a></h5>
+<h5 id="_request_26_request_headers"><a class="link" href="#_request_26_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3195,7 +3839,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_21_path_parameters"><a class="link" href="#_request_21_path_parameters">Path parameters</a></h5>
+<h5 id="_request_26_path_parameters"><a class="link" href="#_request_26_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/volunteers/chat/rooms/{chatRoomId}</caption>
 <colgroup>
@@ -3218,9 +3862,9 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_21"><a class="link" href="#_response_21">Response</a></h4>
+<h4 id="_response_26"><a class="link" href="#_response_26">Response</a></h4>
 <div class="sect4">
-<h5 id="_response_21_http_response"><a class="link" href="#_response_21_http_response">HTTP response</a></h5>
+<h5 id="_response_26_http_response"><a class="link" href="#_response_26_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -3238,7 +3882,7 @@ Content-Length: 78
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_21_response_fields"><a class="link" href="#_response_21_response_fields">Response fields</a></h5>
+<h5 id="_response_26_response_fields"><a class="link" href="#_response_26_response_fields">Response fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3271,20 +3915,20 @@ Content-Length: 78
 <div class="sect2">
 <h3 id="_채팅방_목록_조회_2"><a class="link" href="#_채팅방_목록_조회_2">채팅방 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_22"><a class="link" href="#_request_22">Request</a></h4>
+<h4 id="_request_27"><a class="link" href="#_request_27">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_22_http_request"><a class="link" href="#_request_22_http_request">HTTP request</a></h5>
+<h5 id="_request_27_http_request"><a class="link" href="#_request_27_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/chat/rooms HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjcsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NjcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.jsHpp7kBZou0eDLl1zViwMgw1RqmdScmZVzXNKGnVKVFjx-Zr3fa2SwonZWzJ7EA
-X-CSRF-TOKEN: knPlOkRjTGnYyTU58cw9KpXkJaV57aiTAhDdSqFAaFLsgG15qkSDXnIHKV_18AQLyOEJHaXWCJ0fiM2-Z3G5eZRwXGCPsQwd
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjcsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NjcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.JnB0ErwbdkpGg8Bwh-Z0zpvLz0WXLi-urTWFBaWZ3wwrsI9TvfRKnpPYY8gudPJH
+X-CSRF-TOKEN: m0PJU6DkZoaF4sUtX6pVzTGCnKknXK5UDt0O715QcisxSJLp-CGra5OFVrWogKBIa4dhrAbhsZAfP515bO1o12hgQBJVKaSL
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_22_request_headers"><a class="link" href="#_request_22_request_headers">Request headers</a></h5>
+<h5 id="_request_27_request_headers"><a class="link" href="#_request_27_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3306,9 +3950,9 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_22"><a class="link" href="#_response_22">Response</a></h4>
+<h4 id="_response_27"><a class="link" href="#_response_27">Response</a></h4>
 <div class="sect4">
-<h5 id="_response_22_http_response"><a class="link" href="#_response_22_http_response">HTTP response</a></h5>
+<h5 id="_response_27_http_response"><a class="link" href="#_response_27_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -3324,7 +3968,7 @@ Content-Length: 284
     "chatRecentMessage" : "최근 메시지",
     "chatPartnerName" : "채팅 상대방 이름",
     "charPartnerImageUrl" : "채팅 상대방 이미지 url",
-    "createdAt" : "2023-11-27T18:16:07.458914",
+    "createdAt" : "2023-11-28T15:41:07.366664",
     "chatUnReadCount" : 5
   } ]
 }</code></pre>
@@ -3332,7 +3976,7 @@ Content-Length: 284
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_22_response_fields"><a class="link" href="#_response_22_response_fields">Response fields</a></h5>
+<h5 id="_response_27_response_fields"><a class="link" href="#_response_27_response_fields">Response fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3390,20 +4034,20 @@ Content-Length: 284
 <div class="sect2">
 <h3 id="_안_읽은_메시지_총_수_조회_2"><a class="link" href="#_안_읽은_메시지_총_수_조회_2">안 읽은 메시지 총 수 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_23"><a class="link" href="#_request_23">Request</a></h4>
+<h4 id="_request_28"><a class="link" href="#_request_28">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_23_http_request"><a class="link" href="#_request_23_http_request">HTTP request</a></h5>
+<h5 id="_request_28_http_request"><a class="link" href="#_request_28_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/chat/rooms/unread HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEwNzY1NjcsInN1YiI6IjEiLCJleHAiOjE3MDEwNzc1NjcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.jsHpp7kBZou0eDLl1zViwMgw1RqmdScmZVzXNKGnVKVFjx-Zr3fa2SwonZWzJ7EA
-X-CSRF-TOKEN: qNe2baRY-k4aF9pffwgZjhHbs3V-T_U-T2r8etRvy5ZbeIsem7LVDJw7nC83IeNsHSUt7Cnpnk1LeMQTf16fHuZW-aE-Trks
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExNTM2NjcsInN1YiI6IjEiLCJleHAiOjE3MDExNTQ2NjcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.JnB0ErwbdkpGg8Bwh-Z0zpvLz0WXLi-urTWFBaWZ3wwrsI9TvfRKnpPYY8gudPJH
+X-CSRF-TOKEN: kMfS7CwxqbG9X4OWVrxZU4rFdRNtiCZ4YXY75zB2J1YoYRUK8vW03E0CkImQZ-WlYZFtZO79WCoL7kNVWEFdg1ESRDIfACBu
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_23_request_headers"><a class="link" href="#_request_23_request_headers">Request headers</a></h5>
+<h5 id="_request_28_request_headers"><a class="link" href="#_request_28_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3425,9 +4069,9 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_23"><a class="link" href="#_response_23">Response</a></h4>
+<h4 id="_response_28"><a class="link" href="#_response_28">Response</a></h4>
 <div class="sect4">
-<h5 id="_response_23_http_response"><a class="link" href="#_response_23_http_response">HTTP response</a></h5>
+<h5 id="_response_28_http_response"><a class="link" href="#_response_28_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -3444,7 +4088,7 @@ Content-Length: 28
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_23_response_fields"><a class="link" href="#_response_23_response_fields">Response fields</a></h5>
+<h5 id="_response_28_response_fields"><a class="link" href="#_response_28_response_fields">Response fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3646,7 +4290,7 @@ Content-Length: 28
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-11-20 18:49:17 +0900
+Last updated 2023-11-28 15:40:46 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
