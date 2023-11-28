@@ -48,6 +48,7 @@ public class AnimalService {
         Animal animal = AnimalMapper.toAnimal(shelter, registerAnimalRequest);
         animalRepository.save(animal);
         animalCacheRepository.saveAnimal(animal);
+        animalCacheRepository.increaseTotalNumberOfAnimals();
         return RegisterAnimalResponse.from(animal);
     }
 
@@ -118,6 +119,10 @@ public class AnimalService {
         @PageableDefault() Pageable pageable
     ) {
 
+        if (isFirstPage(type, active, neuteredFilter, age, gender, size, createdAt, animalId)) {
+            return animalCacheRepository.findAnimals(pageable.getPageSize(), animalCacheRepository.getTotalNumberOfAnimals());
+        }
+
         long count = animalRepository.countAnimalsV2(
             type,
             active,
@@ -126,10 +131,6 @@ public class AnimalService {
             gender,
             size
         );
-
-        if (isFirstPage(type, active, neuteredFilter, age, gender, size, createdAt, animalId)) {
-            return animalCacheRepository.findAnimals(pageable.getPageSize(), count);
-        }
 
         Slice<Animal> animalsWithPagination = animalRepository.findAnimalsByVolunteerV2(
             type,
@@ -152,7 +153,8 @@ public class AnimalService {
         animal.updateAdoptStatus(isAdopted);
         if (isAdopted == true) {
             animalCacheRepository.deleteAnimal(animal);
-        }
+            animalCacheRepository.decreaseTotalNumberOfAnimals();
+        }         
     }
 
     @Transactional
@@ -188,6 +190,7 @@ public class AnimalService {
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
         animalRepository.delete(animal);
         animalCacheRepository.deleteAnimal(animal);
+        animalCacheRepository.decreaseTotalNumberOfAnimals();
     }
 
     private boolean isFirstPage(AnimalType type, AnimalActive active,

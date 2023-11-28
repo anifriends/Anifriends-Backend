@@ -1,3 +1,4 @@
+
 package com.clova.anifriends.domain.animal.service;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -27,11 +28,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class AnimalCacheRepository {
 
     private static final String ANIMAL_ZSET_KEY = "animal";
+    private static final String TOTAL_NUMBER_OF_ANIMALS_KEY = "total_number_of_animals";
     private static final int ANIMAL_CACHE_SIZE = 30;
     private static final long LAST_INDEX = 1L;
     public static final double NANO = 1_000_000_000.0;
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Long> countRedisTemplate;
     private final AnimalRepository animalRepository;
 
     private ZSetOperations<String, Object> zSetOperations;
@@ -48,6 +51,19 @@ public class AnimalCacheRepository {
         Slice<Animal> animals = animalRepository.findAnimalsByVolunteerV2(null, null, null, null,
             null, null, null, null, pageable);
         animals.forEach(this::saveAnimal);
+        long dbCount = animalRepository.countAllAnimalsExceptAdopted();
+        redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, dbCount);
+    }
+
+    @Transactional(readOnly = true)
+    public Long getTotalNumberOfAnimals() {
+        Object cachedCount = redisTemplate.opsForValue().get(TOTAL_NUMBER_OF_ANIMALS_KEY);
+        if (Objects.nonNull(cachedCount)) {
+            return ((Integer) cachedCount).longValue();
+        }
+        long dbCount = animalRepository.countAllAnimalsExceptAdopted();
+        redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, dbCount);
+        return dbCount;
     }
 
     public void saveAnimal(Animal animal) {
@@ -89,5 +105,17 @@ public class AnimalCacheRepository {
     private double getScore(LocalDateTime createdAt) {
         Instant instant = createdAt.toInstant(ZoneOffset.UTC);
         return instant.getEpochSecond() + instant.getNano() / NANO;
+    }
+
+    @Transactional(readOnly = true)
+    public void increaseTotalNumberOfAnimals() {
+        Long cachedCount = getTotalNumberOfAnimals();
+        redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, cachedCount + 1);
+    }
+
+    @Transactional(readOnly = true)
+    public void decreaseTotalNumberOfAnimals() {
+        Long cachedCount = getTotalNumberOfAnimals();
+        redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, cachedCount - 1);
     }
 }

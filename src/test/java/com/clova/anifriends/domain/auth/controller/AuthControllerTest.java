@@ -12,13 +12,15 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.auth.dto.request.LoginRequest;
-import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
+import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
+import com.clova.anifriends.global.exception.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -105,7 +107,8 @@ class AuthControllerTest extends BaseControllerTest {
         MockCookie refreshToken = new MockCookie("refreshToken", tokenResponse.refreshToken());
         refreshToken.setPath("/api/auth");
         refreshToken.setHttpOnly(true);
-        refreshToken.setDomain("localhost");
+        refreshToken.setSecure(true);
+        refreshToken.setDomain(".anifriends.site");
         refreshToken.setSameSite("None");
 
         given(authService.refreshAccessToken(anyString())).willReturn(tokenResponse);
@@ -129,5 +132,18 @@ class AuthControllerTest extends BaseControllerTest {
                     fieldWithPath("accessToken").type(STRING).description("갱신된 액세스 토큰")
                 )
             ));
+    }
+
+    @Test
+    @DisplayName("예외(AuthAuthenticationException): 액세스 토큰 갱신 API 호출 시 쿠키가 포함되지 않은 경우")
+    void exceptionWhenNullRefreshToken() throws Exception {
+        //given
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/refresh"));
+
+        //then
+        resultActions.andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.errorCode")
+                .value(ErrorCode.NOT_EXISTS_REFRESH_TOKEN.getValue()));
     }
 }

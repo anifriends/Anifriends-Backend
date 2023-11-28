@@ -27,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ApplicantService {
 
+    public static final int NO_SHOW_TEMP_REDUCTION = 10;
+
     private final ApplicantRepository applicantRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final VolunteerRepository volunteerRepository;
@@ -38,11 +40,6 @@ public class ApplicantService {
         Volunteer volunteer = getVolunteer(volunteerId);
         Applicant applicant = new Applicant(recruitmentPessimistic, volunteer);
         applicantRepository.save(applicant);
-    }
-
-    private Recruitment getRecruitmentPessimistic(Long recruitmentId) {
-        return recruitmentRepository.findByIdPessimistic(recruitmentId)
-            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 봉사 모집글입니다."));
     }
 
     @Transactional(readOnly = true)
@@ -76,8 +73,33 @@ public class ApplicantService {
     @Transactional
     public void updateApplicantAttendance(Long shelterId, Long recruitmentId,
         List<UpdateApplicantAttendanceCommand> applicantsCommand) {
-        updateToAttendance(shelterId, recruitmentId, applicantsCommand);
-        updateToNoShow(shelterId, recruitmentId, applicantsCommand);
+        List<Long> noShowIds = getNoShowIds(applicantsCommand);
+        List<Long> attendedIds = getAttendedIds(applicantsCommand);
+
+        updateVolunteersTemperature(shelterId, recruitmentId, noShowIds, attendedIds);
+        updateAttendanceStatus(shelterId, recruitmentId, noShowIds, attendedIds);
+    }
+
+    private void updateVolunteersTemperature(Long shelterId, Long recruitmentId,
+        List<Long> noShowIds, List<Long> attendedIds) {
+        List<Volunteer> noShowVolunteers = volunteerRepository.findAttendedByNoShowIds(shelterId,
+            recruitmentId,
+            noShowIds);
+        noShowVolunteers.forEach(
+            volunteer -> volunteer.decreaseTemperature(NO_SHOW_TEMP_REDUCTION));
+
+        List<Volunteer> attendedVolunteers = volunteerRepository.findNoShowByAttendedIds(
+            shelterId, recruitmentId, attendedIds);
+        attendedVolunteers
+            .forEach(volunteer -> volunteer.increaseTemperature(NO_SHOW_TEMP_REDUCTION));
+    }
+
+    private void updateAttendanceStatus(Long shelterId, Long recruitmentId, List<Long> noShowIds,
+        List<Long> attendedIds) {
+        applicantRepository.updateBulkAttendance(shelterId, recruitmentId, noShowIds,
+            ApplicantStatus.NO_SHOW);
+        applicantRepository.updateBulkAttendance(shelterId, recruitmentId, attendedIds,
+            ApplicantStatus.ATTENDANCE);
     }
 
     @Transactional
@@ -87,32 +109,29 @@ public class ApplicantService {
         applicant.updateApplicantStatus(isApproved);
     }
 
-    private void updateToNoShow(Long shelterId, Long recruitmentId,
-        List<UpdateApplicantAttendanceCommand> applicantsCommand) {
-        List<Long> noShowIds = applicantsCommand.stream()
+    private List<Long> getNoShowIds(List<UpdateApplicantAttendanceCommand> applicantsCommand) {
+        return applicantsCommand.stream()
             .filter(applicant -> !applicant.isAttended())
             .map(UpdateApplicantAttendanceCommand::applicantId)
             .toList();
-
-        applicantRepository.updateBulkAttendance(shelterId, recruitmentId, noShowIds,
-            ApplicantStatus.NO_SHOW);
     }
 
-    private void updateToAttendance(Long shelterId, Long recruitmentId,
-        List<UpdateApplicantAttendanceCommand> applicantsCommand) {
-        List<Long> attendedIds = applicantsCommand.stream()
+    private List<Long> getAttendedIds(List<UpdateApplicantAttendanceCommand> applicantsCommand) {
+        return applicantsCommand.stream()
             .filter(UpdateApplicantAttendanceCommand::isAttended)
             .map(UpdateApplicantAttendanceCommand::applicantId)
             .toList();
-
-        applicantRepository.updateBulkAttendance(shelterId, recruitmentId, attendedIds,
-            ApplicantStatus.ATTENDANCE);
     }
 
     private Applicant getApplicant(Long applicantId, Long recruitmentId, Long shelterId) {
         return applicantRepository.findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId(
                 applicantId, recruitmentId, shelterId)
             .orElseThrow(() -> new ApplicantNotFoundException("존재하지 않는 봉사 신청입니다."));
+    }
+
+    private Recruitment getRecruitmentPessimistic(Long recruitmentId) {
+        return recruitmentRepository.findByIdPessimistic(recruitmentId)
+            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 봉사 모집글입니다."));
     }
 
     private Recruitment getRecruitment(Long recruitmentId) {

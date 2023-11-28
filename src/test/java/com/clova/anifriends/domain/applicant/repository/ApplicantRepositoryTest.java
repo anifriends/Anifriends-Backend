@@ -243,6 +243,9 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             applicantRepository.updateBulkAttendance(shelter.getShelterId(),
                 recruitment.getRecruitmentId(), noShowIds, NO_SHOW);
 
+            entityManager.flush();
+            entityManager.clear();
+
             // then
             Optional<Applicant> persistedApplicantNoShowToAttendance = applicantRepository.findById(
                 applicantNoShowToAttendance.getApplicantId());
