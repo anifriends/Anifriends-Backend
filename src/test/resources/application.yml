@@ -1,5 +1,8 @@
 front:
-  server: ThisIsJustTestFrontServerUrl
+  volunteer:
+    server: ThisIsJustTestFrontVolunteerServerUrl
+  shelter:
+    server: ThisIsJustTestFrontShelterServerUrl
 jwt:
   issuer: test
   expiry-seconds: 10000
