@@ -16,6 +16,7 @@ public enum ErrorCode implements EnumType {
     ACCESS_TOKEN_EXPIRED("AF101"), // 액세스 토큰 만료
     UN_AUTHENTICATION("AF102"), // 인증 안됨
     REFRESH_TOKEN_EXPIRED("AF103"), // 리프레시 토큰 만료
+    NOT_EXISTS_REFRESH_TOKEN("AF104"), // 리프레시 토큰 없음
     // 403
     UN_AUTHORIZATION("AF301"), // 권한 없음
     // 404
