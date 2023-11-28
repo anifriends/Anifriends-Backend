@@ -15,6 +15,7 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -387,6 +388,50 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
 
             // then
             assertThat(found.get().getShelter().getShelterId()).isEqualTo(shelter.getShelterId());
+        }
+    }
+
+    @Nested
+    @DisplayName("findRecruitmentByStartTime 메서드 실행 시")
+    class FindRecruitmentByStartTimeTest {
+
+        @Test
+        @DisplayName("성공")
+        void findRecruitmentByStartTime() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment1 = new Recruitment(
+                shelter,
+                "a",
+                10,
+                "d",
+                LocalDateTime.now().plusDays(2).with(LocalTime.of(8, 0)),
+                LocalDateTime.now().plusDays(2).with(LocalTime.of(12, 0)),
+                LocalDateTime.now().plusDays(1),
+                List.of()
+            );
+
+            Recruitment recruitment2 = new Recruitment(
+                shelter,
+                "ab",
+                10,
+                "de",
+                LocalDateTime.now().plusDays(3),
+                LocalDateTime.now().plusDays(3).plusHours(3),
+                LocalDateTime.now().plusDays(1),
+                List.of()
+            );
+            shelterRepository.save(shelter);
+            recruitmentRepository.saveAll(List.of(recruitment1, recruitment2));
+            LocalDateTime time1 = LocalDateTime.now().plusDays(2).with(LocalTime.of(0, 1));
+            LocalDateTime time2 = LocalDateTime.now().plusDays(2).with(LocalTime.of(23, 59));
+
+            // when
+            List<Recruitment> recruitments = recruitmentRepository.findRecruitmentByStartTime(time1, time2);
+
+            // then
+            assertThat(recruitments).hasSize(1);
+            assertThat(recruitments.get(0)).isEqualTo(recruitment1);
         }
     }
 }
