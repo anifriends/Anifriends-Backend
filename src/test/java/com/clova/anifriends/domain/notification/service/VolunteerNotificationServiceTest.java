@@ -7,12 +7,18 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.notification.VolunteerNotification;
 import com.clova.anifriends.domain.notification.dto.response.FindVolunteerHasNewNotificationResponse;
 import com.clova.anifriends.domain.notification.dto.response.FindVolunteerNotificationsResponse;
 import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
 import com.clova.anifriends.domain.notification.support.fixture.VolunteerNotificationFixture;
+import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
+import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
+import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.util.List;
@@ -113,6 +119,13 @@ class VolunteerNotificationServiceTest {
         @DisplayName("성공")
         void notifyADayBeforeVolunteer() {
             // given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer);
+            given(recruitmentRepository.findRecruitmentsByStartTime(any(), any()))
+                .willReturn(List.of(recruitment));
+
             // when
             volunteerNotificationService.notifyADayBeforeVolunteer();
 
@@ -132,6 +145,13 @@ class VolunteerNotificationServiceTest {
         @DisplayName("성공")
         void notifyThreeDayBeforeVolunteer() {
             // given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer);
+            given(recruitmentRepository.findRecruitmentsByStartTime(any(), any()))
+                .willReturn(List.of(recruitment));
+
             // when
             volunteerNotificationService.notifyThreeDayBeforeVolunteer();
 
@@ -151,6 +171,13 @@ class VolunteerNotificationServiceTest {
         @DisplayName("성공")
         void notifyEncourageWriteReview() {
             // given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer);
+            given(recruitmentRepository.findRecruitmentsByEndTime(any(), any()))
+                .willReturn(List.of(recruitment));
+
             // when
             volunteerNotificationService.notifyEncourageWriteReview();
 
