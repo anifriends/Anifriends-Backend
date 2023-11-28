@@ -15,7 +15,7 @@ public enum NotificationType implements EnumType {
     VOLUNTEER_REFUSED("봉사 신청이 거절되었습니다."),
     A_DAY_BEFORE_VOLUNTEER("봉사 하루 전입니다."),
     THREE_DAY_BEFORE_VOLUNTEER("봉사 3일 전입니다."),
-    CONFIRMED_ATTENDANCE("봉사 출석이 확정되었습니다."),
+    INCREASE_VOLUNTEER_TEMPERATURE("'C의 봉사자 온도가 상승하였습니다."),
     ENCOURAGE_WRITE_REVIEW("봉사 후기를 작성해주세요.");
 
     private final String message;

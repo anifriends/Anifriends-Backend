@@ -347,6 +347,9 @@ class ApplicantServiceTest {
                     List.of(applicantAttendanceToNoShow.getApplicantId(),
                         applicantNoShow.getApplicantId()), NO_SHOW);
 
+            verify(volunteerNotificationRepository, times(1))
+                .saveAll(any(List.class));
+
         }
     }
 

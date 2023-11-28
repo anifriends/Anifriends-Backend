@@ -22,6 +22,7 @@ import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundExceptio
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.global.aspect.DataIntegrityHandler;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -86,6 +87,8 @@ public class ApplicantService {
 
         updateVolunteersTemperature(shelterId, recruitmentId, noShowIds, attendedIds);
         updateAttendanceStatus(shelterId, recruitmentId, noShowIds, attendedIds);
+        volunteerNotificationRepository.saveAll(
+            makeNewAttendanceNotifications(shelterId, recruitmentId, attendedIds));
     }
 
     private void updateVolunteersTemperature(Long shelterId, Long recruitmentId,
@@ -172,6 +175,23 @@ public class ApplicantService {
                 : NotificationType.VOLUNTEER_REFUSED.getMessage(),
             isApproved ? NotificationType.VOLUNTEER_APPROVED.getName()
                 : NotificationType.VOLUNTEER_REFUSED.getName()
+        );
+    }
+
+    private List<VolunteerNotification> makeNewAttendanceNotifications(Long shelterId,
+        Long recruitmentId, List<Long> attendedIds) {
+        return volunteerRepository.findNoShowByAttendedIds(shelterId, recruitmentId, attendedIds)
+            .stream()
+            .map(this::makeNewAttendanceNotification)
+            .collect(Collectors.toList());
+    }
+
+    private VolunteerNotification makeNewAttendanceNotification(Volunteer volunteer) {
+        return new VolunteerNotification(
+            volunteer,
+            null,
+            NO_SHOW_TEMP_REDUCTION + NotificationType.INCREASE_VOLUNTEER_TEMPERATURE.getMessage(),
+            NotificationType.INCREASE_VOLUNTEER_TEMPERATURE.getName()
         );
     }
 }
