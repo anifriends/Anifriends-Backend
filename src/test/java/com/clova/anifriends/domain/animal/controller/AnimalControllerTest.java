@@ -264,7 +264,7 @@ class AnimalControllerTest extends BaseControllerTest {
         FindAnimalsResponse response = FindAnimalsResponse
             .from(new PageImpl<>(List.of(animal)));
 
-        when(animalService.findAnimalsByVolunteer(
+        when(animalService.findAnimals(
             any(AnimalType.class),
             any(AnimalActive.class),
             any(AnimalNeuteredFilter.class),
@@ -329,7 +329,7 @@ class AnimalControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("보호 동물 조회 & 검색(봉사자) api 호출 시")
-    void findAnimalsByVolunteerV2() throws Exception {
+    void findAnimalsV2() throws Exception {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("type", AnimalType.DOG.name());
@@ -350,7 +350,7 @@ class AnimalControllerTest extends BaseControllerTest {
         FindAnimalsResponse response = FindAnimalsResponse
             .fromV2(new SliceImpl<>(List.of(animal)), 1L);
 
-        when(animalService.findAnimalsByVolunteerV2(
+        when(animalService.findAnimalsV2(
             any(AnimalType.class),
             any(AnimalActive.class),
             any(AnimalNeuteredFilter.class),

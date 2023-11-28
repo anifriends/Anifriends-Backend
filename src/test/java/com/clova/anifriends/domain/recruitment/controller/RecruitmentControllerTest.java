@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.recruitment.controller;
 
-import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentsByShelterIdResponse;
+import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.FindShelterRecruitmentsResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,7 +40,7 @@ import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRe
 import com.clova.anifriends.domain.recruitment.dto.request.UpdateRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindShelterRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
@@ -406,18 +406,18 @@ class RecruitmentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("findRecruitmentsByShelterId 메서드 실행 시")
-    void findRecruitmentsByShelterId() throws Exception {
+    @DisplayName("findShelterRecruitments 메서드 실행 시")
+    void findShelterRecruitments() throws Exception {
         // given
         Shelter shelter = shelter();
         setField(shelter, "shelterId", 1L);
         Recruitment recruitment = recruitment(shelter);
         setField(recruitment, "recruitmentId", 1L);
         Page<Recruitment> pageResult = new PageImpl<>(List.of(recruitment));
-        FindRecruitmentsByShelterIdResponse response = findRecruitmentsByShelterIdResponse(
+        FindShelterRecruitmentsResponse response = FindShelterRecruitmentsResponse(
             pageResult);
 
-        when(recruitmentService.findShelterRecruitmentsByShelter(anyLong(), any()))
+        when(recruitmentService.findShelterRecruitments(anyLong(), any()))
             .thenReturn(response);
 
         // when

@@ -38,7 +38,7 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         + "and s.shelterId = :shelterId "
         + "and (a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE "
         + "or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NO_SHOW)")
-    List<Applicant> findApprovedByRecruitmentIdAndShelterId(
+    List<Applicant> findApprovedApplicants(
         @Param("recruitmentId") Long recruitmentId,
         @Param("shelterId") Long shelterId
     );

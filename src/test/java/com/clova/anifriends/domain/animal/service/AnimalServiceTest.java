@@ -195,11 +195,11 @@ class AnimalServiceTest {
 
     @Nested
     @DisplayName("findAnimals 실행 시")
-    class FindAnimalsByVolunteerTest {
+    class FindAnimalsTest {
 
         @Test
         @DisplayName("성공: 모든 필터 존재")
-        void findAnimalsByVolunteer1() {
+        void findAnimals1() {
             // given
             String mockName = "animalName";
             String mockInformation = "animalInformation";
@@ -235,12 +235,12 @@ class AnimalServiceTest {
             FindAnimalsResponse expected = FindAnimalsResponse.from(
                 pageResult);
 
-            when(animalRepository.findAnimalsByVolunteer(typeFilter, activeFilter,
+            when(animalRepository.findAnimals(typeFilter, activeFilter,
                 neuteredFilter, ageFilter, genderFilter, sizeFilter, pageRequest))
                 .thenReturn(pageResult);
 
             // when
-            FindAnimalsResponse result = animalService.findAnimalsByVolunteer(
+            FindAnimalsResponse result = animalService.findAnimals(
                 typeFilter, activeFilter, neuteredFilter,
                 ageFilter, genderFilter, sizeFilter, pageRequest);
 
@@ -252,11 +252,11 @@ class AnimalServiceTest {
 
     @Nested
     @DisplayName("findAnimals 실행 시(캐시 호출 테스트)")
-    class FindAnimalsByVolunteerForCacheTest {
+    class FindAnimalsForCacheTest {
 
         @Test
         @DisplayName("성공: 캐시 호출(모든 파라미터가 존재하지 않음)")
-        void findAnimalByVolunteerForCache1() {
+        void findAnimalsForCache1() {
             // given
             AnimalType typeFilter = null;
             AnimalActive activeFilter = null;
@@ -268,7 +268,7 @@ class AnimalServiceTest {
             Long animalId = null;
 
             // when
-            animalService.findAnimalsByVolunteerV2(
+            animalService.findAnimalsV2(
                 typeFilter, activeFilter, neuteredFilter,
                 ageFilter, genderFilter, sizeFilter, createdAt, animalId, PageRequest.of(0, 10));
 
@@ -279,7 +279,7 @@ class AnimalServiceTest {
 
         @Test
         @DisplayName("성공: 캐시 미호출 안함(activeFilter 존재)")
-        void findAnimalByVolunteerForCache3() {
+        void findAnimalsForCache3() {
             // given
             AnimalType typeFilter = null;
             AnimalActive activeFilter = AnimalActive.ACTIVE;
@@ -290,13 +290,13 @@ class AnimalServiceTest {
             LocalDateTime createdAt = null;
             Long animalId = null;
 
-            when(animalRepository.findAnimalsByVolunteerV2(typeFilter, activeFilter,
+            when(animalRepository.findAnimalsV2(typeFilter, activeFilter,
                 neuteredFilter, ageFilter, genderFilter, sizeFilter, createdAt, animalId,
                 PageRequest.of(0, 10)))
                 .thenReturn(new SliceImpl<>(List.of(), PageRequest.of(0, 10), false));
 
             // when
-            animalService.findAnimalsByVolunteerV2(
+            animalService.findAnimalsV2(
                 typeFilter, activeFilter, neuteredFilter,
                 ageFilter, genderFilter, sizeFilter, createdAt, animalId, PageRequest.of(0, 10));
 
@@ -307,12 +307,12 @@ class AnimalServiceTest {
     }
 
     @Nested
-    @DisplayName("findAnimalsByVolunteerV2 실행 시")
-    class FindAnimalsByVolunteerV2Test {
+    @DisplayName("findAnimalsV2 실행 시")
+    class FindAnimalsV2Test {
 
         @Test
         @DisplayName("성공")
-        void findAnimalsByVolunteerV2_1() {
+        void findAnimalsV2_1() {
             // given
             String mockName = "animalName";
             String mockInformation = "animalInformation";
@@ -348,7 +348,7 @@ class AnimalServiceTest {
 
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pageResult, 1L);
 
-            when(animalRepository.findAnimalsByVolunteerV2(typeFilter, activeFilter,
+            when(animalRepository.findAnimalsV2(typeFilter, activeFilter,
                 neuteredFilter, ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L,
                 pageRequest))
                 .thenReturn(pageResult);
@@ -357,7 +357,7 @@ class AnimalServiceTest {
                 .thenReturn(1L);
 
             // when
-            FindAnimalsResponse result = animalService.findAnimalsByVolunteerV2(
+            FindAnimalsResponse result = animalService.findAnimalsV2(
                 typeFilter, activeFilter, neuteredFilter,
                 ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L, pageRequest);
 
@@ -368,7 +368,7 @@ class AnimalServiceTest {
 
         @Test
         @DisplayName("성공: 페이징 필터만 존재하는 경우")
-        void findAnimalsByVolunteerV2OnlyHavePagingFilter() {
+        void findAnimalsV2OnlyHavePagingFilter() {
             // given
             String mockName = "animalName";
             String mockInformation = "animalInformation";
@@ -404,7 +404,7 @@ class AnimalServiceTest {
 
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pageResult, 1L);
 
-            when(animalRepository.findAnimalsByVolunteerV2(typeFilter, activeFilter,
+            when(animalRepository.findAnimalsV2(typeFilter, activeFilter,
                 neuteredFilter, ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L,
                 pageRequest))
                 .thenReturn(pageResult);
@@ -413,7 +413,7 @@ class AnimalServiceTest {
                 .thenReturn(1L);
 
             // when
-            FindAnimalsResponse result = animalService.findAnimalsByVolunteerV2(
+            FindAnimalsResponse result = animalService.findAnimalsV2(
                 typeFilter, activeFilter, neuteredFilter,
                 ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L, pageRequest);
 
@@ -424,7 +424,7 @@ class AnimalServiceTest {
 
         @Test
         @DisplayName("성공: 타입, 종이 null일 경우")
-        void findAnimalsByVolunteerV2TwoFilterIsNull() {
+        void findAnimalsV2TwoFilterIsNull() {
             // given
             String mockName = "animalName";
             String mockInformation = "animalInformation";
@@ -460,7 +460,7 @@ class AnimalServiceTest {
 
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pageResult, 1L);
 
-            when(animalRepository.findAnimalsByVolunteerV2(typeFilter, activeFilter,
+            when(animalRepository.findAnimalsV2(typeFilter, activeFilter,
                 neuteredFilter, ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L,
                 pageRequest))
                 .thenReturn(pageResult);
@@ -469,7 +469,7 @@ class AnimalServiceTest {
                 .thenReturn(1L);
 
             // when
-            FindAnimalsResponse result = animalService.findAnimalsByVolunteerV2(
+            FindAnimalsResponse result = animalService.findAnimalsV2(
                 typeFilter, activeFilter, neuteredFilter,
                 ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L, pageRequest);
 

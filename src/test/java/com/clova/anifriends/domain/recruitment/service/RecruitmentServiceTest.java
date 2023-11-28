@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.recruitment.service;
 
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentDetailResponse;
-import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentsByShelterIdResponse;
+import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.FindShelterRecruitmentsResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentsByShelterResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
@@ -24,7 +24,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.controller.RecruitmentStatusFilter;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindShelterRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
@@ -461,25 +461,25 @@ class RecruitmentServiceTest {
     }
 
     @Nested
-    @DisplayName("findRecruitmentsByShelterId 메서드 실행 시")
-    class FindRecruitmentsByShelterId {
+    @DisplayName("findShelterRecruitments 메서드 실행 시")
+    class FindShelterRecruitmentsResponseTest {
 
         @Test
         @DisplayName("성공")
-        void findRecruitmentsByShelterId() {
+        void findShelterRecruitments() {
             // given
             Shelter shelter = shelter();
             Recruitment recruitment = recruitment(shelter);
             ReflectionTestUtils.setField(recruitment, "recruitmentId", 4L);
             Page<Recruitment> pageResult = new PageImpl<>(List.of(recruitment));
-            FindRecruitmentsByShelterIdResponse expected = findRecruitmentsByShelterIdResponse(
+            FindShelterRecruitmentsResponse expected = FindShelterRecruitmentsResponse(
                 pageResult);
 
-            when(recruitmentRepository.findRecruitmentsByShelterId(anyLong(), any()))
+            when(recruitmentRepository.findShelterRecruitments(anyLong(), any()))
                 .thenReturn(pageResult);
 
             // when
-            FindRecruitmentsByShelterIdResponse result = recruitmentService.findShelterRecruitmentsByShelter(
+            FindShelterRecruitmentsResponse result = recruitmentService.findShelterRecruitments(
                 anyLong(), any());
 
             // then

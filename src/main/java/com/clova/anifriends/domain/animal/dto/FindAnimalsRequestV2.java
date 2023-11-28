@@ -8,7 +8,7 @@ import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
 import java.time.LocalDateTime;
 
-public record FindAnimalsByVolunteerRequestV2(
+public record FindAnimalsRequestV2(
     AnimalType type,
     AnimalGender gender,
     AnimalNeuteredFilter neuteredFilter,

@@ -26,5 +26,5 @@ public interface RecruitmentRepositoryCustom {
         LocalDate startDate, LocalDate endDate, Boolean isClosed, Boolean content, Boolean title,
         Pageable pageable);
 
-    Page<Recruitment> findRecruitmentsByShelterId(long shelterId, Pageable pageable);
+    Page<Recruitment> findShelterRecruitments(long shelterId, Pageable pageable);
 }
