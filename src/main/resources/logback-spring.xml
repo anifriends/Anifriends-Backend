@@ -84,9 +84,9 @@
 
   <root level="debug">
     <appender-ref ref="CONSOLE"/>
-    <!--    <appender-ref ref="FILE-DEBUG" />-->
-    <!--    <appender-ref ref="FILE-INFO" />-->
-    <!--    <appender-ref ref="FILE-WARN" />-->
-    <!--    <appender-ref ref="FILE-ERROR" />-->
+    <appender-ref ref="FILE-DEBUG"/>
+    <appender-ref ref="FILE-INFO"/>
+    <appender-ref ref="FILE-WARN"/>
+    <appender-ref ref="FILE-ERROR"/>
   </root>
 </configuration>
