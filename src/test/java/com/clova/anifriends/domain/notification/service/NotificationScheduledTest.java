@@ -19,6 +19,8 @@ class NotificationScheduledTest {
     @SpyBean
     private VolunteerNotificationService volunteerNotificationService;
 
+    @SpyBean
+    private ShelterNotificationService shelterNotificationService;
 
     @Test
     @DisplayName("notifyADayBeforeVolunteer 메서드 실행 시")
@@ -49,6 +51,17 @@ class NotificationScheduledTest {
             .untilAsserted(() -> {
                 verify(volunteerNotificationService,
                     atLeastOnce()).notifyEncourageWriteReview();
+            });
+    }
+
+    @Test
+    @DisplayName("notifyEncourageCheckAttendance 메서드 실행 시")
+    void notifyEncourageCheckAttendance() {
+        Awaitility.await()
+            .atMost(3, TimeUnit.SECONDS)
+            .untilAsserted(() -> {
+                verify(shelterNotificationService,
+                    atLeastOnce()).notifyEncourageCheckAttendance();
             });
     }
 }
