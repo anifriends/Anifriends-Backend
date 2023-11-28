@@ -18,6 +18,7 @@ import com.clova.anifriends.domain.auth.service.AuthService;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
 import com.clova.anifriends.domain.chat.service.ChatMessageService;
 import com.clova.anifriends.domain.chat.service.ChatRoomService;
+import com.clova.anifriends.domain.chat.service.MessagePublisher;
 import com.clova.anifriends.domain.notification.service.ShelterNotificationService;
 import com.clova.anifriends.domain.notification.service.VolunteerNotificationService;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
@@ -112,6 +113,9 @@ public abstract class BaseControllerTest {
 
     @MockBean
     protected SimpMessageSendingOperations messagingTemplate;
+
+    @MockBean
+    protected MessagePublisher messagePublisher;
 
     @MockBean
     protected ShelterNotificationService shelterNotificationService;
