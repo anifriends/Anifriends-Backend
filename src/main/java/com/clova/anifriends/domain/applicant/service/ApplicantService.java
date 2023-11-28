@@ -8,6 +8,9 @@ import com.clova.anifriends.domain.applicant.exception.ApplicantConflictExceptio
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
+import com.clova.anifriends.domain.notification.ShelterNotification;
+import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
+import com.clova.anifriends.domain.notification.vo.NotificationType;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -30,6 +33,7 @@ public class ApplicantService {
     private final ApplicantRepository applicantRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final VolunteerRepository volunteerRepository;
+    private final ShelterNotificationRepository shelterNotificationRepository;
 
     @Transactional
     @DataIntegrityHandler(message = "이미 신청한 봉사입니다.", exceptionClass = ApplicantConflictException.class)
@@ -38,6 +42,7 @@ public class ApplicantService {
         Volunteer volunteer = getVolunteer(volunteerId);
         Applicant applicant = new Applicant(recruitmentPessimistic, volunteer);
         applicantRepository.save(applicant);
+        shelterNotificationRepository.save(makeNewApplicantNotification(applicant));
     }
 
     private Recruitment getRecruitmentPessimistic(Long recruitmentId) {
@@ -123,5 +128,14 @@ public class ApplicantService {
     private Volunteer getVolunteer(Long volunteerId) {
         return volunteerRepository.findById(volunteerId)
             .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
+    }
+
+    private ShelterNotification makeNewApplicantNotification(Applicant applicant) {
+        return new ShelterNotification(
+            applicant.getRecruitment().getShelter(),
+            applicant.getRecruitment().getTitle(),
+            applicant.getVolunteer().getName() + NotificationType.NEW_APPLICANT.getMessage(),
+            NotificationType.NEW_APPLICANT.getName()
+        );
     }
 }
