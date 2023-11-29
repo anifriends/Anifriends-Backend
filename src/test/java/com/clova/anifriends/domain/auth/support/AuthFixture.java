@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.auth.support;
 
+import com.clova.anifriends.domain.auth.RefreshToken;
 import com.clova.anifriends.global.security.jwt.JJwtProvider;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
@@ -37,5 +38,9 @@ public final class AuthFixture {
 
     public static TokenResponse userToken() {
         return jwtProvider().createToken(USER_ID, USER_ROLE);
+    }
+
+    public static RefreshToken refreshToken() {
+        return new RefreshToken(userToken().refreshToken(), USER_ID, UserRole.ROLE_VOLUNTEER);
     }
 }
