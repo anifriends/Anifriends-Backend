@@ -115,7 +115,7 @@ public class ApplicantService {
     private void updateAttendanceStatus(Long shelterId, Long recruitmentId, List<Long> noShowIds,
         List<Long> attendedIds) {
         applicantRepository.updateBulkAttendance(shelterId, recruitmentId, noShowIds,
-            ApplicantStatus.NO_SHOW);
+            ApplicantStatus.NOSHOW);
         applicantRepository.updateBulkAttendance(shelterId, recruitmentId, attendedIds,
             ApplicantStatus.ATTENDANCE);
     }

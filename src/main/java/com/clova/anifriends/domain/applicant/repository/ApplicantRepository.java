@@ -39,7 +39,7 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         + "where r.recruitmentId = :recruitmentId "
         + "and s.shelterId = :shelterId "
         + "and (a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE "
-        + "or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NO_SHOW)")
+        + "or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NOSHOW)")
     List<Applicant> findApprovedApplicants(
         @Param("recruitmentId") Long recruitmentId,
         @Param("shelterId") Long shelterId
@@ -61,7 +61,7 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         + "and a.recruitment.shelter.shelterId = :shelterId "
         + "and a.applicantId in :ids "
         + "and (a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE "
-        + "or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NO_SHOW)")
+        + "or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NOSHOW)")
     void updateBulkAttendance(
         @Param("shelterId") Long shelterId,
         @Param("recruitmentId") Long recruitmentId,
