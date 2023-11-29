@@ -1,22 +1,23 @@
-package com.clova.anifriends.domain.chat.controller;
+package com.clova.anifriends.domain.chat.dto.response;
 
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.chat.ChatMessage;
-import java.time.LocalDateTime;
 
 public record ChatMessageResponse(
+    Long chatRoomId,
     Long chatSenderId,
     UserRole chatSenderRole,
     String chatMessage,
-    LocalDateTime createdAt
+    String createdAt
 ) {
 
     public static ChatMessageResponse from(ChatMessage chatMessage) {
         return new ChatMessageResponse(
+            chatMessage.getChatRoom().getChatRoomId(),
             chatMessage.getSenderId(),
             chatMessage.getSenderRole(),
             chatMessage.getMessage(),
-            chatMessage.getCreatedAt()
+            chatMessage.getCreatedAt().toString()
         );
     }
 }
