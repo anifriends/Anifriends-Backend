@@ -1,8 +1,11 @@
 package com.clova.anifriends.domain.applicant.repository;
 
 import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
+import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.util.List;
 import java.util.Optional;
@@ -52,13 +55,35 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
 
     @Query("select a from Applicant a "
         + "join fetch a.recruitment r "
-        + "join fetch r.shelter s "
+        + "join fetch a.volunteer v "
+        + "join r.shelter s "
         + "where r.recruitmentId = :recruitmentId "
         + "and s.shelterId = :shelterId ")
     List<Applicant> findByRecruitmentIdAndShelterId(
         @Param("recruitmentId") Long recruitmentId,
         @Param("shelterId") Long shelterId
     );
+
+    @Query("select v.volunteerId as volunteerId, "
+        + "a.applicantId as applicantId, "
+        + "v.birthDate as volunteerBirthDate,"
+        + "v.gender as volunteerGender,"
+        + "COALESCE((select count(a2) from Applicant a2 where a2.volunteer = v "
+        + "group by a2.volunteer "
+        + "having a2.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE),0) "
+        + "as completedVolunteerCount, "
+        + "v.temperature.temperature as volunteerTemperature,"
+        + "a.status as applicantStatus "
+        + "from Applicant a "
+        + "join a.recruitment r "
+        + "join a.volunteer v "
+        + "where r = :recruitment "
+        + "and r.shelter = :shelter ")
+    List<FindApplicantResult> findApplicantsV2(
+        @Param("recruitment") Recruitment recruitment,
+        @Param("shelter") Shelter shelter
+    );
+
 
     @Modifying
     @Query("update Applicant a set a.status = :status "

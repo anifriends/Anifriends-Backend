@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.catchException;
 
 import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
@@ -235,6 +236,58 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             assertThat(result).isEqualTo(expected);
         }
 
+    }
+
+    @Nested
+    @DisplayName("findApplicantsV2 메서드 실행 시")
+    class FindApplicantsV2Test {
+
+        Shelter shelter;
+        Recruitment recruitment;
+
+        @BeforeEach
+        void setUp() {
+            shelter = ShelterFixture.shelter();
+            recruitment = RecruitmentFixture.recruitment(shelter);
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+        }
+
+        @Test
+        @DisplayName("성공")
+        void findApplicantsV2() {
+            //given
+            Volunteer volunteerAttendance = volunteer();
+            Volunteer volunteerNoShow = volunteer();
+            Applicant applicantAttendance = applicant(recruitment, volunteerAttendance, ATTENDANCE);
+            Applicant applicantNoShow = applicant(recruitment, volunteerNoShow, NO_SHOW);
+
+            volunteerRepository.saveAll(
+                List.of(volunteerAttendance, volunteerNoShow));
+            applicantRepository.saveAll(
+                List.of(applicantAttendance, applicantNoShow));
+
+            //when
+            List<FindApplicantResult> applicants = applicantRepository.findApplicantsV2(
+                recruitment, shelter);
+
+            //then
+            assertThat(applicants).hasSize(2);
+            FindApplicantResult result0 = applicants.get(0);
+            assertThat(result0.getVolunteerId()).isEqualTo(volunteerAttendance.getVolunteerId());
+            assertThat(result0.getApplicantId()).isEqualTo(applicantAttendance.getApplicantId());
+            assertThat(result0.getVolunteerBirthDate()).isEqualTo(volunteerAttendance.getBirthDate());
+            assertThat(result0.getVolunteerGender()).isEqualTo(volunteerAttendance.getGender());
+            assertThat(result0.getCompletedVolunteerCount()).isEqualTo(1);
+            assertThat(result0.getVolunteerTemperature())
+                .isEqualTo(volunteerAttendance.getTemperature());
+            assertThat(result0.getApplicantStatus())
+                .isEqualTo(applicantAttendance.getStatus());
+
+            FindApplicantResult result1 = applicants.get(1);
+            assertThat(result1.getApplicantStatus()).isEqualTo(applicantNoShow.getStatus());
+            assertThat(result1.getCompletedVolunteerCount()).isZero();
+        }
     }
 
     @Nested

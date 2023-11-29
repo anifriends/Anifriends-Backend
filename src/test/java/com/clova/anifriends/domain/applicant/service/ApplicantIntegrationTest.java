@@ -200,15 +200,19 @@ public class ApplicantIntegrationTest extends BaseIntegrationTest {
         @DisplayName("findApplicants 메서드 실행 시")
         void findApplicants() {
             //given
-            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer);
-            applicantRepository.save(applicant);
+            List<Volunteer> volunteers = VolunteerFixture.volunteers(2);
+            volunteerRepository.saveAll(volunteers);
+            List<Applicant> applicants = volunteers.stream()
+                .map(volunteer -> ApplicantFixture.applicant(recruitment, volunteer))
+                .toList();
+            applicantRepository.saveAll(applicants);
 
             //when
-            FindApplicantsResponse applicants = applicantService.findApplicants(
+            FindApplicantsResponse findApplicants = applicantService.findApplicants(
                 shelter.getShelterId(), recruitment.getRecruitmentId());
 
             //then
-            assertThat(applicants.applicants()).hasSize(1);
+            assertThat(findApplicants.applicants()).hasSize(2);
         }
     }
 }
