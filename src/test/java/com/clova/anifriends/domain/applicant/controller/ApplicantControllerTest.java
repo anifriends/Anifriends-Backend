@@ -142,30 +142,30 @@ class ApplicantControllerTest extends BaseControllerTest {
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
                     fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
-                    fieldWithPath("findApplyingVolunteerResponses").type(JsonFieldType.ARRAY)
+                    fieldWithPath("applicants").type(JsonFieldType.ARRAY)
                         .description("신청한 봉사 리스트"),
-                    fieldWithPath("findApplyingVolunteerResponses[].shelterId").type(
+                    fieldWithPath("applicants[].shelterId").type(
                             JsonFieldType.NUMBER)
                         .description("보호소 ID"),
-                    fieldWithPath("findApplyingVolunteerResponses[].recruitmentId").type(
+                    fieldWithPath("applicants[].recruitmentId").type(
                             JsonFieldType.NUMBER)
                         .description("봉사 모집글 ID"),
-                    fieldWithPath("findApplyingVolunteerResponses[].applicantId").type(
+                    fieldWithPath("applicants[].applicantId").type(
                             JsonFieldType.NUMBER)
                         .description("봉사 신청자 ID"),
-                    fieldWithPath("findApplyingVolunteerResponses[].recruitmentTitle").type(
+                    fieldWithPath("applicants[].recruitmentTitle").type(
                             JsonFieldType.STRING)
                         .description("모집글 제목"),
-                    fieldWithPath("findApplyingVolunteerResponses[].shelterName").type(
+                    fieldWithPath("applicants[].shelterName").type(
                             JsonFieldType.STRING)
                         .description("보호소 이름"),
-                    fieldWithPath("findApplyingVolunteerResponses[].applicantStatus").type(
+                    fieldWithPath("applicants[].applicantStatus").type(
                             JsonFieldType.STRING)
                         .description("승인 상태"),
-                    fieldWithPath("findApplyingVolunteerResponses[].applicantIsWritedReview").type(
+                    fieldWithPath("applicants[].applicantIsWritedReview").type(
                             JsonFieldType.BOOLEAN)
                         .description("후기 작성 가능 여부"),
-                    fieldWithPath("findApplyingVolunteerResponses[].recruitmentStartTime").type(
+                    fieldWithPath("applicants[].recruitmentStartTime").type(
                             JsonFieldType.STRING)
                         .description("봉사 날짜")
                 )

@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 
 public record FindApplyingVolunteersResponse(
     PageInfo pageInfo,
-    List<FindApplyingVolunteerResponse> findApplyingVolunteerResponses
+    List<FindApplyingVolunteerResponse> applicants
 ) {
 
     public record FindApplyingVolunteerResponse(

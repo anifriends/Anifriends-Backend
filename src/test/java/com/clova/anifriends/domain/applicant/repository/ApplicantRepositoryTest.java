@@ -147,11 +147,11 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
                 applyingVolunteers);
 
             // then
-            assertThat(expected.findApplyingVolunteerResponses().get(0)
+            assertThat(expected.applicants().get(0)
                 .applicantIsWritedReview()).isTrue();
-            assertThat(expected.findApplyingVolunteerResponses().get(1)
+            assertThat(expected.applicants().get(1)
                 .applicantIsWritedReview()).isFalse();
-            assertThat(expected.findApplyingVolunteerResponses().get(2)
+            assertThat(expected.applicants().get(2)
                 .applicantIsWritedReview()).isFalse();
         }
     }

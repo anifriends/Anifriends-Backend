@@ -239,13 +239,13 @@ class ApplicantServiceTest {
                 volunteerId, pageRequest);
 
             // then
-            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(0)
+            assertThat(foundApplyingVolunteers.applicants().get(0)
                 .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(0)
+                findApplyingVolunteersResponse.applicants().get(0)
                     .applicantIsWritedReview());
-            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(1)
+            assertThat(foundApplyingVolunteers.applicants().get(1)
                 .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(1)
+                findApplyingVolunteersResponse.applicants().get(1)
                     .applicantIsWritedReview());
         }
 
@@ -283,13 +283,13 @@ class ApplicantServiceTest {
                 volunteerId, pageRequest);
 
             // then
-            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(0)
+            assertThat(foundApplyingVolunteers.applicants().get(0)
                 .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(0)
+                findApplyingVolunteersResponse.applicants().get(0)
                     .applicantIsWritedReview());
-            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(1)
+            assertThat(foundApplyingVolunteers.applicants().get(1)
                 .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(1)
+                findApplyingVolunteersResponse.applicants().get(1)
                     .applicantIsWritedReview());
         }
     }
