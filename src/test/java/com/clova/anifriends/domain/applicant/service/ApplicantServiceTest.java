@@ -21,10 +21,11 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
-import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse.FindApplyingVolunteerResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.support.ApplicantDtoFixture;
@@ -38,6 +39,7 @@ import com.clova.anifriends.domain.recruitment.vo.RecruitmentApplicantCount;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
@@ -75,6 +77,9 @@ class ApplicantServiceTest {
 
     @Mock
     VolunteerNotificationRepository volunteerNotificationRepository;
+
+    @Mock
+    ShelterRepository shelterRepository;
 
     @Nested
     @DisplayName("registerApplicant 메서드 실행 시")
@@ -252,33 +257,22 @@ class ApplicantServiceTest {
         void findApplicants() {
             // given
             Shelter shelter = shelter();
-            ReflectionTestUtils.setField(shelter, "shelterId", 1L);
             Recruitment recruitment = recruitment(shelter);
-            ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
-            Volunteer volunteer = volunteer();
-            Applicant applicantAttended = ApplicantFixture.applicant(recruitment, volunteer,
-                ATTENDANCE);
-            Applicant applicantRefused = ApplicantFixture.applicant(recruitment, volunteer,
-                REFUSED);
-            Applicant applicantPended = ApplicantFixture.applicant(recruitment, volunteer, PENDING);
-            Applicant applicantNoShow = ApplicantFixture.applicant(recruitment, volunteer, NO_SHOW);
+            List<FindApplicantResult> applicantResults
+                = ApplicantDtoFixture.findApplicantResults(3);
 
-            FindApplicantsResponse response = FindApplicantsResponse.from(
-                List.of(applicantAttended, applicantRefused, applicantPended, applicantNoShow),
-                recruitment
-            );
-
-            when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.of(recruitment));
-            when(applicantRepository.findByRecruitmentIdAndShelterId(anyLong(), anyLong()))
-                .thenReturn(
-                    List.of(applicantAttended, applicantRefused, applicantPended, applicantNoShow));
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
+            given(recruitmentRepository.findById(anyLong())).willReturn(Optional.of(recruitment));
+            given(applicantRepository.findApplicants(recruitment, shelter))
+                .willReturn(applicantResults);
 
             // when
-            FindApplicantsResponse result = applicantService.findApplicants(
-                shelter.getShelterId(), recruitment.getRecruitmentId());
+            FindApplicantsResponse findApplicants = applicantService.findApplicants(1L, 1L);
 
             // then
-            assertThat(result).isEqualTo(response);
+            assertThat(findApplicants.applicants().size()).isEqualTo(3);
+            assertThat(findApplicants.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
+
         }
     }
 

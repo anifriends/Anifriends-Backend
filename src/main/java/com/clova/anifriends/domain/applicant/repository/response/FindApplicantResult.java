@@ -8,6 +8,7 @@ public interface FindApplicantResult {
 
     Long getVolunteerId();
     Long getApplicantId();
+    String getVolunteerName();
     LocalDate getVolunteerBirthDate();
     VolunteerGender getVolunteerGender();
     int getCompletedVolunteerCount();

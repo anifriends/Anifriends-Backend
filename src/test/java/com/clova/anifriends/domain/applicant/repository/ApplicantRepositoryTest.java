@@ -193,54 +193,8 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
     }
 
     @Nested
-    @DisplayName("findByRecruitmentIdAndShelterId")
-    class FindRecruitmentIdAndShelterIdTest {
-
-        @Test
-        @DisplayName("성공")
-        void findByRecruitmentIdAndShelterId() {
-            // given
-            Shelter shelter = shelter();
-            Recruitment recruitment = recruitment(shelter);
-
-            Volunteer volunteerAttendance = volunteer();
-            Volunteer volunteerNoShow = volunteer();
-            Volunteer volunteerPending = volunteer();
-            Volunteer volunteerRefused = volunteer();
-
-            Applicant applicantAttendance = applicant(recruitment, volunteerAttendance, ATTENDANCE);
-            Applicant applicantNoShow = applicant(recruitment, volunteerNoShow, NO_SHOW);
-            Applicant applicantPending = applicant(recruitment, volunteerPending, PENDING);
-            Applicant applicantRefused = applicant(recruitment, volunteerRefused, REFUSED);
-
-            shelterRepository.save(shelter);
-            recruitmentRepository.save(recruitment);
-            volunteerRepository.saveAll(List.of(
-                volunteerAttendance,
-                volunteerNoShow,
-                volunteerPending,
-                volunteerRefused
-            ));
-            applicantRepository.saveAll(
-                List.of(applicantAttendance, applicantNoShow, applicantPending, applicantRefused)
-            );
-            List<Applicant> expected = List.of(applicantAttendance, applicantNoShow,
-                applicantPending, applicantRefused);
-
-            // when
-            List<Applicant> result = applicantRepository
-                .findByRecruitmentIdAndShelterId(recruitment.getRecruitmentId(),
-                    shelter.getShelterId());
-
-            // then
-            assertThat(result).isEqualTo(expected);
-        }
-
-    }
-
-    @Nested
-    @DisplayName("findApplicantsV2 메서드 실행 시")
-    class FindApplicantsV2Test {
+    @DisplayName("findApplicants 메서드 실행 시")
+    class FindApplicantsTest {
 
         Shelter shelter;
         Recruitment recruitment;
@@ -255,7 +209,7 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
 
         @Test
         @DisplayName("성공")
-        void findApplicantsV2() {
+        void findApplicants() {
             //given
             Volunteer volunteerAttendance = volunteer();
             Volunteer volunteerNoShow = volunteer();
@@ -268,7 +222,7 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
                 List.of(applicantAttendance, applicantNoShow));
 
             //when
-            List<FindApplicantResult> applicants = applicantRepository.findApplicantsV2(
+            List<FindApplicantResult> applicants = applicantRepository.findApplicants(
                 recruitment, shelter);
 
             //then

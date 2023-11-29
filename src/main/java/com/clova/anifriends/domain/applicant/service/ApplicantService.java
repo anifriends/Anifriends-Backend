@@ -6,6 +6,7 @@ import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicants
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
@@ -18,6 +19,9 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
+import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
+import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
@@ -41,6 +45,7 @@ public class ApplicantService {
     private final VolunteerRepository volunteerRepository;
     private final ShelterNotificationRepository shelterNotificationRepository;
     private final VolunteerNotificationRepository volunteerNotificationRepository;
+    private final ShelterRepository shelterRepository;
 
     @Transactional
     @DataIntegrityHandler(message = "이미 신청한 봉사입니다.", exceptionClass = ApplicantConflictException.class)
@@ -76,10 +81,16 @@ public class ApplicantService {
 
     @Transactional(readOnly = true)
     public FindApplicantsResponse findApplicants(Long shelterId, Long recruitmentId) {
+        Shelter shelter = getShelter(shelterId);
         Recruitment recruitment = getRecruitment(recruitmentId);
-        List<Applicant> applicants = applicantRepository
-            .findByRecruitmentIdAndShelterId(recruitmentId, shelterId);
-        return FindApplicantsResponse.from(applicants, recruitment);
+        List<FindApplicantResult> findApplicants
+            = applicantRepository.findApplicants(recruitment, shelter);
+        return ApplicantMapper.resultToResponse(findApplicants, recruitment);
+    }
+
+    private Shelter getShelter(Long shelterId) {
+        return shelterRepository.findById(shelterId)
+            .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
     }
 
     @Transactional

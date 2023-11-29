@@ -53,20 +53,10 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         @Param("shelterId") Long shelterId
     );
 
-    @Query("select a from Applicant a "
-        + "join fetch a.recruitment r "
-        + "join fetch a.volunteer v "
-        + "join r.shelter s "
-        + "where r.recruitmentId = :recruitmentId "
-        + "and s.shelterId = :shelterId ")
-    List<Applicant> findByRecruitmentIdAndShelterId(
-        @Param("recruitmentId") Long recruitmentId,
-        @Param("shelterId") Long shelterId
-    );
-
     @Query("select v.volunteerId as volunteerId, "
         + "a.applicantId as applicantId, "
         + "v.birthDate as volunteerBirthDate,"
+        + "v.name.name as volunteerName,"
         + "v.gender as volunteerGender,"
         + "COALESCE((select count(a2) from Applicant a2 where a2.volunteer = v "
         + "group by a2.volunteer "
@@ -79,11 +69,10 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         + "join a.volunteer v "
         + "where r = :recruitment "
         + "and r.shelter = :shelter ")
-    List<FindApplicantResult> findApplicantsV2(
+    List<FindApplicantResult> findApplicants(
         @Param("recruitment") Recruitment recruitment,
         @Param("shelter") Shelter shelter
     );
-
 
     @Modifying
     @Query("update Applicant a set a.status = :status "
