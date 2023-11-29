@@ -32,7 +32,7 @@ public record FindApplyingVolunteersResponse(
                 applicant.getApplicantId(),
                 applicant.getRecruitment().getTitle(),
                 applicant.getRecruitment().getShelter().getName(),
-                applicant.getStatus(),
+                applicant.getStatus().convertToApproved(applicant.getRecruitment().getStartTime()),
                 applicant.hasNotReview(),
                 applicant.getRecruitment().getStartTime()
             );
