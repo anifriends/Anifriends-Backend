@@ -120,7 +120,8 @@ public class AnimalService {
     ) {
 
         if (isFirstPage(type, active, neuteredFilter, age, gender, size, createdAt, animalId)) {
-            return animalCacheRepository.findAnimals(pageable.getPageSize(), animalCacheRepository.getTotalNumberOfAnimals());
+            return animalCacheRepository.findAnimals(pageable.getPageSize(),
+                animalCacheRepository.getTotalNumberOfAnimals());
         }
 
         long count = animalRepository.countAnimalsV2(
@@ -154,7 +155,7 @@ public class AnimalService {
         if (isAdopted == true) {
             animalCacheRepository.deleteAnimal(animal);
             animalCacheRepository.decreaseTotalNumberOfAnimals();
-        }         
+        }
     }
 
     @Transactional
@@ -206,7 +207,7 @@ public class AnimalService {
     }
 
     private Animal getAnimalByAnimalId(Long animalId) {
-        return animalRepository.findById(animalId)
+        return animalRepository.findByAnimalIdWithImages(animalId)
             .orElseThrow(() -> new AnimalNotFoundException("존재하지 않는 보호 동물입니다."));
     }
 

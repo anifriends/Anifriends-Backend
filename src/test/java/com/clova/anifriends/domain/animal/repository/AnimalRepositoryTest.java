@@ -715,8 +715,6 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             shelterRepository.save(shelter);
             animalRepository.saveAll(List.of(matchAnimal1, matchAnimal2, disMatchAnimal1));
 
-            PageRequest pageRequest = PageRequest.of(0, 10);
-
             // when
             Long result = animalRepository.countAnimalsV2(
                 typeFilter,
