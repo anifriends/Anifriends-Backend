@@ -2,11 +2,14 @@ package com.clova.anifriends.domain.applicant.dto.response;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
+import com.clova.anifriends.domain.common.PageInfo;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 public record FindApplyingVolunteersResponse(
-    List<FindApplyingVolunteerResponse> findApplyingVolunteerResponses
+    PageInfo pageInfo,
+    List<FindApplyingVolunteerResponse> applicants
 ) {
 
     public record FindApplyingVolunteerResponse(
@@ -37,13 +40,14 @@ public record FindApplyingVolunteersResponse(
     }
 
     public static FindApplyingVolunteersResponse from(
-        List<Applicant> applicants
+        Page<Applicant> pagination
     ) {
-        return new FindApplyingVolunteersResponse(
-            applicants
-                .stream()
-                .map(FindApplyingVolunteerResponse::from)
-                .toList()
-        );
+        PageInfo pageInfo = PageInfo.of(pagination.getTotalElements(), pagination.hasNext());
+
+        List<FindApplyingVolunteerResponse> findApplyingVolunteerResponses = pagination.get()
+            .map(FindApplyingVolunteerResponse::from)
+            .toList();
+
+        return new FindApplyingVolunteersResponse(pageInfo, findApplyingVolunteerResponses);
     }
 }

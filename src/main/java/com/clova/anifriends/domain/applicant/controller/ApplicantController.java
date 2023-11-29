@@ -3,8 +3,8 @@ package com.clova.anifriends.domain.applicant.controller;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantStatusRequest;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest;
-import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.service.ApplicantService;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.auth.LoginUser;
@@ -12,6 +12,7 @@ import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
 import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,10 +42,10 @@ public class ApplicantController {
     @VolunteerOnly
     @GetMapping("/volunteers/applicants")
     public ResponseEntity<FindApplyingVolunteersResponse> findApplyingVolunteers(
-        @LoginUser Long volunteerId
+        @LoginUser Long volunteerId,
+        Pageable pageable
     ) {
-        return ResponseEntity.ok(applicantService.findApplyingVolunteers(volunteerId));
-
+        return ResponseEntity.ok(applicantService.findApplyingVolunteers(volunteerId, pageable));
     }
 
     @ShelterOnly
