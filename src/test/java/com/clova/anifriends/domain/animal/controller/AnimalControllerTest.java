@@ -40,6 +40,8 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
+import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
+import com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
 import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
@@ -346,9 +348,9 @@ class AnimalControllerTest extends BaseControllerTest {
         Shelter shelter = shelter();
         Animal animal = animal(shelter);
         ReflectionTestUtils.setField(animal, "animalId", 1L);
-
+        FindAnimalsResult findAnimalsResult = AnimalDtoFixture.findAnimalsResult(animal);
         FindAnimalsResponse response = FindAnimalsResponse
-            .fromV2(new SliceImpl<>(List.of(animal)), 1L);
+            .fromV2(new SliceImpl<>(List.of(findAnimalsResult)), 1L);
 
         when(animalService.findAnimalsV2(
             any(AnimalType.class),

@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.animal.support.fixture;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
+import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
 
 public class AnimalDtoFixture {
 
@@ -23,6 +24,16 @@ public class AnimalDtoFixture {
             animal.getInformation(),
             animal.getImages()
         );
+    }
+
+    public static FindAnimalsResult findAnimalsResult(Animal animal) {
+        return new FindAnimalsResult(
+            animal.getAnimalId(),
+            animal.getName(),
+            animal.getCreatedAt(),
+            animal.getShelter().getName(),
+            animal.getShelter().getAddress(),
+            animal.getImages().get(0));
     }
 
 }

@@ -12,6 +12,7 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse.FindAnimalResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
+import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
@@ -141,7 +142,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
             animalRepository.saveAll(animals);
 
-            Slice<Animal> pagination = animalRepository.findAnimalsV2(null,
+            Slice<FindAnimalsResult> pagination = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
@@ -173,7 +174,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
             animalRepository.saveAll(animals);
 
-            Slice<Animal> pagination = animalRepository.findAnimalsV2(null,
+            Slice<FindAnimalsResult> pagination = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
@@ -212,7 +213,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
 
             animalService.deleteAnimal(shelter.getShelterId(), animalToDelete.getAnimalId());
 
-            Slice<Animal> pagination = animalRepository.findAnimalsV2(null,
+            Slice<FindAnimalsResult> pagination = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
@@ -250,7 +251,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
 
             animalService.deleteAnimal(shelter.getShelterId(), animalToDelete.getAnimalId());
 
-            Slice<Animal> pagination = animalRepository.findAnimalsV2(null,
+            Slice<FindAnimalsResult> pagination = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
@@ -287,7 +288,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             animalService.registerAnimal(shelter.getShelterId(),
                 AnimalDtoFixture.registerAnimal(animalToAdd));
 
-            Slice<Animal> pagination = animalRepository.findAnimalsV2(null,
+            Slice<FindAnimalsResult> pagination = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null,
                 null, null, PageRequest.of(0, size));
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,

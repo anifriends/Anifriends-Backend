@@ -6,6 +6,7 @@ import static java.util.Objects.requireNonNull;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse.FindAnimalResponse;
+import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
 import com.clova.anifriends.domain.common.PageInfo;
 import jakarta.annotation.PostConstruct;
 import java.time.Instant;
@@ -48,7 +49,7 @@ public class AnimalCacheRepository {
     public void synchronizeCache() {
         zSetOperations.removeRange(ANIMAL_ZSET_KEY, 0, -1);
         Pageable pageable = PageRequest.of(0, ANIMAL_CACHE_SIZE);
-        Slice<Animal> animals = animalRepository.findAnimalsV2(null, null, null, null,
+        Slice<FindAnimalsResult> animals = animalRepository.findAnimalsV2(null, null, null, null,
             null, null, null, null, pageable);
         animals.forEach(this::saveAnimal);
         long dbCount = animalRepository.countAllAnimalsExceptAdopted();
@@ -64,6 +65,12 @@ public class AnimalCacheRepository {
         long dbCount = animalRepository.countAllAnimalsExceptAdopted();
         redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, dbCount);
         return dbCount;
+    }
+
+    public void saveAnimal(FindAnimalsResult animal) {
+        FindAnimalResponse findAnimalResponse = FindAnimalResponse.from(animal);
+        zSetOperations.add(ANIMAL_ZSET_KEY, findAnimalResponse, -getScore(animal.getCreatedAt()));
+        trimCache();
     }
 
     public void saveAnimal(Animal animal) {
