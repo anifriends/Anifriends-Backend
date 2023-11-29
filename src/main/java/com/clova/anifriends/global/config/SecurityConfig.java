@@ -3,6 +3,7 @@ package com.clova.anifriends.global.config;
 import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.global.security.passwordencoder.BCryptCustomPasswordEncoder;
+import com.clova.anifriends.global.web.filter.JwtAuthenticationExceptionHandler;
 import com.clova.anifriends.global.web.filter.JwtAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -13,22 +14,28 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.context.SecurityContextHolderFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String frontServer;
+    private final String frontVolunteerServer;
+    private final String frontShelterServer;
 
-    public SecurityConfig(@Value("${front.server}") String frontServer) {
-        this.frontServer = frontServer;
+    public SecurityConfig(
+        @Value("${front.volunteer.server}") String frontVolunteerServer,
+        @Value("${front.shelter.server}") String frontShelterServer
+    ) {
+        this.frontVolunteerServer = frontVolunteerServer;
+        this.frontShelterServer = frontShelterServer;
     }
 
     @Bean
@@ -40,7 +47,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(
         HttpSecurity http,
         JwtAuthenticationProvider jwtAuthenticationProvider,
-        ObjectMapper objectMapper) throws Exception {
+        ObjectMapper objectMapper,
+        CorsFilter corsFilter) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
@@ -50,22 +58,30 @@ public class SecurityConfig {
             .anonymous(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterAfter(new JwtAuthenticationFilter(jwtAuthenticationProvider),
-                SecurityContextHolderFilter.class)
-            .headers(header -> header.frameOptions(
-                FrameOptionsConfig::disable))
-            .cors(cors -> cors.configurationSource(request -> {
-                CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(
-                    List.of("http://localhost:5173", "http://localhost:5174", frontServer));
-                config.setAllowedMethods(
-                    List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-                config.setAllowCredentials(true);
-                config.setAllowedHeaders(List.of("*"));
-                config.setMaxAge(3600L);
-                return config;
-            }));
+            .addFilter(corsFilter)
+            .addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationProvider),
+                UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JwtAuthenticationExceptionHandler(objectMapper),
+                JwtAuthenticationFilter.class)
+            .headers(AbstractHttpConfigurer::disable)
+            .cors(AbstractHttpConfigurer::disable);
         return http.build();
     }
-}
 
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(
+            List.of("http://localhost:5173", "http://localhost:5174", frontShelterServer,
+                frontVolunteerServer));
+        config.setAllowedMethods(
+            List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowCredentials(true);
+        config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("Authorization"));
+        config.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+}

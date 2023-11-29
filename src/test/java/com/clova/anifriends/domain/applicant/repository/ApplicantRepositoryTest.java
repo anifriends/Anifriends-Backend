@@ -65,7 +65,7 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
 
             // when
             List<Applicant> result = applicantRepository
-                .findApprovedByRecruitmentIdAndShelterId(recruitment.getRecruitmentId(),
+                .findApprovedApplicants(recruitment.getRecruitmentId(),
                     shelter.getShelterId());
 
             // then
@@ -95,7 +95,7 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
 
             // when
             List<Applicant> result = applicantRepository
-                .findApprovedByRecruitmentIdAndShelterId(recruitment.getRecruitmentId(),
+                .findApprovedApplicants(recruitment.getRecruitmentId(),
                     shelter.getShelterId());
 
             // then
@@ -281,6 +281,9 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
                 recruitment.getRecruitmentId(), attendedIds, ATTENDANCE);
             applicantRepository.updateBulkAttendance(shelter.getShelterId(),
                 recruitment.getRecruitmentId(), noShowIds, NO_SHOW);
+
+            entityManager.flush();
+            entityManager.clear();
 
             // then
             Optional<Applicant> persistedApplicantNoShowToAttendance = applicantRepository.findById(

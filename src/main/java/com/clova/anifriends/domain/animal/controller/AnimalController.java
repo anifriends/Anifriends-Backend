@@ -1,8 +1,8 @@
 package com.clova.anifriends.domain.animal.controller;
 
-import com.clova.anifriends.domain.animal.dto.FindAnimalsByVolunteerRequestV2;
+import com.clova.anifriends.domain.animal.dto.FindAnimalsRequestV2;
 import com.clova.anifriends.domain.animal.dto.request.FindAnimalsByShelterRequest;
-import com.clova.anifriends.domain.animal.dto.request.FindAnimalsByVolunteerRequest;
+import com.clova.anifriends.domain.animal.dto.request.FindAnimalsRequest;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.request.UpdateAnimalAdoptStatusRequest;
 import com.clova.anifriends.domain.animal.dto.request.UpdateAnimalRequest;
@@ -37,13 +37,13 @@ public class AnimalController {
 
     @ShelterOnly
     @PostMapping("/shelters/animals")
-    public ResponseEntity<Void> registerAnimal(
+    public ResponseEntity<RegisterAnimalResponse> registerAnimal(
         @LoginUser Long volunteerId,
         @RequestBody @Valid RegisterAnimalRequest registerAnimalRequest) {
         RegisterAnimalResponse registerAnimalResponse = animalService.registerAnimal(volunteerId,
             registerAnimalRequest);
         URI location = URI.create("/api/shelters/animals/" + registerAnimalResponse.animalId());
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(registerAnimalResponse);
     }
 
     @GetMapping("/animals/{animalId}")
@@ -66,42 +66,42 @@ public class AnimalController {
             findAnimalsByShelterRequest.gender(),
             findAnimalsByShelterRequest.neuteredFilter(),
             findAnimalsByShelterRequest.active(),
-            findAnimalsByShelterRequest.size(),
+            findAnimalsByShelterRequest.animalSize(),
             findAnimalsByShelterRequest.age(),
             pageable
         ));
     }
 
     @GetMapping("/animals")
-    public ResponseEntity<FindAnimalsResponse> findAnimalsByVolunteer(
+    public ResponseEntity<FindAnimalsResponse> findAnimals(
         Pageable pageable,
-        @ModelAttribute FindAnimalsByVolunteerRequest findAnimalsRequest
+        @ModelAttribute FindAnimalsRequest findAnimalsRequest
     ) {
-        return ResponseEntity.ok(animalService.findAnimalsByVolunteer(
+        return ResponseEntity.ok(animalService.findAnimals(
             findAnimalsRequest.type(),
             findAnimalsRequest.active(),
             findAnimalsRequest.neuteredFilter(),
             findAnimalsRequest.age(),
             findAnimalsRequest.gender(),
-            findAnimalsRequest.size(),
+            findAnimalsRequest.animalSize(),
             pageable
         ));
     }
 
     @GetMapping("/v2/animals")
-    public ResponseEntity<FindAnimalsResponse> findAnimalsByVolunteerV2(
+    public ResponseEntity<FindAnimalsResponse> findAnimalsV2(
         Pageable pageable,
-        @ModelAttribute FindAnimalsByVolunteerRequestV2 findAnimalsByVolunteerRequestV2
+        @ModelAttribute FindAnimalsRequestV2 findAnimalsRequestV2
     ) {
-        return ResponseEntity.ok(animalService.findAnimalsByVolunteerV2(
-            findAnimalsByVolunteerRequestV2.type(),
-            findAnimalsByVolunteerRequestV2.active(),
-            findAnimalsByVolunteerRequestV2.neuteredFilter(),
-            findAnimalsByVolunteerRequestV2.age(),
-            findAnimalsByVolunteerRequestV2.gender(),
-            findAnimalsByVolunteerRequestV2.size(),
-            findAnimalsByVolunteerRequestV2.createdAt(),
-            findAnimalsByVolunteerRequestV2.animalId(),
+        return ResponseEntity.ok(animalService.findAnimalsV2(
+            findAnimalsRequestV2.type(),
+            findAnimalsRequestV2.active(),
+            findAnimalsRequestV2.neuteredFilter(),
+            findAnimalsRequestV2.age(),
+            findAnimalsRequestV2.gender(),
+            findAnimalsRequestV2.animalSize(),
+            findAnimalsRequestV2.createdAt(),
+            findAnimalsRequestV2.animalId(),
             pageable
         ));
     }

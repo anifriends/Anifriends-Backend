@@ -21,7 +21,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
-import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse.FindApplyingVolunteerResponse;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
@@ -29,9 +29,12 @@ import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVol
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.support.ApplicantDtoFixture;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
+import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
+import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
+import com.clova.anifriends.domain.recruitment.vo.RecruitmentApplicantCount;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -67,6 +70,12 @@ class ApplicantServiceTest {
     @Mock
     VolunteerRepository volunteerRepository;
 
+    @Mock
+    ShelterNotificationRepository shelterNotificationRepository;
+
+    @Mock
+    VolunteerNotificationRepository volunteerNotificationRepository;
+
     @Nested
     @DisplayName("registerApplicant 메서드 실행 시")
     class RegisterApplicantTest {
@@ -101,6 +110,30 @@ class ApplicantServiceTest {
 
             // then
             then(applicantRepository).should().save(any());
+            then(shelterNotificationRepository).should().save(any());
+        }
+
+        @Test
+        @DisplayName("성공: 마지막 모집 인원이 신청한 경우")
+        void registerLastApplicant() {
+            // given
+            setField(volunteer, "volunteerId", 1L);
+            setField(recruitment, "recruitmentId", 1L);
+            setField(recruitment, "info", recruitmentInfo);
+            RecruitmentApplicantCount recruitmentApplicantCount = new RecruitmentApplicantCount(29);
+            setField(recruitment, "applicantCount", recruitmentApplicantCount);
+            given(recruitmentRepository.findByIdPessimistic(anyLong())).willReturn(
+                Optional.ofNullable(recruitment));
+            given(volunteerRepository.findById(anyLong())).willReturn(
+                Optional.ofNullable(volunteer));
+
+            // when
+            applicantService.registerApplicant(recruitment.getRecruitmentId(),
+                volunteer.getVolunteerId());
+
+            // then
+            then(applicantRepository).should().save(any());
+            verify(shelterNotificationRepository, times(2)).save(any());
         }
 
         @Test
@@ -138,14 +171,14 @@ class ApplicantServiceTest {
             Volunteer volunteer = volunteer();
             Applicant applicantApproved = applicant(recruitment, volunteer, ATTENDANCE);
 
-            FindApplicantsApprovedResponse response = FindApplicantsApprovedResponse.from(
+            FindApprovedApplicantsResponse response = FindApprovedApplicantsResponse.from(
                 List.of(applicantApproved));
 
-            when(applicantRepository.findApprovedByRecruitmentIdAndShelterId(anyLong(), anyLong()))
+            when(applicantRepository.findApprovedApplicants(anyLong(), anyLong()))
                 .thenReturn(List.of(applicantApproved));
 
             // when
-            FindApplicantsApprovedResponse result = applicantService.findApplicantsApproved(
+            FindApprovedApplicantsResponse result = applicantService.findApprovedApplicants(
                 anyLong(), anyLong());
 
             // then
@@ -156,14 +189,14 @@ class ApplicantServiceTest {
         @DisplayName("성공: 봉사 승인자가 0 명인 경우")
         void findApplicantsApproved2() {
             // given
-            FindApplicantsApprovedResponse response = FindApplicantsApprovedResponse.from(
+            FindApprovedApplicantsResponse response = FindApprovedApplicantsResponse.from(
                 List.of());
 
-            when(applicantRepository.findApprovedByRecruitmentIdAndShelterId(anyLong(), anyLong()))
+            when(applicantRepository.findApprovedApplicants(anyLong(), anyLong()))
                 .thenReturn(List.of());
 
             // when
-            FindApplicantsApprovedResponse result = applicantService.findApplicantsApproved(
+            FindApprovedApplicantsResponse result = applicantService.findApprovedApplicants(
                 anyLong(), anyLong());
 
             // then
@@ -301,6 +334,9 @@ class ApplicantServiceTest {
                     List.of(applicantAttendanceToNoShow.getApplicantId(),
                         applicantNoShow.getApplicantId()), NO_SHOW);
 
+            verify(volunteerNotificationRepository, times(1))
+                .saveAll(any(List.class));
+
         }
     }
 
@@ -330,6 +366,7 @@ class ApplicantServiceTest {
 
             // then
             assertThat(applicant.getStatus()).isEqualTo(REFUSED);
+            then(volunteerNotificationRepository).should().save(any());
         }
 
         @Test

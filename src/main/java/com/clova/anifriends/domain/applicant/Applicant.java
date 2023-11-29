@@ -110,6 +110,10 @@ public class Applicant extends BaseTimeEntity {
         }
     }
 
+    public void increaseTemperature(int temperature) {
+        this.volunteer.increaseTemperature(temperature);
+    }
+
     public ApplicantStatus getStatus() {
         return status;
     }
@@ -129,5 +133,4 @@ public class Applicant extends BaseTimeEntity {
     public Review getReview() {
         return review;
     }
-
 }

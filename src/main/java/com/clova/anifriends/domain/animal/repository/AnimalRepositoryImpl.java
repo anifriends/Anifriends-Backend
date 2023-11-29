@@ -76,7 +76,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     }
 
     @Override
-    public Page<Animal> findAnimalsByVolunteer(
+    public Page<Animal> findAnimals(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,
@@ -117,7 +117,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     }
 
     @Override
-    public Slice<Animal> findAnimalsByVolunteerV2(
+    public Slice<Animal> findAnimalsV2(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,
@@ -172,7 +172,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
 
 
     @Override
-    public Long countAnimalsV2(
+    public long countAnimalsV2(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,
@@ -194,6 +194,15 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
             .fetchOne();
 
         return count == null ? 0 : count;
+    }
+
+    @Override
+    public long countAllAnimalsExceptAdopted() {
+        Long count = query.select(animal.count())
+            .from(animal)
+            .where(animal.adopted.isAdopted.eq(false))
+            .fetchOne();
+        return count != null ? count : 0;
     }
 
     private BooleanExpression animalNameContains(String keyword) {

@@ -2,6 +2,8 @@ package com.clova.anifriends.domain.recruitment.repository;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import jakarta.persistence.LockModeType;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,10 +37,20 @@ public interface RecruitmentRepository
     Optional<Recruitment> findByShelterIdAndRecruitmentIdWithImages(
         @Param("shelterId") Long shelterId, @Param("recruitmentId") Long recruitmentId);
 
-    @Query("select r, r.shelter.shelterId from Recruitment r where r.recruitmentId = :recruitmentId")
+    @Query("select r from Recruitment r left join fetch r.images where r.recruitmentId = :recruitmentId")
     Optional<Recruitment> findRecruitmentDetail(@Param("recruitmentId") Long recruitmentId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select r from Recruitment r where r.recruitmentId = :recruitmentId")
     Optional<Recruitment> findByIdPessimistic(@Param("recruitmentId") Long recruitmentId);
+
+    @Query("select r from Recruitment r inner join fetch r.applicants "
+        + "where r.info.startTime >= :time1 and r.info.startTime <= :time2")
+    List<Recruitment> findRecruitmentsByStartTime(@Param("time1") LocalDateTime time1,
+        @Param("time2") LocalDateTime time2);
+
+    @Query("select r from Recruitment r inner join fetch r.applicants "
+        + "where r.info.endTime >= :time1 and r.info.endTime <= :time2")
+    List<Recruitment> findRecruitmentsByEndTime(@Param("time1") LocalDateTime time1,
+        @Param("time2") LocalDateTime time2);
 }

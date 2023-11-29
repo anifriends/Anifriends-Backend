@@ -9,7 +9,7 @@ import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRe
 import com.clova.anifriends.domain.recruitment.dto.request.UpdateRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterIdResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindShelterRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
@@ -41,7 +41,8 @@ public class RecruitmentController {
     public ResponseEntity<RegisterRecruitmentResponse> registerRecruitment(
         @LoginUser Long volunteerId,
         @RequestBody @Valid RegisterRecruitmentRequest registerRecruitmentRequest) {
-        RegisterRecruitmentResponse response = recruitmentService.registerRecruitment(
+        RegisterRecruitmentResponse registerRecruitmentResponse
+            = recruitmentService.registerRecruitment(
             volunteerId,
             registerRecruitmentRequest.title(),
             registerRecruitmentRequest.startTime(),
@@ -50,8 +51,9 @@ public class RecruitmentController {
             registerRecruitmentRequest.capacity(),
             registerRecruitmentRequest.content(),
             registerRecruitmentRequest.imageUrls());
-        URI location = URI.create("/api/recruitments/" + response.recruitmentId());
-        return ResponseEntity.created(location).build();
+        URI location
+            = URI.create("/api/recruitments/" + registerRecruitmentResponse.recruitmentId());
+        return ResponseEntity.created(location).body(registerRecruitmentResponse);
     }
 
     @GetMapping("/recruitments/{recruitmentId}")
@@ -133,12 +135,11 @@ public class RecruitmentController {
     }
 
     @GetMapping("/shelters/{shelterId}/recruitments")
-    public ResponseEntity<FindRecruitmentsByShelterIdResponse> findShelterRecruitmentsByShelter(
+    public ResponseEntity<FindShelterRecruitmentsResponse> findShelterRecruitments(
         @PathVariable Long shelterId,
         Pageable pageable
     ) {
-        return ResponseEntity.ok(
-            recruitmentService.findShelterRecruitmentsByShelter(shelterId, pageable));
+        return ResponseEntity.ok(recruitmentService.findShelterRecruitments(shelterId, pageable));
     }
 
     @ShelterOnly

@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
 
-public record FindRecruitmentsByShelterIdResponse(
+public record FindShelterRecruitmentsResponse(
     PageInfo pageInfo,
     List<RecruitmentResponse> recruitments
 ) {
@@ -31,8 +31,8 @@ public record FindRecruitmentsByShelterIdResponse(
         }
     }
 
-    public static FindRecruitmentsByShelterIdResponse from(Page<Recruitment> recruitments) {
-        return new FindRecruitmentsByShelterIdResponse(
+    public static FindShelterRecruitmentsResponse from(Page<Recruitment> recruitments) {
+        return new FindShelterRecruitmentsResponse(
             PageInfo.from(recruitments),
             recruitments.stream()
                 .map(RecruitmentResponse::from)

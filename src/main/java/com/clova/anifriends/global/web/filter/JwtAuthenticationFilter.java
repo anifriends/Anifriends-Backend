@@ -11,9 +11,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilter {
 
@@ -24,11 +26,15 @@ public class JwtAuthenticationFilter extends GenericFilter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
         throws IOException, ServletException {
+        log.debug("[Authentication] JWT 인증 필터 시작");
         HttpServletRequest request = (HttpServletRequest) req;
         String bearerAccessToken = request.getHeader(HEADER);
         if (Objects.nonNull(bearerAccessToken)) {
+            log.debug("[Authentication] JWT={}", bearerAccessToken);
             String accessToken = removeBearer(bearerAccessToken);
             Authentication authentication = authenticationProvider.authenticate(accessToken);
+            log.debug("[Authentication] JWT 인증 필터 종료. 사용자 인증 성공. Authentication={}",
+                authentication);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         chain.doFilter(req, res);
@@ -39,8 +45,9 @@ public class JwtAuthenticationFilter extends GenericFilter {
         return bearerAccessToken.replace(BEARER, "");
     }
 
-    private static void checkTokenContainsBearer(String bearerAccessToken) {
+    private void checkTokenContainsBearer(String bearerAccessToken) {
         if(!bearerAccessToken.contains(BEARER)) {
+            log.debug("[Authentication] JWT 인증 필터 종료. 사용자 인증 실패. Bearer 미포함");
             throw new InvalidJwtException("올바르지 않는 액세스 토큰 형식입니다.");
         }
     }

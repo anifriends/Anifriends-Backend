@@ -6,8 +6,8 @@ import static org.assertj.core.api.Assertions.catchException;
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
-import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
@@ -180,7 +180,7 @@ public class ApplicantIntegrationTest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("findApplicantsApproved 메서드 실행")
+        @DisplayName("findApprovedApplicant 메서드 실행")
         void findApplicantsApproved() {
             //given
             Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer,
@@ -188,8 +188,9 @@ public class ApplicantIntegrationTest extends BaseIntegrationTest {
             applicantRepository.save(applicant);
 
             //when
-            FindApplicantsApprovedResponse applicantsApproved = applicantService.findApplicantsApproved(
-                shelter.getShelterId(), recruitment.getRecruitmentId());
+            FindApprovedApplicantsResponse applicantsApproved
+                = applicantService.findApprovedApplicants(
+                    shelter.getShelterId(), recruitment.getRecruitmentId());
 
             //then
             assertThat(applicantsApproved.applicants()).hasSize(1);

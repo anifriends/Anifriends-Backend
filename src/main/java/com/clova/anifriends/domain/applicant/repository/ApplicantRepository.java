@@ -24,7 +24,6 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
             + " r.info.startTime as recruitmentStartTime "
             + "from Applicant a "
             + "join a.recruitment r "
-            + "join a.volunteer v "
             + "join r.shelter s "
             + "where a.volunteer = :volunteer"
     )
@@ -46,7 +45,7 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         + "and s.shelterId = :shelterId "
         + "and (a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE "
         + "or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NO_SHOW)")
-    List<Applicant> findApprovedByRecruitmentIdAndShelterId(
+    List<Applicant> findApprovedApplicants(
         @Param("recruitmentId") Long recruitmentId,
         @Param("shelterId") Long shelterId
     );
@@ -61,7 +60,7 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         @Param("shelterId") Long shelterId
     );
 
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Modifying
     @Query("update Applicant a set a.status = :status "
         + "where a.recruitment.recruitmentId = :recruitmentId "
         + "and a.recruitment.shelter.shelterId = :shelterId "

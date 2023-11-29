@@ -386,7 +386,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Page<Animal> result = animalRepository.findAnimalsByVolunteer(
+            Page<Animal> result = animalRepository.findAnimals(
                 typeFilter,
                 activeFilter,
                 neuteredFilter,
@@ -452,7 +452,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Page<Animal> result = animalRepository.findAnimalsByVolunteer(
+            Page<Animal> result = animalRepository.findAnimals(
                 nullTypeFilter,
                 nullActiveFilter,
                 nullIsNeuteredFilter,
@@ -561,7 +561,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Slice<Animal> result = animalRepository.findAnimalsByVolunteerV2(
+            Slice<Animal> result = animalRepository.findAnimalsV2(
                 typeFilter,
                 activeFilter,
                 neuteredFilter,
@@ -630,7 +630,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Slice<Animal> result = animalRepository.findAnimalsByVolunteerV2(
+            Slice<Animal> result = animalRepository.findAnimalsV2(
                 nullTypeFilter,
                 nullActiveFilter,
                 nullIsNeuteredFilter,
@@ -796,5 +796,28 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             assertThat(result).isEqualTo(2);
         }
 
+    }
+
+    @Nested
+    @DisplayName("countAllAnimalsExceptAdopted 실행 시")
+    class CountAllAnimalsExceptAdoptedTest {
+
+        @Test
+        @DisplayName("성공")
+        void countAllAnimalsExceptAdopted() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            Animal animal1 = AnimalFixture.animal(shelter);
+            Animal animal2 = AnimalFixture.animal(shelter);
+            Animal animal3 = AnimalFixture.animal(shelter, true);
+            shelterRepository.save(shelter);
+            animalRepository.saveAll(List.of(animal1, animal2, animal3));
+
+            // when
+            long count = animalRepository.countAllAnimalsExceptAdopted();
+
+            // then
+            assertThat(count).isEqualTo(2L);
+        }
     }
 }

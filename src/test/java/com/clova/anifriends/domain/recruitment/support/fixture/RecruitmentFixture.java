@@ -5,6 +5,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.shelter.Shelter;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class RecruitmentFixture {
@@ -29,6 +30,12 @@ public class RecruitmentFixture {
             DEADLINE,
             IMAGE_URL_LIST
         );
+    }
+
+    public static List<Recruitment> recruitments(Shelter shelter, int end) {
+        return IntStream.range(0, end)
+            .mapToObj(i -> recruitment(shelter))
+            .toList();
     }
 
     public static Recruitment recruitment(Shelter shelter, int capacity) {

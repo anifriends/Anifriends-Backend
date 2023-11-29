@@ -55,7 +55,7 @@ public class RecruitmentRepositoryImpl implements
                 recruitmentStartTimeGoe(startDate),
                 recruitmentStartTimeLoe(endDate)
             ).fetchOne();
-        return new PageImpl<>(content, pageable, count);
+        return new PageImpl<>(content, pageable, count != null ? count : 0);
     }
 
     @Override
@@ -203,7 +203,7 @@ public class RecruitmentRepositoryImpl implements
     }
 
     @Override
-    public Page<Recruitment> findRecruitmentsByShelterId(long shelterId, Pageable pageable) {
+    public Page<Recruitment> findShelterRecruitments(long shelterId, Pageable pageable) {
 
         List<Recruitment> recruitments = query.selectFrom(recruitment)
             .where(recruitment.shelter.shelterId.eq(shelterId)

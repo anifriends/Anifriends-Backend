@@ -26,7 +26,7 @@ public interface AnimalRepositoryCustom {
         Pageable pageable
     );
 
-    Page<Animal> findAnimalsByVolunteer(
+    Page<Animal> findAnimals(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,
@@ -36,7 +36,7 @@ public interface AnimalRepositoryCustom {
         Pageable pageable
     );
 
-    Slice<Animal> findAnimalsByVolunteerV2(
+    Slice<Animal> findAnimalsV2(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,
@@ -48,7 +48,7 @@ public interface AnimalRepositoryCustom {
         Pageable pageable
     );
 
-    Long countAnimalsV2(
+    long countAnimalsV2(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,
@@ -57,4 +57,5 @@ public interface AnimalRepositoryCustom {
         AnimalSize size
     );
 
+    long countAllAnimalsExceptAdopted();
 }

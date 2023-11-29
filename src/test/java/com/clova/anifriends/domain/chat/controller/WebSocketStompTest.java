@@ -3,10 +3,11 @@ package com.clova.anifriends.domain.chat.controller;
 import static com.clova.anifriends.domain.auth.jwt.UserRole.ROLE_VOLUNTEER;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.clova.anifriends.base.TestContainerStarter;
 import com.clova.anifriends.domain.chat.ChatMessage;
 import com.clova.anifriends.domain.chat.ChatRoom;
 import com.clova.anifriends.domain.chat.dto.request.ChatMessageRequest;
-import com.clova.anifriends.domain.chat.dto.response.NewChatMessageResponse;
+import com.clova.anifriends.domain.chat.dto.response.ChatMessageResponse;
 import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
 import com.clova.anifriends.domain.chat.support.ChatMessageFixture;
 import com.clova.anifriends.domain.chat.support.ChatRoomFixture;
@@ -43,7 +44,7 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class WebSocketStompTest {
+class WebSocketStompTest extends TestContainerStarter {
 
     @LocalServerPort
     private int port;
@@ -57,7 +58,7 @@ class WebSocketStompTest {
     @Autowired
     private ChatRoomRepository chatRoomRepository;
 
-    private BlockingQueue<NewChatMessageResponse> newChatMessageResponses;
+    private BlockingQueue<ChatMessageResponse> chatMessageOfNewChatRoomResponse;
 
     private BlockingQueue<ChatMessageResponse> chatMessageResponses;
 
@@ -70,7 +71,7 @@ class WebSocketStompTest {
         url = "ws://localhost:" + port + "/ws-stomp";
         stompSession = getStompSession();
 
-        newChatMessageResponses = new LinkedBlockingDeque<>();
+        chatMessageOfNewChatRoomResponse = new LinkedBlockingDeque<>();
         chatMessageResponses = new LinkedBlockingDeque<>();
 
         Volunteer volunteer = VolunteerFixture.volunteer();
@@ -83,7 +84,7 @@ class WebSocketStompTest {
     }
 
     @Test
-    @DisplayName("새로운 채팅방에서 메시지 전송 api 호출 시")
+    @DisplayName("새로운 채팅 방에서 메시지 전송 api 호출 시")
     void newChatMessage() throws InterruptedException {
         // given
         Volunteer volunteer = volunteerRepository.findAll().get(0);
@@ -95,25 +96,26 @@ class WebSocketStompTest {
 
         ChatMessageRequest request = new ChatMessageRequest(volunteer.getVolunteerId(),
             ROLE_VOLUNTEER, chatMessage.getMessage());
-        NewChatMessageResponse expected = NewChatMessageResponse.from(chatMessage);
+        ChatMessageResponse expected = ChatMessageResponse.from(chatMessage);
 
-        stompSession.subscribe("/sub/new/chat/rooms/shelters/" + shelter.getShelterId(),
-            new StompFrameHandlerImpl<>(NewChatMessageResponse.class, newChatMessageResponses));
+        stompSession.subscribe("/sub/chat/new/rooms/shelters/" + shelter.getShelterId(),
+            new StompFrameHandlerImpl<>(ChatMessageResponse.class,
+                chatMessageOfNewChatRoomResponse));
 
         // when
-        stompSession.send("/pub/new/chat/rooms/" + chatRoom.getChatRoomId() + "/shelters/"
+        stompSession.send("/pub/chat/new/rooms/" + chatRoom.getChatRoomId() + "/shelters/"
             + shelter.getShelterId(), request);
-        NewChatMessageResponse result = newChatMessageResponses.poll(5,
+        ChatMessageResponse result = chatMessageOfNewChatRoomResponse.poll(5,
             TimeUnit.SECONDS);
 
         // then
         assertThat(result).usingRecursiveComparison()
-            .ignoringFields("chatMessage.createdAt")
+            .ignoringFields("createdAt")
             .isEqualTo(expected);
     }
 
     @Test
-    @DisplayName("기존 채팅방에서 메시지 전송 api 호출 시")
+    @DisplayName("기존 채팅 방에서 메시지 전송 api 호출 시")
     void ChatMessage() throws InterruptedException {
         // given
         Volunteer volunteer = volunteerRepository.findAll().get(0);

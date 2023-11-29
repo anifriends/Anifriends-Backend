@@ -1,13 +1,16 @@
 package com.clova.anifriends.domain.animal.service;
 
+import static com.clova.anifriends.domain.animal.support.fixture.AnimalFixture.ANIMAL_TYPE;
 import static com.clova.anifriends.domain.animal.support.fixture.AnimalFixture.animal;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,6 +23,7 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
+import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
@@ -54,6 +58,9 @@ class AnimalServiceTest {
 
     @InjectMocks
     AnimalService animalService;
+
+    @Mock
+    AnimalCacheRepository animalCacheRepository;
 
     @Mock
     AnimalRepository animalRepository;
@@ -93,8 +100,10 @@ class AnimalServiceTest {
             animalService.registerAnimal(1L, registerAnimalRequest);
 
             //then
+            then(animalCacheRepository).should().saveAnimal(any());
             then(animalRepository).should().save(any());
             then(animalRepository).should().save(any());
+            then(animalCacheRepository).should().increaseTotalNumberOfAnimals();
         }
 
         @Test
@@ -186,11 +195,11 @@ class AnimalServiceTest {
 
     @Nested
     @DisplayName("findAnimals 실행 시")
-    class FindAnimalsByVolunteerTest {
+    class FindAnimalsTest {
 
         @Test
-        @DisplayName("성공")
-        void findAnimalsByVolunteer() {
+        @DisplayName("성공: 모든 필터 존재")
+        void findAnimals1() {
             // given
             String mockName = "animalName";
             String mockInformation = "animalInformation";
@@ -226,12 +235,12 @@ class AnimalServiceTest {
             FindAnimalsResponse expected = FindAnimalsResponse.from(
                 pageResult);
 
-            when(animalRepository.findAnimalsByVolunteer(typeFilter, activeFilter,
+            when(animalRepository.findAnimals(typeFilter, activeFilter,
                 neuteredFilter, ageFilter, genderFilter, sizeFilter, pageRequest))
                 .thenReturn(pageResult);
 
             // when
-            FindAnimalsResponse result = animalService.findAnimalsByVolunteer(
+            FindAnimalsResponse result = animalService.findAnimals(
                 typeFilter, activeFilter, neuteredFilter,
                 ageFilter, genderFilter, sizeFilter, pageRequest);
 
@@ -242,12 +251,68 @@ class AnimalServiceTest {
     }
 
     @Nested
-    @DisplayName("findAnimalsByVolunteerV2 실행 시")
-    class FindAnimalsByVolunteerV2Test {
+    @DisplayName("findAnimals 실행 시(캐시 호출 테스트)")
+    class FindAnimalsForCacheTest {
+
+        @Test
+        @DisplayName("성공: 캐시 호출(모든 파라미터가 존재하지 않음)")
+        void findAnimalsForCache1() {
+            // given
+            AnimalType typeFilter = null;
+            AnimalActive activeFilter = null;
+            AnimalNeuteredFilter neuteredFilter = null;
+            AnimalAge ageFilter = null;
+            AnimalGender genderFilter = null;
+            AnimalSize sizeFilter = null;
+            LocalDateTime createdAt = null;
+            Long animalId = null;
+
+            // when
+            animalService.findAnimalsV2(
+                typeFilter, activeFilter, neuteredFilter,
+                ageFilter, genderFilter, sizeFilter, createdAt, animalId, PageRequest.of(0, 10));
+
+            // then
+            verify(animalCacheRepository, times(1)).findAnimals(anyInt(), anyLong());
+            verify(animalCacheRepository, times(1)).getTotalNumberOfAnimals();
+        }
+
+        @Test
+        @DisplayName("성공: 캐시 미호출 안함(activeFilter 존재)")
+        void findAnimalsForCache3() {
+            // given
+            AnimalType typeFilter = null;
+            AnimalActive activeFilter = AnimalActive.ACTIVE;
+            AnimalNeuteredFilter neuteredFilter = null;
+            AnimalAge ageFilter = null;
+            AnimalGender genderFilter = null;
+            AnimalSize sizeFilter = null;
+            LocalDateTime createdAt = null;
+            Long animalId = null;
+
+            when(animalRepository.findAnimalsV2(typeFilter, activeFilter,
+                neuteredFilter, ageFilter, genderFilter, sizeFilter, createdAt, animalId,
+                PageRequest.of(0, 10)))
+                .thenReturn(new SliceImpl<>(List.of(), PageRequest.of(0, 10), false));
+
+            // when
+            animalService.findAnimalsV2(
+                typeFilter, activeFilter, neuteredFilter,
+                ageFilter, genderFilter, sizeFilter, createdAt, animalId, PageRequest.of(0, 10));
+
+            // then
+            verify(animalCacheRepository, times(0)).findAnimals(anyInt(), anyLong());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("findAnimalsV2 실행 시")
+    class FindAnimalsV2Test {
 
         @Test
         @DisplayName("성공")
-        void findAnimalsByVolunteerV2() {
+        void findAnimalsV2_1() {
             // given
             String mockName = "animalName";
             String mockInformation = "animalInformation";
@@ -283,7 +348,7 @@ class AnimalServiceTest {
 
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pageResult, 1L);
 
-            when(animalRepository.findAnimalsByVolunteerV2(typeFilter, activeFilter,
+            when(animalRepository.findAnimalsV2(typeFilter, activeFilter,
                 neuteredFilter, ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L,
                 pageRequest))
                 .thenReturn(pageResult);
@@ -292,7 +357,119 @@ class AnimalServiceTest {
                 .thenReturn(1L);
 
             // when
-            FindAnimalsResponse result = animalService.findAnimalsByVolunteerV2(
+            FindAnimalsResponse result = animalService.findAnimalsV2(
+                typeFilter, activeFilter, neuteredFilter,
+                ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L, pageRequest);
+
+            // then
+            assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+
+        }
+
+        @Test
+        @DisplayName("성공: 페이징 필터만 존재하는 경우")
+        void findAnimalsV2OnlyHavePagingFilter() {
+            // given
+            String mockName = "animalName";
+            String mockInformation = "animalInformation";
+            String mockBreed = "animalBreed";
+            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
+
+            AnimalType typeFilter = null;
+            AnimalActive activeFilter = null;
+            AnimalNeuteredFilter neuteredFilter = null;
+            AnimalAge ageFilter = null;
+            AnimalGender genderFilter = null;
+            AnimalSize sizeFilter = null;
+
+            Shelter shelter = ShelterFixture.shelter();
+
+            Animal matchAnimal = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now().minusMonths(AnimalAge.ADULT.getMinMonth()),
+                AnimalType.DOG.getName(),
+                mockBreed,
+                AnimalGender.MALE.getName(),
+                AnimalNeuteredFilter.IS_NEUTERED.isNeutered(),
+                AnimalActive.ACTIVE.getName(),
+                AnimalSize.MEDIUM.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            SliceImpl<Animal> pageResult = new SliceImpl<>(List.of(matchAnimal), pageRequest,
+                false);
+
+            FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pageResult, 1L);
+
+            when(animalRepository.findAnimalsV2(typeFilter, activeFilter,
+                neuteredFilter, ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L,
+                pageRequest))
+                .thenReturn(pageResult);
+            when(animalRepository.countAnimalsV2(typeFilter, activeFilter,
+                neuteredFilter, ageFilter, genderFilter, sizeFilter))
+                .thenReturn(1L);
+
+            // when
+            FindAnimalsResponse result = animalService.findAnimalsV2(
+                typeFilter, activeFilter, neuteredFilter,
+                ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L, pageRequest);
+
+            // then
+            assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+
+        }
+
+        @Test
+        @DisplayName("성공: 타입, 종이 null일 경우")
+        void findAnimalsV2TwoFilterIsNull() {
+            // given
+            String mockName = "animalName";
+            String mockInformation = "animalInformation";
+            String mockBreed = "animalBreed";
+            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
+
+            AnimalType typeFilter = null;
+            AnimalActive activeFilter = null;
+            AnimalNeuteredFilter neuteredFilter = AnimalNeuteredFilter.IS_NEUTERED;
+            AnimalAge ageFilter = AnimalAge.ADULT;
+            AnimalGender genderFilter = AnimalGender.MALE;
+            AnimalSize sizeFilter = AnimalSize.MEDIUM;
+
+            Shelter shelter = ShelterFixture.shelter();
+
+            Animal matchAnimal = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now().minusMonths(ageFilter.getMinMonth()),
+                ANIMAL_TYPE,
+                mockBreed,
+                genderFilter.getName(),
+                neuteredFilter.isNeutered(),
+                AnimalActive.ACTIVE.getName(),
+                sizeFilter.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            SliceImpl<Animal> pageResult = new SliceImpl<>(List.of(matchAnimal), pageRequest,
+                false);
+
+            FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pageResult, 1L);
+
+            when(animalRepository.findAnimalsV2(typeFilter, activeFilter,
+                neuteredFilter, ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L,
+                pageRequest))
+                .thenReturn(pageResult);
+            when(animalRepository.countAnimalsV2(typeFilter, activeFilter,
+                neuteredFilter, ageFilter, genderFilter, sizeFilter))
+                .thenReturn(1L);
+
+            // when
+            FindAnimalsResponse result = animalService.findAnimalsV2(
                 typeFilter, activeFilter, neuteredFilter,
                 ageFilter, genderFilter, sizeFilter, LocalDateTime.MIN, 0L, pageRequest);
 
@@ -307,8 +484,8 @@ class AnimalServiceTest {
     class UpdateAnimalAdoptStatus {
 
         @Test
-        @DisplayName("성공")
-        void updateAnimalAdoptStatus() {
+        @DisplayName("성공: 입양 상태 true -> false")
+        void updateAnimalAdoptStatusMakeFalse() {
             // given
             Shelter shelter = ShelterFixture.shelter();
             boolean originStatus = true;
@@ -323,6 +500,30 @@ class AnimalServiceTest {
                 () -> animalService.updateAnimalAdoptStatus(anyLong(), anyLong(), updateStatus));
 
             // then
+            verify(animalCacheRepository, never()).deleteAnimal(any());
+            verify(animalCacheRepository, never()).decreaseTotalNumberOfAnimals();
+            assertThat(exception).isNull();
+        }
+
+        @Test
+        @DisplayName("성공: 입양 상태 true 로 변경")
+        void updateAnimalAdoptStatus2() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            boolean originStatus = false;
+            boolean updateStatus = true;
+            Animal animal = AnimalFixture.animal(shelter, originStatus);
+
+            when(animalRepository.findByShelterIdAndAnimalId(anyLong(), anyLong()))
+                .thenReturn(Optional.of(animal));
+
+            // when
+            Exception exception = catchException(
+                () -> animalService.updateAnimalAdoptStatus(anyLong(), anyLong(), updateStatus));
+
+            // then
+            verify(animalCacheRepository, times(1)).deleteAnimal(any(Animal.class));
+            verify(animalCacheRepository, times(1)).decreaseTotalNumberOfAnimals();
             assertThat(exception).isNull();
         }
     }
@@ -457,6 +658,7 @@ class AnimalServiceTest {
             verify(applicationEventPublisher, times(1)).publishEvent(
                 new ImageDeletionEvent(originImages));
             then(animalRepository).should().delete(any(Animal.class));
+            verify(animalCacheRepository, times(1)).decreaseTotalNumberOfAnimals();
         }
 
         @Test

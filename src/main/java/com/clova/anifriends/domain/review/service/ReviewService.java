@@ -4,11 +4,15 @@ import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
+import com.clova.anifriends.domain.notification.ShelterNotification;
+import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
+import com.clova.anifriends.domain.notification.vo.NotificationType;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.RegisterReviewResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewConflictException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
@@ -26,11 +30,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ReviewService {
 
+    public static final int REVIEW_BONUS_TEMPERATURE = 3;
     private final ReviewRepository reviewRepository;
 
     private final ApplicantRepository applicantRepository;
 
     private final ApplicationEventPublisher applicationEventPublisher;
+
+    private final ShelterNotificationRepository shelterNotificationRepository;
 
     @Transactional(readOnly = true)
     public FindReviewResponse findReview(Long userId, Long reviewId) {
@@ -47,13 +54,15 @@ public class ReviewService {
 
     @Transactional
     @DataIntegrityHandler(message = "이미 작성한 리뷰가 존재합니다.", exceptionClass = ReviewConflictException.class)
-    public Long registerReview(Long userId, Long applicationId, String content,
+    public RegisterReviewResponse registerReview(Long userId, Long applicationId, String content,
         List<String> imageUrls) {
         Applicant applicant = getApplicant(userId, applicationId);
 
         Review review = new Review(applicant, content, imageUrls);
         reviewRepository.save(review);
-        return review.getReviewId();
+        applicant.increaseTemperature(REVIEW_BONUS_TEMPERATURE);
+        shelterNotificationRepository.save(makeNewReviewNotification(applicant));
+        return RegisterReviewResponse.from(review);
     }
 
     @Transactional(readOnly = true)
@@ -109,5 +118,14 @@ public class ReviewService {
         return applicantRepository.findByApplicantIdAndVolunteerId(
                 applicationId, userId)
             .orElseThrow(() -> new ApplicantNotFoundException("봉사 신청 내역이 존재하지 않습니다."));
+    }
+
+    private ShelterNotification makeNewReviewNotification(Applicant applicant) {
+        return new ShelterNotification(
+            applicant.getRecruitment().getShelter(),
+            applicant.getRecruitment().getTitle(),
+            NotificationType.NEW_SHELTER_REVIEW.getMessage(),
+            NotificationType.NEW_SHELTER_REVIEW.getName()
+        );
     }
 }

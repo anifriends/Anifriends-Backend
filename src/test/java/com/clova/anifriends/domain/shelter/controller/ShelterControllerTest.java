@@ -31,6 +31,7 @@ import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterRes
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleResponse;
+import com.clova.anifriends.domain.shelter.dto.response.RegisterShelterResponse;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -85,10 +86,11 @@ class ShelterControllerTest extends BaseControllerTest {
         boolean isOpenedAddress = false;
         RegisterShelterRequest registerShelterRequest = new RegisterShelterRequest(email, password,
             name, address, addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress);
+        RegisterShelterResponse registerShelterResponse = new RegisterShelterResponse(1L);
 
         given(shelterService.registerShelter(anyString(), anyString(), anyString(), anyString(),
             anyString(), anyString(), anyString(), anyBoolean()))
-            .willReturn(1L);
+            .willReturn(registerShelterResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/shelters")
@@ -120,8 +122,12 @@ class ShelterControllerTest extends BaseControllerTest {
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 리소스 접근 가능 위치")
+                ),
+                responseFields(
+                    fieldWithPath("shelterId").type(JsonFieldType.NUMBER).description("생성된 보호소 ID")
                 )
             ));
+
     }
 
     @Test

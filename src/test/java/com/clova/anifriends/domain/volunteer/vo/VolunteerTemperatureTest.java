@@ -41,4 +41,82 @@ class VolunteerTemperatureTest {
                 .isInstanceOf(VolunteerBadRequestException.class);
         }
     }
+
+    @Nested
+    @DisplayName("increase() 메서드 호출 시")
+    class IncreaseTest {
+
+        @Test
+        @DisplayName("성공: 36 -> 39")
+        void increase1() {
+            // given
+            int originTemperature = 36;
+            int creaseTemperature = 3;
+            VolunteerTemperature volunteerTemperature = new VolunteerTemperature(originTemperature);
+
+            // when
+            VolunteerTemperature updateVolunteerTemperature = volunteerTemperature.increase(
+                creaseTemperature);
+
+            // then
+            assertThat(updateVolunteerTemperature.getTemperature()).isEqualTo(
+                originTemperature + creaseTemperature);
+        }
+
+        @Test
+        @DisplayName("성공: 99 -> 99")
+        void increase2() {
+            // given
+            int maxTemperature = 99;
+            int creaseTemperature = 3;
+            VolunteerTemperature volunteerTemperature = new VolunteerTemperature(maxTemperature);
+
+            // when
+            VolunteerTemperature updateVolunteerTemperature = volunteerTemperature.increase(
+                creaseTemperature);
+
+            // then
+            assertThat(updateVolunteerTemperature.getTemperature()).isEqualTo(
+                maxTemperature);
+        }
+    }
+
+    @Nested
+    @DisplayName("decrease() 메서드 호출 시")
+    class DecreaseTest {
+
+        @Test
+        @DisplayName("성공: 36 -> 26")
+        void increase1() {
+            // given
+            int originTemperature = 36;
+            int decreaseTemperature = 10;
+            VolunteerTemperature volunteerTemperature = new VolunteerTemperature(originTemperature);
+
+            // when
+            VolunteerTemperature updateVolunteerTemperature = volunteerTemperature.decrease(
+                decreaseTemperature);
+
+            // then
+            assertThat(updateVolunteerTemperature.getTemperature()).isEqualTo(
+                originTemperature - decreaseTemperature);
+        }
+
+        @Test
+        @DisplayName("성공: -99 -> -99")
+        void decrease2() {
+            // given
+            int minTemperature = -99;
+            int decreaseTemperature = 10;
+            VolunteerTemperature volunteerTemperature = new VolunteerTemperature(minTemperature);
+
+            // when
+            VolunteerTemperature updateVolunteerTemperature = volunteerTemperature.decrease(
+                decreaseTemperature);
+
+            // then
+            assertThat(updateVolunteerTemperature.getTemperature()).isEqualTo(
+                minTemperature);
+        }
+    }
 }
