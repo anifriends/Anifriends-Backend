@@ -601,11 +601,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_enum_문서화">Enum 문서화</a>
 <ul class="sectlevel1">
-<li><a href="#_1_보호_동물_성격">1. 보호 동물 성격</a></li>
-<li><a href="#_2_보호_동물_성별">2. 보호 동물 성별</a></li>
-<li><a href="#_3_보호_동물_종류">3. 보호 동물 종류</a></li>
-<li><a href="#_4_봉사_신청자_상태">4. 봉사 신청자 상태</a></li>
-<li><a href="#_5_봉사자_성별">5. 봉사자 성별</a></li>
+<li><a href="#_1_봉사자_성별">1. 봉사자 성별</a></li>
+<li><a href="#_2_봉사_신청자_상태">2. 봉사 신청자 상태</a></li>
+<li><a href="#_3_봉사_모집글_검색_필터">3. 봉사 모집글 검색 필터</a></li>
+<li><a href="#_4_보호_동물_성격">4. 보호 동물 성격</a></li>
+<li><a href="#_5_보호_동물_성별">5. 보호 동물 성별</a></li>
+<li><a href="#_6_보호_동물_나이대">6. 보호 동물 나이대</a></li>
+<li><a href="#_7_보호_동물_사이즈">7. 보호 동물 사이즈</a></li>
+<li><a href="#_8_보호_동물_종류">8. 보호 동물 종류</a></li>
 </ul>
 </li>
 </ul>
@@ -632,7 +635,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/shelters/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 91
-X-CSRF-TOKEN: wWVsBl3x_Pps1h5KkEKBQa3Jvh9MaeZ8QQTAbuqN3V9b3ELn-QNdN2vBy5xB4i959G-1IMz9k351XtFRJTb1Ddy67mto6CHe
+X-CSRF-TOKEN: UMgnT9CsyOTMQbMkhji9eVG3HNEe7JujnrbLr1j3txktSiGNaPhFfbOUqtzheIdHvxWJG2GGMekpiP6OqtCtnWGWjntMexjp
 Host: localhost:8080
 
 {
@@ -778,7 +781,7 @@ Content-Length: 78
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/volunteers/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 91
-X-CSRF-TOKEN: btxzapnoHf1TX16hv5Q8vaoaB3Lw8JCfsyfVvKlsYkuIoSd1W-wWDq2MLc1-PWfFh7kI2JN-KkrDk6KygB7mis8IAXO_wkQR
+X-CSRF-TOKEN: -PlUCAvk5jb_uXsruHA8DiN4l8fyAsR3E4khjUA3yoSgG_9EnMw1MD_V0gbSiR5NjF0IbRdPuv6RO_Nacb5EuyIP-LaVK5p2
 Host: localhost:8080
 
 {
@@ -922,9 +925,9 @@ Content-Length: 80
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/refresh HTTP/1.1
-X-CSRF-TOKEN: x449LW1teJ4NmKdjUF7Z_zU4Va_XP2qpRmUiTKzyALWQFxwi97teHl5YQP0grsRRYXPtzgVaeJfkWQ-Ec1NDesrKYdTxIy5A
+X-CSRF-TOKEN: lpOAGbPXtCbHN5uAPZ_QKfU0OL8w_ewEemzgofSTexDuBDCJpfazKtfi0hLqAv_hCLLkTMMHFd4GmI0pQlvWkJL1GCSLZ1K7
 Host: localhost:8080
-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzgsInN1YiI6IjEiLCJleHAiOjE3MDExOTU5NzgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.OwbteZr6AuQE8p4ggMV7Vd3GdCkH_oJEmlNa0YZpwxxafoSB1HBcswjTJKH0Z3VU
+Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODgsInN1YiI6IjEiLCJleHAiOjE3MDEyNDYzODgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.G57DwzIHlRXH_LH1KSBLbZo6dZdTSLBQ2bO0Tpcf9AeimY6_4KXQExaW8M25ZR77
 Content-Type: application/x-www-form-urlencoded</code></pre>
 </div>
 </div>
@@ -961,14 +964,14 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzgsInN1YiI6IjEiLCJleHAiOjE3MDExOTU5NzgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.OwbteZr6AuQE8p4ggMV7Vd3GdCkH_oJEmlNa0YZpwxxafoSB1HBcswjTJKH0Z3VU; Path=/api/auth; Domain=.anifriends.site; Secure; HttpOnly; SameSite=None
+Set-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODgsInN1YiI6IjEiLCJleHAiOjE3MDEyNDYzODgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.G57DwzIHlRXH_LH1KSBLbZo6dZdTSLBQ2bO0Tpcf9AeimY6_4KXQExaW8M25ZR77; Path=/api/auth; Domain=.anifriends.site; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 267
 
 {
   "userId" : 1,
   "role" : "ROLE_VOLUNTEER",
-  "accessToken" : "eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzgsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.rrsrwWJlxbVDmxuv60EsYokosdwxZaKjjV4CGH-SgfLVYALJU1un41cYUMBBso6I"
+  "accessToken" : "eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODgsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.QiM-Tv5SC07a519DVioAoBNCH1-R9sxqAZh7cVfAhtvJlq37Tej7yxYxO3gd2eSv"
 }</code></pre>
 </div>
 </div>
@@ -1052,7 +1055,7 @@ Content-Length: 267
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/volunteers/email HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 32
-X-CSRF-TOKEN: jFtrslFUJTeb9c_CbkHsh2IcSsHiOkU2WWwvAQJDXxdqpXqy7mlThzM3FgC2lq3wXmzY4VQpZ_jXXCEbYVVJZWFzbC9elkyB
+X-CSRF-TOKEN: bKDXffnOs3HAGI1FWcua0MqMQxGDR31eGvmPkZ7BP2nagjowXZfiHs6sgkTteekjaeau5P-4bnO2I09zeMG78P_xWlru5FtU
 Host: localhost:8080
 
 {
@@ -1148,7 +1151,7 @@ Content-Length: 28
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/volunteers HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 169
-X-CSRF-TOKEN: 0tfqPOZIDo--0EEf7lM40YJyiJ5TaglIO5469Y3x8JFBs08IsO6MWd4uOb2TsyR63H4MtbdLpacxDztlWfpYx-jGwaYnhilp
+X-CSRF-TOKEN: kR_Nk47z7emaZTzNKRZtBDIEdLF_rnBCObZDG855irR3QtynpSb48r3G3NG3AQioTDtZPQZiWYhOl0BvC9Qhev5KvIYSJOWQ
 Host: localhost:8080
 
 {
@@ -1310,8 +1313,8 @@ Content-Length: 23
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/me HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODYsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.neRZVb_yCgBHkgSi90pjEt4sW-XxkgQjnh7GHKky1jc2daatwJzAuLfcG45zUqu2
-X-CSRF-TOKEN: t4fbUnAqnqzMQGd-cAURHOXPTQfK0nEeJyBY1vKb2bu0e0J41LC9MEUfp5_hI1FPFSglederYD6p4UAzQxRosMuq4IzVHXdN
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTYsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.x8KwmvYEMTWQ8hMs1hzuG1VRXeFE1poPOJEFoQ0CrnyOTDfU8xyzakLIw7vaJwql
+X-CSRF-TOKEN: 1vAnZv3WB0tZoaLZq2tx4WosBlqX-5nqRVnNDLtFDs10Sr88tcRGV8_uMXl0lcDoyUZF2FJOK2Okwq3HJ2-pPIl1OfoWeYYN
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1441,9 +1444,9 @@ Content-Length: 300
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/volunteers/me/passwords HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODYsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.neRZVb_yCgBHkgSi90pjEt4sW-XxkgQjnh7GHKky1jc2daatwJzAuLfcG45zUqu2
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTYsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.x8KwmvYEMTWQ8hMs1hzuG1VRXeFE1poPOJEFoQ0CrnyOTDfU8xyzakLIw7vaJwql
 Content-Length: 76
-X-CSRF-TOKEN: Ess57cOzH_9lJM5eZeLxQo6uz6Uh2rMZYEnMfw5E1oENglBtd_sP2fKGes5IHfduBM_Fd7zL4sRA6oM0Vnz0TWpw47k742BZ
+X-CSRF-TOKEN: N098DLMhHQo_DFvI_RnV9Q9L2nTFARarfNyhoHm4PTi_kaImUy1OOtAULjwSaWL_xDThkG4t902nYi-GRO3Dkx-LC1uLopIR
 Host: localhost:8080
 
 {
@@ -1537,9 +1540,9 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/volunteers/me HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODYsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.neRZVb_yCgBHkgSi90pjEt4sW-XxkgQjnh7GHKky1jc2daatwJzAuLfcG45zUqu2
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTYsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTYsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.x8KwmvYEMTWQ8hMs1hzuG1VRXeFE1poPOJEFoQ0CrnyOTDfU8xyzakLIw7vaJwql
 Content-Length: 153
-X-CSRF-TOKEN: E-tQpUzPQUZnHSgO7lr1R_ulGBs_uDCjbq_iDQ7IxZ9NET-xI9lgnHT9c3VKfExs3HfBdMvBNXkP3AeOWZaAaDv_9Kksd1qF
+X-CSRF-TOKEN: 0LbkRDzEdtHhWSc1a910Z484Ise4IrOeiV0LMuQ2jld2JfCm4oXRIgvzRenMbkUGXPBAUuteD6aOFdCzsWpvBtEDv24XQMDD
 Host: localhost:8080
 
 {
@@ -1662,8 +1665,8 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/volunteers/1/profile HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODYsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.O26fwbkYpi1GWHoRuRfsIB4Hg2NjvxekggEwqiHLTd5uaOr0ygVjahiQfcgYPo7j
-X-CSRF-TOKEN: k9IxqbYzwcGU-gFOSvzYguBFRNj7bCoU0EhrJWoGae0oU5Nz9ucIyNUD9_m5zzN3K9Hs4dh3aeCdXRM55ioIFlw-CtsQZqBL
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTYsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.Nso_RjMGEwx-KC2aWnYVuZcWBCaQkWHZMulqXbWkQ64JGUVGYcMw8jGdDRKJqbka
+X-CSRF-TOKEN: RLhL7YMEQ5N_Dg-_h3OY93gHSw-E4q66Sl9evDgtU6wUCen1Jd153edhc6dSNznatl6sxk9hZjflhJuXKWs62AxIZs4gOd7F
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1782,7 +1785,7 @@ Content-Length: 177
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/shelters/email HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 33
-X-CSRF-TOKEN: qkdxlbUPtkZYP587DxKz_LvJcHb5GdOGetwZsn2bc9Eqr_uonHFB9tY41XJ1DqddOz-Hyor6XRTIIOerQ-57gUWtS-AZn8_M
+X-CSRF-TOKEN: G8P4JfVgav92wfhvjE-lIIZAkmU0R3ZrOyYEqEYnlYlND0OjePrNQ8VRWslboshX7WKRQud3v10Df0ZGDRMymCJEpussOHOa
 Host: localhost:8080
 
 {
@@ -1878,7 +1881,7 @@ Content-Length: 27
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/shelters HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 305
-X-CSRF-TOKEN: 1hm8bQyuJcwFpLlITaqX36xH9E0vqhl453rgFK6cxBRBew5x7iuFCDmYFvsoxdh6KYej7JQh2XUbnCxV3kPQJMql9CV5Hz5H
+X-CSRF-TOKEN: eQ8giJ-zl0RLp6GBoHS6LPrYcaefu3wb7oe1IWTaUOvPJcslSjsRuqyErnNmlpfgkVmOGc3sXMb83Uo2276NFga7Ydz2E_4V
 Host: localhost:8080
 
 {
@@ -2051,8 +2054,8 @@ Content-Length: 21
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/1/profile HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODUsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.E1sao-D9qn9_RT23-kYI32OhA7TgE8C7ViVxvhUBU9Q3D2geFRWM_ZLmXyLknodH
-X-CSRF-TOKEN: SV0kzaTE3_zIfYnWJF9Oirz3fbFkUMsyaCZ_ob49mRTfyQ9eeWsU_JSh5pjlHrjjFHJ6vIXEUIgGMqgfCRFGlokL_Xe8qzdm
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTUsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.oSI2UHuRO3LEKEOkVSHH4ujvHqCPLCtWeFbL6ACObskoNtb6uKgDvyGK_pDuu_bq
+X-CSRF-TOKEN: ku6dSQi08pGR8tWU0B-nENS4bRtygSvhj_7AXBKrgC9ikpxY9IulLDqMwPK8lOKitjKTILeBQHlHsU3Mt82ibyDNsE1Wpqlu
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2177,7 +2180,7 @@ Content-Length: 255
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/1/profile/simple HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-X-CSRF-TOKEN: jQ_cfJrm7kf3WFxO412TCyK8QdccvVnP3E-Q7mjkM3ELpCQHuTy-Sfvej3_aPj150XCnbUTebLZ_2zviun6mi13RB0c4khxj
+X-CSRF-TOKEN: yPJuvxwQV_m3VzVo9x8KgYCzR9a41NZnXwefEutyjxJsIs6G_5NX2SQkMZ-aNgxawzI-5LSHareO7OBKazSoK9JBuiQNQ6_n
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2283,8 +2286,8 @@ Content-Length: 145
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/me HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODUsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.h_-muGgrMDOHK8UsFZQdq1K6OQQ-0eNIKWj_gd3535MKbB1R8kbsUCtOiO0dGJHj
-X-CSRF-TOKEN: tcxiFRSrhv-cZfcnyX9MHjlsm1yc-8A1VKWvHrJpD0A7RhmHhv1SJXLP5JqxUcVF_VJ4fwgNtmWsnvkYYJaeKoVeaXANcCGx
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTUsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.I1k2a2TdSZ_TXdDbsCr7Dw1DfaxCmIHJhXjXt310oXyNaYLcHiY_M-rvbjwyNybd
+X-CSRF-TOKEN: qkLCf82O-VSWk7QmHZ5xixSlwqK01P5ShVuOnc7pCS2PrQ9IziT2Hq-9mGa79Y0UebNF7nWX78OB5p1_sD3vrqrZOU_rnDd8
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2414,9 +2417,9 @@ Content-Length: 339
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/me/passwords HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODUsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.h_-muGgrMDOHK8UsFZQdq1K6OQQ-0eNIKWj_gd3535MKbB1R8kbsUCtOiO0dGJHj
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTUsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.I1k2a2TdSZ_TXdDbsCr7Dw1DfaxCmIHJhXjXt310oXyNaYLcHiY_M-rvbjwyNybd
 Content-Length: 76
-X-CSRF-TOKEN: 2FMnp4WzjuGE7EuavgBMrktbWmVerNsRocCYsFsfkHK5o4ppuWFDwrWA7dWp2i_-3y14zy1rdwdvnu48lPKuh299pELaxb4M
+X-CSRF-TOKEN: nefhG6w9WiKlW7LtpBYmmLQb2vaRm9IlF0oE7AP8uHv8k5PMqYLWLplYbRCIbYHVxTsSq4ct95en-usIIHswjWaaiRrEpfCv
 Host: localhost:8080
 
 {
@@ -2510,9 +2513,9 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/me/address/status HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODUsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.h_-muGgrMDOHK8UsFZQdq1K6OQQ-0eNIKWj_gd3535MKbB1R8kbsUCtOiO0dGJHj
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTUsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.I1k2a2TdSZ_TXdDbsCr7Dw1DfaxCmIHJhXjXt310oXyNaYLcHiY_M-rvbjwyNybd
 Content-Length: 31
-X-CSRF-TOKEN: CjBNQEvZJwcZY4fXNmcmjHvu6sC1AtT4YqXk2Pk5tEa3DJVgOQJ_Iiq8FWM0W-ayAUoS7RrYx_jWZ7HVBpDTucEPh37WNaJT
+X-CSRF-TOKEN: O43H_WnMHoPYdAiu8yhy4PgAgXh71728cbyZ4iCWp-YIDkihDLulnFmoeLL1QziXwAVG0pwzrEAa5IqRRIqo2xGvntYwNnCR
 Host: localhost:8080
 
 {
@@ -2598,9 +2601,9 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/me HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODUsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.h_-muGgrMDOHK8UsFZQdq1K6OQQ-0eNIKWj_gd3535MKbB1R8kbsUCtOiO0dGJHj
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTUsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.I1k2a2TdSZ_TXdDbsCr7Dw1DfaxCmIHJhXjXt310oXyNaYLcHiY_M-rvbjwyNybd
 Content-Length: 226
-X-CSRF-TOKEN: 7gTpbfj3FtGp6PC8tvt9SylMUFQP-PccibkH-uODb5tkV7383TXfVcrBJ-OE0MeOhNZJeBl7fTY7wMUx7d1kyNqxWvkFZNvN
+X-CSRF-TOKEN: dvYIMYvL5yxBf2XjnjXqX0WV6yRBpxxW5LyjH0zYxAMVlR5dFcE9VL761BpsHgTRqBjeO3Gmxh1zwi57h4TALHi58WF0pX1u
 Host: localhost:8080
 
 {
@@ -2744,7 +2747,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-11-29&amp;endDate=2023-11-29&amp;closedFilter=IS_OPENED&amp;keywordFilter=IS_CONTENT&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
-X-CSRF-TOKEN: 6ygYKrsBmB8BoCQWEzWm5ySscDQHtQuPf8kmfzE873NoOQhQ2E4vGoNjrScslxcuKxiS0kGdXQw2122iSvlFHAEO2UAMX2xo
+X-CSRF-TOKEN: xdMTr-JGhN14dC2Yk1MsfwJRXkATaUI-p5k3UyZD8ZZEyeqLoOohzYcltu1VQkn78X4YGTU0cyFwCnoTxatWaxInkK8nq9zu
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2830,9 +2833,9 @@ Content-Length: 511
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-12-29T00:39:37.595526",
-    "recruitmentEndTime" : "2023-12-29T02:39:37.595526",
-    "recruitmentDeadline" : "2023-12-28T00:39:37.595526",
+    "recruitmentStartTime" : "2023-12-29T14:39:47.718244",
+    "recruitmentEndTime" : "2023-12-29T16:39:47.718244",
+    "recruitmentDeadline" : "2023-12-28T14:39:47.718244",
     "recruitmentIsClosed" : false,
     "recruitmentApplicantCount" : 0,
     "recruitmentCapacity" : 10,
@@ -2946,8 +2949,8 @@ Content-Length: 511
 <h5 id="_request_19_http_request"><a class="link" href="#_request_19_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v2/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-11-29&amp;endDate=2023-11-29&amp;closedFilter=IS_OPENED&amp;keywordFilter=IS_CONTENT&amp;recruitmentId=1&amp;createdAt=2023-11-29T00%3A39%3A43.023699&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
-X-CSRF-TOKEN: w1OSjCBd629bz5jld1vOVumywW1ToBPb910IbjKaohHSyuPY9TH0tRA8iAx2_KHSEnb6ZYyK7AxgmHf2k2w8Xlb8wyXj-ofs
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v2/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-11-29&amp;endDate=2023-11-29&amp;closedFilter=IS_OPENED&amp;keywordFilter=IS_CONTENT&amp;recruitmentId=1&amp;createdAt=2023-11-29T14%3A39%3A52.788710&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
+X-CSRF-TOKEN: BsrtfdgLlWB-cjT3aKHwHCYrfH__Mrnex3cevdG0bBmI-ogKY_PcRbk89AFTRlDPWIzEKUROUUbLC47zpBEsjeaNWXjpyrw_
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -3045,9 +3048,9 @@ Content-Length: 511
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-12-29T00:39:37.595526",
-    "recruitmentEndTime" : "2023-12-29T02:39:37.595526",
-    "recruitmentDeadline" : "2023-12-28T00:39:37.595526",
+    "recruitmentStartTime" : "2023-12-29T14:39:47.718244",
+    "recruitmentEndTime" : "2023-12-29T16:39:47.718244",
+    "recruitmentDeadline" : "2023-12-28T14:39:47.718244",
     "recruitmentIsClosed" : false,
     "recruitmentApplicantCount" : 0,
     "recruitmentCapacity" : 10,
@@ -3163,7 +3166,7 @@ Content-Length: 511
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/recruitments/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-X-CSRF-TOKEN: k1FH6MfBC46Q1na1iBGgynMNv98W1jzypbjgE-8p0452H_BN9mh03aP1b-u9shKN6zyU-0Zpkr4gtAzfk4zVKt5M4L8UfsYs
+X-CSRF-TOKEN: AsD9TfpYplUF_hruD7ReSmQnV8lTwge8UBCEwjZot7TeRMWyNvmefZ9gk2IomHmLa5lqfgAVevE1ozCRZSLn8VAKhY3qc6OE
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -3209,10 +3212,10 @@ Content-Length: 500
   "recruitmentApplicantCount" : 0,
   "recruitmentCapacity" : 10,
   "recruitmentContent" : "recruitmentContent",
-  "recruitmentStartTime" : "2023-12-29T00:39:37.595526",
-  "recruitmentEndTime" : "2023-12-29T02:39:37.595526",
+  "recruitmentStartTime" : "2023-12-29T14:39:47.718244",
+  "recruitmentEndTime" : "2023-12-29T16:39:47.718244",
   "recruitmentIsClosed" : false,
-  "recruitmentDeadline" : "2023-12-28T00:39:37.595526",
+  "recruitmentDeadline" : "2023-12-28T14:39:47.718244",
   "recruitmentCreatedAt" : null,
   "recruitmentUpdatedAt" : null,
   "recruitmentImageUrls" : [ "imageUrl1", "imageUrl2" ],
@@ -3312,7 +3315,7 @@ Content-Length: 500
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/1/recruitments HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-X-CSRF-TOKEN: YOs9OqA8O_GjXBwYD6YDFBj14tlLVK1ARIoxck099uJ5LqMQUdgLCpMKWMaOaSsra4s3Jy_Nz-F7YJRtfb9TRy9ZxocfT5Yi
+X-CSRF-TOKEN: 2XZX5Z_-INCeayO7Xa8q6cZBHjvt_j8KHUw5e3RIyhthtj9M4RVjhqrPRuGzUxfZPIIeiPYnMwPayQ0nK3sAThVwr3lYhAd8
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -3394,8 +3397,8 @@ Content-Length: 356
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-12-29T00:39:37.595526",
-    "recruitmentDeadline" : "2023-12-28T00:39:37.595526",
+    "recruitmentStartTime" : "2023-12-29T14:39:47.718244",
+    "recruitmentDeadline" : "2023-12-28T14:39:47.718244",
     "recruitmentCapacity" : 10,
     "recruitmentApplicantCount" : 0
   } ]
@@ -3484,8 +3487,8 @@ Content-Length: 356
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-11-29&amp;endDate=2023-11-29&amp;closedFilter=IS_OPENED&amp;keywordFilter=IS_SHELTER_NAME&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODMsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODMsInJvbGUiOiJST0xFX1NIRUxURVIifQ.2a8MnEZoAk_3GM-rhHiEyv9CkWI-MgDLXb9_fgTmJ287UagCDpigdE6wxslAM1rL
-X-CSRF-TOKEN: 61Ts0Jg9zsUVc3W78w3v7jDfm3iTKG48Yi25MHV-KpyfY_Kn3Tfd4qsO_ac4RkXfkCDbjFTmtkGkTFcRBBXbVU0YGKmrAsXG
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTIsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ibp6oElE6lScAuXGg3hDs08QrySOiwv-KeU_FRC3V-R-mE3m6tsSKvMYvNb6KY5C
+X-CSRF-TOKEN: Vn_B_f5B_NBLORbxZc5bosLgMyq3DA-LrDCJlA6wl3mydCgJZkf2zJx4meJmACOUUONvkPXRHhOBO2qmn1G6oj2Io02FTE48
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -3596,9 +3599,9 @@ Content-Length: 448
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-12-29T00:39:37.595526",
-    "recruitmentEndTime" : "2023-12-29T02:39:37.595526",
-    "recruitmentDeadline" : "2023-12-28T00:39:37.595526",
+    "recruitmentStartTime" : "2023-12-29T14:39:47.718244",
+    "recruitmentEndTime" : "2023-12-29T16:39:47.718244",
+    "recruitmentDeadline" : "2023-12-28T14:39:47.718244",
     "recruitmentIsClosed" : false,
     "recruitmentApplicantCount" : 0,
     "recruitmentCapacity" : 10
@@ -3693,16 +3696,16 @@ Content-Length: 448
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/shelters/recruitments HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODMsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODMsInJvbGUiOiJST0xFX1NIRUxURVIifQ.2a8MnEZoAk_3GM-rhHiEyv9CkWI-MgDLXb9_fgTmJ287UagCDpigdE6wxslAM1rL
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTIsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ibp6oElE6lScAuXGg3hDs08QrySOiwv-KeU_FRC3V-R-mE3m6tsSKvMYvNb6KY5C
 Content-Length: 223
-X-CSRF-TOKEN: TxVKS4YMzQl-BX3thqjglYXBQLRQ46Gc7f3jTiCIze7df08XLid-Lrc6-TpTMknctoXUo-aibY1j0ZOxj8nXd0W-rIvsHXgl
+X-CSRF-TOKEN: QqNvANIMvmDArM9OE4stfURbzT_q2-6glflbeGLH9Ex2o0G_JpEJNLc1jwPtm_YscKYZT3dt4F3Y79yN9MFjHlSkwHpDkHLZ
 Host: localhost:8080
 
 {
   "title" : "title",
-  "startTime" : "2023-11-30T00:39:43.056456",
-  "endTime" : "2023-11-30T01:39:43.056456",
-  "deadline" : "2023-11-29T05:39:43.056456",
+  "startTime" : "2023-11-30T14:39:52.819325",
+  "endTime" : "2023-11-30T15:39:52.819325",
+  "deadline" : "2023-11-29T19:39:52.819325",
   "capacity" : 10,
   "content" : "content",
   "imageUrls" : [ ]
@@ -3856,8 +3859,8 @@ Content-Length: 25
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1/close HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODIsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.CpmqF2LAOUuH_QYs447h4fYxQpCgC5xOP8ndjtJ0u-LEnPCzyWtMR0x8v-7FlFPS
-X-CSRF-TOKEN: yTPdWobSHriZU7AD0nI9iD4KFioVsnvgBqUguhg6FJiypXus_AvpaL-zf420ZtE15V8Juw05O0sshULNM5IT3iEOJv6DlB3P
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTIsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ibp6oElE6lScAuXGg3hDs08QrySOiwv-KeU_FRC3V-R-mE3m6tsSKvMYvNb6KY5C
+X-CSRF-TOKEN: _pzNroXsMnqZ1IAPe6jE-Vlk1zSUDbcJ_VF6-YhI8kG7J-P4nav6lrLdVk-0suM5S4XwyGFV-laka4QkymgZzO0qkyOKRtGa
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -3931,16 +3934,16 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODMsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODMsInJvbGUiOiJST0xFX1NIRUxURVIifQ.2a8MnEZoAk_3GM-rhHiEyv9CkWI-MgDLXb9_fgTmJ287UagCDpigdE6wxslAM1rL
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTIsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ibp6oElE6lScAuXGg3hDs08QrySOiwv-KeU_FRC3V-R-mE3m6tsSKvMYvNb6KY5C
 Content-Length: 234
-X-CSRF-TOKEN: FWufSJz1Zjz7aLunJ1Zbt8khzIFmMv-soYKA3dJyqFuw26Vxdw2of6TGBV7WC93GEHtvh_AZ4bheAZuBkrG37eBFkG3VuZUS
+X-CSRF-TOKEN: lJ-R0pP5Gh7kkL1Kun_A3s07o7fhvbJjo4u_FzQKvw6ai3ufoqfysPbPIynJ8d5ziVL0u6xYjtbRj4JOku_cIVBv2W38uU76
 Host: localhost:8080
 
 {
   "title" : "title",
-  "startTime" : "2023-12-29T00:39:43.039706",
-  "endTime" : "2023-12-29T01:39:43.039706",
-  "deadline" : "2023-12-28T00:39:43.039706",
+  "startTime" : "2023-12-29T14:39:52.803045",
+  "endTime" : "2023-12-29T15:39:52.803045",
+  "deadline" : "2023-12-28T14:39:52.803045",
   "capacity" : 10,
   "content" : "content",
   "imageUrls" : [ "a1", "a2" ]
@@ -4088,8 +4091,8 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/shelters/recruitments/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODMsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODMsInJvbGUiOiJST0xFX1NIRUxURVIifQ.2a8MnEZoAk_3GM-rhHiEyv9CkWI-MgDLXb9_fgTmJ287UagCDpigdE6wxslAM1rL
-X-CSRF-TOKEN: yyqJFzi0kNa9D1o-kFG1sgLLh2GwF9ALsVrMaXVCZ6MKWSxu-hzqJA2D9reQN2sLqXyBijL6qliCc-Em0G71W0N7AsY9YB5e
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTIsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ibp6oElE6lScAuXGg3hDs08QrySOiwv-KeU_FRC3V-R-mE3m6tsSKvMYvNb6KY5C
+X-CSRF-TOKEN: n7HZEgm6qi6WwW2wJeDcjQLl5nQODg5oBYRC2wHj8sjf3V-gp4O4JTyMnhu78V_URs3ovWPVy01rOjdFMbNzvWCCxP3pv2qS
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -4162,8 +4165,8 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/volunteers/1/recruitments/completed?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODMsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODMsInJvbGUiOiJST0xFX1NIRUxURVIifQ.2a8MnEZoAk_3GM-rhHiEyv9CkWI-MgDLXb9_fgTmJ287UagCDpigdE6wxslAM1rL
-X-CSRF-TOKEN: G1lv0Zz-jRMljG8-yyuhSVhZhYknRpUDMFfY6MuFDdZK7njHI2xa4PjHtSYIuF8PqQaVcD06qLFFdfQuA27gjqi1bLR5307z
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTIsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ibp6oElE6lScAuXGg3hDs08QrySOiwv-KeU_FRC3V-R-mE3m6tsSKvMYvNb6KY5C
+X-CSRF-TOKEN: GpBp1YZ4JHNQiJF5ZukWvOtHXCcLszp-hiCEFyKFSS1qS7q1KvVY7b9KEkF97KQbVsQi2dgkcR470gNTtRHnJRTme0teL9zX
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -4241,7 +4244,7 @@ Content-Length: 264
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-12-29T00:39:37.595526",
+    "recruitmentStartTime" : "2023-12-29T14:39:47.718244",
     "shelterName" : "shelterName"
   } ],
   "pageInfo" : {
@@ -4334,8 +4337,8 @@ Content-Length: 264
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/volunteers/recruitments/1/apply HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzcsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.x76tU4JYcRGVBXlatx80R1S3R91FEe546TDm1vr9k1hHVMeK4Yc-WyZug-7Al8Bd
-X-CSRF-TOKEN: 5T64eEP4cQEyB6-z2PrnQYm_VdMzs2oqsUmuFuy1ueZ7iUdW1wuJQSGdQjMfMJuButfTJ-qOeLJVigkH0nqXLtzX399IsSNm
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODcsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.aAfy8WzEKkOdYJNGKHJYwnNZTJSFQ4fT51BqyyeCU9sKXq5p477vkUnQSr_HoMBI
+X-CSRF-TOKEN: mInkg5GBKNK08cXl4x8LPBpeQ39TNTXWBEJI0LwIEB8YLf1hrujSt6K3HeeZxKPS0DI_Dis9bkdhDFT7N3ErtIU9JnwuTplV
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -4409,8 +4412,8 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/applicants HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzcsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.x76tU4JYcRGVBXlatx80R1S3R91FEe546TDm1vr9k1hHVMeK4Yc-WyZug-7Al8Bd
-X-CSRF-TOKEN: 7YqN0yDeHJTJVEySEcjjuN1kJQ7d31gsRFOX7Z7zuy2uASLH2ry4thDtfffkYH2rKOXXjO5XCG-_umkBImqj2qzKj0mXZBHw
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODcsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.aAfy8WzEKkOdYJNGKHJYwnNZTJSFQ4fT51BqyyeCU9sKXq5p477vkUnQSr_HoMBI
+X-CSRF-TOKEN: D0HZnfM22hxzanpY_i5H8awli03SVd7H8UkFrU1AUxXYyqvoOyfsqcMCvyheUhloyANzlJgcpi_kMOnqkitmyCxwZXC9_snc
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -4459,7 +4462,7 @@ Content-Length: 622
     "shelterName" : "shelterName",
     "applicantStatus" : "ATTENDANCE",
     "applicantIsWritedReview" : false,
-    "recruitmentStartTime" : "2023-12-29T00:39:37.595526"
+    "recruitmentStartTime" : "2023-12-29T14:39:47.718244"
   }, {
     "shelterId" : 1,
     "recruitmentId" : 1,
@@ -4468,7 +4471,7 @@ Content-Length: 622
     "shelterName" : "shelterName",
     "applicantStatus" : "PENDING",
     "applicantIsWritedReview" : false,
-    "recruitmentStartTime" : "2023-12-29T00:39:37.595526"
+    "recruitmentStartTime" : "2023-12-29T14:39:47.718244"
   } ]
 }</code></pre>
 </div>
@@ -4555,8 +4558,8 @@ Content-Length: 622
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/recruitments/1/applicants HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzcsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.RomvaNEQW4ZrHAMrZmZifNDqFody5_Gf4otl7fkK-3vDwwINu9cVO99z8QfxJQMU
-X-CSRF-TOKEN: CLiFqQdVoREbiyB4GkgjnEUTzCKO5f4nSFhln0QbpJnhQ7kQOd3kmzE2xyg2uxBOK2UX_Xwi4Rroh88KLG0B-SEinKqHINwj
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODcsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.8RhPsA53xK3ZqLESfqAQb0YCINj8H5Q1xZLkvVnytfVxBx8H_xGMSVfNDeACMuPt
+X-CSRF-TOKEN: UtYs_ENTCdOfGXsYUlevBXmmYMDgWGKdpyeemE_yUWV2Z1yea-FJmiBgPeKyLUkgYXqbMhjCTfjQOVCwlBT4-37KYwAVAm74
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -4706,8 +4709,8 @@ Content-Length: 54
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/recruitments/1/approval HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzcsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.RomvaNEQW4ZrHAMrZmZifNDqFody5_Gf4otl7fkK-3vDwwINu9cVO99z8QfxJQMU
-X-CSRF-TOKEN: Yax3PcY9XaQbPqvq8-sJ_X795gnmoJMb6ZFP4VBvDZDQ7YRpUZQVXvUKbp02DZjYwsY9zBqcyzDRkKU2ivV602dcOKbp2OBe
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODcsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.8RhPsA53xK3ZqLESfqAQb0YCINj8H5Q1xZLkvVnytfVxBx8H_xGMSVfNDeACMuPt
+X-CSRF-TOKEN: zOFGJGPEg2BW8aqUS6G_Le08ehAO08FOjmlND9ZeaXE2RIRErdBzFAGitVZ7wM-gKIyLSI4PV3E94_dj6l1-Puc8X0IAJbx2
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -4841,9 +4844,9 @@ Content-Length: 24
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1/applicants/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzcsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.RomvaNEQW4ZrHAMrZmZifNDqFody5_Gf4otl7fkK-3vDwwINu9cVO99z8QfxJQMU
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODcsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.8RhPsA53xK3ZqLESfqAQb0YCINj8H5Q1xZLkvVnytfVxBx8H_xGMSVfNDeACMuPt
 Content-Length: 25
-X-CSRF-TOKEN: r9Bt7K7Uj-zGAF7IVklzQGKf0mJ247n4v4eb8h0p8qQwFVSxl-Fd3Zu2vYrrY2auYGRHIlv-_wBB1YrVjrCjxn9IxpVRLTXQ
+X-CSRF-TOKEN: nP4tEpjnp9NY7D0w4OOE4v-HA_4J774YO9wGFZV207PioQB2-pgUIP3Sn-N13gQD186whMrkLsY_it01Xe82JaNFsIrWkjBF
 Host: localhost:8080
 
 {
@@ -4955,9 +4958,9 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1/approval HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzcsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.RomvaNEQW4ZrHAMrZmZifNDqFody5_Gf4otl7fkK-3vDwwINu9cVO99z8QfxJQMU
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODcsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.8RhPsA53xK3ZqLESfqAQb0YCINj8H5Q1xZLkvVnytfVxBx8H_xGMSVfNDeACMuPt
 Content-Length: 77
-X-CSRF-TOKEN: WNopiB99jwvGzG6qbvuGal-6_yr-w2UHiFkVCY98uR1eKdJEa-8csX1ItjLrr1idC9ayWjuI0hKYp1Aq6TwlO79OgXhsGrZ8
+X-CSRF-TOKEN: LSNWHzdVDfrV-m5Wsr_EKWPlanZ8rcvLxTWBVbizRGIGSs9KGEBjL1Vmb5z4m15v15LwTFuAR05JyKrm9ADlN4HVdAAwLP4r
 Host: localhost:8080
 
 {
@@ -5092,7 +5095,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/1/reviews?pageNumber=0&amp;pageSize=10 HTTP/1.1
-X-CSRF-TOKEN: c2u04qarSvoJwsSGs4Z9di8AG4UZjKM0gXGWjJNSNfe8FX2QQ12G1sWdfcwk-_Cx1qtJRkwyNrwhvpYZs0an6aYzVMKOcR6g
+X-CSRF-TOKEN: kdnlStC5vsu13HGt12L69csQwgaBWKwzMAlasmUs16zEggbZoe_SLOSA3_qY7BfL5U_Owa0h72TkYZUeUj1jgAQe5c2isGDt
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -5170,7 +5173,7 @@ Content-Length: 336
   "reviews" : [ {
     "reviewId" : 1,
     "volunteerTemperature" : 36,
-    "reviewCreatedAt" : "2023-11-29T00:39:45.462306",
+    "reviewCreatedAt" : "2023-11-29T14:39:55.097709",
     "reviewContent" : "reviewContent",
     "volunteerEmail" : "asdf@gmail.com",
     "reviewImageUrls" : [ "imageUrl1", "imageUrl2" ]
@@ -5269,9 +5272,9 @@ Content-Length: 336
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/volunteers/reviews HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODUsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.E1sao-D9qn9_RT23-kYI32OhA7TgE8C7ViVxvhUBU9Q3D2geFRWM_ZLmXyLknodH
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTUsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.oSI2UHuRO3LEKEOkVSHH4ujvHqCPLCtWeFbL6ACObskoNtb6uKgDvyGK_pDuu_bq
 Content-Length: 102
-X-CSRF-TOKEN: TL_E0uSE-XbvJ2Xi5Jf6oT2AlkAGSUBGHALFr3JIlAt8l0CLfonxt4e2y0DCH12A1rrOwlnkuyIxeHJrKmbylkUppjNNoXHu
+X-CSRF-TOKEN: hX69uWRSHx3HnZ9yKegRT3KiUidt0vKvDEiZQLiqCgsQD31NsU6O3AVrKSTqqahHEMUldhbDf0VZtsKCbn6hIoGeb252Px8v
 Host: localhost:8080
 
 {
@@ -5335,14 +5338,14 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@19df8300</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@5b5cd01d</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageUrls[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@20ae7ff5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@6c7edf64</p></td>
 </tr>
 </tbody>
 </table>
@@ -5380,8 +5383,8 @@ Content-Length: 20
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/reviews/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODUsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.E1sao-D9qn9_RT23-kYI32OhA7TgE8C7ViVxvhUBU9Q3D2geFRWM_ZLmXyLknodH
-X-CSRF-TOKEN: aC_e2YAC3_cvenFVgs7B1n1SARWv9UJuV-dRMaJiTzfZTy0-DB7tuLgx7ZYCTkE34eP1tUwzLHfNl3VDbtFhBMNVflHrLB8M
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTUsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.oSI2UHuRO3LEKEOkVSHH4ujvHqCPLCtWeFbL6ACObskoNtb6uKgDvyGK_pDuu_bq
+X-CSRF-TOKEN: iI3Vco1kfDwjInbmg8v2ucz2bynVHDoR0LhgoN1OXyEjHYHHur_kR7sCGgsOERDeuubCganCQhG0eQ8854ABxu94bRAbe7bw
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -5497,9 +5500,9 @@ Content-Length: 109
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/volunteers/reviews/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODUsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.E1sao-D9qn9_RT23-kYI32OhA7TgE8C7ViVxvhUBU9Q3D2geFRWM_ZLmXyLknodH
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTUsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.oSI2UHuRO3LEKEOkVSHH4ujvHqCPLCtWeFbL6ACObskoNtb6uKgDvyGK_pDuu_bq
 Content-Length: 66
-X-CSRF-TOKEN: T_YWgJVFkt67xKINI2TaT6ILnf0gi1ZUgNh5mcXBcJjo4F-hLsAhtaQhpuaW9pJvEknuf5BusJxF7zV54utJ__P2EqiO0j2X
+X-CSRF-TOKEN: LQbPzEafkLtjedX_l8ywnX42IZtQSpP_UizA1MAK-o82oUuPSDCt_yCt9I9OG-bL9OGE_xsCDPlmcqbSahn4saE-zboHlC69
 Host: localhost:8080
 
 {
@@ -5577,14 +5580,14 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@23bf4935</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@1fcb6e1e</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageUrls[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@68f00731</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@1d5fba06</p></td>
 </tr>
 </tbody>
 </table>
@@ -5614,8 +5617,8 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/volunteers/reviews/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODUsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.E1sao-D9qn9_RT23-kYI32OhA7TgE8C7ViVxvhUBU9Q3D2geFRWM_ZLmXyLknodH
-X-CSRF-TOKEN: DdN9Duj-STuoEANHYvSZraeB1Tq96VHH6C9AHbzaYL-6zAhibuBObdvLeQqFJWAjU9mty5Lj-Fjf2Tfq2R0iL9jqAo7Yqj4G
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTUsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.oSI2UHuRO3LEKEOkVSHH4ujvHqCPLCtWeFbL6ACObskoNtb6uKgDvyGK_pDuu_bq
+X-CSRF-TOKEN: ra5JSTGXXgBoP0OjbiXpAlJl5crdaLJgmDomz8O2XlxXFFnXnc8oKgiiZzBFDiKbWgjdMTRSyKu8WYFN_QxEqqKBP2U1IWHg
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -5688,8 +5691,8 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/me/reviews?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODUsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.E1sao-D9qn9_RT23-kYI32OhA7TgE8C7ViVxvhUBU9Q3D2geFRWM_ZLmXyLknodH
-X-CSRF-TOKEN: pJkqP7K5SUsjW9lCllH5qx-9vbx27gXd5Z8CbY8WSKvHESpElqwbC9GLL3kOauB1r3zNki2PkIRG1jTw3aY1DrkiLMj3Jxwn
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTUsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.oSI2UHuRO3LEKEOkVSHH4ujvHqCPLCtWeFbL6ACObskoNtb6uKgDvyGK_pDuu_bq
+X-CSRF-TOKEN: YRENUTpXvxtuxPMJwdG4da2pnuAZLU9uSdzhU1mkMLMN1JPAViE6Zw1ijyJDosU59PyMF5zLs4F4SHlDLe7RamCWUdFvtaH3
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -5770,7 +5773,7 @@ Content-Length: 297
   "reviews" : [ {
     "reviewId" : 1,
     "shelterName" : "shelterName",
-    "reviewCreatedAt" : "2023-11-29T00:39:45.451293",
+    "reviewCreatedAt" : "2023-11-29T14:39:55.087002",
     "reviewContent" : "reviewContent",
     "reviewImageUrls" : [ "imageUrl1", "imageUrl2" ]
   } ]
@@ -5858,8 +5861,8 @@ Content-Length: 297
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/volunteers/1/reviews?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODUsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.h_-muGgrMDOHK8UsFZQdq1K6OQQ-0eNIKWj_gd3535MKbB1R8kbsUCtOiO0dGJHj
-X-CSRF-TOKEN: ci_9CJO7Iqbz0FYhJoTS_HpFaLOgEat3xwNj4T0hwItDQmsTEEzNa_HaEpTe5jREFanmxRl3RYvBd5NapWIBgAwVpu1wIFkh
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTUsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.I1k2a2TdSZ_TXdDbsCr7Dw1DfaxCmIHJhXjXt310oXyNaYLcHiY_M-rvbjwyNybd
+X-CSRF-TOKEN: Bp85OGgPD4JpPTVtmIaDSnV91BeptBJMCwVFK5rrHr3pkAfDMPwAXlA7bbtEWwMOr6u3fhYe-S-RgXdhaD1ySaOOf4qMpGLx
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -5962,7 +5965,7 @@ Content-Length: 297
   "reviews" : [ {
     "reviewId" : 1,
     "shelterName" : "shelterName",
-    "reviewCreatedAt" : "2023-11-29T00:39:45.403171",
+    "reviewCreatedAt" : "2023-11-29T14:39:55.049453",
     "reviewContent" : "reviewContent",
     "reviewImageUrls" : [ "imageUrl1", "imageUrl2" ]
   } ]
@@ -6045,8 +6048,8 @@ Content-Length: 297
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/me/reviews?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODUsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.h_-muGgrMDOHK8UsFZQdq1K6OQQ-0eNIKWj_gd3535MKbB1R8kbsUCtOiO0dGJHj
-X-CSRF-TOKEN: nbCsE0ujp7BHtMsZt-LwrEUa62O4gE-TqpwpNtxLyymMVxnRroPIKymUltNq0Kh61s_EyncoxgKPtni-mP5LAL1-8xm1Mym3
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTUsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.I1k2a2TdSZ_TXdDbsCr7Dw1DfaxCmIHJhXjXt310oXyNaYLcHiY_M-rvbjwyNybd
+X-CSRF-TOKEN: AuhuOk2BuxVyZmcQV91qgW3Q8zRgIBTLtkUtwAmNJ2DO53FTMNwIXHm1jXNfBVEhYfBe5w-z3g1TQ3XmjnMY8Dq0HlSs1hVq
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -6122,7 +6125,7 @@ Content-Length: 394
 {
   "reviews" : [ {
     "reviewId" : 1,
-    "createdAt" : "2023-11-29T00:39:45.359963",
+    "createdAt" : "2023-11-29T14:39:55.006552",
     "content" : "reviewContent",
     "reviewImageUrls" : [ "imageUrl1", "imageUrl2" ],
     "volunteerId" : 1,
@@ -6245,8 +6248,8 @@ Content-Length: 394
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/animals?type=DOG&amp;gender=FEMALE&amp;neuteredFilter=IS_NEUTERED&amp;active=ACTIVE&amp;animalSize=SMALL&amp;animalSize=10&amp;age=ADULT&amp;page=0 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.e6LThh4p9HlxSf-DsgzOo6Rl9erQ4qzr2Re6N5fUA5ubQe_b_y46yzC5zmQ1EmkU
-X-CSRF-TOKEN: HluU6uWQ37FDsGW4nWzIapu1WIdw8o9nCH8W73XRn0a5K-W-Kzii3dSk54Fug1SJr0H8XKyBdeZBwrhKbEohiRHgqCWKSYPa
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.woA0z9nWpKXua0k-ajY82sqjlTntbCcq79ojZYraOR5TqdT8MNB467wKBvMJud8r
+X-CSRF-TOKEN: CM0RRmV8aWEav6XBIn2NubFsqUg8swSS5q1McS8U3fJK84S3avomclYeD1Y3icSgQFC53YRZhHAMgDS_0cl-FBkkvJcrkOaO
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -6418,8 +6421,8 @@ Content-Length: 267
 <h5 id="_request_43_http_request"><a class="link" href="#_request_43_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v2/animals?type=DOG&amp;gender=FEMALE&amp;neuteredFilter=IS_NEUTERED&amp;active=ACTIVE&amp;animalSize=SMALL&amp;animalSize=10&amp;age=ADULT&amp;animalId=1&amp;createdAt=2023-11-29T00%3A39%3A30.365364&amp;page=0 HTTP/1.1
-X-CSRF-TOKEN: Ets_xfsgW9TqimfbmHH3x3mxI_sTgEYsT9Iw0ogJvDfmTOolJO1ao8gROODHslTtq1zD8hrUDpkmtCcBe-NRs-08hALQfI8W
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v2/animals?type=DOG&amp;gender=FEMALE&amp;neuteredFilter=IS_NEUTERED&amp;active=ACTIVE&amp;animalSize=SMALL&amp;animalSize=10&amp;age=ADULT&amp;animalId=1&amp;createdAt=2023-11-29T14%3A39%3A40.494726&amp;page=0 HTTP/1.1
+X-CSRF-TOKEN: QxSkVVxm_Paw_KrbcWsIrc61stqNJgSe4Dgrk55ey__fFUS1cCydZjlensadzJPjR0Y8nKzUn-K1QmCz2V4e96tprc3pc3bX
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -6605,8 +6608,8 @@ Content-Length: 267
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/animals/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.e6LThh4p9HlxSf-DsgzOo6Rl9erQ4qzr2Re6N5fUA5ubQe_b_y46yzC5zmQ1EmkU
-X-CSRF-TOKEN: UDym2me4V_kEdpXEIevzxk50B7A-fhuLv8JMFqkNOW-OBcciMVnH71aPNcopFaH0EcbHpH9DKohfTy-m2vp9Jc86DVy4YPBH
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.woA0z9nWpKXua0k-ajY82sqjlTntbCcq79ojZYraOR5TqdT8MNB467wKBvMJud8r
+X-CSRF-TOKEN: KrwO8K6SRPKMWdjkk9Kh5L4keD8HphgOT5OEAfWTQ4zJZLf-H9o5ycuqcJeha-HXpv-V14kSVV01lisjeKWzYpegIr2rAo_O
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -6760,9 +6763,9 @@ Content-Length: 395
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/shelters/animals HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.BqnG02zD0wp4MNwgjBT9f0cxjHGyRCsRdTjZf_Rhye2AjUysNpYGCQpqV-oFCtuY
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.gfbLOEIgL5qphk4xDu8GClqsgUZzHdVF-6S9FmaqML8vVMUlmJwYOTQ6EGSsVwv7
 Content-Length: 253
-X-CSRF-TOKEN: EnTG339xLWAf_3e4kYCrg55uHmO7DYsrpk5kLVY2C-J8k4EdJkWl6hoUGlEyyk7eo62fsapZMwLeNb0GxXpdFDcHOdUaqrMu
+X-CSRF-TOKEN: rWoDMm50FGJ7tbfA7R0Epx90GwdfTZCTyVlp-3oRJ_B7aR9Jz1gxUVwSJFdWhoSk3DAwkScWNmZrfam--m9fyUInEZUdWyYo
 Host: localhost:8080
 
 {
@@ -6833,8 +6836,8 @@ Content-Length: 20
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/animals?keyword=%EA%B2%80%EC%83%89%EC%96%B4&amp;type=DOG&amp;gender=MALE&amp;neuteredFilter=IS_NEUTERED&amp;active=ACTIVE&amp;animalSize=SMALL&amp;age=BABY&amp;page=0&amp;size=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.BqnG02zD0wp4MNwgjBT9f0cxjHGyRCsRdTjZf_Rhye2AjUysNpYGCQpqV-oFCtuY
-X-CSRF-TOKEN: ub45fwsvhdJn0dpLvB_Z652s6_sq5YxaPZlEEuSdiEh277n_jtpaSDwd5rdK5ukt3jLt0viYxplJ07V3C6hwI4Wr7nkV3dvG
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.gfbLOEIgL5qphk4xDu8GClqsgUZzHdVF-6S9FmaqML8vVMUlmJwYOTQ6EGSsVwv7
+X-CSRF-TOKEN: 3whbOZU203UlCsdtOmvqCkkbnR_u70ltT9l9o2VIOtFa4gPT5zw-D6ABsRQIM6RfDkbebnB5sCfajXhAf-1ImgN-WLA71WLh
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -6868,8 +6871,8 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/animals?keyword=%EA%B2%80%EC%83%89%EC%96%B4&amp;type=DOG&amp;gender=MALE&amp;neuteredFilter=IS_NEUTERED&amp;active=ACTIVE&amp;animalSize=SMALL&amp;age=BABY&amp;page=0&amp;size=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.BqnG02zD0wp4MNwgjBT9f0cxjHGyRCsRdTjZf_Rhye2AjUysNpYGCQpqV-oFCtuY
-X-CSRF-TOKEN: ub45fwsvhdJn0dpLvB_Z652s6_sq5YxaPZlEEuSdiEh277n_jtpaSDwd5rdK5ukt3jLt0viYxplJ07V3C6hwI4Wr7nkV3dvG
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.gfbLOEIgL5qphk4xDu8GClqsgUZzHdVF-6S9FmaqML8vVMUlmJwYOTQ6EGSsVwv7
+X-CSRF-TOKEN: 3whbOZU203UlCsdtOmvqCkkbnR_u70ltT9l9o2VIOtFa4gPT5zw-D6ABsRQIM6RfDkbebnB5sCfajXhAf-1ImgN-WLA71WLh
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -6907,9 +6910,9 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/animals/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NjksInN1YiI6IjEiLCJleHAiOjE3MDExODY5NjksInJvbGUiOiJST0xFX1NIRUxURVIifQ.IDHu8NJlUHNkc3W9Q9n84oDsz6MUrDoFd2I4PjmHv3CueLrbyM1n4uJom8uTy6T4
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.gfbLOEIgL5qphk4xDu8GClqsgUZzHdVF-6S9FmaqML8vVMUlmJwYOTQ6EGSsVwv7
 Content-Length: 266
-X-CSRF-TOKEN: oXZ6d3CeW5a0391kphBOWp2OVpbDVPHElD17lLNjcFIhjzdOkBBJFUKoOKWZ6-wAnj16Y_-8e6_xZsHppVxIoNEFRTRDvQ8s
+X-CSRF-TOKEN: V-uMtFc7WmVbud7fo0GNJ4o7hN_kJHLhZh-rFbT5W3M2AIYBYo-4g2cMOVJ2iu7vlmy5HroNqeaFQhTMUnvPJYDIOUVUM7E2
 Host: localhost:8080
 
 {
@@ -6974,9 +6977,9 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/animals/1/status HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.BqnG02zD0wp4MNwgjBT9f0cxjHGyRCsRdTjZf_Rhye2AjUysNpYGCQpqV-oFCtuY
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.gfbLOEIgL5qphk4xDu8GClqsgUZzHdVF-6S9FmaqML8vVMUlmJwYOTQ6EGSsVwv7
 Content-Length: 24
-X-CSRF-TOKEN: 3fHE-x3N7Oxj9Ntn3c5CkI3_vqx4ESoe2hAGNSpVbGm_7rUWu8egwiz43N5OzO9Wu-N287_Ok5RPcBIz7yRjAR0wDl3d3Ndz
+X-CSRF-TOKEN: bI4mSU179mpcW46lW9s9Y6Tvl8OxZsjuP3h6mY03u_T5lXZ9X-9EeClJwFhxbbeXaPYJVZ3auqKJUP3DC0tOrLpS2ZXMoUZL
 Host: localhost:8080
 
 {
@@ -7031,8 +7034,8 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/shelters/animals/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5NzAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5NzAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.BqnG02zD0wp4MNwgjBT9f0cxjHGyRCsRdTjZf_Rhye2AjUysNpYGCQpqV-oFCtuY
-X-CSRF-TOKEN: W7uNhaG--GWVhiNuHfmdcR6QTi7p5MNBhGP3W5Rq4eE3yULPPYm_s5Daz1C4sBJXLNSpFSmlYxbQhfVsvAaVbqNZ0tkD-nH_
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzODAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczODAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.gfbLOEIgL5qphk4xDu8GClqsgUZzHdVF-6S9FmaqML8vVMUlmJwYOTQ6EGSsVwv7
+X-CSRF-TOKEN: 6JKWhI7quTyoOc7esSfnYmhkqMJe2hq6CGDy0QFE3aRp4SSv2fCnte3TgQSFX6zv1QrTV1lVhftm7CuXP1bFsjlz65EK1hKd
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -7116,8 +7119,8 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/chat/rooms/1/messages?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.Jy9mb001ZyQLAAQqz8WnnQDz0P35bhFef-AO7yuGU8oxzyqPbI_7db9ZjGQEbQ54
-X-CSRF-TOKEN: zmPFEl0G9vrSkXajmV1O2UtTtCSpk4n7yAtz1Oe_t1GtEQJaqlX9djxjwM__oU-S-3B67HJhmUaZo-jWrjsVsdfZ1WKYJGY_
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.0afYIwjUNi55Vfp3Ygqp8cXWvlwkYVN0yPCCyT67UgJ-HoJ5P9N2whF2VdWalmaN
+X-CSRF-TOKEN: sZ5wSAdwkA2Db5JIH42hmpahbXV0nlWgrAlRAS1zJWO735Uw0qkScTZFoW-uW6R8K6CVqfDDQEwVrDONmWxlYklFRlWK7PQJ
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -7196,7 +7199,7 @@ Content-Length: 244
     "chatSenderId" : 1,
     "chatSenderRole" : "ROLE_VOLUNTEER",
     "chatMessage" : "message",
-    "createdAt" : "2023-11-29T00:39:40.710801"
+    "createdAt" : "2023-11-29T14:39:50.569817"
   } ],
   "pageInfo" : {
     "totalElements" : 1,
@@ -7281,8 +7284,8 @@ Content-Length: 244
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/chat/rooms/shelters/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.M1JvwIKsqGVZgtp6GhGpwxFS2qHuiupiDaE14w3vP1rZlW3y_F51UZ6t-AlFIoGB
-X-CSRF-TOKEN: CCieeQxGotzrX3A-0UqimBLvyCZXZ8zLZoqjYgV0tfuhAWqwME37QDhwlerGbEUI5GeW_SPb5UdiAqjmVriaV2YQjc6ZNlOE
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.weddh0QdsBw6AT-8AM58JIgOcJcSvFd0K_nIy4ybjIXXxcIPjwfSpXko6F6sGTbZ
+X-CSRF-TOKEN: GyTGnLQFmE7vucLKoQ0D_N5vRI7YZ_wytd0rwo1ntsW1BZNjLkbw-NUxq37CiKf-lCA3zOxeaezvA8QfgL8SobQGjqeBZ6MG
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -7386,9 +7389,9 @@ Content-Length: 25
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/volunteers/chat/rooms HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.M1JvwIKsqGVZgtp6GhGpwxFS2qHuiupiDaE14w3vP1rZlW3y_F51UZ6t-AlFIoGB
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.weddh0QdsBw6AT-8AM58JIgOcJcSvFd0K_nIy4ybjIXXxcIPjwfSpXko6F6sGTbZ
 Content-Length: 21
-X-CSRF-TOKEN: m8fnIsvAvJsHrPMx4h-u3CImZjx48crbD2fOZ0_aZcmvg6gL_6KBQfmhifoqyJVUgTKa5RtAS15NyfL2NgX3Uyu7B62Z4c4-
+X-CSRF-TOKEN: vKoBefzY66738TcRynX7Apu81TDsbCFDbsPXzAwOn7eg7E8-2ZwxQc6-05faxQNw81jPM6qM-FHZWBJuWvq0_jhrqNWR2XsL
 Host: localhost:8080
 
 {
@@ -7525,8 +7528,8 @@ Content-Length: 22
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/chat/rooms HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.M1JvwIKsqGVZgtp6GhGpwxFS2qHuiupiDaE14w3vP1rZlW3y_F51UZ6t-AlFIoGB
-X-CSRF-TOKEN: BYfyknD3ZLBCgWwpa0a3Ux4UMIoqumBEalonioR-mh8lQCzLZOHA9EDBXIFv4w4fWGuDYSokHeseggFpX2gT6-AaridGdBX6
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.weddh0QdsBw6AT-8AM58JIgOcJcSvFd0K_nIy4ybjIXXxcIPjwfSpXko6F6sGTbZ
+X-CSRF-TOKEN: Yvsw_JivHRJWWvnshihbrDJkuZG4RWiyccHRYisOaxxtTPoyAM4JyvqWJCZ7P8veswVvlQJTlPOPJ1GfFPOzVE4_XiVcdJsE
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -7572,7 +7575,7 @@ Content-Length: 284
     "chatRecentMessage" : "최근 메시지",
     "chatPartnerName" : "채팅 상대방 이름",
     "charPartnerImageUrl" : "채팅 상대방 이미지 url",
-    "createdAt" : "2023-11-29T00:39:40.648786",
+    "createdAt" : "2023-11-29T14:39:50.497902",
     "chatUnReadCount" : 5
   } ]
 }</code></pre>
@@ -7644,8 +7647,8 @@ Content-Length: 284
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/chat/rooms/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.M1JvwIKsqGVZgtp6GhGpwxFS2qHuiupiDaE14w3vP1rZlW3y_F51UZ6t-AlFIoGB
-X-CSRF-TOKEN: 9zKl9OARwuwfaN_Zk67ytprU2bz3OKKBGvB9ujo_PhN2DcirkgeVwtEj89gyDLnvo4PG067m9IXGDZKsfpVJ3wwGD3FAPKye
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.weddh0QdsBw6AT-8AM58JIgOcJcSvFd0K_nIy4ybjIXXxcIPjwfSpXko6F6sGTbZ
+X-CSRF-TOKEN: SgWJYgraT3rLve93ZwKRzgc6BdyLJqtJqZAMYpsM_c0iZzbrfzLtWzrjfRzmhIxBAy-l_WIIKOXqR5xkkfNoUag5xaxBBQSO
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -7754,8 +7757,8 @@ Content-Length: 78
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/chat/rooms/unread HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.M1JvwIKsqGVZgtp6GhGpwxFS2qHuiupiDaE14w3vP1rZlW3y_F51UZ6t-AlFIoGB
-X-CSRF-TOKEN: xsyGtYQDJrOleHDMXO9ogAIW7uOM1YL54FWfLJaoCKJxNxjWp62-1rxiH9aIHEj4OcJcsTQhw4G85uPU0jCqTvDLMZdIUyu0
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTAsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.weddh0QdsBw6AT-8AM58JIgOcJcSvFd0K_nIy4ybjIXXxcIPjwfSpXko6F6sGTbZ
+X-CSRF-TOKEN: Q0j-qvmuNakUAyHDHhWCsPK7pMXe-U8_BTObK2z7MXh_DmkudnqdyMufB8g5YhX3Jji21JePiaTvy3YSY1X5Hg_DAB0ealwd
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -7841,8 +7844,8 @@ Content-Length: 28
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/chat/rooms HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.Jy9mb001ZyQLAAQqz8WnnQDz0P35bhFef-AO7yuGU8oxzyqPbI_7db9ZjGQEbQ54
-X-CSRF-TOKEN: ebTVnxkAvfKHUB0L2VJJpwa4TKlSEdjXDiLj0kYjx7m00HL-S9bsqipm3sOqNC9quH99wzPbYctmc7v6bEfS5HEa99zX4kGY
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.0afYIwjUNi55Vfp3Ygqp8cXWvlwkYVN0yPCCyT67UgJ-HoJ5P9N2whF2VdWalmaN
+X-CSRF-TOKEN: Y0v3UBv9qhrs4znG3OZV8c3zYRGv-wrK2DE-7azj6ui0f5XTB37GZSvEkyzBhgH36sthya-XTHDLnzznugdfjMnVjNzQRvCw
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -7888,7 +7891,7 @@ Content-Length: 284
     "chatRecentMessage" : "최근 메시지",
     "chatPartnerName" : "채팅 상대방 이름",
     "charPartnerImageUrl" : "채팅 상대방 이미지 url",
-    "createdAt" : "2023-11-29T00:39:40.730733",
+    "createdAt" : "2023-11-29T14:39:50.598836",
     "chatUnReadCount" : 5
   } ]
 }</code></pre>
@@ -7960,8 +7963,8 @@ Content-Length: 284
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/chat/rooms/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.Jy9mb001ZyQLAAQqz8WnnQDz0P35bhFef-AO7yuGU8oxzyqPbI_7db9ZjGQEbQ54
-X-CSRF-TOKEN: GlrZsDJ-pNasPohxkANZNYsNLYYSzftIAEJnqqgzkCxP5L5geTjogQdMkuGBW71HqS5tBLo4AL8r9c5lYiFUk8sHok0ugo5W
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.0afYIwjUNi55Vfp3Ygqp8cXWvlwkYVN0yPCCyT67UgJ-HoJ5P9N2whF2VdWalmaN
+X-CSRF-TOKEN: 5quAncWFFzY1yj7D-BIBzaZ5Sc7UH7hgk7jfExRkbFCmSR_1gJiy_vDkIVQY_FugnD81-Z5MZPbnKYBN8NrqISJXXjHDKirB
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -8048,8 +8051,8 @@ Content-Length: 89
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/chat/rooms/unread HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODAsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.Jy9mb001ZyQLAAQqz8WnnQDz0P35bhFef-AO7yuGU8oxzyqPbI_7db9ZjGQEbQ54
-X-CSRF-TOKEN: eP1nlVVEMpWiW1kaXkttMeg3JSHo7mDiOpBQD5mN6oT9TpzcQcVQojEiCqCPYzoiO2ZZBdEECBnd11bPDfQzOaDo07HLefrs
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTAsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTAsInJvbGUiOiJST0xFX1NIRUxURVIifQ.0afYIwjUNi55Vfp3Ygqp8cXWvlwkYVN0yPCCyT67UgJ-HoJ5P9N2whF2VdWalmaN
+X-CSRF-TOKEN: zqWyJqdDV-JPifaD310h1xxs3Tpev2OPNxLLE9iALW8B6ljj_pyDHsN3ZtRiuc616HAV4Hpb8AJmjVWiVnCpJOmxTAs40znR
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -8142,8 +8145,8 @@ Content-Length: 28
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/notifications HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODIsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.rg9Mt9wVrYdUtr7NomSKj0RXB2tpPScQQlaUWbEoVErl9X5Ui78ZSzzgcZgrpW7E
-X-CSRF-TOKEN: 2SOk1iO9u_C3g4vttoTmpTekw6YffMSa_AFp4T0pu4IPTv6P7xPHtUaM38ia4r6J06nSlFGU7p55S_e3ymNQ1VxKguE-eMq5
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTIsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.mrh0FSacPyR-gIWTlpFCRtxJu5NfFApKmXBezgpoKtwppvp5eOkY_r0bRgKWhQ3s
+X-CSRF-TOKEN: zPDdrlKRLq1vIPkelfXLGN1ZGJYmLFlFx8zCchKOxRZXmrQQrZbolmv0FshCEsovrNj_KrhqNfdFG2po9q-kFiXsp3A2-YZ1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -8256,8 +8259,8 @@ Content-Length: 213
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/notifications/read HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODIsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.rg9Mt9wVrYdUtr7NomSKj0RXB2tpPScQQlaUWbEoVErl9X5Ui78ZSzzgcZgrpW7E
-X-CSRF-TOKEN: g3vMvqAowR_QtQFZKc1_LmBNVKJc6Txq_WzXFkiHriEK4Xh6tUj6j5MQ8i79hWdrEOBLSwZ8eZts0QxHzV_idXu2yEA-0k5L
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTIsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.mrh0FSacPyR-gIWTlpFCRtxJu5NfFApKmXBezgpoKtwppvp5eOkY_r0bRgKWhQ3s
+X-CSRF-TOKEN: evbEnLIXa5Z8MH6RrC-h5gUevvCUTQp6rsTJWSrLMktm6b4hHsH3qoJ2XPBRAE7wzwKVhWB8k8msfWlXmvP-OxmpAykC34xA
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -8339,8 +8342,8 @@ Content-Length: 33
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/volunteers/notifications/read HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODIsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.rg9Mt9wVrYdUtr7NomSKj0RXB2tpPScQQlaUWbEoVErl9X5Ui78ZSzzgcZgrpW7E
-X-CSRF-TOKEN: 4OAWnF3UidvNZCiRJY5deKNvdXxfDNu1aGV7FsBfzCRbpdfAhIV3_zzj7bjgU02mR6NpHpddWERmOOOYXAZIcqE69RZpx-Wh
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTIsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.mrh0FSacPyR-gIWTlpFCRtxJu5NfFApKmXBezgpoKtwppvp5eOkY_r0bRgKWhQ3s
+X-CSRF-TOKEN: fB0Vb-BXw5iUKjpe7NlWC5jqirwwVjG18wqs4QXRClLjidM6TSlzWYJupvu5HVts1fRiba3Yp91UMACYwT7O1TXhOGHXv7Zf
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -8397,8 +8400,8 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/notifications HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODIsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.CpmqF2LAOUuH_QYs447h4fYxQpCgC5xOP8ndjtJ0u-LEnPCzyWtMR0x8v-7FlFPS
-X-CSRF-TOKEN: CgAJHApNhJQ0LoiCbRD6gQsp2Fb9jF70PdRSsf-CWH5c7VzzPjE4fTJ9sfEZHLjjVD3OtDtN9W_EujvZDuYzh5rjPEprjDjG
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTIsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ibp6oElE6lScAuXGg3hDs08QrySOiwv-KeU_FRC3V-R-mE3m6tsSKvMYvNb6KY5C
+X-CSRF-TOKEN: LilZEf-zE_hPk054h1wOJ3vZDfhtPwlK9fYahPrrPouJDuehTUg8dcaFdptioX5Is3E6RR7pIJlfDmxnzcAi55nYWOiwONCY
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -8511,8 +8514,8 @@ Content-Length: 208
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/notifications/read HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODIsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.CpmqF2LAOUuH_QYs447h4fYxQpCgC5xOP8ndjtJ0u-LEnPCzyWtMR0x8v-7FlFPS
-X-CSRF-TOKEN: rR9uFxTm7mQMAMarOG7nuZ58pTQ7xnG-LjY53hv7TJ9-nXlVm3sKc3DXjAchZaXKCEPTgatLiA1foEeTSgYI7i7KLaZIpRtt
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTIsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ibp6oElE6lScAuXGg3hDs08QrySOiwv-KeU_FRC3V-R-mE3m6tsSKvMYvNb6KY5C
+X-CSRF-TOKEN: KUxW7Ky6nn0mPXt5EYhTH27MdMAyoAi1Ouw7FQWYGTV2HykeGnoz3JyDqkkLDEkdcqVnfln-WaFRxj6YCt0OczegKgdOex8s
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -8594,8 +8597,8 @@ Content-Length: 33
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/notification/read HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDExODU5ODIsInN1YiI6IjEiLCJleHAiOjE3MDExODY5ODIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.CpmqF2LAOUuH_QYs447h4fYxQpCgC5xOP8ndjtJ0u-LEnPCzyWtMR0x8v-7FlFPS
-X-CSRF-TOKEN: dS1CKsiaqekZVAfwXkSH2o4X5Q1IPw9TD3XZO2_UZrEMjKcGQR0nTKutkd40YDPGbGmz679xyDV9C25-aUS9WAqyUIM8u5Yw
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEyMzYzOTIsInN1YiI6IjEiLCJleHAiOjE3MDEyMzczOTIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ibp6oElE6lScAuXGg3hDs08QrySOiwv-KeU_FRC3V-R-mE3m6tsSKvMYvNb6KY5C
+X-CSRF-TOKEN: Hll9CJTTgdj7wIG8V9L6i1bBvT3O4PKdEQjBx_yAQ8AeLKIBJmpEbvHksu7W8uCFMv_OvWL3kAWt0MSwKTr2853he6YuFJUw
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -8641,7 +8644,117 @@ Vary: Access-Control-Request-Headers</code></pre>
 </div>
 <h1 id="_enum_문서화" class="sect0"><a class="link" href="#_enum_문서화">Enum 문서화</a></h1>
 <div class="sect1">
-<h2 id="_1_보호_동물_성격"><a class="link" href="#_1_보호_동물_성격">1. 보호 동물 성격</a></h2>
+<h2 id="_1_봉사자_성별"><a class="link" href="#_1_봉사자_성별">1. 봉사자 성별</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>|봉사자 성별</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">코드</th>
+<th class="tableblock halign-left valign-top">코드명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MALE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MALE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FEMALE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FEMALE</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_봉사_신청자_상태"><a class="link" href="#_2_봉사_신청자_상태">2. 봉사 신청자 상태</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>|봉사 신청자 상태</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">코드</th>
+<th class="tableblock halign-left valign-top">코드명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PENDING</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PENDING</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>REFUSED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REFUSED</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ATTENDANCE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ATTENDANCE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>NO_SHOW</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO_SHOW</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>APPROVED</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">APPROVED</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_봉사_모집글_검색_필터"><a class="link" href="#_3_봉사_모집글_검색_필터">3. 봉사 모집글 검색 필터</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>|검색 필터</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">코드</th>
+<th class="tableblock halign-left valign-top">코드명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>IS_TITLE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IS_TITLE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>IS_CONTENT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IS_CONTENT</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>IS_SHELTER_NAME</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IS_SHELTER_NAME</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ALL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ALL</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_보호_동물_성격"><a class="link" href="#_4_보호_동물_성격">4. 보호 동물 성격</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>|보호 동물 성격</p>
@@ -8679,7 +8792,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_2_보호_동물_성별"><a class="link" href="#_2_보호_동물_성별">2. 보호 동물 성별</a></h2>
+<h2 id="_5_보호_동물_성별"><a class="link" href="#_5_보호_동물_성별">5. 보호 동물 성별</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>|보호 동물 성별</p>
@@ -8709,10 +8822,10 @@ Vary: Access-Control-Request-Headers</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_3_보호_동물_종류"><a class="link" href="#_3_보호_동물_종류">3. 보호 동물 종류</a></h2>
+<h2 id="_6_보호_동물_나이대"><a class="link" href="#_6_보호_동물_나이대">6. 보호 동물 나이대</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>|보호 동물 종류</p>
+<p>|보호 동물 나이대</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -8727,26 +8840,30 @@ Vary: Access-Control-Request-Headers</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DOG</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DOG</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BABY</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BABY</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CAT</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CAT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JUNIOR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JUNIOR</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ETC</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ETC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ADULT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ADULT</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SENIOR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SENIOR</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_4_봉사_신청자_상태"><a class="link" href="#_4_봉사_신청자_상태">4. 봉사 신청자 상태</a></h2>
+<h2 id="_7_보호_동물_사이즈"><a class="link" href="#_7_보호_동물_사이즈">7. 보호 동물 사이즈</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>|보호 동물 종류</p>
+<p>|보호 동물 크기대</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -8761,23 +8878,23 @@ Vary: Access-Control-Request-Headers</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DOG</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DOG</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SMALL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SMALL</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CAT</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CAT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MEDIUM</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MEDIUM</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ETC</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ETC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LARGE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LARGE</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_5_봉사자_성별"><a class="link" href="#_5_봉사자_성별">5. 봉사자 성별</a></h2>
+<h2 id="_8_보호_동물_종류"><a class="link" href="#_8_보호_동물_종류">8. 보호 동물 종류</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>|보호 동물 종류</p>
@@ -8814,7 +8931,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-11-29 00:39:03 +0900
+Last updated 2023-11-29 14:39:17 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

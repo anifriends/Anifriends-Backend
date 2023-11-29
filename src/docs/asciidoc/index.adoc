@@ -704,22 +704,34 @@ operation::shelter-notification-controller-test/update-notification-read[snippet
 
 = Enum 문서화
 
-== 1. 보호 동물 성격
+== 1. 봉사자 성별
+
+include::{snippets}/enum-documentation-test/volunteer-gender/enum-response-fields.adoc[]
+
+== 2. 봉사 신청자 상태
+
+include::{snippets}/enum-documentation-test/applicant-status/enum-response-fields.adoc[]
+
+== 3. 봉사 모집글 검색 필터
+
+include::{snippets}/enum-documentation-test/keyword-filter/enum-response-fields.adoc[]
+
+== 4. 보호 동물 성격
 
 include::{snippets}/enum-documentation-test/animal-active/enum-response-fields.adoc[]
 
-== 2. 보호 동물 성별
+== 5. 보호 동물 성별
 
 include::{snippets}/enum-documentation-test/animal-gender/enum-response-fields.adoc[]
 
-== 3. 보호 동물 종류
+== 6. 보호 동물 나이대
 
-include::{snippets}/enum-documentation-test/animal-type/enum-response-fields.adoc[]
+include::{snippets}/enum-documentation-test/animal-age/enum-response-fields.adoc[]
 
-== 4. 봉사 신청자 상태
+== 7. 보호 동물 사이즈
 
-include::{snippets}/enum-documentation-test/animal-type/enum-response-fields.adoc[]
+include::{snippets}/enum-documentation-test/animal-size/enum-response-fields.adoc[]
 
-== 5. 봉사자 성별
+== 8. 보호 동물 종류
 
 include::{snippets}/enum-documentation-test/animal-type/enum-response-fields.adoc[]
