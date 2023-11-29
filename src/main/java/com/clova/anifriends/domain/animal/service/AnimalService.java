@@ -85,7 +85,7 @@ public class AnimalService {
     }
 
     @Transactional(readOnly = true)
-    public FindAnimalsResponse findAnimalsByVolunteer(
+    public FindAnimalsResponse findAnimals(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,
@@ -93,7 +93,7 @@ public class AnimalService {
         AnimalGender gender,
         AnimalSize size,
         Pageable pageable) {
-        Page<Animal> animalsWithPagination = animalRepository.findAnimalsByVolunteer(
+        Page<Animal> animalsWithPagination = animalRepository.findAnimals(
             type,
             active,
             neuteredFilter,
@@ -107,7 +107,7 @@ public class AnimalService {
     }
 
     @Transactional(readOnly = true)
-    public FindAnimalsResponse findAnimalsByVolunteerV2(
+    public FindAnimalsResponse findAnimalsV2(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,
@@ -132,7 +132,7 @@ public class AnimalService {
             size
         );
 
-        Slice<Animal> animalsWithPagination = animalRepository.findAnimalsByVolunteerV2(
+        Slice<Animal> animalsWithPagination = animalRepository.findAnimalsV2(
             type,
             active,
             neuteredFilter,

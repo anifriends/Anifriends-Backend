@@ -203,7 +203,7 @@ public class RecruitmentRepositoryImpl implements
     }
 
     @Override
-    public Page<Recruitment> findRecruitmentsByShelterId(long shelterId, Pageable pageable) {
+    public Page<Recruitment> findShelterRecruitments(long shelterId, Pageable pageable) {
 
         List<Recruitment> recruitments = query.selectFrom(recruitment)
             .where(recruitment.shelter.shelterId.eq(shelterId)

@@ -76,7 +76,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     }
 
     @Override
-    public Page<Animal> findAnimalsByVolunteer(
+    public Page<Animal> findAnimals(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,
@@ -117,7 +117,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     }
 
     @Override
-    public Slice<Animal> findAnimalsByVolunteerV2(
+    public Slice<Animal> findAnimalsV2(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,

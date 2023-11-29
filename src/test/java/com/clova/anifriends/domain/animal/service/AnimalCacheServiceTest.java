@@ -58,7 +58,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             animalRepository.saveAll(animals);
 
             int cachedCount = Math.min(animalCount, ANIMAL_CACHE_SIZE);
-            List<FindAnimalResponse> expected = animalRepository.findAnimalsByVolunteerV2(null,
+            List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
@@ -84,7 +84,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             animalRepository.saveAll(animals);
 
             int cachedCount = Math.min(animalCount, ANIMAL_CACHE_SIZE);
-            List<FindAnimalResponse> expected = animalRepository.findAnimalsByVolunteerV2(null,
+            List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
@@ -110,7 +110,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             animalRepository.saveAll(animals);
 
             int cachedCount = Math.min(animalCount, ANIMAL_CACHE_SIZE);
-            List<FindAnimalResponse> expected = animalRepository.findAnimalsByVolunteerV2(null,
+            List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
@@ -158,7 +158,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             animalRepository.save(newAnimal);
 
             int cachedCount = Math.min(animalCount + 1, ANIMAL_CACHE_SIZE);
-            List<FindAnimalResponse> expected = animalRepository.findAnimalsByVolunteerV2(null,
+            List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
@@ -189,7 +189,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             animalRepository.save(newAnimal);
 
             int cachedCount = Math.min(animalCount + 1, ANIMAL_CACHE_SIZE);
-            List<FindAnimalResponse> expected = animalRepository.findAnimalsByVolunteerV2(null,
+            List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
@@ -218,7 +218,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             animalRepository.save(newAnimal);
 
             int cachedCount = Math.min(animalCount + 1, ANIMAL_CACHE_SIZE);
-            List<FindAnimalResponse> expected = animalRepository.findAnimalsByVolunteerV2(null,
+            List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
@@ -256,7 +256,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             animalRepository.deleteById(animalToDelete.getAnimalId());
 
             int cachedCount = Math.min(animalCount - 1, ANIMAL_CACHE_SIZE);
-            List<FindAnimalResponse> expected = animalRepository.findAnimalsByVolunteerV2(null,
+            List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
@@ -313,7 +313,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             animalCacheRepository.synchronizeCache();
 
             int size = 20;
-            List<FindAnimalResponse> expected = animalRepository.findAnimalsByVolunteerV2(null,
+            List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, size)).get().map(FindAnimalResponse::from).toList();
 
@@ -341,7 +341,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             animalCacheRepository.synchronizeCache();
 
             int size = 20;
-            List<FindAnimalResponse> expected = animalRepository.findAnimalsByVolunteerV2(null,
+            List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, size)).get().map(FindAnimalResponse::from).toList();
 
@@ -368,7 +368,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             animalCacheRepository.synchronizeCache();
 
             int size = 20;
-            List<FindAnimalResponse> expected = animalRepository.findAnimalsByVolunteerV2(null,
+            List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, size)).get().map(FindAnimalResponse::from).toList();
 
@@ -390,7 +390,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             animalCacheRepository.synchronizeCache();
 
             int size = 20;
-            List<FindAnimalResponse> expected = animalRepository.findAnimalsByVolunteerV2(null,
+            List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, size)).get().map(FindAnimalResponse::from).toList();
 

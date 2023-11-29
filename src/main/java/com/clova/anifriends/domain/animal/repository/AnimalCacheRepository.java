@@ -48,7 +48,7 @@ public class AnimalCacheRepository {
     public void synchronizeCache() {
         zSetOperations.removeRange(ANIMAL_ZSET_KEY, 0, -1);
         Pageable pageable = PageRequest.of(0, ANIMAL_CACHE_SIZE);
-        Slice<Animal> animals = animalRepository.findAnimalsByVolunteerV2(null, null, null, null,
+        Slice<Animal> animals = animalRepository.findAnimalsV2(null, null, null, null,
             null, null, null, null, pageable);
         animals.forEach(this::saveAnimal);
         long dbCount = animalRepository.countAllAnimalsExceptAdopted();

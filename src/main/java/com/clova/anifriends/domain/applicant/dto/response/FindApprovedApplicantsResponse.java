@@ -5,7 +5,7 @@ import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.time.LocalDate;
 import java.util.List;
 
-public record FindApplicantsApprovedResponse(
+public record FindApprovedApplicantsResponse(
     List<FindApplicant> applicants
 ) {
 
@@ -32,8 +32,8 @@ public record FindApplicantsApprovedResponse(
         }
     }
 
-    public static FindApplicantsApprovedResponse from(List<Applicant> applicants) {
-        return new FindApplicantsApprovedResponse(
+    public static FindApprovedApplicantsResponse from(List<Applicant> applicants) {
+        return new FindApprovedApplicantsResponse(
             applicants.stream()
                 .map(FindApplicant::from)
                 .toList()

@@ -21,7 +21,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
-import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
@@ -168,14 +168,14 @@ class ApplicantServiceTest {
             Volunteer volunteer = volunteer();
             Applicant applicantApproved = applicant(recruitment, volunteer, ATTENDANCE);
 
-            FindApplicantsApprovedResponse response = FindApplicantsApprovedResponse.from(
+            FindApprovedApplicantsResponse response = FindApprovedApplicantsResponse.from(
                 List.of(applicantApproved));
 
-            when(applicantRepository.findApprovedByRecruitmentIdAndShelterId(anyLong(), anyLong()))
+            when(applicantRepository.findApprovedApplicants(anyLong(), anyLong()))
                 .thenReturn(List.of(applicantApproved));
 
             // when
-            FindApplicantsApprovedResponse result = applicantService.findApplicantsApproved(
+            FindApprovedApplicantsResponse result = applicantService.findApprovedApplicants(
                 anyLong(), anyLong());
 
             // then
@@ -186,14 +186,14 @@ class ApplicantServiceTest {
         @DisplayName("성공: 봉사 승인자가 0 명인 경우")
         void findApplicantsApproved2() {
             // given
-            FindApplicantsApprovedResponse response = FindApplicantsApprovedResponse.from(
+            FindApprovedApplicantsResponse response = FindApprovedApplicantsResponse.from(
                 List.of());
 
-            when(applicantRepository.findApprovedByRecruitmentIdAndShelterId(anyLong(), anyLong()))
+            when(applicantRepository.findApprovedApplicants(anyLong(), anyLong()))
                 .thenReturn(List.of());
 
             // when
-            FindApplicantsApprovedResponse result = applicantService.findApplicantsApproved(
+            FindApprovedApplicantsResponse result = applicantService.findApprovedApplicants(
                 anyLong(), anyLong());
 
             // then

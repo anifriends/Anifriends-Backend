@@ -3,7 +3,7 @@ package com.clova.anifriends.domain.applicant.controller;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantStatusRequest;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest;
-import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.service.ApplicantService;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
@@ -49,11 +49,11 @@ public class ApplicantController {
 
     @ShelterOnly
     @GetMapping("/shelters/recruitments/{recruitmentId}/approval")
-    public ResponseEntity<FindApplicantsApprovedResponse> findApplicantApproved(
+    public ResponseEntity<FindApprovedApplicantsResponse> findApprovedApplicants(
         @LoginUser Long shelterId,
         @PathVariable Long recruitmentId
     ) {
-        return ResponseEntity.ok(applicantService.findApplicantsApproved(shelterId, recruitmentId));
+        return ResponseEntity.ok(applicantService.findApprovedApplicants(shelterId, recruitmentId));
     }
 
     @ShelterOnly

@@ -359,7 +359,7 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
             PageRequest pageable = PageRequest.of(0, 10);
 
             // when
-            Page<Recruitment> recruitments = recruitmentRepository.findRecruitmentsByShelterId(
+            Page<Recruitment> recruitments = recruitmentRepository.findShelterRecruitments(
                 shelter.getShelterId(),
                 pageable
             );
