@@ -1,3 +1,7 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Anifriends_Anifriends-Backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Anifriends_Anifriends-Backend)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Anifriends_Anifriends-Backend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Anifriends_Anifriends-Backend)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Anifriends_Anifriends-Backend&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Anifriends_Anifriends-Backend)
+
 <p align="middle" >
   <img width="200px;" src="https://avatars.githubusercontent.com/u/148777644?s=200&v=4"/>
 </p>
@@ -49,11 +53,11 @@
 
 ### ✨ 개발 서버
 
-<img width="800px;" src="https://github.com/Anifriends/Anifriends-Backend/assets/70627982/5cdaa920-d32e-4371-9d52-b72cfa9bafe8"/>
+<img width="800px;" src="https://github.com/Anifriends/Anifriends-Backend/assets/70627982/401bdf98-a87c-4797-8c71-3630bfbcba01"/>
 
 ### ✨ 배포 서버
 
-<img width="800px;" src="https://github.com/Anifriends/Anifriends-Backend/assets/70627982/21fc46c2-0a6d-4511-8b4a-bed68637bf29"/>
+<img width="800px;" src="https://github.com/Anifriends/Anifriends-Backend/assets/70627982/21651f82-c11d-4a11-84f6-90dc1ed34067"/>
 
 ### 🖥️ 모니터링 구조도
 
