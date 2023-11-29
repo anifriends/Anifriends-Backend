@@ -97,6 +97,8 @@ dependencies {
     // Monitoring
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
 tasks.named('test') {
