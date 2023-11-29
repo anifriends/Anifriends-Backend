@@ -35,7 +35,6 @@ public class AnimalCacheRepository {
     public static final double NANO = 1_000_000_000.0;
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final RedisTemplate<String, Long> countRedisTemplate;
     private final AnimalRepository animalRepository;
 
     private ZSetOperations<String, Object> zSetOperations;
