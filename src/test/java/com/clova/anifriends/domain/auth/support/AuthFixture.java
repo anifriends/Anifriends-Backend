@@ -5,6 +5,8 @@ import com.clova.anifriends.global.security.jwt.JJwtProvider;
 import com.clova.anifriends.domain.auth.jwt.JwtProvider;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
+import jakarta.servlet.http.Cookie;
+import org.springframework.mock.web.MockCookie;
 
 public final class AuthFixture {
 
@@ -42,5 +44,15 @@ public final class AuthFixture {
 
     public static RefreshToken refreshToken() {
         return new RefreshToken(userToken().refreshToken(), USER_ID, UserRole.ROLE_VOLUNTEER);
+    }
+
+    public static Cookie refreshTokenCookie() {
+        MockCookie refreshToken = new MockCookie("refreshToken", userToken().refreshToken());
+        refreshToken.setPath("/api/auth");
+        refreshToken.setHttpOnly(true);
+        refreshToken.setSecure(true);
+        refreshToken.setDomain(".anifriends.site");
+        refreshToken.setSameSite("None");
+        return refreshToken;
     }
 }

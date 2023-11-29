@@ -6,6 +6,8 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.cookies.CookieDocumentation.responseCookies;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -21,10 +23,10 @@ import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.auth.support.AuthFixture;
 import com.clova.anifriends.global.exception.ErrorCode;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockCookie;
 import org.springframework.test.web.servlet.ResultActions;
 
 class AuthControllerTest extends BaseControllerTest {
@@ -104,18 +106,14 @@ class AuthControllerTest extends BaseControllerTest {
     void refreshAccessToken() throws Exception {
         //given
         TokenResponse tokenResponse = AuthFixture.userToken();
-        MockCookie refreshToken = new MockCookie("refreshToken", tokenResponse.refreshToken());
-        refreshToken.setPath("/api/auth");
-        refreshToken.setHttpOnly(true);
-        refreshToken.setSecure(true);
-        refreshToken.setDomain(".anifriends.site");
-        refreshToken.setSameSite("None");
+        Cookie refreshTokenCookie = AuthFixture.refreshTokenCookie();
 
         given(authService.refreshAccessToken(anyString())).willReturn(tokenResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/auth/refresh")
-            .cookie(refreshToken));
+            .header(AUTHORIZATION, volunteerAccessToken)
+            .cookie(refreshTokenCookie));
 
         //then
         resultActions.andExpect(status().isOk())
@@ -139,11 +137,52 @@ class AuthControllerTest extends BaseControllerTest {
     void exceptionWhenNullRefreshToken() throws Exception {
         //given
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/auth/refresh"));
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/refresh")
+            .header(AUTHORIZATION, volunteerAccessToken));
 
         //then
         resultActions.andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.errorCode")
                 .value(ErrorCode.NOT_EXISTS_REFRESH_TOKEN.getValue()));
+    }
+
+    @Test
+    @DisplayName("성공: 로그아웃 API 호출 시")
+    void logout() throws Exception {
+        //given
+        Cookie refreshTokenCookie = AuthFixture.refreshTokenCookie();
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/logout")
+            .header(AUTHORIZATION, volunteerAccessToken)
+            .cookie(refreshTokenCookie));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("사용자 액세스 토큰")
+                ),
+                requestCookies(
+                    cookieWithName("refreshToken").description("사용자 리프레시 토큰 쿠키")
+                ),
+                responseCookies(
+                    cookieWithName("refreshToken").description("리프레시 토큰 쿠키 무효화 설정 쿠키")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("예외(AuthAuthenticationException): 로그아웃 API 호출 시 리프레시 토큰 쿠기가 포함되지 않은 경우")
+    void exceptionWhenLogoutWithoutRefreshTokenCookie() throws Exception {
+        //given
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/logout")
+            .header(AUTHORIZATION, volunteerAccessToken));
+
+        //then
+        resultActions.andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.errorCode")
+                    .value(ErrorCode.NOT_EXISTS_REFRESH_TOKEN.getValue()));
     }
 }
