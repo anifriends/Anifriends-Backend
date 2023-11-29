@@ -10,11 +10,10 @@ import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter
 import static com.clova.anifriends.domain.volunteer.support.VolunteerFixture.volunteer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
@@ -26,6 +25,7 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -105,50 +105,89 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
 
     @Nested
     @DisplayName("findApplyingVolunteers 실행 시")
-    class FindApplyingVolunteersTest {
+    class FindApplyingVolunteersV2Test {
 
-        @Test
-        @DisplayName("성공")
-        void findApplyingVolunteers() {
-            // given
-            Volunteer volunteer = VolunteerFixture.volunteer();
-            Shelter shelter = ShelterFixture.shelter();
+        Volunteer volunteer;
+        Shelter shelter;
+        Recruitment recruitment1;
+        Recruitment recruitment2;
+        Recruitment recruitment3;
 
-            Recruitment recruitment1 = RecruitmentFixture.recruitment(shelter);
-            Recruitment recruitment2 = RecruitmentFixture.recruitment(shelter);
-            Recruitment recruitment3 = RecruitmentFixture.recruitment(shelter);
+        @BeforeEach
+        void setUp() {
+            volunteer = VolunteerFixture.volunteer();
+            shelter = ShelterFixture.shelter();
+            recruitment1 = RecruitmentFixture.recruitment(shelter);
+            recruitment2 = RecruitmentFixture.recruitment(shelter);
+            recruitment3 = RecruitmentFixture.recruitment(shelter);
 
             shelterRepository.save(shelter);
             volunteerRepository.save(volunteer);
             recruitmentRepository.saveAll(List.of(recruitment1, recruitment2, recruitment3));
+        }
 
+        @Test
+        @DisplayName("성공: 봉사 신청 3개, 리뷰 작성 1개")
+        void findApplyingVolunteersWhen3Recruitment1Review() {
+            // given
             Applicant applicantShouldWriteReview = ApplicantFixture.applicant(
                 recruitment1, volunteer, ATTENDANCE);
             Applicant applicantShouldNotWriteReview1 = ApplicantFixture.applicant(
                 recruitment2, volunteer, PENDING);
             Applicant applicantShouldNotWriteReview2 = ApplicantFixture.applicant(
                 recruitment3, volunteer, ATTENDANCE);
-            Review review = ReviewFixture.review(applicantShouldNotWriteReview2);
-            setField(review, "reviewId", 1L);
+            Review review = ReviewFixture.review(applicantShouldWriteReview);
 
             applicantRepository.save(applicantShouldWriteReview);
             applicantRepository.save(applicantShouldNotWriteReview1);
             applicantRepository.save(applicantShouldNotWriteReview2);
+            reviewRepository.save(review);
 
             // when
-            List<Applicant> applyingVolunteers = applicantRepository.findApplyingVolunteers(
-                volunteer);
-
-            FindApplyingVolunteersResponse expected = FindApplyingVolunteersResponse.from(
-                applyingVolunteers);
+            List<FindApplyingVolunteerResult> applyingVolunteers
+                = applicantRepository.findApplyingVolunteers(volunteer);
 
             // then
-            assertThat(expected.findApplyingVolunteerResponses().get(0)
-                .applicantIsWritedReview()).isTrue();
-            assertThat(expected.findApplyingVolunteerResponses().get(1)
-                .applicantIsWritedReview()).isFalse();
-            assertThat(expected.findApplyingVolunteerResponses().get(2)
-                .applicantIsWritedReview()).isFalse();
+            List<Long> reviewExists = applyingVolunteers.stream()
+                .filter(FindApplyingVolunteerResult::getApplicantIsWritedReview)
+                .map(FindApplyingVolunteerResult::getApplicantId)
+                .toList();
+            assertThat(reviewExists).containsExactly(applicantShouldWriteReview.getApplicantId());
+        }
+
+        @Test
+        @DisplayName("성공: 봉사 신청 3개, 리뷰 작성 2개")
+        void findApplyingVolunteersWhen3Recruitment2Review() {
+            // given
+            Applicant applicantShouldWriteReview1 = ApplicantFixture.applicant(
+                recruitment1, volunteer, ATTENDANCE);
+            Applicant applicantShouldWriteReview2 = ApplicantFixture.applicant(
+                recruitment2, volunteer, ATTENDANCE);
+            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(
+                recruitment3, volunteer, ATTENDANCE);
+            Review review1 = ReviewFixture.review(applicantShouldWriteReview1);
+            Review review2 = ReviewFixture.review(applicantShouldWriteReview2);
+
+            applicantRepository.save(applicantShouldWriteReview1);
+            applicantRepository.save(applicantShouldWriteReview2);
+            applicantRepository.save(applicantShouldNotWriteReview);
+            reviewRepository.save(review1);
+            reviewRepository.save(review2);
+
+            // when
+            List<FindApplyingVolunteerResult> applyingVolunteers
+                = applicantRepository.findApplyingVolunteers(volunteer);
+
+            // then
+            List<Long> reviewExists = applyingVolunteers.stream()
+                .filter(FindApplyingVolunteerResult::getApplicantIsWritedReview)
+                .map(FindApplyingVolunteerResult::getApplicantId)
+                .toList();
+            assertThat(reviewExists)
+                .containsExactly(
+                    applicantShouldWriteReview1.getApplicantId(),
+                    applicantShouldWriteReview2.getApplicantId()
+                    );
         }
     }
 

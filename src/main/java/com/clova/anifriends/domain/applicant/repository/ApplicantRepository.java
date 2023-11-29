@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.applicant.repository;
 
 import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.util.List;
@@ -13,16 +14,21 @@ import org.springframework.data.repository.query.Param;
 public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
 
     @Query(
-        "select a "
+        "select s.shelterId as shelterId,"
+            + " r.recruitmentId as recruitmentId,"
+            + " a.applicantId as applicantId,"
+            + " r.title.title as recruitmentTitle,"
+            + " s.name.name as shelterName,"
+            + " a.status as applicantStatus,"
+            + " exists (select rv2 from Review rv2 where rv2.applicant = a) as applicantIsWritedReview,"
+            + " r.info.startTime as recruitmentStartTime "
             + "from Applicant a "
-            + "join fetch a.recruitment r "
-            + "join fetch a.volunteer "
-            + "left join fetch a.review "
-            + "join fetch r.shelter "
+            + "join a.recruitment r "
+            + "join a.volunteer v "
+            + "join r.shelter s "
             + "where a.volunteer = :volunteer"
     )
-    List<Applicant> findApplyingVolunteers(
-        @Param("volunteer") Volunteer volunteer);
+    List<FindApplyingVolunteerResult> findApplyingVolunteers(@Param("volunteer") Volunteer volunteer);
 
     @Query("select a from Applicant a "
         + "where a.applicantId = :applicantId "

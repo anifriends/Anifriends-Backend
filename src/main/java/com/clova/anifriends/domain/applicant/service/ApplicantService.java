@@ -6,6 +6,7 @@ import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApproved
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
@@ -50,11 +51,9 @@ public class ApplicantService {
         Long volunteerId
     ) {
         Volunteer foundVolunteer = getVolunteer(volunteerId);
-
-        List<Applicant> applyingVolunteers = applicantRepository.findApplyingVolunteers(
-            foundVolunteer);
-
-        return FindApplyingVolunteersResponse.from(applyingVolunteers);
+        List<FindApplyingVolunteerResult> applyingVolunteers
+            = applicantRepository.findApplyingVolunteers(foundVolunteer);
+        return ApplicantMapper.resultToResponse(applyingVolunteers);
     }
 
     @Transactional(readOnly = true)

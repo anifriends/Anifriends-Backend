@@ -19,7 +19,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,15 +30,15 @@ import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttenda
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest.UpdateApplicantAttendanceRequest;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse.FindApplyingVolunteerResponse;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
-import com.clova.anifriends.domain.review.Review;
-import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,40 +72,21 @@ class ApplicantControllerTest extends BaseControllerTest {
     @DisplayName("findApplyingVolunteers 실행 시")
     void findApplyingVolunteers() throws Exception {
         // given
-        Long shelterId = 1L;
-        Long volunteerId = 1L;
-        Long recruitmentId = 1L;
-        Long applicantShouldWriteReviewId = 1L;
-        Long applicantShouldNotWriteReviewId = 2L;
-
-        Shelter shelter = ShelterFixture.shelter();
-        setField(shelter, "shelterId", shelterId);
-        Volunteer volunteer = VolunteerFixture.volunteer();
-        setField(volunteer, "volunteerId", volunteerId);
-
-        Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-        setField(recruitment, "recruitmentId", recruitmentId);
-
-        Applicant applicantShouldWriteReview = ApplicantFixture.applicant(recruitment,
-            volunteer, ATTENDANCE);
-        Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(recruitment,
-            volunteer, PENDING);
-
-        setField(applicantShouldWriteReview, "applicantId", applicantShouldWriteReviewId);
-        setField(applicantShouldNotWriteReview, "applicantId", applicantShouldNotWriteReviewId);
-
-        Review review = ReviewFixture.review(applicantShouldWriteReview);
-        setField(review, "reviewId", 1L);
-
-        FindApplyingVolunteersResponse findApplyingVolunteersResponse = FindApplyingVolunteersResponse.from(
-            List.of(
-                applicantShouldWriteReview,
-                applicantShouldNotWriteReview
-            )
+        FindApplyingVolunteerResponse response = new FindApplyingVolunteerResponse(
+            1L,
+            1L,
+            1L,
+            "모집글 제목",
+            "보호소 이름",
+            ATTENDANCE,
+            true,
+            LocalDateTime.now()
         );
+        FindApplyingVolunteersResponse findApplyingVolunteersResponse
+            = new FindApplyingVolunteersResponse(List.of(response));
 
-        given(applicantService.findApplyingVolunteers(volunteerId)).willReturn(
-            findApplyingVolunteersResponse);
+        given(applicantService.findApplyingVolunteers(anyLong()))
+            .willReturn(findApplyingVolunteersResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -118,30 +98,30 @@ class ApplicantControllerTest extends BaseControllerTest {
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
                 responseFields(
-                    fieldWithPath("findApplyingVolunteerResponses").type(JsonFieldType.ARRAY)
+                    fieldWithPath("applicants").type(JsonFieldType.ARRAY)
                         .description("신청한 봉사 리스트"),
-                    fieldWithPath("findApplyingVolunteerResponses[].shelterId").type(
+                    fieldWithPath("applicants[].shelterId").type(
                             JsonFieldType.NUMBER)
                         .description("보호소 ID"),
-                    fieldWithPath("findApplyingVolunteerResponses[].recruitmentId").type(
+                    fieldWithPath("applicants[].recruitmentId").type(
                             JsonFieldType.NUMBER)
                         .description("봉사 모집글 ID"),
-                    fieldWithPath("findApplyingVolunteerResponses[].applicantId").type(
+                    fieldWithPath("applicants[].applicantId").type(
                             JsonFieldType.NUMBER)
                         .description("봉사 신청자 ID"),
-                    fieldWithPath("findApplyingVolunteerResponses[].recruitmentTitle").type(
+                    fieldWithPath("applicants[].recruitmentTitle").type(
                             JsonFieldType.STRING)
                         .description("모집글 제목"),
-                    fieldWithPath("findApplyingVolunteerResponses[].shelterName").type(
+                    fieldWithPath("applicants[].shelterName").type(
                             JsonFieldType.STRING)
                         .description("보호소 이름"),
-                    fieldWithPath("findApplyingVolunteerResponses[].applicantStatus").type(
+                    fieldWithPath("applicants[].applicantStatus").type(
                             JsonFieldType.STRING)
                         .description("승인 상태"),
-                    fieldWithPath("findApplyingVolunteerResponses[].applicantIsWritedReview").type(
+                    fieldWithPath("applicants[].applicantIsWritedReview").type(
                             JsonFieldType.BOOLEAN)
                         .description("후기 작성 가능 여부"),
-                    fieldWithPath("findApplyingVolunteerResponses[].recruitmentStartTime").type(
+                    fieldWithPath("applicants[].recruitmentStartTime").type(
                             JsonFieldType.STRING)
                         .description("봉사 날짜")
                 )

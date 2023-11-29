@@ -49,6 +49,7 @@ public class Applicant extends BaseTimeEntity {
     @JoinColumn(name = "volunteer_id")
     private Volunteer volunteer;
 
+    // todo: 제거 필요
     @OneToOne(mappedBy = "applicant", fetch = FetchType.LAZY)
     private Review review;
 
@@ -93,10 +94,6 @@ public class Applicant extends BaseTimeEntity {
 
     public boolean isAttendance() {
         return this.status == ApplicantStatus.ATTENDANCE;
-    }
-
-    public boolean hasNotReview() {
-        return getStatus().equals(ApplicantStatus.ATTENDANCE) && Objects.isNull(review);
     }
 
     public void registerReview(Review review) {

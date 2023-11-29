@@ -176,7 +176,7 @@ public class ApplicantIntegrationTest extends BaseIntegrationTest {
                 volunteer.getVolunteerId());
 
             //then
-            assertThat(applyingVolunteers.findApplyingVolunteerResponses()).hasSize(1);
+            assertThat(applyingVolunteers.applicants()).hasSize(1);
         }
 
         @Test

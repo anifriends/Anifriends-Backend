@@ -23,8 +23,11 @@ import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse.FindApplyingVolunteerResponse;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
+import com.clova.anifriends.domain.applicant.support.ApplicantDtoFixture;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -173,77 +176,37 @@ class ApplicantServiceTest {
     class FindApplyingVolunteersTest {
 
         @Test
-        @DisplayName("성공 : 후기 작성자가 1명인 경우")
+        @DisplayName("성공")
         void findApplyingVolunteers1() {
             // given
             Volunteer volunteer = VolunteerFixture.volunteer();
-            Shelter shelter = ShelterFixture.shelter();
-            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-            Applicant applicantShouldWriteReview = ApplicantFixture.applicant(recruitment,
-                volunteer, ATTENDANCE);
-            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(
-                recruitment,
-                volunteer, PENDING);
-
-            FindApplyingVolunteersResponse findApplyingVolunteersResponse = FindApplyingVolunteersResponse.from(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview)
-            );
+            List<FindApplyingVolunteerResult> applyingVolunteerResults
+                = ApplicantDtoFixture.findApplyingVolunteerResults(3);
 
             given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
-            given(applicantRepository.findApplyingVolunteers(any())).willReturn(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
+            given(applicantRepository.findApplyingVolunteers(any()))
+                .willReturn(applyingVolunteerResults);
 
             // when
-            FindApplyingVolunteersResponse foundApplyingVolunteers = applicantService.findApplyingVolunteers(
-                anyLong());
+            FindApplyingVolunteersResponse foundApplyingVolunteers
+                = applicantService.findApplyingVolunteers(anyLong());
 
             // then
-            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(0)
-                .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(0)
-                    .applicantIsWritedReview());
-            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(1)
-                .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(1)
-                    .applicantIsWritedReview());
-        }
-
-        @Test
-        @DisplayName("성공 : 후기 작성자가 0명인 경우")
-        void findApplyingVolunteers2() {
-            // given
-            Volunteer volunteer = VolunteerFixture.volunteer();
-            Shelter shelter = ShelterFixture.shelter();
-            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-
-            Applicant applicantShouldWriteReview = ApplicantFixture.applicant(recruitment,
-                volunteer, PENDING);
-            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(
-                recruitment,
-                volunteer, PENDING);
-
-            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
-
-            FindApplyingVolunteersResponse findApplyingVolunteersResponse = FindApplyingVolunteersResponse.from(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview)
-            );
-
-            given(applicantRepository.findApplyingVolunteers(any())).willReturn(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
-
-            // when
-            FindApplyingVolunteersResponse foundApplyingVolunteers = applicantService.findApplyingVolunteers(
-                anyLong());
-
-            // then
-            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(0)
-                .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(0)
-                    .applicantIsWritedReview());
-            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(1)
-                .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(1)
-                    .applicantIsWritedReview());
+            List<FindApplyingVolunteerResponse> applicantsResponse
+                = foundApplyingVolunteers.applicants();
+            assertThat(applicantsResponse.size()).isEqualTo(3);
+            FindApplyingVolunteerResponse response = applicantsResponse.get(0);
+            FindApplyingVolunteerResult result = applyingVolunteerResults.get(
+                0);
+            assertThat(response.shelterId()).isEqualTo(result.getShelterId());
+            assertThat(response.recruitmentId()).isEqualTo(result.getRecruitmentId());
+            assertThat(response.applicantId()).isEqualTo(result.getApplicantId());
+            assertThat(response.recruitmentTitle()).isEqualTo(result.getRecruitmentTitle());
+            assertThat(response.shelterName()).isEqualTo(result.getShelterName());
+            assertThat(response.applicantStatus()).isEqualTo(result.getApplicantStatus());
+            assertThat(response.applicantIsWritedReview())
+                .isEqualTo(result.getApplicantIsWritedReview());
+            assertThat(response.recruitmentStartTime()).isEqualTo(result.getRecruitmentStartTime());
         }
     }
 
