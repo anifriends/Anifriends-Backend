@@ -143,7 +143,7 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("reviews[].createdAt").type(STRING).description("리뷰 생성일"),
                     fieldWithPath("reviews[].content").type(STRING).description("리뷰 내용"),
                     fieldWithPath("reviews[].reviewImageUrls").type(ARRAY)
-                    .description("리뷰 이미지 url 리스트").optional(),
+                        .description("리뷰 이미지 url 리스트").optional(),
                     fieldWithPath("reviews[].volunteerId").type(NUMBER).description("봉사자 ID"),
                     fieldWithPath("reviews[].volunteerName").type(STRING).description("봉사자 이름"),
                     fieldWithPath("reviews[].temperature").type(NUMBER).description("봉사자 온도"),
@@ -217,6 +217,7 @@ class ReviewControllerTest extends BaseControllerTest {
         Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
         Review review = review(applicant);
         setField(review, "reviewId", 1L);
+        setField(shelter, "shelterId", 1L);
         setField(review, "createdAt", LocalDateTime.now());
         Page<Review> page = new PageImpl<>(List.of(review));
         FindVolunteerReviewsResponse response = FindVolunteerReviewsResponse.of(
@@ -250,6 +251,7 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
                     fieldWithPath("reviews").type(ARRAY).description("리뷰 리스트"),
                     fieldWithPath("reviews[].reviewId").type(NUMBER).description("리뷰 ID"),
+                    fieldWithPath("reviews[].shelterId").type(NUMBER).description("보호소 ID"),
                     fieldWithPath("reviews[].shelterName").type(STRING).description("보호소 이름"),
                     fieldWithPath("reviews[].reviewCreatedAt").type(STRING).description("리뷰 생성일"),
                     fieldWithPath("reviews[].reviewContent").type(STRING).description("리뷰 내용"),
@@ -270,6 +272,7 @@ class ReviewControllerTest extends BaseControllerTest {
         Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
         Review review = review(applicant);
         setField(review, "reviewId", 1L);
+        setField(shelter, "shelterId", 1L);
         setField(review, "createdAt", LocalDateTime.now());
         Page<Review> page = new PageImpl<>(List.of(review));
         FindVolunteerReviewsResponse response = FindVolunteerReviewsResponse.of(
@@ -300,6 +303,7 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
                     fieldWithPath("reviews").type(ARRAY).description("리뷰 리스트"),
                     fieldWithPath("reviews[].reviewId").type(NUMBER).description("리뷰 ID"),
+                    fieldWithPath("reviews[].shelterId").type(NUMBER).description("보호소 ID"),
                     fieldWithPath("reviews[].shelterName").type(STRING).description("보호소 이름"),
                     fieldWithPath("reviews[].reviewCreatedAt").type(STRING).description("리뷰 생성일"),
                     fieldWithPath("reviews[].reviewContent").type(STRING).description("리뷰 내용"),
