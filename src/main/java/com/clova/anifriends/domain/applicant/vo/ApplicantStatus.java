@@ -25,18 +25,14 @@ public enum ApplicantStatus implements EnumType {
     }
 
     public ApplicantStatus convertToApproved(LocalDateTime startTime) {
-        if (LocalDateTime.now().isBefore(startTime)) {
-            return REFUSED;
-        }
-
-        if (startTime.isBefore(LocalDateTime.now()) && (this == ATTENDANCE || this == NOSHOW)) {
+        if (LocalDateTime.now().isAfter(startTime) && (this == ATTENDANCE || this == NOSHOW)) {
             return this;
         }
 
-        if (startTime.isAfter(LocalDateTime.now()) && (this == ATTENDANCE)) {
+        if (LocalDateTime.now().isBefore(startTime) && (this == ATTENDANCE)) {
             return APPROVED;
         }
-        
+
         return this;
     }
 }
