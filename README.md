@@ -4,9 +4,7 @@
 <h1 align="middle">🐶Anifriends</h1>
 <p align="middle">동물 보호소와 봉사자 매칭 플랫폼 AniFriends 입니다!</p>
 
-## 서비스 소개
-
-## 팀원 소개
+## 👨‍👩‍👧‍👦 팀원 소개
 
 <table>
     <tr align="center">
@@ -37,19 +35,27 @@
     </tr>
 </table>
 
-## 기술 스택
+## 🛠️ 기술 스택
 
-## 시스템 구조도
+### ✨ 백엔드
 
-### 개발 서버
+<img width="700px;" src="https://github.com/Anifriends/Anifriends-Backend/assets/70627982/01cd032d-5ae1-4c26-a38e-3811122c1d7c"/>
 
-<img width="700px;" height="450" src="https://github.com/Anifriends/Anifriends-Backend/assets/70627982/5cdaa920-d32e-4371-9d52-b72cfa9bafe8"/>
+### ✨ 인프라
 
-### 배포 서버
+<img width="500px;" src="https://github.com/Anifriends/Anifriends-Backend/assets/70627982/cf545938-ecba-4369-a8db-35161f3c5e0c"/>
 
-<img width="700px;" height="450" src="https://github.com/Anifriends/Anifriends-Backend/assets/70627982/21fc46c2-0a6d-4511-8b4a-bed68637bf29"/>
+## 📦 시스템 구조도
 
-### 모니터링 구조도
+### ✨ 개발 서버
 
-<img width="700px;" src="https://github.com/Anifriends/Anifriends-Backend/assets/70627982/6b1adadf-aa9d-4d90-91f0-22424167a6e4"/>
+<img width="800px;" src="https://github.com/Anifriends/Anifriends-Backend/assets/70627982/5cdaa920-d32e-4371-9d52-b72cfa9bafe8"/>
+
+### ✨ 배포 서버
+
+<img width="800px;" src="https://github.com/Anifriends/Anifriends-Backend/assets/70627982/21fc46c2-0a6d-4511-8b4a-bed68637bf29"/>
+
+### 🖥️ 모니터링 구조도
+
+<img width="800px;" src="https://github.com/Anifriends/Anifriends-Backend/assets/70627982/6b1adadf-aa9d-4d90-91f0-22424167a6e4"/>
 
