@@ -30,6 +30,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 class ApplicantRepositoryTest extends BaseRepositoryTest {
 
@@ -135,9 +137,11 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             applicantRepository.save(applicantShouldNotWriteReview1);
             applicantRepository.save(applicantShouldNotWriteReview2);
 
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
             // when
-            List<Applicant> applyingVolunteers = applicantRepository.findApplyingVolunteers(
-                volunteer);
+            Page<Applicant> applyingVolunteers = applicantRepository.findApplyingVolunteers(
+                volunteer, pageRequest);
 
             FindApplyingVolunteersResponse expected = FindApplyingVolunteersResponse.from(
                 applyingVolunteers);

@@ -21,8 +21,8 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
-import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
@@ -50,6 +50,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -209,6 +212,7 @@ class ApplicantServiceTest {
         @DisplayName("성공 : 후기 작성자가 1명인 경우")
         void findApplyingVolunteers1() {
             // given
+            long volunteerId = 1L;
             Volunteer volunteer = VolunteerFixture.volunteer();
             Shelter shelter = ShelterFixture.shelter();
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
@@ -217,18 +221,22 @@ class ApplicantServiceTest {
             Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(
                 recruitment,
                 volunteer, PENDING);
+            PageImpl<Applicant> applicants = new PageImpl<>(
+                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
 
             FindApplyingVolunteersResponse findApplyingVolunteersResponse = FindApplyingVolunteersResponse.from(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview)
+                applicants
             );
+            PageRequest pageRequest = PageRequest.of(0, 10);
 
             given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
-            given(applicantRepository.findApplyingVolunteers(any())).willReturn(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
+            given(
+                applicantRepository.findApplyingVolunteers(any(), any(Pageable.class))).willReturn(
+                applicants);
 
             // when
             FindApplyingVolunteersResponse foundApplyingVolunteers = applicantService.findApplyingVolunteers(
-                anyLong());
+                volunteerId, pageRequest);
 
             // then
             assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(0)
@@ -245,6 +253,7 @@ class ApplicantServiceTest {
         @DisplayName("성공 : 후기 작성자가 0명인 경우")
         void findApplyingVolunteers2() {
             // given
+            long volunteerId = 1L;
             Volunteer volunteer = VolunteerFixture.volunteer();
             Shelter shelter = ShelterFixture.shelter();
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
@@ -255,18 +264,23 @@ class ApplicantServiceTest {
                 recruitment,
                 volunteer, PENDING);
 
-            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+            PageImpl<Applicant> applicants = new PageImpl<>(
+                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
 
             FindApplyingVolunteersResponse findApplyingVolunteersResponse = FindApplyingVolunteersResponse.from(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview)
+                applicants
             );
+            PageRequest pageRequest = PageRequest.of(0, 10);
 
-            given(applicantRepository.findApplyingVolunteers(any())).willReturn(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+            given(
+                applicantRepository.findApplyingVolunteers(any(), any(Pageable.class))).willReturn(
+                applicants);
 
             // when
             FindApplyingVolunteersResponse foundApplyingVolunteers = applicantService.findApplyingVolunteers(
-                anyLong());
+                volunteerId, pageRequest);
 
             // then
             assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(0)
