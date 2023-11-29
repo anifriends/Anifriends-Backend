@@ -142,7 +142,8 @@ class AuthServiceTest {
             given(volunteerRepository.findByEmail(any())).willReturn(Optional.empty());
 
             //when
-            Exception exception = catchException(() -> authService.volunteerLogin(email, password, deviceToken));
+            Exception exception = catchException(
+                () -> authService.volunteerLogin(email, password, deviceToken));
 
             //then
             assertThat(exception).isInstanceOf(AuthAuthenticationException.class);
@@ -232,7 +233,8 @@ class AuthServiceTest {
             given(shelterRepository.findByEmail(any())).willReturn(Optional.empty());
 
             //when
-            Exception exception = catchException(() -> authService.shelterLogin(email, password, deviceToken));
+            Exception exception = catchException(
+                () -> authService.shelterLogin(email, password, deviceToken));
 
             //then
             assertThat(exception).isInstanceOf(AuthAuthenticationException.class);
@@ -247,15 +249,11 @@ class AuthServiceTest {
         @DisplayName("성공")
         void refreshAccessToken() {
             //given
-            Long userId = AuthFixture.USER_ID;
-            UserRole userRole = AuthFixture.USER_ROLE;
-            TokenResponse tokenResponse = AuthFixture.userToken();
-            String refreshTokenValue = tokenResponse.refreshToken();
-            RefreshToken refreshTokenEntity = new RefreshToken(refreshTokenValue, 1L,
-                UserRole.ROLE_VOLUNTEER);
+            RefreshToken refreshToken = AuthFixture.refreshToken();
+            String refreshTokenValue = refreshToken.getTokenValue();
 
             given(refreshTokenRepository.findByTokenValue(anyString()))
-                .willReturn(Optional.of(refreshTokenEntity));
+                .willReturn(Optional.of(refreshToken));
 
             //when
             //then
@@ -263,10 +261,10 @@ class AuthServiceTest {
                 TokenResponse resultTokenResponse = authService.refreshAccessToken(
                     refreshTokenValue);
 
-                assertThat(resultTokenResponse.refreshToken()).isNotEqualTo(refreshTokenValue);
+                assertThat(resultTokenResponse.refreshToken()).isNotEqualTo(refreshToken.getTokenValue());
                 assertThat(resultTokenResponse.accessToken()).isNotBlank();
-                assertThat(resultTokenResponse.userId()).isEqualTo(userId);
-                assertThat(resultTokenResponse.role()).isEqualTo(userRole);
+                assertThat(resultTokenResponse.userId()).isEqualTo(refreshToken.getUserId());
+                assertThat(resultTokenResponse.role()).isEqualTo(refreshToken.getUserRole());
             });
         }
 
@@ -286,6 +284,29 @@ class AuthServiceTest {
 
             //then
             assertThat(exception).isInstanceOf(AuthNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("logout 메서드 호출 시")
+    class LogoutTest {
+
+        @Test
+        @DisplayName("성공")
+        void logout() {
+            //given
+            String refreshTokenValue = "refreshToken";
+            RefreshToken refreshTokenEntity = new RefreshToken(refreshTokenValue, 1L,
+                UserRole.ROLE_VOLUNTEER);
+
+            given(refreshTokenRepository.findByTokenValue(anyString()))
+                .willReturn(Optional.of(refreshTokenEntity));
+
+            //when
+            authService.logout(refreshTokenValue);
+
+            //then
+            then(refreshTokenRepository).should().delete(refreshTokenEntity);
         }
     }
 }

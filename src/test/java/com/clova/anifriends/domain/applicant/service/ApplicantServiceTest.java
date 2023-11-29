@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.applicant.service;
 
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE;
-import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NO_SHOW;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NOSHOW;
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.PENDING;
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.REFUSED;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
@@ -21,8 +21,8 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
-import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
@@ -50,6 +50,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -209,6 +212,7 @@ class ApplicantServiceTest {
         @DisplayName("성공 : 후기 작성자가 1명인 경우")
         void findApplyingVolunteers1() {
             // given
+            long volunteerId = 1L;
             Volunteer volunteer = VolunteerFixture.volunteer();
             Shelter shelter = ShelterFixture.shelter();
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
@@ -217,27 +221,31 @@ class ApplicantServiceTest {
             Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(
                 recruitment,
                 volunteer, PENDING);
+            PageImpl<Applicant> applicants = new PageImpl<>(
+                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
 
             FindApplyingVolunteersResponse findApplyingVolunteersResponse = FindApplyingVolunteersResponse.from(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview)
+                applicants
             );
+            PageRequest pageRequest = PageRequest.of(0, 10);
 
             given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
-            given(applicantRepository.findApplyingVolunteers(any())).willReturn(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
+            given(
+                applicantRepository.findApplyingVolunteers(any(), any(Pageable.class))).willReturn(
+                applicants);
 
             // when
             FindApplyingVolunteersResponse foundApplyingVolunteers = applicantService.findApplyingVolunteers(
-                anyLong());
+                volunteerId, pageRequest);
 
             // then
-            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(0)
+            assertThat(foundApplyingVolunteers.applicants().get(0)
                 .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(0)
+                findApplyingVolunteersResponse.applicants().get(0)
                     .applicantIsWritedReview());
-            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(1)
+            assertThat(foundApplyingVolunteers.applicants().get(1)
                 .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(1)
+                findApplyingVolunteersResponse.applicants().get(1)
                     .applicantIsWritedReview());
         }
 
@@ -245,6 +253,7 @@ class ApplicantServiceTest {
         @DisplayName("성공 : 후기 작성자가 0명인 경우")
         void findApplyingVolunteers2() {
             // given
+            long volunteerId = 1L;
             Volunteer volunteer = VolunteerFixture.volunteer();
             Shelter shelter = ShelterFixture.shelter();
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
@@ -255,27 +264,32 @@ class ApplicantServiceTest {
                 recruitment,
                 volunteer, PENDING);
 
-            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+            PageImpl<Applicant> applicants = new PageImpl<>(
+                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
 
             FindApplyingVolunteersResponse findApplyingVolunteersResponse = FindApplyingVolunteersResponse.from(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview)
+                applicants
             );
+            PageRequest pageRequest = PageRequest.of(0, 10);
 
-            given(applicantRepository.findApplyingVolunteers(any())).willReturn(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+            given(
+                applicantRepository.findApplyingVolunteers(any(), any(Pageable.class))).willReturn(
+                applicants);
 
             // when
             FindApplyingVolunteersResponse foundApplyingVolunteers = applicantService.findApplyingVolunteers(
-                anyLong());
+                volunteerId, pageRequest);
 
             // then
-            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(0)
+            assertThat(foundApplyingVolunteers.applicants().get(0)
                 .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(0)
+                findApplyingVolunteersResponse.applicants().get(0)
                     .applicantIsWritedReview());
-            assertThat(foundApplyingVolunteers.findApplyingVolunteerResponses().get(1)
+            assertThat(foundApplyingVolunteers.applicants().get(1)
                 .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.findApplyingVolunteerResponses().get(1)
+                findApplyingVolunteersResponse.applicants().get(1)
                     .applicantIsWritedReview());
         }
     }
@@ -298,7 +312,7 @@ class ApplicantServiceTest {
             Applicant applicantRefused = ApplicantFixture.applicant(recruitment, volunteer,
                 REFUSED);
             Applicant applicantPended = ApplicantFixture.applicant(recruitment, volunteer, PENDING);
-            Applicant applicantNoShow = ApplicantFixture.applicant(recruitment, volunteer, NO_SHOW);
+            Applicant applicantNoShow = ApplicantFixture.applicant(recruitment, volunteer, NOSHOW);
 
             FindApplicantsResponse response = FindApplicantsResponse.from(
                 List.of(applicantAttended, applicantRefused, applicantPended, applicantNoShow),
@@ -340,9 +354,9 @@ class ApplicantServiceTest {
             Applicant applicantAttendanceToNoShow = ApplicantFixture.applicant(recruitment,
                 volunteer2, ATTENDANCE, 2L);
             Applicant applicantNoShowToAttendance = ApplicantFixture.applicant(recruitment,
-                volunteer3, NO_SHOW, 3L);
+                volunteer3, NOSHOW, 3L);
             Applicant applicantNoShow = ApplicantFixture.applicant(recruitment, volunteer4,
-                NO_SHOW, 4L);
+                NOSHOW, 4L);
 
             UpdateApplicantAttendanceCommand command1 = new UpdateApplicantAttendanceCommand(
                 applicantAttendance.getApplicantId(), true);
@@ -369,7 +383,7 @@ class ApplicantServiceTest {
             verify(applicantRepository, times(1))
                 .updateBulkAttendance(shelter.getShelterId(), recruitment.getRecruitmentId(),
                     List.of(applicantAttendanceToNoShow.getApplicantId(),
-                        applicantNoShow.getApplicantId()), NO_SHOW);
+                        applicantNoShow.getApplicantId()), NOSHOW);
 
             verify(volunteerNotificationRepository, times(1))
                 .saveAll(any(List.class));
