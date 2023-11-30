@@ -6,14 +6,19 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.applicant.exception.ApplicantBadRequestException;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
+import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
+import com.clova.anifriends.domain.review.Review;
+import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -149,6 +154,50 @@ class ApplicantTest {
 
             //then
             assertThat(exception).isInstanceOf(ApplicantConflictException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("hasNotReview 메서드 호출 시")
+    class HasNotReviewTest {
+
+        Shelter shelter;
+        Recruitment recruitment;
+        Volunteer volunteer;
+
+        @BeforeEach
+        void setUp() {
+            shelter = ShelterFixture.shelter();
+            recruitment = RecruitmentFixture.recruitment(shelter);
+            volunteer = VolunteerFixture.volunteer();
+        }
+
+        @Test
+        @DisplayName("성공")
+        void hasNotReview() {
+            //given
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer);
+
+            //when
+            boolean hasNotReview = applicant.hasNotReview();
+
+            //then
+            assertThat(hasNotReview).isTrue();
+        }
+
+        @Test
+        @DisplayName("성공")
+        void hasReview() {
+            //given
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer,
+                ApplicantStatus.ATTENDANCE);
+            Review review = ReviewFixture.review(applicant);
+
+            //when
+            boolean hasNotReview = applicant.hasNotReview();
+
+            //then
+            assertThat(hasNotReview).isFalse();
         }
     }
 }
