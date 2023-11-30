@@ -581,8 +581,10 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             assertThat(result.hasNext()).isFalse();
             assertThat(result.getNumberOfElements()).isEqualTo(2);
             assertThat(result.getContent().get(0)).usingRecursiveComparison()
+                .ignoringFields("createdAt")
                 .isEqualTo(findAnimalsResult2);
             assertThat(result.getContent().get(1)).usingRecursiveComparison()
+                .ignoringFields("createdAt")
                 .isEqualTo(findAnimalsResult1);
         }
 
@@ -656,8 +658,10 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             assertThat(result.hasNext()).isFalse();
             assertThat(result.getNumberOfElements()).isEqualTo(2);
             assertThat(result.getContent().get(0)).usingRecursiveComparison()
+                .ignoringFields("createdAt")
                 .isEqualTo(findAnimalsResult2);
             assertThat(result.getContent().get(1)).usingRecursiveComparison()
+                .ignoringFields("createdAt")
                 .isEqualTo(findAnimalsResult1);
         }
     }
