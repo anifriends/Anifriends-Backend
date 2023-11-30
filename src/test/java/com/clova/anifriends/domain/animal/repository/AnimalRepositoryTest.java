@@ -579,8 +579,11 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             // then
             assertThat(result.hasNext()).isFalse();
-            assertThat(result.getContent()).usingRecursiveFieldByFieldElementComparator()
-                .containsExactlyInAnyOrder(findAnimalsResult1, findAnimalsResult2);
+            assertThat(result.getNumberOfElements()).isEqualTo(2);
+            assertThat(result.getContent().get(0)).usingRecursiveComparison()
+                .isEqualTo(findAnimalsResult2);
+            assertThat(result.getContent().get(1)).usingRecursiveComparison()
+                .isEqualTo(findAnimalsResult1);
         }
 
         @Test
@@ -651,9 +654,11 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             // then
             assertThat(result.hasNext()).isFalse();
-            assertThat(result.getContent()).usingRecursiveFieldByFieldElementComparator()
-                .containsExactlyInAnyOrder(findAnimalsResult1,
-                    findAnimalsResult2);
+            assertThat(result.getNumberOfElements()).isEqualTo(2);
+            assertThat(result.getContent().get(0)).usingRecursiveComparison()
+                .isEqualTo(findAnimalsResult2);
+            assertThat(result.getContent().get(1)).usingRecursiveComparison()
+                .isEqualTo(findAnimalsResult1);
         }
     }
 
