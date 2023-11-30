@@ -6,6 +6,8 @@ import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
+import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
+import com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
@@ -559,9 +561,11 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             animalRepository.saveAll(List.of(matchAnimal1, matchAnimal2, disMatchAnimal1));
 
             PageRequest pageRequest = PageRequest.of(0, 10);
+            FindAnimalsResult findAnimalsResult1 = AnimalDtoFixture.findAnimalsResult(matchAnimal1);
+            FindAnimalsResult findAnimalsResult2 = AnimalDtoFixture.findAnimalsResult(matchAnimal2);
 
             // when
-            Slice<Animal> result = animalRepository.findAnimalsV2(
+            Slice<FindAnimalsResult> result = animalRepository.findAnimalsV2(
                 typeFilter,
                 activeFilter,
                 neuteredFilter,
@@ -575,7 +579,13 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             // then
             assertThat(result.hasNext()).isFalse();
-            assertThat(result.getContent()).containsExactlyInAnyOrder(matchAnimal1, matchAnimal2);
+            assertThat(result.getNumberOfElements()).isEqualTo(2);
+            assertThat(result.getContent().get(0)).usingRecursiveComparison()
+                .ignoringFields("createdAt")
+                .isEqualTo(findAnimalsResult2);
+            assertThat(result.getContent().get(1)).usingRecursiveComparison()
+                .ignoringFields("createdAt")
+                .isEqualTo(findAnimalsResult1);
         }
 
         @Test
@@ -628,9 +638,11 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             animalRepository.saveAll(List.of(matchAnimal1, matchAnimal2));
 
             PageRequest pageRequest = PageRequest.of(0, 10);
+            FindAnimalsResult findAnimalsResult1 = AnimalDtoFixture.findAnimalsResult(matchAnimal1);
+            FindAnimalsResult findAnimalsResult2 = AnimalDtoFixture.findAnimalsResult(matchAnimal2);
 
             // when
-            Slice<Animal> result = animalRepository.findAnimalsV2(
+            Slice<FindAnimalsResult> result = animalRepository.findAnimalsV2(
                 nullTypeFilter,
                 nullActiveFilter,
                 nullIsNeuteredFilter,
@@ -644,7 +656,13 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             // then
             assertThat(result.hasNext()).isFalse();
-            assertThat(result.getContent()).containsExactlyInAnyOrder(matchAnimal1, matchAnimal2);
+            assertThat(result.getNumberOfElements()).isEqualTo(2);
+            assertThat(result.getContent().get(0)).usingRecursiveComparison()
+                .ignoringFields("createdAt")
+                .isEqualTo(findAnimalsResult2);
+            assertThat(result.getContent().get(1)).usingRecursiveComparison()
+                .ignoringFields("createdAt")
+                .isEqualTo(findAnimalsResult1);
         }
     }
 
@@ -714,8 +732,6 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             shelterRepository.save(shelter);
             animalRepository.saveAll(List.of(matchAnimal1, matchAnimal2, disMatchAnimal1));
-
-            PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
             Long result = animalRepository.countAnimalsV2(

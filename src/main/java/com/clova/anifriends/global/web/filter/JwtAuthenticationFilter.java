@@ -26,14 +26,15 @@ public class JwtAuthenticationFilter extends GenericFilter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
         throws IOException, ServletException {
-        log.debug("[Authentication] JWT 인증 필터 시작");
+        log.debug("[Authentication] JWT 인증 필터 동작");
         HttpServletRequest request = (HttpServletRequest) req;
         String bearerAccessToken = request.getHeader(HEADER);
         if (Objects.nonNull(bearerAccessToken)) {
+            log.debug("[Authentication] JWT 인증 프로세스 시작");
             log.debug("[Authentication] JWT={}", bearerAccessToken);
             String accessToken = removeBearer(bearerAccessToken);
             Authentication authentication = authenticationProvider.authenticate(accessToken);
-            log.debug("[Authentication] JWT 인증 필터 종료. 사용자 인증 성공. Authentication={}",
+            log.debug("[Authentication] JWT 인증 프로세스 종료. 사용자 인증 성공. Authentication={}",
                 authentication);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

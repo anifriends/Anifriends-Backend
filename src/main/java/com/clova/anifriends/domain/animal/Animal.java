@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "animal")
@@ -83,6 +84,7 @@ public class Animal extends BaseTimeEntity {
     @Embedded
     private AnimalAdopted adopted = new AnimalAdopted(IS_ADOPTED_DEFAULT);
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "animal", cascade = CascadeType.PERSIST,
         fetch = FetchType.LAZY, orphanRemoval = true)
     private List<AnimalImage> images = new ArrayList<>();
