@@ -168,25 +168,25 @@ class ShelterControllerTest extends BaseControllerTest {
                 responseFields(
                     fieldWithPath("shelterId").type(JsonFieldType.NUMBER)
                         .description("보호소 ID"),
-                    fieldWithPath("email").type(
+                    fieldWithPath("shelterEmail").type(
                             JsonFieldType.STRING)
                         .description("보호소 이메일"),
-                    fieldWithPath("name").type(
+                    fieldWithPath("shelterName").type(
                             JsonFieldType.STRING)
                         .description("보호소 이름"),
-                    fieldWithPath("address").type(
+                    fieldWithPath("shelterAddress").type(
                             JsonFieldType.STRING)
                         .description("보호소 주소"),
-                    fieldWithPath("addressDetail").type(
+                    fieldWithPath("shelterAddressDetail").type(
                             JsonFieldType.STRING)
                         .description("보호소 상세주소"),
-                    fieldWithPath("phoneNumber").type(
+                    fieldWithPath("shelterPhoneNumber").type(
                             JsonFieldType.STRING)
                         .description("보호소 전화번호"),
-                    fieldWithPath("sparePhoneNumber").type(
+                    fieldWithPath("shelterSparePhoneNumber").type(
                             JsonFieldType.STRING)
                         .description("보호소 임시 전화번호"),
-                    fieldWithPath("imageUrl").type(
+                    fieldWithPath("shelterImageUrl").type(
                             JsonFieldType.STRING)
                         .description("보호소 이미지 Url").optional()
                 )

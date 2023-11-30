@@ -4,13 +4,13 @@ import com.clova.anifriends.domain.shelter.Shelter;
 
 public record FindShelterDetailResponse(
     Long shelterId,
-    String email,
-    String name,
-    String address,
-    String addressDetail,
-    String phoneNumber,
-    String sparePhoneNumber,
-    String imageUrl
+    String shelterEmail,
+    String shelterName,
+    String shelterAddress,
+    String shelterAddressDetail,
+    String shelterPhoneNumber,
+    String shelterSparePhoneNumber,
+    String shelterImageUrl
 
 ) {
 
