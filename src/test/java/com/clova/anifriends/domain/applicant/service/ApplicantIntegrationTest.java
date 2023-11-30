@@ -5,8 +5,12 @@ import static org.assertj.core.api.Assertions.catchException;
 
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -22,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 public class ApplicantIntegrationTest extends BaseIntegrationTest {
 
@@ -139,6 +144,77 @@ public class ApplicantIntegrationTest extends BaseIntegrationTest {
                     Applicant.class)
                 .setParameter("recruitmentId", recruitment.getRecruitmentId())
                 .getResultList();
+        }
+    }
+
+    @Nested
+    @DisplayName("applicant 서비스 n+1 검증 시")
+    class ApplicantNPlusOneTest {
+
+        Volunteer volunteer;
+        Shelter shelter;
+        Recruitment recruitment;
+
+        @BeforeEach
+        void setUp() {
+            volunteer = VolunteerFixture.volunteer();
+            shelter = ShelterFixture.shelter();
+            recruitment = RecruitmentFixture.recruitment(shelter);
+            volunteerRepository.save(volunteer);
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+        }
+
+        @Test
+        @DisplayName("findApplyingVolunteers 메서드 실행")
+        void findApplyingVolunteers() {
+            //given
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer);
+            applicantRepository.save(applicant);
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
+            //when
+            FindApplyingVolunteersResponse applyingVolunteers = applicantService.findApplyingVolunteers(
+                volunteer.getVolunteerId(), pageRequest);
+
+            //then
+            assertThat(applyingVolunteers.applicants()).hasSize(1);
+        }
+
+        @Test
+        @DisplayName("findApprovedApplicant 메서드 실행")
+        void findApplicantsApproved() {
+            //given
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer,
+                ApplicantStatus.ATTENDANCE);
+            applicantRepository.save(applicant);
+
+            //when
+            FindApprovedApplicantsResponse applicantsApproved
+                = applicantService.findApprovedApplicants(
+                shelter.getShelterId(), recruitment.getRecruitmentId());
+
+            //then
+            assertThat(applicantsApproved.applicants()).hasSize(1);
+        }
+
+        @Test
+        @DisplayName("findApplicants 메서드 실행 시")
+        void findApplicants() {
+            //given
+            List<Volunteer> volunteers = VolunteerFixture.volunteers(2);
+            volunteerRepository.saveAll(volunteers);
+            List<Applicant> applicants = volunteers.stream()
+                .map(volunteer -> ApplicantFixture.applicant(recruitment, volunteer))
+                .toList();
+            applicantRepository.saveAll(applicants);
+
+            //when
+            FindApplicantsResponse findApplicants = applicantService.findApplicants(
+                shelter.getShelterId(), recruitment.getRecruitmentId());
+
+            //then
+            assertThat(findApplicants.applicants()).hasSize(2);
         }
     }
 }

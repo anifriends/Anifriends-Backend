@@ -39,6 +39,16 @@ operation::auth-controller-test/refresh-access-token[snippets='http-request,requ
 
 operation::auth-controller-test/refresh-access-token[snippets='http-response,response-fields,response-cookies']
 
+=== 로그아웃
+
+==== Request
+
+operation::auth-controller-test/logout[snippets='http-request,request-headers,request-cookies']
+
+==== Response
+
+operation::auth-controller-test/logout[snippets='http-response,response-cookies']
+
 == 봉사자
 
 == -- 공통 --
@@ -311,6 +321,16 @@ operation::applicant-controller-test/register-applicant[snippets='http-request,r
 ==== Response
 
 operation::applicant-controller-test/register-applicant[snippets='http-response']
+
+=== 봉사 신청 여부 조회
+
+==== Request
+
+operation::applicant-controller-test/is-applied-recruitment[snippets='http-request,request-headers,path-parameters']
+
+==== Response
+
+operation::applicant-controller-test/is-applied-recruitment[snippets='http-response,response-fields']
 
 === 내(봉사자)가 신청한 봉사 신청 목록 조회
 

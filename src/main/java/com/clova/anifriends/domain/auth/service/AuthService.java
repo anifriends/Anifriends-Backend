@@ -72,12 +72,22 @@ public class AuthService {
 
     @Transactional
     public TokenResponse refreshAccessToken(String refreshToken) {
-        RefreshToken findRefreshToken = refreshTokenRepository.findByTokenValue(refreshToken)
-            .orElseThrow(() -> new AuthNotFoundException("토큰 정보가 유효하지 않습니다."));
+        RefreshToken findRefreshToken = getFindRefreshToken(refreshToken);
         TokenResponse tokenResponse = jwtProvider.refreshAccessToken(refreshToken);
         refreshTokenRepository.delete(findRefreshToken);
         refreshTokenRepository.save(new RefreshToken(tokenResponse.refreshToken(),
             tokenResponse.userId(), tokenResponse.role()));
         return tokenResponse;
+    }
+
+    @Transactional
+    public void logout(String refreshToken) {
+        RefreshToken findRefreshToken = getFindRefreshToken(refreshToken);
+        refreshTokenRepository.delete(findRefreshToken);
+    }
+
+    private RefreshToken getFindRefreshToken(String refreshToken) {
+        return refreshTokenRepository.findByTokenValue(refreshToken)
+            .orElseThrow(() -> new AuthNotFoundException("토큰 정보가 유효하지 않습니다."));
     }
 }

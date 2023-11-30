@@ -2,10 +2,12 @@ package com.clova.anifriends.domain.applicant.service;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
-import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.notification.ShelterNotification;
@@ -16,7 +18,11 @@ import com.clova.anifriends.domain.notification.vo.NotificationType;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
+import com.clova.anifriends.domain.recruitment.service.IsAppliedRecruitmentResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
+import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
+import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
@@ -25,6 +31,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +48,7 @@ public class ApplicantService {
     private final VolunteerRepository volunteerRepository;
     private final ShelterNotificationRepository shelterNotificationRepository;
     private final VolunteerNotificationRepository volunteerNotificationRepository;
+    private final ShelterRepository shelterRepository;
 
     @Transactional
     @DataIntegrityHandler(message = "이미 신청한 봉사입니다.", exceptionClass = ApplicantConflictException.class)
@@ -57,14 +66,13 @@ public class ApplicantService {
 
     @Transactional(readOnly = true)
     public FindApplyingVolunteersResponse findApplyingVolunteers(
-        Long volunteerId
+        Long volunteerId,
+        Pageable pageable
     ) {
         Volunteer foundVolunteer = getVolunteer(volunteerId);
-
-        List<Applicant> applyingVolunteers = applicantRepository.findApplyingVolunteers(
-            foundVolunteer);
-
-        return FindApplyingVolunteersResponse.from(applyingVolunteers);
+        Page<FindApplyingVolunteerResult> applyingVolunteers
+            = applicantRepository.findApplyingVolunteers(foundVolunteer, pageable);
+        return ApplicantMapper.resultToResponse(applyingVolunteers);
     }
 
     @Transactional(readOnly = true)
@@ -77,10 +85,16 @@ public class ApplicantService {
 
     @Transactional(readOnly = true)
     public FindApplicantsResponse findApplicants(Long shelterId, Long recruitmentId) {
+        Shelter shelter = getShelter(shelterId);
         Recruitment recruitment = getRecruitment(recruitmentId);
-        List<Applicant> applicants = applicantRepository
-            .findByRecruitmentIdAndShelterId(recruitmentId, shelterId);
-        return FindApplicantsResponse.from(applicants, recruitment);
+        List<FindApplicantResult> findApplicants
+            = applicantRepository.findApplicants(recruitment, shelter);
+        return ApplicantMapper.resultToResponse(findApplicants, recruitment);
+    }
+
+    private Shelter getShelter(Long shelterId) {
+        return shelterRepository.findById(shelterId)
+            .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
     }
 
     @Transactional
@@ -88,6 +102,8 @@ public class ApplicantService {
         List<UpdateApplicantAttendanceCommand> applicantsCommand) {
         List<Long> noShowIds = getNoShowIds(applicantsCommand);
         List<Long> attendedIds = getAttendedIds(applicantsCommand);
+
+        // 시작 시간 이후인데도 pending이면 REFUESED로 변경
 
         updateVolunteersTemperature(shelterId, recruitmentId, noShowIds, attendedIds);
         updateAttendanceStatus(shelterId, recruitmentId, noShowIds, attendedIds);
@@ -112,7 +128,7 @@ public class ApplicantService {
     private void updateAttendanceStatus(Long shelterId, Long recruitmentId, List<Long> noShowIds,
         List<Long> attendedIds) {
         applicantRepository.updateBulkAttendance(shelterId, recruitmentId, noShowIds,
-            ApplicantStatus.NO_SHOW);
+            ApplicantStatus.NOSHOW);
         applicantRepository.updateBulkAttendance(shelterId, recruitmentId, attendedIds,
             ApplicantStatus.ATTENDANCE);
     }
@@ -124,6 +140,17 @@ public class ApplicantService {
         applicant.updateApplicantStatus(isApproved);
         volunteerNotificationRepository.save(
             makeNewUpdateApplicantStatusNotification(applicant, isApproved));
+    }
+
+    @Transactional(readOnly = true)
+    public IsAppliedRecruitmentResponse isAppliedRecruitment(Long volunteerId, Long recruitmentId) {
+        Volunteer volunteer = volunteerRepository.findById(volunteerId)
+            .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
+        Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
+            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 봉사 모집글입니다."));
+        boolean isApplied = applicantRepository.existsByVolunteerAndRecruitment(volunteer, recruitment);
+        return IsAppliedRecruitmentResponse.from(isApplied);
+
     }
 
     private List<Long> getNoShowIds(List<UpdateApplicantAttendanceCommand> applicantsCommand) {

@@ -12,6 +12,7 @@ public record FindVolunteerReviewsResponse(
 
     private record ReviewResponse(
         Long reviewId,
+        Long shelterId,
         String shelterName,
         LocalDateTime reviewCreatedAt,
         String reviewContent,
@@ -21,6 +22,7 @@ public record FindVolunteerReviewsResponse(
         private static ReviewResponse from(Review review) {
             return new ReviewResponse(
                 review.getReviewId(),
+                review.getApplicant().getRecruitment().getShelter().getShelterId(),
                 review.getApplicant().getRecruitment().getShelter().getName(),
                 review.getCreatedAt(),
                 review.getContent(),
