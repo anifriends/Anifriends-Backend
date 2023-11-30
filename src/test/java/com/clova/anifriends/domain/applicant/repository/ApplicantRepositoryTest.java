@@ -10,11 +10,11 @@ import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter
 import static com.clova.anifriends.domain.volunteer.support.VolunteerFixture.volunteer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
@@ -26,6 +26,7 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -107,99 +108,146 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
 
     @Nested
     @DisplayName("findApplyingVolunteers 실행 시")
-    class FindApplyingVolunteersTest {
+    class FindApplyingVolunteersV2Test {
 
-        @Test
-        @DisplayName("성공")
-        void findApplyingVolunteers() {
-            // given
-            Volunteer volunteer = VolunteerFixture.volunteer();
-            Shelter shelter = ShelterFixture.shelter();
+        Volunteer volunteer;
+        Shelter shelter;
+        Recruitment recruitment1;
+        Recruitment recruitment2;
+        Recruitment recruitment3;
 
-            Recruitment recruitment1 = RecruitmentFixture.recruitment(shelter);
-            Recruitment recruitment2 = RecruitmentFixture.recruitment(shelter);
-            Recruitment recruitment3 = RecruitmentFixture.recruitment(shelter);
+        @BeforeEach
+        void setUp() {
+            volunteer = VolunteerFixture.volunteer();
+            shelter = ShelterFixture.shelter();
+            recruitment1 = RecruitmentFixture.recruitment(shelter);
+            recruitment2 = RecruitmentFixture.recruitment(shelter);
+            recruitment3 = RecruitmentFixture.recruitment(shelter);
 
             shelterRepository.save(shelter);
             volunteerRepository.save(volunteer);
             recruitmentRepository.saveAll(List.of(recruitment1, recruitment2, recruitment3));
+        }
 
+        @Test
+        @DisplayName("성공: 봉사 신청 3개, 리뷰 작성 1개")
+        void findApplyingVolunteersWhen3Recruitment1Review() {
+            // given
             Applicant applicantShouldWriteReview = ApplicantFixture.applicant(
                 recruitment1, volunteer, ATTENDANCE);
             Applicant applicantShouldNotWriteReview1 = ApplicantFixture.applicant(
                 recruitment2, volunteer, PENDING);
             Applicant applicantShouldNotWriteReview2 = ApplicantFixture.applicant(
                 recruitment3, volunteer, ATTENDANCE);
-            Review review = ReviewFixture.review(applicantShouldNotWriteReview2);
-            setField(review, "reviewId", 1L);
+            Review review = ReviewFixture.review(applicantShouldWriteReview);
 
             applicantRepository.save(applicantShouldWriteReview);
             applicantRepository.save(applicantShouldNotWriteReview1);
             applicantRepository.save(applicantShouldNotWriteReview2);
+            reviewRepository.save(review);
 
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Page<Applicant> applyingVolunteers = applicantRepository.findApplyingVolunteers(
-                volunteer, pageRequest);
-
-            FindApplyingVolunteersResponse expected = FindApplyingVolunteersResponse.from(
-                applyingVolunteers);
+            Page<FindApplyingVolunteerResult> applyingVolunteers
+                = applicantRepository.findApplyingVolunteers(volunteer, pageRequest);
 
             // then
-            assertThat(expected.applicants().get(0)
-                .applicantIsWritedReview()).isTrue();
-            assertThat(expected.applicants().get(1)
-                .applicantIsWritedReview()).isFalse();
-            assertThat(expected.applicants().get(2)
-                .applicantIsWritedReview()).isFalse();
+            List<Long> reviewExists = applyingVolunteers.stream()
+                .filter(FindApplyingVolunteerResult::getApplicantIsWritedReview)
+                .map(FindApplyingVolunteerResult::getApplicantId)
+                .toList();
+            assertThat(reviewExists).containsExactly(applicantShouldWriteReview.getApplicantId());
+        }
+
+        @Test
+        @DisplayName("성공: 봉사 신청 3개, 리뷰 작성 2개")
+        void findApplyingVolunteersWhen3Recruitment2Review() {
+            // given
+            Applicant applicantShouldWriteReview1 = ApplicantFixture.applicant(
+                recruitment1, volunteer, ATTENDANCE);
+            Applicant applicantShouldWriteReview2 = ApplicantFixture.applicant(
+                recruitment2, volunteer, ATTENDANCE);
+            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(
+                recruitment3, volunteer, ATTENDANCE);
+            Review review1 = ReviewFixture.review(applicantShouldWriteReview1);
+            Review review2 = ReviewFixture.review(applicantShouldWriteReview2);
+
+            applicantRepository.save(applicantShouldWriteReview1);
+            applicantRepository.save(applicantShouldWriteReview2);
+            applicantRepository.save(applicantShouldNotWriteReview);
+            reviewRepository.save(review1);
+            reviewRepository.save(review2);
+
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
+            // when
+            Page<FindApplyingVolunteerResult> applyingVolunteers
+                = applicantRepository.findApplyingVolunteers(volunteer, pageRequest);
+
+            // then
+            List<Long> reviewExists = applyingVolunteers.stream()
+                .filter(FindApplyingVolunteerResult::getApplicantIsWritedReview)
+                .map(FindApplyingVolunteerResult::getApplicantId)
+                .toList();
+            assertThat(reviewExists)
+                .containsExactly(
+                    applicantShouldWriteReview1.getApplicantId(),
+                    applicantShouldWriteReview2.getApplicantId()
+                    );
         }
     }
 
     @Nested
-    @DisplayName("findByRecruitmentIdAndShelterId")
-    class FindRecruitmentIdAndShelterIdTest {
+    @DisplayName("findApplicants 메서드 실행 시")
+    class FindApplicantsTest {
+
+        Shelter shelter;
+        Recruitment recruitment;
+
+        @BeforeEach
+        void setUp() {
+            shelter = ShelterFixture.shelter();
+            recruitment = RecruitmentFixture.recruitment(shelter);
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+        }
 
         @Test
         @DisplayName("성공")
-        void findByRecruitmentIdAndShelterId() {
-            // given
-            Shelter shelter = shelter();
-            Recruitment recruitment = recruitment(shelter);
-
+        void findApplicants() {
+            //given
             Volunteer volunteerAttendance = volunteer();
             Volunteer volunteerNoShow = volunteer();
-            Volunteer volunteerPending = volunteer();
-            Volunteer volunteerRefused = volunteer();
-
             Applicant applicantAttendance = applicant(recruitment, volunteerAttendance, ATTENDANCE);
             Applicant applicantNoShow = applicant(recruitment, volunteerNoShow, NOSHOW);
-            Applicant applicantPending = applicant(recruitment, volunteerPending, PENDING);
-            Applicant applicantRefused = applicant(recruitment, volunteerRefused, REFUSED);
 
-            shelterRepository.save(shelter);
-            recruitmentRepository.save(recruitment);
-            volunteerRepository.saveAll(List.of(
-                volunteerAttendance,
-                volunteerNoShow,
-                volunteerPending,
-                volunteerRefused
-            ));
+            volunteerRepository.saveAll(
+                List.of(volunteerAttendance, volunteerNoShow));
             applicantRepository.saveAll(
-                List.of(applicantAttendance, applicantNoShow, applicantPending, applicantRefused)
-            );
-            List<Applicant> expected = List.of(applicantAttendance, applicantNoShow,
-                applicantPending, applicantRefused);
+                List.of(applicantAttendance, applicantNoShow));
 
-            // when
-            List<Applicant> result = applicantRepository
-                .findByRecruitmentIdAndShelterId(recruitment.getRecruitmentId(),
-                    shelter.getShelterId());
+            //when
+            List<FindApplicantResult> applicants = applicantRepository.findApplicants(
+                recruitment, shelter);
 
-            // then
-            assertThat(result).isEqualTo(expected);
+            //then
+            assertThat(applicants).hasSize(2);
+            FindApplicantResult result0 = applicants.get(0);
+            assertThat(result0.getVolunteerId()).isEqualTo(volunteerAttendance.getVolunteerId());
+            assertThat(result0.getApplicantId()).isEqualTo(applicantAttendance.getApplicantId());
+            assertThat(result0.getVolunteerBirthDate()).isEqualTo(volunteerAttendance.getBirthDate());
+            assertThat(result0.getVolunteerGender()).isEqualTo(volunteerAttendance.getGender());
+            assertThat(result0.getCompletedVolunteerCount()).isEqualTo(1);
+            assertThat(result0.getVolunteerTemperature())
+                .isEqualTo(volunteerAttendance.getTemperature());
+            assertThat(result0.getApplicantStatus())
+                .isEqualTo(applicantAttendance.getStatus());
+
+            FindApplicantResult result1 = applicants.get(1);
+            assertThat(result1.getApplicantStatus()).isEqualTo(applicantNoShow.getStatus());
+            assertThat(result1.getCompletedVolunteerCount()).isZero();
         }
-
     }
 
     @Nested

@@ -23,31 +23,5 @@ public record FindApplyingVolunteersResponse(
         LocalDateTime recruitmentStartTime
     ) {
 
-        public static FindApplyingVolunteerResponse from(
-            Applicant applicant
-        ) {
-            return new FindApplyingVolunteerResponse(
-                applicant.getRecruitment().getShelter().getShelterId(),
-                applicant.getRecruitment().getRecruitmentId(),
-                applicant.getApplicantId(),
-                applicant.getRecruitment().getTitle(),
-                applicant.getRecruitment().getShelter().getName(),
-                applicant.getStatus(),
-                applicant.hasNotReview(),
-                applicant.getRecruitment().getStartTime()
-            );
-        }
-    }
-
-    public static FindApplyingVolunteersResponse from(
-        Page<Applicant> pagination
-    ) {
-        PageInfo pageInfo = PageInfo.of(pagination.getTotalElements(), pagination.hasNext());
-
-        List<FindApplyingVolunteerResponse> findApplyingVolunteerResponses = pagination.get()
-            .map(FindApplyingVolunteerResponse::from)
-            .toList();
-
-        return new FindApplyingVolunteersResponse(pageInfo, findApplyingVolunteerResponses);
     }
 }
