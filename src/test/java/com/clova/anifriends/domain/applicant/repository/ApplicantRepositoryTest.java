@@ -382,4 +382,52 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
 
         }
     }
+
+    @Nested
+    @DisplayName("isAppliedRecruitment 메서드 호출 시")
+    class IsAppliedRecruitmentTest {
+
+        Shelter shelter;
+        Volunteer volunteer;
+        Recruitment recruitment;
+
+        @BeforeEach
+        void setUp() {
+            shelter = ShelterFixture.shelter();
+            volunteer = VolunteerFixture.volunteer();
+            recruitment = RecruitmentFixture.recruitment(shelter);
+            shelterRepository.save(shelter);
+            volunteerRepository.save(volunteer);
+            recruitmentRepository.save(recruitment);
+        }
+
+        @Test
+        @DisplayName("성공")
+        void isAppliedRecruitmentWhenApplied() {
+            //given
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer);
+            applicantRepository.save(applicant);
+
+            //when
+            boolean appliedRecruitment = applicantRepository.existsByVolunteerAndRecruitment(
+                volunteer,
+                recruitment);
+
+            //then
+            assertThat(appliedRecruitment).isTrue();
+        }
+
+        @Test
+        @DisplayName("성공")
+        void isAppliedRecruitmentWhenNotApplied() {
+            //given
+            //when
+            boolean appliedRecruitment = applicantRepository.existsByVolunteerAndRecruitment(
+                volunteer,
+                recruitment);
+
+            //then
+            assertThat(appliedRecruitment).isFalse();
+        }
+    }
 }

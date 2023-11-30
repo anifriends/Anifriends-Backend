@@ -94,4 +94,6 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
 
     Optional<Applicant> findByApplicantIdAndRecruitment_RecruitmentIdAndRecruitment_Shelter_ShelterId(
         Long applicantId, Long recruitmentId, Long shelterId);
+
+    boolean existsByVolunteerAndRecruitment(Volunteer volunteer, Recruitment recruitment);
 }
