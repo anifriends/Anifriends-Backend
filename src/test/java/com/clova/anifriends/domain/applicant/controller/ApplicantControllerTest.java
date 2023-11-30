@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.applicant.controller;
 
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.PENDING;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -14,12 +15,14 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
+import static org.springframework.restdocs.payload.JsonFieldType.OBJECT;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
@@ -33,6 +36,7 @@ import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteers
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse.FindApplyingVolunteerResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
+import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -88,17 +92,19 @@ class ApplicantControllerTest extends BaseControllerTest {
             "보호소 이름",
             ATTENDANCE,
             true,
-            LocalDateTime.now()
-        );
+            LocalDateTime.now());
+        PageInfo pageInfo = PageInfo.of(20, true);
         FindApplyingVolunteersResponse findApplyingVolunteersResponse
-            = new FindApplyingVolunteersResponse(List.of(response));
+            = new FindApplyingVolunteersResponse(pageInfo, List.of(response));
 
-        given(applicantService.findApplyingVolunteers(anyLong()))
+        given(applicantService.findApplyingVolunteers(anyLong(), any()))
             .willReturn(findApplyingVolunteersResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(
             get("/api/volunteers/applicants")
+                .param("pageNumber", "0")
+                .param("pageSize", "10")
                 .header(AUTHORIZATION, volunteerAccessToken)
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -108,33 +114,32 @@ class ApplicantControllerTest extends BaseControllerTest {
                 requestHeaders(
                     headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
                 ),
+                queryParameters(
+                    parameterWithName("pageNumber").description("페이지 번호"),
+                    parameterWithName("pageSize").description("페이지 사이즈")
+                ),
                 responseFields(
-                    fieldWithPath("applicants").type(JsonFieldType.ARRAY)
-                        .description("신청한 봉사 리스트"),
-                    fieldWithPath("applicants[].shelterId").type(
-                            JsonFieldType.NUMBER)
-                        .description("보호소 ID"),
-                    fieldWithPath("applicants[].recruitmentId").type(
-                            JsonFieldType.NUMBER)
-                        .description("봉사 모집글 ID"),
-                    fieldWithPath("applicants[].applicantId").type(
-                            JsonFieldType.NUMBER)
-                        .description("봉사 신청자 ID"),
-                    fieldWithPath("applicants[].recruitmentTitle").type(
-                            JsonFieldType.STRING)
-                        .description("모집글 제목"),
-                    fieldWithPath("applicants[].shelterName").type(
-                            JsonFieldType.STRING)
-                        .description("보호소 이름"),
-                    fieldWithPath("applicants[].applicantStatus").type(
-                            JsonFieldType.STRING)
-                        .description("승인 상태"),
-                    fieldWithPath("applicants[].applicantIsWritedReview").type(
-                            JsonFieldType.BOOLEAN)
-                        .description("후기 작성 가능 여부"),
-                    fieldWithPath("applicants[].recruitmentStartTime").type(
-                            JsonFieldType.STRING)
-                        .description("봉사 날짜")
+                    fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
+                    fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
+                    fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
+                    fieldWithPath("applicants")
+                        .type(JsonFieldType.ARRAY).description("신청한 봉사 리스트"),
+                    fieldWithPath("applicants[].shelterId")
+                        .type(JsonFieldType.NUMBER).description("보호소 ID"),
+                    fieldWithPath("applicants[].recruitmentId")
+                        .type(JsonFieldType.NUMBER).description("봉사 모집글 ID"),
+                    fieldWithPath("applicants[].applicantId")
+                        .type(JsonFieldType.NUMBER).description("봉사 신청자 ID"),
+                    fieldWithPath("applicants[].recruitmentTitle")
+                        .type(JsonFieldType.STRING).description("모집글 제목"),
+                    fieldWithPath("applicants[].shelterName")
+                        .type(JsonFieldType.STRING).description("보호소 이름"),
+                    fieldWithPath("applicants[].applicantStatus")
+                        .type(JsonFieldType.STRING).description("승인 상태"),
+                    fieldWithPath("applicants[].applicantIsWritedReview")
+                        .type(JsonFieldType.BOOLEAN).description("후기 작성 가능 여부"),
+                    fieldWithPath("applicants[].recruitmentStartTime")
+                        .type(JsonFieldType.STRING).description("봉사 날짜")
                 )
             ));
     }

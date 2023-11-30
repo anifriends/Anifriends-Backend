@@ -7,7 +7,7 @@ public enum ApplicantStatus implements EnumType {
     PENDING,
     REFUSED,
     ATTENDANCE,
-    NO_SHOW,
+    NOSHOW,
     APPROVED,
     ;
 
@@ -17,7 +17,7 @@ public enum ApplicantStatus implements EnumType {
     }
 
     public ApplicantStatus convertToApprovalStatus() {
-        if (this == ApplicantStatus.ATTENDANCE || this == ApplicantStatus.NO_SHOW) {
+        if (this == ApplicantStatus.ATTENDANCE || this == ApplicantStatus.NOSHOW) {
             return ApplicantStatus.APPROVED;
         }
         return this;

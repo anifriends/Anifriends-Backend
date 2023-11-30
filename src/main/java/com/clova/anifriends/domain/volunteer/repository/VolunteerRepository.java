@@ -31,7 +31,7 @@ public interface VolunteerRepository extends JpaRepository<Volunteer, Long> {
         + "join fetch a.recruitment r "
         + "where r.shelter.shelterId = :shelterId "
         + "and r.recruitmentId = :recruitmentId "
-        + "and a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NO_SHOW "
+        + "and a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NOSHOW "
         + "and a.applicantId in :attendedIds")
     List<Volunteer> findNoShowByAttendedIds(
         @Param("shelterId") Long shelterId,

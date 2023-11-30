@@ -26,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 public class ApplicantIntegrationTest extends BaseIntegrationTest {
 
@@ -170,10 +171,11 @@ public class ApplicantIntegrationTest extends BaseIntegrationTest {
             //given
             Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer);
             applicantRepository.save(applicant);
+            PageRequest pageRequest = PageRequest.of(0, 10);
 
             //when
             FindApplyingVolunteersResponse applyingVolunteers = applicantService.findApplyingVolunteers(
-                volunteer.getVolunteerId());
+                volunteer.getVolunteerId(), pageRequest);
 
             //then
             assertThat(applyingVolunteers.applicants()).hasSize(1);
@@ -190,7 +192,7 @@ public class ApplicantIntegrationTest extends BaseIntegrationTest {
             //when
             FindApprovedApplicantsResponse applicantsApproved
                 = applicantService.findApprovedApplicants(
-                    shelter.getShelterId(), recruitment.getRecruitmentId());
+                shelter.getShelterId(), recruitment.getRecruitmentId());
 
             //then
             assertThat(applicantsApproved.applicants()).hasSize(1);

@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.applicant.service;
 
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE;
-import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NO_SHOW;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NOSHOW;
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.PENDING;
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.REFUSED;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
@@ -55,6 +55,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -217,17 +219,21 @@ class ApplicantServiceTest {
         @DisplayName("성공")
         void findApplyingVolunteers1() {
             // given
+            long volunteerId = 1L;
             Volunteer volunteer = VolunteerFixture.volunteer();
+            PageRequest pageRequest = PageRequest.of(0, 10);
             List<FindApplyingVolunteerResult> applyingVolunteerResults
                 = ApplicantDtoFixture.findApplyingVolunteerResults(3);
+            PageImpl<FindApplyingVolunteerResult> findApplyingVolunteerResultPage = new PageImpl<>(
+                applyingVolunteerResults);
 
             given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
-            given(applicantRepository.findApplyingVolunteers(any()))
-                .willReturn(applyingVolunteerResults);
+            given(applicantRepository.findApplyingVolunteers(any(), any()))
+                .willReturn(findApplyingVolunteerResultPage);
 
             // when
             FindApplyingVolunteersResponse foundApplyingVolunteers
-                = applicantService.findApplyingVolunteers(anyLong());
+                = applicantService.findApplyingVolunteers(volunteerId, pageRequest);
 
             // then
             List<FindApplyingVolunteerResponse> applicantsResponse
@@ -297,9 +303,9 @@ class ApplicantServiceTest {
             Applicant applicantAttendanceToNoShow = ApplicantFixture.applicant(recruitment,
                 volunteer2, ATTENDANCE, 2L);
             Applicant applicantNoShowToAttendance = ApplicantFixture.applicant(recruitment,
-                volunteer3, NO_SHOW, 3L);
+                volunteer3, NOSHOW, 3L);
             Applicant applicantNoShow = ApplicantFixture.applicant(recruitment, volunteer4,
-                NO_SHOW, 4L);
+                NOSHOW, 4L);
 
             UpdateApplicantAttendanceCommand command1 = new UpdateApplicantAttendanceCommand(
                 applicantAttendance.getApplicantId(), true);
@@ -326,7 +332,7 @@ class ApplicantServiceTest {
             verify(applicantRepository, times(1))
                 .updateBulkAttendance(shelter.getShelterId(), recruitment.getRecruitmentId(),
                     List.of(applicantAttendanceToNoShow.getApplicantId(),
-                        applicantNoShow.getApplicantId()), NO_SHOW);
+                        applicantNoShow.getApplicantId()), NOSHOW);
 
             verify(volunteerNotificationRepository, times(1))
                 .saveAll(any(List.class));

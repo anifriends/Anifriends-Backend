@@ -110,10 +110,6 @@ public class Applicant extends BaseTimeEntity {
         this.volunteer.increaseTemperature(temperature);
     }
 
-    public boolean hasNotReview() {
-        return Objects.isNull(review);
-    }
-
     public ApplicantStatus getStatus() {
         return status;
     }

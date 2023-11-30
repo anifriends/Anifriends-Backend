@@ -156,48 +156,4 @@ class ApplicantTest {
             assertThat(exception).isInstanceOf(ApplicantConflictException.class);
         }
     }
-
-    @Nested
-    @DisplayName("hasNotReview 메서드 호출 시")
-    class HasNotReviewTest {
-
-        Shelter shelter;
-        Recruitment recruitment;
-        Volunteer volunteer;
-
-        @BeforeEach
-        void setUp() {
-            shelter = ShelterFixture.shelter();
-            recruitment = RecruitmentFixture.recruitment(shelter);
-            volunteer = VolunteerFixture.volunteer();
-        }
-
-        @Test
-        @DisplayName("성공")
-        void hasNotReview() {
-            //given
-            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer);
-
-            //when
-            boolean hasNotReview = applicant.hasNotReview();
-
-            //then
-            assertThat(hasNotReview).isTrue();
-        }
-
-        @Test
-        @DisplayName("성공")
-        void hasReview() {
-            //given
-            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer,
-                ApplicantStatus.ATTENDANCE);
-            Review review = ReviewFixture.review(applicant);
-
-            //when
-            boolean hasNotReview = applicant.hasNotReview();
-
-            //then
-            assertThat(hasNotReview).isFalse();
-        }
-    }
 }

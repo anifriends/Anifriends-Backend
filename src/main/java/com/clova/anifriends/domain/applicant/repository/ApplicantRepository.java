@@ -9,6 +9,8 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -30,7 +32,9 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
             + "join r.shelter s "
             + "where a.volunteer = :volunteer"
     )
-    List<FindApplyingVolunteerResult> findApplyingVolunteers(@Param("volunteer") Volunteer volunteer);
+    Page<FindApplyingVolunteerResult> findApplyingVolunteers(
+        @Param("volunteer") Volunteer volunteer,
+        Pageable pageable);
 
     @Query("select a from Applicant a "
         + "where a.applicantId = :applicantId "
@@ -47,7 +51,7 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         + "where r.recruitmentId = :recruitmentId "
         + "and s.shelterId = :shelterId "
         + "and (a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE "
-        + "or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NO_SHOW)")
+        + "or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NOSHOW)")
     List<Applicant> findApprovedApplicants(
         @Param("recruitmentId") Long recruitmentId,
         @Param("shelterId") Long shelterId
@@ -80,7 +84,7 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         + "and a.recruitment.shelter.shelterId = :shelterId "
         + "and a.applicantId in :ids "
         + "and (a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE "
-        + "or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NO_SHOW)")
+        + "or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NOSHOW)")
     void updateBulkAttendance(
         @Param("shelterId") Long shelterId,
         @Param("recruitmentId") Long recruitmentId,

@@ -6,16 +6,18 @@ import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteers
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse.FindApplyingVolunteerResponse;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
+import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ApplicantMapper {
 
     public static FindApplyingVolunteersResponse resultToResponse(
-        List<FindApplyingVolunteerResult> findApplyingVolunteers) {
+        Page<FindApplyingVolunteerResult> findApplyingVolunteers) {
         List<FindApplyingVolunteerResponse> responses = findApplyingVolunteers.stream()
             .map(result -> new FindApplyingVolunteerResponse(
                 result.getShelterId(),
@@ -27,7 +29,9 @@ public final class ApplicantMapper {
                 result.getApplicantIsWritedReview(),
                 result.getRecruitmentStartTime()))
             .toList();
-        return new FindApplyingVolunteersResponse(responses);
+        PageInfo pageInfo = PageInfo.of(findApplyingVolunteers.getTotalElements(),
+            findApplyingVolunteers.hasNext());
+        return new FindApplyingVolunteersResponse(pageInfo, responses);
     }
 
     public static FindApplicantsResponse resultToResponse(

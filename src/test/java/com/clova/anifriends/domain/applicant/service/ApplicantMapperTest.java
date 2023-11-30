@@ -17,6 +17,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageImpl;
 
 class ApplicantMapperTest {
 
@@ -30,10 +31,12 @@ class ApplicantMapperTest {
             //given
             List<FindApplyingVolunteerResult> applyingVolunteerResults
                 = ApplicantDtoFixture.findApplyingVolunteerResults(1);
+            PageImpl<FindApplyingVolunteerResult> findApplyingVolunteerResultPage = new PageImpl<>(
+                applyingVolunteerResults);
 
             //when
             FindApplyingVolunteersResponse findApplyingVolunteersResponse
-                = ApplicantMapper.resultToResponse(applyingVolunteerResults);
+                = ApplicantMapper.resultToResponse(findApplyingVolunteerResultPage);
 
             //then
             FindApplyingVolunteerResult result = applyingVolunteerResults.get(0);

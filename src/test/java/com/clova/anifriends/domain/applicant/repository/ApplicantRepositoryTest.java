@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.applicant.repository;
 
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE;
-import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NO_SHOW;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NOSHOW;
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.PENDING;
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.REFUSED;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
@@ -31,6 +31,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 class ApplicantRepositoryTest extends BaseRepositoryTest {
 
@@ -50,7 +52,7 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
 
             Recruitment recruitment = recruitment(shelter);
             Applicant applicantAttendance = applicant(recruitment, volunteerAttendance, ATTENDANCE);
-            Applicant applicantNoShow = applicant(recruitment, volunteerNoShow, NO_SHOW);
+            Applicant applicantNoShow = applicant(recruitment, volunteerNoShow, NOSHOW);
             Applicant applicantPending = applicant(recruitment, volunteerPending, PENDING);
             Applicant applicantRefused = applicant(recruitment, volunteerRefused, REFUSED);
 
@@ -144,9 +146,11 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             applicantRepository.save(applicantShouldNotWriteReview2);
             reviewRepository.save(review);
 
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
             // when
-            List<FindApplyingVolunteerResult> applyingVolunteers
-                = applicantRepository.findApplyingVolunteers(volunteer);
+            Page<FindApplyingVolunteerResult> applyingVolunteers
+                = applicantRepository.findApplyingVolunteers(volunteer, pageRequest);
 
             // then
             List<Long> reviewExists = applyingVolunteers.stream()
@@ -175,9 +179,11 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             reviewRepository.save(review1);
             reviewRepository.save(review2);
 
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
             // when
-            List<FindApplyingVolunteerResult> applyingVolunteers
-                = applicantRepository.findApplyingVolunteers(volunteer);
+            Page<FindApplyingVolunteerResult> applyingVolunteers
+                = applicantRepository.findApplyingVolunteers(volunteer, pageRequest);
 
             // then
             List<Long> reviewExists = applyingVolunteers.stream()
@@ -214,7 +220,7 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             Volunteer volunteerAttendance = volunteer();
             Volunteer volunteerNoShow = volunteer();
             Applicant applicantAttendance = applicant(recruitment, volunteerAttendance, ATTENDANCE);
-            Applicant applicantNoShow = applicant(recruitment, volunteerNoShow, NO_SHOW);
+            Applicant applicantNoShow = applicant(recruitment, volunteerNoShow, NOSHOW);
 
             volunteerRepository.saveAll(
                 List.of(volunteerAttendance, volunteerNoShow));
@@ -263,7 +269,7 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             Applicant applicantAttendanceToNoShow = applicant(recruitment,
                 volunteerAttendanceToNoShow, ATTENDANCE);
             Applicant applicantNoShowToAttendance = applicant(recruitment,
-                volunteerNoShowToAttendance, NO_SHOW);
+                volunteerNoShowToAttendance, NOSHOW);
             Applicant applicantPending = applicant(recruitment, volunteerPending, PENDING);
             Applicant applicantRefused = applicant(recruitment, volunteerRefuse, REFUSED);
 
@@ -287,7 +293,7 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             applicantRepository.updateBulkAttendance(shelter.getShelterId(),
                 recruitment.getRecruitmentId(), attendedIds, ATTENDANCE);
             applicantRepository.updateBulkAttendance(shelter.getShelterId(),
-                recruitment.getRecruitmentId(), noShowIds, NO_SHOW);
+                recruitment.getRecruitmentId(), noShowIds, NOSHOW);
 
             entityManager.flush();
             entityManager.clear();
@@ -302,7 +308,7 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             Optional<Applicant> persistedApplicantAttendanceToNoShow = applicantRepository.findById(
                 applicantAttendanceToNoShow.getApplicantId());
             assertThat(persistedApplicantAttendanceToNoShow).isNotEmpty();
-            assertThat(persistedApplicantAttendanceToNoShow.get().getStatus()).isEqualTo(NO_SHOW);
+            assertThat(persistedApplicantAttendanceToNoShow.get().getStatus()).isEqualTo(NOSHOW);
 
             Optional<Applicant> persistedApplicantPending = applicantRepository.findById(
                 applicantPending.getApplicantId());

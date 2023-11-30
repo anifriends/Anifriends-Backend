@@ -2,8 +2,8 @@ package com.clova.anifriends.domain.applicant.service;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
-import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,11 +65,12 @@ public class ApplicantService {
 
     @Transactional(readOnly = true)
     public FindApplyingVolunteersResponse findApplyingVolunteers(
-        Long volunteerId
+        Long volunteerId,
+        Pageable pageable
     ) {
         Volunteer foundVolunteer = getVolunteer(volunteerId);
-        List<FindApplyingVolunteerResult> applyingVolunteers
-            = applicantRepository.findApplyingVolunteers(foundVolunteer);
+        Page<FindApplyingVolunteerResult> applyingVolunteers
+            = applicantRepository.findApplyingVolunteers(foundVolunteer, pageable);
         return ApplicantMapper.resultToResponse(applyingVolunteers);
     }
 
@@ -122,7 +125,7 @@ public class ApplicantService {
     private void updateAttendanceStatus(Long shelterId, Long recruitmentId, List<Long> noShowIds,
         List<Long> attendedIds) {
         applicantRepository.updateBulkAttendance(shelterId, recruitmentId, noShowIds,
-            ApplicantStatus.NO_SHOW);
+            ApplicantStatus.NOSHOW);
         applicantRepository.updateBulkAttendance(shelterId, recruitmentId, attendedIds,
             ApplicantStatus.ATTENDANCE);
     }
