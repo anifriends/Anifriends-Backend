@@ -27,6 +27,7 @@ import com.clova.anifriends.domain.notification.ShelterNotification;
 import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
+import com.clova.anifriends.domain.review.ReviewImage;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
@@ -34,6 +35,8 @@ import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsRespo
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
+import com.clova.anifriends.domain.review.repository.response.FindShelterReviewResult;
+import com.clova.anifriends.domain.review.support.ReviewDtoFixture;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
@@ -195,11 +198,18 @@ class ReviewServiceTest {
             Volunteer volunteer = volunteer();
             Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
             Review review = review(applicant);
-            PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
-            FindShelterReviewsByShelterResponse expected = FindShelterReviewsByShelterResponse.from(
-                reviewPage);
+            ReflectionTestUtils.setField(review, "reviewId", 1L);
+            FindShelterReviewResult findShelterReviewResult = ReviewDtoFixture.findShelterReviewResult(
+                review.getReviewId(), review.getCreatedAt(),
+                review.getContent(), review.getVolunteer().getVolunteerId(),
+                review.getVolunteer().getName(),
+                review.getVolunteer().getTemperature(),
+                review.getVolunteer().getVolunteerImageUrl(),
+                review.getVolunteer().getReviewCount(), List.of(new ReviewImage(review, "urls")));
+            PageImpl<FindShelterReviewResult> reviewPage = new PageImpl<>(List.of(findShelterReviewResult));
+            FindShelterReviewsByShelterResponse expected = ReviewMapper.resultToResponse(reviewPage);
 
-            given(reviewRepository.findAllByShelterId(anyLong(), any()))
+            given(reviewRepository.findShelterReviewsByShelter(anyLong(), any()))
                 .willReturn(reviewPage);
 
             //then

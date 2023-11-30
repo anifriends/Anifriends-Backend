@@ -15,13 +15,19 @@ import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
+import com.clova.anifriends.domain.review.ReviewImage;
+import com.clova.anifriends.domain.review.repository.response.FindShelterReviewResult;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.domain.volunteer.VolunteerImage;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class ReviewRepositoryTest extends BaseRepositoryTest {
 
@@ -104,5 +110,36 @@ class ReviewRepositoryTest extends BaseRepositoryTest {
         // then
         assertThat(exception).isInstanceOf(DataIntegrityViolationException.class);
 
+    }
+
+    @Test
+    @DisplayName("성공")
+    void findShelterReviewsByShelter() {
+        // given
+        Shelter shelter = shelter();
+        Volunteer volunteer = volunteer();
+        Recruitment recruitment = recruitment(shelter);
+        Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+        Review review = review(applicant);
+        ReviewImage reviewImage = new ReviewImage(review, "https://anifriends.com/1.jpg");
+        ReflectionTestUtils.setField(review, "images", List.of(reviewImage));
+        VolunteerImage volunteerImage = new VolunteerImage(volunteer, "https://anifriends.com/1.jpg");
+        ReflectionTestUtils.setField(volunteer, "image", volunteerImage);
+
+        shelterRepository.save(shelter);
+        volunteerRepository.save(volunteer);
+        recruitmentRepository.save(recruitment);
+        applicantRepository.save(applicant);
+        reviewRepository.save(review);
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        // when
+        Page<FindShelterReviewResult> result = reviewRepository.findShelterReviewsByShelter(shelter.getShelterId(), pageRequest);
+
+        // then
+        assertThat(result.getContent().get(0).getReviewId()).isEqualTo(review.getReviewId());
+        assertThat(result.getTotalElements()).isEqualTo(1L);
+        assertThat(result.getContent().get(0).getTemperature()).isEqualTo(volunteer.getTemperature());
     }
 }

@@ -17,6 +17,7 @@ import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewConflictException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
+import com.clova.anifriends.domain.review.repository.response.FindShelterReviewResult;
 import com.clova.anifriends.global.aspect.DataIntegrityHandler;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +49,8 @@ public class ReviewService {
     public FindShelterReviewsByShelterResponse findShelterReviewsByShelter(
         Long shelterId,
         Pageable pageable) {
-        Page<Review> reviewPage = reviewRepository.findAllByShelterId(shelterId, pageable);
-        return FindShelterReviewsByShelterResponse.from(reviewPage);
+        Page<FindShelterReviewResult> reviewPage = reviewRepository.findShelterReviewsByShelter(shelterId, pageable);
+        return ReviewMapper.resultToResponse(reviewPage);
     }
 
     @Transactional
