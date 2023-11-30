@@ -33,7 +33,9 @@ import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
 import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
+import com.clova.anifriends.domain.recruitment.service.IsAppliedRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentApplicantCount;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
@@ -42,11 +44,14 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -392,6 +397,68 @@ class ApplicantServiceTest {
 
             // then
             assertThat(exception).isInstanceOf(ApplicantNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("isAppliedRecruitment 메서드 호출 시")
+    class IsAppliedRecruitmentTest {
+
+        Shelter shelter;
+        Volunteer volunteer;
+        Recruitment recruitment;
+
+        @BeforeEach
+        void setUp() {
+            shelter = ShelterFixture.shelter();
+            volunteer = VolunteerFixture.volunteer();
+            recruitment = RecruitmentFixture.recruitment(shelter);
+        }
+
+        @Test
+        @DisplayName("성공")
+        void isAppliedRecruitment() {
+            //given
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+            given(recruitmentRepository.findById(anyLong())).willReturn(Optional.of(recruitment));
+            given(applicantRepository.existsByVolunteerAndRecruitment(any(), any()))
+                .willReturn(true);
+
+            //when
+            IsAppliedRecruitmentResponse appliedRecruitment = applicantService.isAppliedRecruitment(
+                1L, 1L);
+
+            //then
+            Assertions.assertThat(appliedRecruitment.isAppliedRecruitment()).isTrue();
+        }
+
+        @Test
+        @DisplayName("예외(VolunteerNotFoundException): 봉사자가 존재하지 않음")
+        void exceptionWhenVolunteerNotFound() {
+            //given
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.empty());
+
+            //when
+            Exception exception = Assertions.catchException(
+                () -> applicantService.isAppliedRecruitment(1L, 1L));
+
+            //then
+            Assertions.assertThat(exception).isInstanceOf(VolunteerNotFoundException.class);
+        }
+
+        @Test
+        @DisplayName("예외(RecruitmentNotFoundException): 봉사 모집글이 존재하지 않음")
+        void exceptionWhenRecruitmentNotFound() {
+            //given
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
+            given(recruitmentRepository.findById(anyLong())).willReturn(Optional.empty());
+
+            //when
+            Exception exception = Assertions.catchException(
+                () -> applicantService.isAppliedRecruitment(1L, 1L));
+
+            //then
+            Assertions.assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
         }
     }
 }

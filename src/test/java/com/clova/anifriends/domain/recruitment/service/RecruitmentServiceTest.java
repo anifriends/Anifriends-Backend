@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.recruitment.service;
 
-import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentDetailResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.FindShelterRecruitmentsResponse;
+import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentDetailResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentDtoFixture.findRecruitmentsByShelterResponse;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
@@ -24,10 +24,10 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.controller.RecruitmentStatusFilter;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
-import com.clova.anifriends.domain.recruitment.dto.response.FindShelterRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.FindShelterRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentCacheRepository;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -248,7 +248,8 @@ class RecruitmentServiceTest {
                 SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
 
                 given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
-                    isClosed, titleContains, contentContains, shelterNameContains, createdAt, recruitmentId, pageRequest))
+                    isClosed, titleContains, contentContains, shelterNameContains, createdAt,
+                    recruitmentId, pageRequest))
                     .willReturn(recruitments);
                 given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                     isClosed, titleContains, contentContains, shelterNameContains))
@@ -258,7 +259,8 @@ class RecruitmentServiceTest {
                 //when
                 FindRecruitmentsResponse recruitmentsByVolunteer
                     = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
-                    isClosed, titleContains, contentContains, shelterNameContains, createdAt, recruitmentId, pageRequest);
+                    isClosed, titleContains, contentContains, shelterNameContains, createdAt,
+                    recruitmentId, pageRequest);
 
                 //then
                 PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
@@ -268,11 +270,14 @@ class RecruitmentServiceTest {
                 assertThat(findRecruitment.recruitmentTitle()).isEqualTo(recruitment.getTitle());
                 assertThat(findRecruitment.recruitmentStartTime()).isEqualTo(
                     recruitment.getStartTime());
-                assertThat(findRecruitment.recruitmentEndTime()).isEqualTo(recruitment.getEndTime());
+                assertThat(findRecruitment.recruitmentEndTime()).isEqualTo(
+                    recruitment.getEndTime());
                 assertThat(findRecruitment.recruitmentApplicantCount()).isEqualTo(
                     recruitment.getApplicantCount());
-                assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
-                assertThat(findRecruitment.shelterName()).isEqualTo(recruitment.getShelter().getName());
+                assertThat(findRecruitment.recruitmentCapacity()).isEqualTo(
+                    recruitment.getCapacity());
+                assertThat(findRecruitment.shelterName()).isEqualTo(
+                    recruitment.getShelter().getName());
                 assertThat(findRecruitment.shelterImageUrl())
                     .isEqualTo(recruitment.getShelter().getImage());
             }
@@ -389,7 +394,8 @@ class RecruitmentServiceTest {
                 then(recruitmentCacheRepository).should().findAll(pageRequest);
                 then(recruitmentRepository).should(times(0))
                     .findRecruitmentsV2(nullKeyword, nullStartDate, nullEndDate, nullIsClosed,
-                        trueTitleContains, trueContentContains, trueShelterNameContains, nullCreatedAt,
+                        trueTitleContains, trueContentContains, trueShelterNameContains,
+                        nullCreatedAt,
                         nullRecruitmentId, pageRequest);
             }
 
@@ -499,7 +505,8 @@ class RecruitmentServiceTest {
             Recruitment recruitment = recruitment(shelter);
             FindRecruitmentDetailResponse expected = findRecruitmentDetailResponse(recruitment);
 
-            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(Optional.of(recruitment));
+            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(
+                Optional.of(recruitment));
 
             // when
             FindRecruitmentDetailResponse result = recruitmentService.findRecruitmentDetail(
@@ -513,7 +520,8 @@ class RecruitmentServiceTest {
         @DisplayName("예외(RecruitmentNotFoundException): 존재하지 않는 모집글")
         void throwExceptionWhenRecruitmentIsNotExist() {
             // given
-            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(Optional.empty());
+            when(recruitmentRepository.findRecruitmentDetail(anyLong())).thenReturn(
+                Optional.empty());
 
             // when
             Exception exception = catchException(
