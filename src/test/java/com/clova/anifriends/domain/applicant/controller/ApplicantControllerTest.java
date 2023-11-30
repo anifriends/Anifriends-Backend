@@ -38,6 +38,7 @@ import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicants
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.service.IsAppliedRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -324,6 +325,36 @@ class ApplicantControllerTest extends BaseControllerTest {
                 ),
                 requestFields(
                     fieldWithPath("isApproved").type(BOOLEAN).description("승인 상태")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("봉사 신청 여부 조회 API 호출 시")
+    void isAppliedRecruitment() throws Exception {
+        //given
+        IsAppliedRecruitmentResponse isAppliedRecruitmentResponse
+            = new IsAppliedRecruitmentResponse(true);
+
+        given(applicantService.isAppliedRecruitment(anyLong(), anyLong()))
+            .willReturn(isAppliedRecruitmentResponse);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            get("/api/volunteers/recruitments/{recruitmentId}/apply", 1L)
+                .header(AUTHORIZATION, volunteerAccessToken));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("recruitmentId").description("봉사 모집글 ID")
+                ),
+                responseFields(
+                    fieldWithPath("isAppliedRecruitment").type(BOOLEAN).description("봉사 신청 여부")
                 )
             ));
     }

@@ -18,6 +18,7 @@ import com.clova.anifriends.domain.notification.vo.NotificationType;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
+import com.clova.anifriends.domain.recruitment.service.IsAppliedRecruitmentResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
@@ -139,6 +140,17 @@ public class ApplicantService {
         applicant.updateApplicantStatus(isApproved);
         volunteerNotificationRepository.save(
             makeNewUpdateApplicantStatusNotification(applicant, isApproved));
+    }
+
+    @Transactional(readOnly = true)
+    public IsAppliedRecruitmentResponse isAppliedRecruitment(Long volunteerId, Long recruitmentId) {
+        Volunteer volunteer = volunteerRepository.findById(volunteerId)
+            .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
+        Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
+            .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 봉사 모집글입니다."));
+        boolean isApplied = applicantRepository.existsByVolunteerAndRecruitment(volunteer, recruitment);
+        return IsAppliedRecruitmentResponse.from(isApplied);
+
     }
 
     private List<Long> getNoShowIds(List<UpdateApplicantAttendanceCommand> applicantsCommand) {
