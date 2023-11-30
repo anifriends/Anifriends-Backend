@@ -42,14 +42,12 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         + "v.name.name as volunteerName, "
         + "v.temperature.temperature as temperature, "
         + "(select count(r2.reviewId) from Review r2 "
-        + "join r2.applicant a2 "
-        + "where a2.volunteer.volunteerId = v.volunteerId) as volunteerReviewCount, "
+        + "where r2.applicant.volunteer.volunteerId = v.volunteerId) as volunteerReviewCount, "
         + "i.imageUrl as volunteerImageUrl "
         + "from Review r "
-        + "join r.applicant a "
-        + "join a.volunteer v "
+        + "join r.applicant.volunteer v "
         + "left join v.image i "
-        + "where a.recruitment.shelter.shelterId = :shelterId")
+        + "where r.applicant.recruitment.shelter.shelterId = :shelterId")
     Page<FindShelterReviewResult> findShelterReviewsByShelter(@Param("shelterId") Long shelterId,
         Pageable pageable);
 }

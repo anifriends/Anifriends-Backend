@@ -135,6 +135,7 @@ class ReviewRepositoryTest extends BaseRepositoryTest {
         Page<FindShelterReviewResult> result = reviewRepository.findShelterReviewsByShelter(shelter.getShelterId(), pageRequest);
 
         // then
+        assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getReviewId()).isEqualTo(review.getReviewId());
         assertThat(result.getTotalElements()).isEqualTo(1L);
         assertThat(result.getContent().get(0).getTemperature()).isEqualTo(volunteer.getTemperature());
