@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "review")
@@ -41,6 +42,7 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "applicant_id", unique = true)
     private Applicant applicant;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImage> images = new ArrayList<>();
 
