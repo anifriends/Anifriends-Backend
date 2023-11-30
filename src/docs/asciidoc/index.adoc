@@ -322,6 +322,16 @@ operation::applicant-controller-test/register-applicant[snippets='http-request,r
 
 operation::applicant-controller-test/register-applicant[snippets='http-response']
 
+=== 봉사 신청 여부 조회
+
+==== Request
+
+operation::applicant-controller-test/is-applied-recruitment[snippets='http-request,request-headers,path-parameters']
+
+==== Response
+
+operation::applicant-controller-test/is-applied-recruitment[snippets='http-response,response-fields']
+
 === 내(봉사자)가 신청한 봉사 신청 목록 조회
 
 ==== Request
