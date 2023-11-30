@@ -102,6 +102,8 @@ public class ApplicantService {
         List<Long> noShowIds = getNoShowIds(applicantsCommand);
         List<Long> attendedIds = getAttendedIds(applicantsCommand);
 
+        // 시작 시간 이후인데도 pending이면 REFUESED로 변경
+
         updateVolunteersTemperature(shelterId, recruitmentId, noShowIds, attendedIds);
         updateAttendanceStatus(shelterId, recruitmentId, noShowIds, attendedIds);
         volunteerNotificationRepository.saveAll(

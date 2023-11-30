@@ -25,7 +25,7 @@ public final class ApplicantMapper {
                 result.getApplicantId(),
                 result.getRecruitmentTitle(),
                 result.getShelterName(),
-                result.getApplicantStatus(),
+                result.getApplicantStatus().convertToApproved(result.getRecruitmentStartTime()),
                 result.getApplicantIsWritedReview(),
                 result.getRecruitmentStartTime()))
             .toList();
