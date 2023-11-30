@@ -10,6 +10,7 @@ import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendan
 import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
 import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
+import com.clova.anifriends.domain.recruitment.service.IsAppliedRecruitmentResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +38,16 @@ public class ApplicantController {
     ) {
         applicantService.registerApplicant(recruitmentId, volunteerId);
         return ResponseEntity.noContent().build();
+    }
+
+    @VolunteerOnly
+    @GetMapping("/volunteers/recruitments/{recruitmentId}/apply")
+    public ResponseEntity<IsAppliedRecruitmentResponse> isAppliedRecruitment(
+        @PathVariable Long recruitmentId,
+        @LoginUser Long volunteerId) {
+        IsAppliedRecruitmentResponse isAppliedRecruitmentResponse
+            = applicantService.isAppliedRecruitment(volunteerId, recruitmentId);
+        return ResponseEntity.ok(isAppliedRecruitmentResponse);
     }
 
     @VolunteerOnly
