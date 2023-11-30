@@ -25,6 +25,8 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
+import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
+import com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
@@ -100,7 +102,7 @@ class AnimalServiceTest {
             animalService.registerAnimal(1L, registerAnimalRequest);
 
             //then
-            then(animalCacheRepository).should().saveAnimal(any());
+            then(animalCacheRepository).should().saveAnimal(any(Animal.class));
             then(animalRepository).should().save(any());
             then(animalRepository).should().save(any());
             then(animalCacheRepository).should().increaseTotalNumberOfAnimals();
@@ -131,7 +133,8 @@ class AnimalServiceTest {
             Animal animal = animal(shelter);
             FindAnimalDetail expected = FindAnimalDetail.from(animal);
 
-            when(animalRepository.findById(anyLong())).thenReturn(Optional.of(animal));
+            when(animalRepository.findByAnimalIdWithImages(anyLong())).thenReturn(
+                Optional.of(animal));
 
             // when
             FindAnimalDetail result = animalService.findAnimalDetail(
@@ -145,7 +148,7 @@ class AnimalServiceTest {
         @DisplayName("예외(NotFoundAnimalException): 존재하지 않는 보호 동물")
         void exceptionWhenAnimalIsNotExist() {
             // given
-            when(animalRepository.findById(anyLong())).thenReturn(Optional.empty());
+            when(animalRepository.findByAnimalIdWithImages(anyLong())).thenReturn(Optional.empty());
 
             // when
             Exception exception = catchException(
@@ -341,9 +344,10 @@ class AnimalServiceTest {
                 mockInformation,
                 mockImageUrls
             );
-
+            FindAnimalsResult findAnimalsResult = AnimalDtoFixture.findAnimalsResult(matchAnimal);
             PageRequest pageRequest = PageRequest.of(0, 10);
-            SliceImpl<Animal> pageResult = new SliceImpl<>(List.of(matchAnimal), pageRequest,
+            SliceImpl<FindAnimalsResult> pageResult = new SliceImpl<>(List.of(findAnimalsResult),
+                pageRequest,
                 false);
 
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pageResult, 1L);
@@ -397,9 +401,10 @@ class AnimalServiceTest {
                 mockInformation,
                 mockImageUrls
             );
-
+            FindAnimalsResult findAnimalsResult = AnimalDtoFixture.findAnimalsResult(matchAnimal);
             PageRequest pageRequest = PageRequest.of(0, 10);
-            SliceImpl<Animal> pageResult = new SliceImpl<>(List.of(matchAnimal), pageRequest,
+            SliceImpl<FindAnimalsResult> pageResult = new SliceImpl<>(List.of(findAnimalsResult),
+                pageRequest,
                 false);
 
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pageResult, 1L);
@@ -455,7 +460,9 @@ class AnimalServiceTest {
             );
 
             PageRequest pageRequest = PageRequest.of(0, 10);
-            SliceImpl<Animal> pageResult = new SliceImpl<>(List.of(matchAnimal), pageRequest,
+            FindAnimalsResult findAnimalsResult = AnimalDtoFixture.findAnimalsResult(matchAnimal);
+            SliceImpl<FindAnimalsResult> pageResult = new SliceImpl<>(List.of(findAnimalsResult),
+                pageRequest,
                 false);
 
             FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pageResult, 1L);

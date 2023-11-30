@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.animal.dto.response;
 
 import com.clova.anifriends.domain.animal.Animal;
+import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
 import com.clova.anifriends.domain.common.PageInfo;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,16 @@ public record FindAnimalsResponse(
             );
         }
 
+        public static FindAnimalResponse from(FindAnimalsResult animal) {
+            return new FindAnimalResponse(
+                animal.getAnimalId(),
+                animal.getAnimalName(),
+                animal.getShelterName(),
+                animal.getShelterAddress(),
+                animal.getAnimalImageUrl()
+            );
+        }
+
     }
 
     public static FindAnimalsResponse from(Page<Animal> pagination) {
@@ -39,7 +50,8 @@ public record FindAnimalsResponse(
         return new FindAnimalsResponse(pageInfo, findAnimalByVolunteerResponses);
     }
 
-    public static FindAnimalsResponse fromV2(Slice<Animal> animalsWithPagination, Long count) {
+    public static FindAnimalsResponse fromV2(Slice<FindAnimalsResult> animalsWithPagination,
+        Long count) {
         PageInfo pageInfo = PageInfo.of(count, animalsWithPagination.hasNext());
         List<FindAnimalResponse> findAnimalsResponses = animalsWithPagination.get()
             .map(FindAnimalResponse::from).toList();

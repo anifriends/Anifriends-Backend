@@ -1,14 +1,19 @@
 package com.clova.anifriends.domain.animal.repository;
 
 import static com.clova.anifriends.domain.animal.QAnimal.animal;
+import static com.clova.anifriends.domain.animal.QAnimalImage.animalImage;
+import static com.querydsl.jpa.JPAExpressions.select;
 
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
+import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
+import com.clova.anifriends.domain.animal.repository.response.QFindAnimalsResult;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
 import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
@@ -117,7 +122,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     }
 
     @Override
-    public Slice<Animal> findAnimalsV2(
+    public Slice<FindAnimalsResult> findAnimalsV2(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,
@@ -128,8 +133,22 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
         Long animalId,
         Pageable pageable
     ) {
-        List<Animal> animals = query.selectFrom(animal)
-            .join(animal.shelter)
+        List<FindAnimalsResult> animals = query.select(new QFindAnimalsResult(
+                animal.animalId,
+                animal.name.name,
+                animal.createdAt,
+                animal.shelter.name.name,
+                animal.shelter.addressInfo.address,
+                ExpressionUtils.as(
+                    select(animalImage.imageUrl)
+                        .from(animalImage)
+                        .where(animalImage.animalImageId.eq(
+                            select(animalImage.animalImageId.min())
+                                .from(animalImage)
+                                .where(animalImage.animal.eq(animal)
+                                ))), "animalImageUrl")
+            ))
+            .from(animal)
             .where(
                 animalTypeContains(type),
                 animalActiveContains(active),
@@ -161,7 +180,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
             );
     }
 
-    private boolean hasNext(int pageSize, List<Animal> animals) {
+    private boolean hasNext(int pageSize, List<FindAnimalsResult> animals) {
         if (animals.size() <= pageSize) {
             return false;
         }

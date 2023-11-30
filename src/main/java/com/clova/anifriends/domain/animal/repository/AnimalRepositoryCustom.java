@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.animal.repository;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
+import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
 import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
@@ -36,7 +37,7 @@ public interface AnimalRepositoryCustom {
         Pageable pageable
     );
 
-    Slice<Animal> findAnimalsV2(
+    Slice<FindAnimalsResult> findAnimalsV2(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,

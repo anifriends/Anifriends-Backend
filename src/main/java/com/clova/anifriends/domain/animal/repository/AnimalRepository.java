@@ -23,4 +23,9 @@ public interface AnimalRepository extends JpaRepository<Animal, Long>, AnimalRep
         @Param("animalId") Long animalId,
         @Param("shelterId") Long shelterId);
 
+    @Query("select a from Animal a"
+        + " join fetch a.images"
+        + " where a.animalId = :animalId")
+    Optional<Animal> findByAnimalIdWithImages(@Param("animalId") Long animalId);
+
 }
