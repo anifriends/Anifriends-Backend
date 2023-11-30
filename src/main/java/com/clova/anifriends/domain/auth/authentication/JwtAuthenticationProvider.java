@@ -19,11 +19,9 @@ public class JwtAuthenticationProvider {
     private final JwtProvider jwtProvider;
 
     public Authentication authenticate(String accessToken) {
-        log.debug("[Authentication] JWT 인증 프로세스 시작");
         CustomClaims claims = jwtProvider.parseAccessToken(accessToken);
         JwtAuthentication authentication = new JwtAuthentication(claims.memberId(), claims.role(), accessToken);
         List<GrantedAuthority> authorities = getAuthorities(claims.authorities());
-        log.debug("[Authentication] JWT 인증 프로세스 종료");
         return UsernamePasswordAuthenticationToken.authenticated(authentication, accessToken,
             authorities);
     }
