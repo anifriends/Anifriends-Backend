@@ -9,7 +9,6 @@ import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter
 import static com.clova.anifriends.domain.volunteer.support.VolunteerFixture.volunteer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.applicant.Applicant;
@@ -61,9 +60,7 @@ class ReviewRepositoryTest extends BaseRepositoryTest {
         //given
         Shelter shelter = shelter();
         Volunteer volunteer1 = volunteer();
-        setField(volunteer1, "volunteerId", 1L);
         Volunteer volunteer2 = volunteer();
-        setField(volunteer2, "volunteerId", 2L);
         Recruitment recruitment = recruitment(shelter);
         Applicant applicant1 = applicant(recruitment, volunteer1, ATTENDANCE);
         Applicant applicant2 = applicant(recruitment, volunteer2, ATTENDANCE);
