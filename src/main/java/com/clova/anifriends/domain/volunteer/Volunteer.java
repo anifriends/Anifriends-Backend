@@ -218,12 +218,6 @@ public class Volunteer extends BaseTimeEntity {
         return Collections.unmodifiableList(applicants);
     }
 
-    public Integer getApplicantCompletedCount() {
-        return Math.toIntExact(applicants.stream()
-            .filter(Applicant::isCompleted)
-            .count());
-    }
-
     public String getDeviceToken() {
         return this.deviceToken == null ? null : this.deviceToken.getDeviceToken();
     }

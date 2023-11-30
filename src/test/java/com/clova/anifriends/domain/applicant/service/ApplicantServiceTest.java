@@ -22,9 +22,13 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse.FindApplyingVolunteerResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
+import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
+import com.clova.anifriends.domain.applicant.support.ApplicantDtoFixture;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
 import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
@@ -35,6 +39,7 @@ import com.clova.anifriends.domain.recruitment.vo.RecruitmentApplicantCount;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
@@ -52,7 +57,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -75,6 +79,9 @@ class ApplicantServiceTest {
 
     @Mock
     VolunteerNotificationRepository volunteerNotificationRepository;
+
+    @Mock
+    ShelterRepository shelterRepository;
 
     @Nested
     @DisplayName("registerApplicant 메서드 실행 시")
@@ -209,88 +216,41 @@ class ApplicantServiceTest {
     class FindApplyingVolunteersTest {
 
         @Test
-        @DisplayName("성공 : 후기 작성자가 1명인 경우")
+        @DisplayName("성공")
         void findApplyingVolunteers1() {
             // given
             long volunteerId = 1L;
             Volunteer volunteer = VolunteerFixture.volunteer();
-            Shelter shelter = ShelterFixture.shelter();
-            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-            Applicant applicantShouldWriteReview = ApplicantFixture.applicant(recruitment,
-                volunteer, ATTENDANCE);
-            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(
-                recruitment,
-                volunteer, PENDING);
-            PageImpl<Applicant> applicants = new PageImpl<>(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
-
-            FindApplyingVolunteersResponse findApplyingVolunteersResponse = FindApplyingVolunteersResponse.from(
-                applicants
-            );
             PageRequest pageRequest = PageRequest.of(0, 10);
+            List<FindApplyingVolunteerResult> applyingVolunteerResults
+                = ApplicantDtoFixture.findApplyingVolunteerResults(3);
+            PageImpl<FindApplyingVolunteerResult> findApplyingVolunteerResultPage = new PageImpl<>(
+                applyingVolunteerResults);
 
             given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
-            given(
-                applicantRepository.findApplyingVolunteers(any(), any(Pageable.class))).willReturn(
-                applicants);
+            given(applicantRepository.findApplyingVolunteers(any(), any()))
+                .willReturn(findApplyingVolunteerResultPage);
 
             // when
-            FindApplyingVolunteersResponse foundApplyingVolunteers = applicantService.findApplyingVolunteers(
-                volunteerId, pageRequest);
+            FindApplyingVolunteersResponse foundApplyingVolunteers
+                = applicantService.findApplyingVolunteers(volunteerId, pageRequest);
 
             // then
-            assertThat(foundApplyingVolunteers.applicants().get(0)
-                .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.applicants().get(0)
-                    .applicantIsWritedReview());
-            assertThat(foundApplyingVolunteers.applicants().get(1)
-                .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.applicants().get(1)
-                    .applicantIsWritedReview());
-        }
-
-        @Test
-        @DisplayName("성공 : 후기 작성자가 0명인 경우")
-        void findApplyingVolunteers2() {
-            // given
-            long volunteerId = 1L;
-            Volunteer volunteer = VolunteerFixture.volunteer();
-            Shelter shelter = ShelterFixture.shelter();
-            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-
-            Applicant applicantShouldWriteReview = ApplicantFixture.applicant(recruitment,
-                volunteer, PENDING);
-            Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(
-                recruitment,
-                volunteer, PENDING);
-
-            PageImpl<Applicant> applicants = new PageImpl<>(
-                List.of(applicantShouldWriteReview, applicantShouldNotWriteReview));
-
-            FindApplyingVolunteersResponse findApplyingVolunteersResponse = FindApplyingVolunteersResponse.from(
-                applicants
-            );
-            PageRequest pageRequest = PageRequest.of(0, 10);
-
-            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
-            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
-            given(
-                applicantRepository.findApplyingVolunteers(any(), any(Pageable.class))).willReturn(
-                applicants);
-
-            // when
-            FindApplyingVolunteersResponse foundApplyingVolunteers = applicantService.findApplyingVolunteers(
-                volunteerId, pageRequest);
-
-            // then
-            assertThat(foundApplyingVolunteers.applicants().get(0)
-                .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.applicants().get(0)
-                    .applicantIsWritedReview());
-            assertThat(foundApplyingVolunteers.applicants().get(1)
-                .applicantIsWritedReview()).isEqualTo(
-                findApplyingVolunteersResponse.applicants().get(1)
-                    .applicantIsWritedReview());
+            List<FindApplyingVolunteerResponse> applicantsResponse
+                = foundApplyingVolunteers.applicants();
+            assertThat(applicantsResponse.size()).isEqualTo(3);
+            FindApplyingVolunteerResponse response = applicantsResponse.get(0);
+            FindApplyingVolunteerResult result = applyingVolunteerResults.get(
+                0);
+            assertThat(response.shelterId()).isEqualTo(result.getShelterId());
+            assertThat(response.recruitmentId()).isEqualTo(result.getRecruitmentId());
+            assertThat(response.applicantId()).isEqualTo(result.getApplicantId());
+            assertThat(response.recruitmentTitle()).isEqualTo(result.getRecruitmentTitle());
+            assertThat(response.shelterName()).isEqualTo(result.getShelterName());
+            assertThat(response.applicantStatus()).isEqualTo(result.getApplicantStatus());
+            assertThat(response.applicantIsWritedReview())
+                .isEqualTo(result.getApplicantIsWritedReview());
+            assertThat(response.recruitmentStartTime()).isEqualTo(result.getRecruitmentStartTime());
         }
     }
 
@@ -303,33 +263,22 @@ class ApplicantServiceTest {
         void findApplicants() {
             // given
             Shelter shelter = shelter();
-            ReflectionTestUtils.setField(shelter, "shelterId", 1L);
             Recruitment recruitment = recruitment(shelter);
-            ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
-            Volunteer volunteer = volunteer();
-            Applicant applicantAttended = ApplicantFixture.applicant(recruitment, volunteer,
-                ATTENDANCE);
-            Applicant applicantRefused = ApplicantFixture.applicant(recruitment, volunteer,
-                REFUSED);
-            Applicant applicantPended = ApplicantFixture.applicant(recruitment, volunteer, PENDING);
-            Applicant applicantNoShow = ApplicantFixture.applicant(recruitment, volunteer, NOSHOW);
+            List<FindApplicantResult> applicantResults
+                = ApplicantDtoFixture.findApplicantResults(3);
 
-            FindApplicantsResponse response = FindApplicantsResponse.from(
-                List.of(applicantAttended, applicantRefused, applicantPended, applicantNoShow),
-                recruitment
-            );
-
-            when(recruitmentRepository.findById(anyLong())).thenReturn(Optional.of(recruitment));
-            when(applicantRepository.findByRecruitmentIdAndShelterId(anyLong(), anyLong()))
-                .thenReturn(
-                    List.of(applicantAttended, applicantRefused, applicantPended, applicantNoShow));
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
+            given(recruitmentRepository.findById(anyLong())).willReturn(Optional.of(recruitment));
+            given(applicantRepository.findApplicants(recruitment, shelter))
+                .willReturn(applicantResults);
 
             // when
-            FindApplicantsResponse result = applicantService.findApplicants(
-                shelter.getShelterId(), recruitment.getRecruitmentId());
+            FindApplicantsResponse findApplicants = applicantService.findApplicants(1L, 1L);
 
             // then
-            assertThat(result).isEqualTo(response);
+            assertThat(findApplicants.applicants().size()).isEqualTo(3);
+            assertThat(findApplicants.recruitmentCapacity()).isEqualTo(recruitment.getCapacity());
+
         }
     }
 
