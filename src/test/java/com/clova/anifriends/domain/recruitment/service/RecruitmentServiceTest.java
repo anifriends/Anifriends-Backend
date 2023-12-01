@@ -36,8 +36,11 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -680,5 +683,36 @@ class RecruitmentServiceTest {
             //then
             assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
         }
+    }
+
+    @Nested
+    @DisplayName("autoCloseRecruitment 메서드 호출 시")
+    class AutoCloseRecruitmentTest {
+
+            @Test
+            @DisplayName("성공")
+            void autoCloseRecruitment() {
+                //given
+                Instant fixedInstant = Instant.parse("2025-01-01T12:00:00Z");
+                Clock fixedClock = Clock.fixed(fixedInstant, ZoneId.systemDefault());
+                LocalDateTime mockNow = LocalDateTime.now(fixedClock);
+
+                Shelter shelter = shelter();
+                Recruitment recruitment = recruitment(shelter);
+                ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+                List<Recruitment> recruitments = List.of(recruitment);
+                recruitment.updateRecruitment(
+                    null, null, null, LocalDateTime.now().plusHours(1), null, null, null
+                );
+
+                when(recruitmentRepository.findByInfo_IsClosedFalseAndInfo_DeadlineBefore(any()))
+                    .thenReturn(recruitments);
+
+                //when
+                recruitmentService.autoCloseRecruitment();
+
+                //then
+                assertThat(recruitment.isClosed()).isTrue();
+            }
     }
 }
