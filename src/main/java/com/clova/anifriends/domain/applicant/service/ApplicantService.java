@@ -4,7 +4,7 @@ import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
-import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
+import com.clova.anifriends.domain.applicant.exception.ApplicantCanNotApplyException;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
@@ -51,7 +51,7 @@ public class ApplicantService {
     private final ShelterRepository shelterRepository;
 
     @Transactional
-    @DataIntegrityHandler(message = "이미 신청한 봉사입니다.", exceptionClass = ApplicantConflictException.class)
+    @DataIntegrityHandler(message = "이미 신청한 봉사입니다.", exceptionClass = ApplicantCanNotApplyException.class)
     public void registerApplicant(Long recruitmentId, Long volunteerId) {
         Recruitment recruitmentPessimistic = getRecruitmentPessimistic(recruitmentId);
         Volunteer volunteer = getVolunteer(volunteerId);
@@ -148,7 +148,8 @@ public class ApplicantService {
             .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
         Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
             .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 봉사 모집글입니다."));
-        boolean isApplied = applicantRepository.existsByVolunteerAndRecruitment(volunteer, recruitment);
+        boolean isApplied = applicantRepository.existsByVolunteerAndRecruitment(volunteer,
+            recruitment);
         return IsAppliedRecruitmentResponse.from(isApplied);
 
     }
