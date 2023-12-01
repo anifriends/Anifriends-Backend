@@ -33,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +50,7 @@ public class ApplicantService {
     private final ShelterNotificationRepository shelterNotificationRepository;
     private final VolunteerNotificationRepository volunteerNotificationRepository;
     private final ShelterRepository shelterRepository;
+    private final OptimisticLockQuantityService optimisticLockQuantityService;
 
     @Transactional
     @DataIntegrityHandler(message = "이미 신청한 봉사입니다.", exceptionClass = ApplicantConflictException.class)
@@ -61,6 +63,24 @@ public class ApplicantService {
         if (recruitmentPessimistic.isFullApplicants()) {
             shelterNotificationRepository.save(
                 makeClosedRecruitmentNotification(recruitmentPessimistic));
+        }
+    }
+
+    @Transactional
+    @DataIntegrityHandler(message = "이미 신청한 봉사입니다.", exceptionClass = ApplicantConflictException.class)
+    public void registerApplicantWithOptimisticLock(Long recruitmentId, Long volunteerId) {
+        Volunteer volunteer = getVolunteer(volunteerId);
+        while (true) {
+            try {
+                Recruitment recruitment = optimisticLockQuantityService.increaseApplicantCount(
+                    recruitmentId);
+                Applicant applicant = new Applicant(recruitment, volunteer);
+                applicantRepository.save(applicant);
+                break;
+            } catch (ObjectOptimisticLockingFailureException e) {
+                log.info("충돌이 발생했습니다. 재시도합니다.");
+            }
+
         }
     }
 
@@ -148,7 +168,8 @@ public class ApplicantService {
             .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
         Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
             .orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 봉사 모집글입니다."));
-        boolean isApplied = applicantRepository.existsByVolunteerAndRecruitment(volunteer, recruitment);
+        boolean isApplied = applicantRepository.existsByVolunteerAndRecruitment(volunteer,
+            recruitment);
         return IsAppliedRecruitmentResponse.from(isApplied);
 
     }

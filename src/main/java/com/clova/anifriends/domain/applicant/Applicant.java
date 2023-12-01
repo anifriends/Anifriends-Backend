@@ -63,11 +63,10 @@ public class Applicant extends BaseTimeEntity {
     ) {
         validateRecruitment(recruitment);
         validateVolunteer(volunteer);
-        validateApplicantCount(recruitment);
-        recruitment.increaseApplicantCount();
+//        validateApplicantCount(recruitment);
         this.recruitment = recruitment;
         this.volunteer = volunteer;
-        recruitment.addApplicant(this);
+//        recruitment.addApplicant(this);
         volunteer.addApplicant(this);
     }
 

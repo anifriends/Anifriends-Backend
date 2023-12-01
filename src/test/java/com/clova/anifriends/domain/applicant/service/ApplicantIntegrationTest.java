@@ -85,7 +85,7 @@ public class ApplicantIntegrationTest extends BaseIntegrationTest {
                 int finalI = i;
                 executorService.submit(() -> {
                     try {
-                        applicantService.registerApplicant(shelter.getShelterId(),
+                        applicantService.registerApplicantWithOptimisticLock(shelter.getShelterId(),
                             volunteers.get(finalI).getVolunteerId());
                     } finally {
                         latch.countDown();
@@ -107,21 +107,21 @@ public class ApplicantIntegrationTest extends BaseIntegrationTest {
         void registerApplicantWhenRegisterWith30In10Capacity() throws InterruptedException {
             //gvien
             int capacity = 10;
-            List<Volunteer> volunteers = VolunteerFixture.volunteers(capacity);
+            int volunteerCount = 30;
+            List<Volunteer> volunteers = VolunteerFixture.volunteers(volunteerCount);
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter, capacity);
             volunteerRepository.saveAll(volunteers);
             recruitmentRepository.save(recruitment);
 
-            int poolSize = 30;
-            ExecutorService executorService = Executors.newFixedThreadPool(poolSize);
-            CountDownLatch latch = new CountDownLatch(poolSize);
+            ExecutorService executorService = Executors.newFixedThreadPool(volunteerCount);
+            CountDownLatch latch = new CountDownLatch(volunteerCount);
 
             //when
-            for (int i = 0; i < poolSize; i++) {
+            for (int i = 0; i < volunteerCount; i++) {
                 int finalI = i;
                 executorService.submit(() -> {
                     try {
-                        applicantService.registerApplicant(shelter.getShelterId(),
+                        applicantService.registerApplicantWithOptimisticLock(shelter.getShelterId(),
                             volunteers.get(finalI).getVolunteerId());
                     } finally {
                         latch.countDown();

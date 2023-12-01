@@ -20,6 +20,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,6 +43,9 @@ public class Recruitment extends BaseTimeEntity {
     @Column(name = "recruitment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long recruitmentId;
+
+    @Version
+    private Long version;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shelter_id")

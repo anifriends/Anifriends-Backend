@@ -14,6 +14,8 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     url: jdbc:h2:mem:testdb
+    hikari:
+      maximum-pool-size: 80
   jpa:
     properties:
       hibernate:
@@ -33,7 +35,7 @@ cloud:
     s3:
       bucket: BuckeyIsThatYou
     stack:
-      auto: false        
+      auto: false
 
 schedules:
   cron:
@@ -42,3 +44,9 @@ schedules:
       three-day-before-volunteer: 0/2 * * * * ?
       encourage-write-review: 0/2 * * * * ?
       encourage-check-attendance: 0/2 * * * * ?
+
+logging:
+  level:
+    org:
+      springframework:
+        orm: debug
