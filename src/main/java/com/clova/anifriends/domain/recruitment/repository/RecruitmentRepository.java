@@ -53,4 +53,6 @@ public interface RecruitmentRepository
         + "where r.info.endTime >= :time1 and r.info.endTime <= :time2")
     List<Recruitment> findRecruitmentsByEndTime(@Param("time1") LocalDateTime time1,
         @Param("time2") LocalDateTime time2);
+
+    List<Recruitment> findByInfo_IsClosedFalseAndInfo_DeadlineBefore(LocalDateTime deadline);
 }
