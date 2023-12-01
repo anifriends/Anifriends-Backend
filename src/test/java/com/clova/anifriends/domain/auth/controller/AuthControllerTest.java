@@ -115,6 +115,9 @@ class AuthControllerTest extends BaseControllerTest {
         //then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestCookies(
+                    cookieWithName("volunteerRefreshToken").description("봉사자 리프레시 토큰")
+                ),
                 responseCookies(
                     cookieWithName("volunteerRefreshToken").description("갱신된 리프레시 토큰")
                 ),
@@ -142,6 +145,9 @@ class AuthControllerTest extends BaseControllerTest {
         //then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestCookies(
+                    cookieWithName("shelterRefreshToken").description("보호소 리프레시 토큰")
+                ),
                 responseCookies(
                     cookieWithName("shelterRefreshToken").description("갱신된 보호소 리프레시 토큰")
                 ),

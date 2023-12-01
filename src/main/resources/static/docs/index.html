@@ -451,7 +451,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_보호소_로그인">보호소 로그인</a></li>
 <li><a href="#_봉사자_로그인">봉사자 로그인</a></li>
-<li><a href="#_액세스_토큰_갱신">액세스 토큰 갱신</a></li>
+<li><a href="#_봉사자_액세스_토큰_갱신">봉사자 액세스 토큰 갱신</a></li>
+<li><a href="#_보호소_액세스_토큰_갱신">보호소 액세스 토큰 갱신</a></li>
 <li><a href="#_로그아웃">로그아웃</a></li>
 </ul>
 </li>
@@ -637,7 +638,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/shelters/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 91
-X-CSRF-TOKEN: cW0jMm_PsFN2Zxe8glpj9PxdvjC6BYFZaKgXk3jVQMwov86_SFoTAFv8gTdbVCeK43dXzMpsk1KIPbN0DJsmoRq3cftLjKuO
+X-CSRF-TOKEN: _R_uCS0601OkUupD5DnalzyDBMgyxJjey9bHnqpD37r5srQEn3uMOhpf5GGJNNwm0BTupwiwKapT9_7zqbTw_8wm7InJg9Vn
 Host: localhost:8080
 
 {
@@ -703,7 +704,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/api/auth; Domain=.anifriends.site; Secure; HttpOnly; SameSite=None
+Set-Cookie: shelterRefreshToken=refreshToken; Path=/api/auth; Domain=.anifriends.site; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 78
 
@@ -764,7 +765,7 @@ Content-Length: 78
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>refreshToken</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterRefreshToken</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">리프레시 토큰</p></td>
 </tr>
 </tbody>
@@ -783,7 +784,7 @@ Content-Length: 78
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/volunteers/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 91
-X-CSRF-TOKEN: LWQmvduG2dZO0crp5jR5QdaQP_jKw5HTEBXg36EFcLuB5tZdFQZC2Oq_6eRj4P7ZgxlNeOClEsCp9fP-IiLXvJgxRI611OY_
+X-CSRF-TOKEN: YRNOja63epLJKHobT10q9KeeS3BaA9lP3TcS6D_CIjSQeRuPAHIq7J_RS_fkTRspdnAelpWuZklvMr9i7QYk3l30QAKkGHnt
 Host: localhost:8080
 
 {
@@ -849,7 +850,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/api/auth; Domain=.anifriends.site; Secure; HttpOnly; SameSite=None
+Set-Cookie: volunteerRefreshToken=refreshToken; Path=/api/auth; Domain=.anifriends.site; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 80
 
@@ -910,7 +911,7 @@ Content-Length: 80
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>refreshToken</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerRefreshToken</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">리프레시 토큰</p></td>
 </tr>
 </tbody>
@@ -919,18 +920,17 @@ Content-Length: 80
 </div>
 </div>
 <div class="sect2">
-<h3 id="_액세스_토큰_갱신"><a class="link" href="#_액세스_토큰_갱신">액세스 토큰 갱신</a></h3>
+<h3 id="_봉사자_액세스_토큰_갱신"><a class="link" href="#_봉사자_액세스_토큰_갱신">봉사자 액세스 토큰 갱신</a></h3>
 <div class="sect3">
 <h4 id="_request_3"><a class="link" href="#_request_3">Request</a></h4>
 <div class="sect4">
 <h5 id="_request_3_http_request"><a class="link" href="#_request_3_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/refresh HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjMsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjMsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.3gulHdCDJnoVsy-VHa8fReQpqV9NW6KDqNs0t0MMFeXpezLAF2iQp-CkUeoTvoTN
-X-CSRF-TOKEN: siWVq-y9lWGPklXtDS6H52PhhUjjijoGmEnOoIn1F7pez3Sy1xynyI3frQSio2KObAOz3laEqHHWvlkrrnr-w-rDI9ho_0TR
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/volunteers/refresh HTTP/1.1
+X-CSRF-TOKEN: d-AgBcbJD-eBXkCPVHMcncHD2be7mRD5EwdOkYtgHMkUtDQNQ4USPfL9P9WsaHa6YV4o-aP69I7f_SfUIWR5pbwCLv8l1lU9
 Host: localhost:8080
-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjMsInN1YiI6IjEiLCJleHAiOjE3MDEzNDY3NjMsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.LrQyRO182jFiJzGv0tZwLEQLe_dvz7Y6rugSOOIvhTX3E7ZXzG8m5tiI3Bm69fy9
+Cookie: volunteerRefreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTMsInN1YiI6IjEiLCJleHAiOjE3MDE0MjczNTMsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.FbGdN66m90bYWwdqeZCkXI5fBhmlMZqWB4nZ8vhOTZBetzLPDFz_CMPwvkty_AEq
 Content-Type: application/x-www-form-urlencoded</code></pre>
 </div>
 </div>
@@ -950,8 +950,8 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>refreshToken</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리프레시 토큰</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>volunteerRefreshToken</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사자 리프레시 토큰</p></td>
 </tr>
 </tbody>
 </table>
@@ -961,175 +961,67 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 <h4 id="_response_3"><a class="link" href="#_response_3">Response</a></h4>
 <div class="sect4">
 <h5 id="_response_3_http_response"><a class="link" href="#_response_3_http_response">HTTP response</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjMsInN1YiI6IjEiLCJleHAiOjE3MDEzNDY3NjMsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.LrQyRO182jFiJzGv0tZwLEQLe_dvz7Y6rugSOOIvhTX3E7ZXzG8m5tiI3Bm69fy9; Path=/api/auth; Domain=.anifriends.site; Secure; HttpOnly; SameSite=None
-Content-Type: application/json;charset=UTF-8
-Content-Length: 267
-
-{
-  "userId" : 1,
-  "role" : "ROLE_VOLUNTEER",
-  "accessToken" : "eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjMsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjMsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.3gulHdCDJnoVsy-VHa8fReQpqV9NW6KDqNs0t0MMFeXpezLAF2iQp-CkUeoTvoTN"
-}</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::auth-controller-test/refresh-access-token</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="_response_3_response_fields"><a class="link" href="#_response_3_response_fields">Response fields</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">사용자 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>role</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">사용자 역할</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>accessToken</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">갱신된 액세스 토큰</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet response-fields not found for operation::auth-controller-test/refresh-access-token</p>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_response_3_response_cookies"><a class="link" href="#_response_3_response_cookies">Response cookies</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>refreshToken</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">갱신된 리프레시 토큰</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet response-cookies not found for operation::auth-controller-test/refresh-access-token</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_보호소_액세스_토큰_갱신"><a class="link" href="#_보호소_액세스_토큰_갱신">보호소 액세스 토큰 갱신</a></h3>
+<div class="sect3">
+<h4 id="_request_4"><a class="link" href="#_request_4">Request</a></h4>
+
 </div>
 </div>
 <div class="sect2">
 <h3 id="_로그아웃"><a class="link" href="#_로그아웃">로그아웃</a></h3>
 <div class="sect3">
-<h4 id="_request_4"><a class="link" href="#_request_4">Request</a></h4>
+<h4 id="_request_5"><a class="link" href="#_request_5">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_4_http_request"><a class="link" href="#_request_4_http_request">HTTP request</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/auth/logout HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjMsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjMsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.3gulHdCDJnoVsy-VHa8fReQpqV9NW6KDqNs0t0MMFeXpezLAF2iQp-CkUeoTvoTN
-X-CSRF-TOKEN: MHLuicqMdhsVSyMyvexieA5lBYpSeLB4qNNNp_TEvKc0NhCTVkrd7__tTi44KBYGhcFWGmtQKLJnHNVVmeN0xcPxj59SB3al
-Host: localhost:8080
-Cookie: refreshToken=eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjMsInN1YiI6IjEiLCJleHAiOjE3MDEzNDY3NjMsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.LrQyRO182jFiJzGv0tZwLEQLe_dvz7Y6rugSOOIvhTX3E7ZXzG8m5tiI3Bm69fy9
-Content-Type: application/x-www-form-urlencoded</code></pre>
-</div>
+<h5 id="_request_5_http_request"><a class="link" href="#_request_5_http_request">HTTP request</a></h5>
+<div class="paragraph">
+<p>Snippet http-request not found for operation::auth-controller-test/logout</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_4_request_headers"><a class="link" href="#_request_4_request_headers">Request headers</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">사용자 액세스 토큰</p></td>
-</tr>
-</tbody>
-</table>
+<h5 id="_request_5_request_headers"><a class="link" href="#_request_5_request_headers">Request headers</a></h5>
+<div class="paragraph">
+<p>Snippet request-headers not found for operation::auth-controller-test/logout</p>
+</div>
 </div>
 <div class="sect4">
-<h5 id="_request_4_request_cookies"><a class="link" href="#_request_4_request_cookies">Request cookies</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>refreshToken</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">사용자 리프레시 토큰 쿠키</p></td>
-</tr>
-</tbody>
-</table>
+<h5 id="_request_5_request_cookies"><a class="link" href="#_request_5_request_cookies">Request cookies</a></h5>
+<div class="paragraph">
+<p>Snippet request-cookies not found for operation::auth-controller-test/logout</p>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_response_4"><a class="link" href="#_response_4">Response</a></h4>
 <div class="sect4">
 <h5 id="_response_4_http_response"><a class="link" href="#_response_4_http_response">HTTP response</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=; Path=/api/auth; Domain=.anifriends.site; Max-Age=0; Expires=Thu, 1 Jan 1970 00:00:00 GMT; Secure; HttpOnly; SameSite=None</code></pre>
-</div>
+<div class="paragraph">
+<p>Snippet http-response not found for operation::auth-controller-test/logout</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="_response_4_response_cookies"><a class="link" href="#_response_4_response_cookies">Response cookies</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>refreshToken</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리프레시 토큰 쿠키 무효화 설정 쿠키</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>Snippet response-cookies not found for operation::auth-controller-test/logout</p>
+</div>
 </div>
 </div>
 </div>
@@ -1147,15 +1039,15 @@ Set-Cookie: refreshToken=; Path=/api/auth; Domain=.anifriends.site; Max-Age=0; E
 <div class="sect2">
 <h3 id="_봉사자_이메일_중복_확인"><a class="link" href="#_봉사자_이메일_중복_확인">봉사자 이메일 중복 확인</a></h3>
 <div class="sect3">
-<h4 id="_request_5"><a class="link" href="#_request_5">Request</a></h4>
+<h4 id="_request_6"><a class="link" href="#_request_6">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_5_http_request"><a class="link" href="#_request_5_http_request">HTTP request</a></h5>
+<h5 id="_request_6_http_request"><a class="link" href="#_request_6_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/volunteers/email HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 32
-X-CSRF-TOKEN: i8AanIJqQN9yUUoRRleOT6bWU6Urpe55AIVQsJfl6ZrTe3Gf7fZ_rrULdLpfN3IpdHq6f8ezfp1KkdhUYeFhhfLdiqrnGEf9
+X-CSRF-TOKEN: pURPbbtpLfSMTg4IY4voTEJnO2YSptWiDSAYEsupXRiJNu5rlXwsVIhcTMCheD48UabcfXtSFl5wwLaPPkR-J_KfPiq6UNgP
 Host: localhost:8080
 
 {
@@ -1165,7 +1057,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_5_request_fields"><a class="link" href="#_request_5_request_fields">Request fields</a></h5>
+<h5 id="_request_6_request_fields"><a class="link" href="#_request_6_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -1243,15 +1135,15 @@ Content-Length: 28
 <div class="sect2">
 <h3 id="_봉사자_회원_가입"><a class="link" href="#_봉사자_회원_가입">봉사자 회원 가입</a></h3>
 <div class="sect3">
-<h4 id="_request_6"><a class="link" href="#_request_6">Request</a></h4>
+<h4 id="_request_7"><a class="link" href="#_request_7">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_6_http_request"><a class="link" href="#_request_6_http_request">HTTP request</a></h5>
+<h5 id="_request_7_http_request"><a class="link" href="#_request_7_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/volunteers HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 169
-X-CSRF-TOKEN: 69gdHkulDAYvYaw9jjJaCfvmwSSCn_fWRILKnn5I2Eru9PVE0ugoenOcNGUCWJUO6h9uMJ7U7EbkrsX7d7f_q0hxvC_fzJR9
+X-CSRF-TOKEN: bbpTU8NdbJLlUzPU_OCEwf8-3ONANJgDxwxQH12715UP3g0jXItjYPprWvPIMVDnzM2wpM0O8YFxUKwu9jtifWWOs_Y65jtG
 Host: localhost:8080
 
 {
@@ -1266,7 +1158,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_6_request_fields"><a class="link" href="#_request_6_request_fields">Request fields</a></h5>
+<h5 id="_request_7_request_fields"><a class="link" href="#_request_7_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -1406,21 +1298,21 @@ Content-Length: 23
 <div class="sect2">
 <h3 id="_봉사자_마이_페이지_조회"><a class="link" href="#_봉사자_마이_페이지_조회">봉사자 마이 페이지 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_7"><a class="link" href="#_request_7">Request</a></h4>
+<h4 id="_request_8"><a class="link" href="#_request_8">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_7_http_request"><a class="link" href="#_request_7_http_request">HTTP request</a></h5>
+<h5 id="_request_8_http_request"><a class="link" href="#_request_8_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/me HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzksInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzksInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.R6S_BG_jSn_zBprK3elcy7mm5gwSMtJeI_iLEHzcOoJEvjVBMF6yGAZkewVTcxV_
-X-CSRF-TOKEN: S40ZcVf8gDPBQ7gBBlwRcpg-CsMeMAfKmLJkt2IIXISOVsjdc-4vRzKdtQPsIdtkYnElSvsOJ_omCGbnr4EB0lUwb7G3ZKnu
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjksInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjksInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.tssql97brOQG0cDoFr_80S8MYoO4g3C-XiMpkswkYLLUKTE9FjwJ065ExECBZhyh
+X-CSRF-TOKEN: Pxw0xwYb8ugsfBt9D5j3c4SKoR-Siv8JWnAEJ1W8k-OmzPqMC3oNomcjxd0BT31EO7XDQL25jH2muJska0A9FTOMpdOV_M65
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_7_request_headers"><a class="link" href="#_request_7_request_headers">Request headers</a></h5>
+<h5 id="_request_8_request_headers"><a class="link" href="#_request_8_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1537,16 +1429,16 @@ Content-Length: 300
 <div class="sect2">
 <h3 id="_봉사자_비밀번호_변경"><a class="link" href="#_봉사자_비밀번호_변경">봉사자 비밀번호 변경</a></h3>
 <div class="sect3">
-<h4 id="_request_8"><a class="link" href="#_request_8">Request</a></h4>
+<h4 id="_request_9"><a class="link" href="#_request_9">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_8_http_request"><a class="link" href="#_request_8_http_request">HTTP request</a></h5>
+<h5 id="_request_9_http_request"><a class="link" href="#_request_9_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/volunteers/me/passwords HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzksInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzksInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.R6S_BG_jSn_zBprK3elcy7mm5gwSMtJeI_iLEHzcOoJEvjVBMF6yGAZkewVTcxV_
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjksInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjksInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.tssql97brOQG0cDoFr_80S8MYoO4g3C-XiMpkswkYLLUKTE9FjwJ065ExECBZhyh
 Content-Length: 76
-X-CSRF-TOKEN: BR4Mwd_bzo4zJXgLM8RdyLHv7WkPy9N4j6i0ommoLTM7QvqjNCc79r3q-u0eHBk5Bulp_dPdwFBu-OpVvZuNx1DJGQpdIc2T
+X-CSRF-TOKEN: lq_qIYlai54Ymp6HALuwDPnp08PQxQN9Nk4ZyuKfoV6KmpN3oc3aF-xpvfs1_6_jZpaEOZiN_vqz82ZQBnZ6qdKqxzvpo_ET
 Host: localhost:8080
 
 {
@@ -1557,7 +1449,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_8_request_headers"><a class="link" href="#_request_8_request_headers">Request headers</a></h5>
+<h5 id="_request_9_request_headers"><a class="link" href="#_request_9_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1578,7 +1470,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_8_request_fields"><a class="link" href="#_request_8_request_fields">Request fields</a></h5>
+<h5 id="_request_9_request_fields"><a class="link" href="#_request_9_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -1633,22 +1525,22 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_봉사자_계정_정보_수정"><a class="link" href="#_봉사자_계정_정보_수정">봉사자 계정 정보 수정</a></h3>
 <div class="sect3">
-<h4 id="_request_9"><a class="link" href="#_request_9">Request</a></h4>
+<h4 id="_request_10"><a class="link" href="#_request_10">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_9_http_request"><a class="link" href="#_request_9_http_request">HTTP request</a></h5>
+<h5 id="_request_10_http_request"><a class="link" href="#_request_10_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/volunteers/me HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzksInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzksInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.R6S_BG_jSn_zBprK3elcy7mm5gwSMtJeI_iLEHzcOoJEvjVBMF6yGAZkewVTcxV_
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjksInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjksInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.tssql97brOQG0cDoFr_80S8MYoO4g3C-XiMpkswkYLLUKTE9FjwJ065ExECBZhyh
 Content-Length: 153
-X-CSRF-TOKEN: VFywEyag-7u1Wsr8B49FjJMjzicZoEgLno383gpNdpw8veTwNWuEdxOXytmYOa_LZaJxu6QT4x96li4m-OvIvDl6QqwOjd3E
+X-CSRF-TOKEN: sX_68Ch4LoGSmAVRfuHOixK3jt03tiC4pGqzWUjVO6K42cVJhUnKyBlBGre_qTAwTsz67yXSo-VSgkOVkliCb3qwCsCIu_Ir
 Host: localhost:8080
 
 {
   "name" : "새로운이름",
   "gender" : "MALE",
-  "birthDate" : "2023-11-30",
+  "birthDate" : "2023-12-01",
   "phoneNumber" : "010-9999-9999",
   "imageUrl" : "www.aws.s3.com/2"
 }</code></pre>
@@ -1656,7 +1548,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_9_request_headers"><a class="link" href="#_request_9_request_headers">Request headers</a></h5>
+<h5 id="_request_10_request_headers"><a class="link" href="#_request_10_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1677,7 +1569,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_9_request_fields"><a class="link" href="#_request_9_request_fields">Request fields</a></h5>
+<h5 id="_request_10_request_fields"><a class="link" href="#_request_10_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -1758,21 +1650,21 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_봉사자_프로필_조회"><a class="link" href="#_봉사자_프로필_조회">봉사자 프로필 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_10"><a class="link" href="#_request_10">Request</a></h4>
+<h4 id="_request_11"><a class="link" href="#_request_11">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_10_http_request"><a class="link" href="#_request_10_http_request">HTTP request</a></h5>
+<h5 id="_request_11_http_request"><a class="link" href="#_request_11_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/volunteers/1/profile HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzksInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzksInJvbGUiOiJST0xFX1NIRUxURVIifQ.pAugnfXyITTJjYmfH1UQTitn8LVaCVkp3ENSVjvIjR6HrVGC-v8X95EEP6VFjPFQ
-X-CSRF-TOKEN: 7r0QufasPOVMdOZRmY3X-Xob8ASWBxpSmAayO-nc8njFOxjc3o8jjJLPDtNhEddmraDjwEku3WWvN3x__j6HCo24xEzyDXrt
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjksInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjksInJvbGUiOiJST0xFX1NIRUxURVIifQ.fWdMwQzPobgQLu5SEpHOlRBc44i7StzSnJgz1zpZ0ASkd6qU1XzWUXhN9-fCbX2Q
+X-CSRF-TOKEN: A8CxwXiQXyVPvisCRJMTiJq-YYfa8PrxTkJZwXaT3ZKoNGrvZfKE9UCpZhNijU0wdr4n6aiOTL7slcLce3FgpEOi6aucAlvb
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_10_path_parameters"><a class="link" href="#_request_10_path_parameters">Path parameters</a></h5>
+<h5 id="_request_11_path_parameters"><a class="link" href="#_request_11_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/volunteers/{volunteerId}/profile</caption>
 <colgroup>
@@ -1877,15 +1769,15 @@ Content-Length: 177
 <div class="sect2">
 <h3 id="_보호소_이메일_중복_확인"><a class="link" href="#_보호소_이메일_중복_확인">보호소 이메일 중복 확인</a></h3>
 <div class="sect3">
-<h4 id="_request_11"><a class="link" href="#_request_11">Request</a></h4>
+<h4 id="_request_12"><a class="link" href="#_request_12">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_11_http_request"><a class="link" href="#_request_11_http_request">HTTP request</a></h5>
+<h5 id="_request_12_http_request"><a class="link" href="#_request_12_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/shelters/email HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 33
-X-CSRF-TOKEN: Yxac7bcuE5g8nW_piOicsXhW1rwVia8gSmQGK3dpDYdj5rRhWiali9Iadf0RpA3c68Woh09i-94muMkNc1VjHkJcaOMGgIJV
+X-CSRF-TOKEN: cygV7UHO4RtoZI5aQI1HMTDZIsOimXI0Pf90k0Pg0k_Gcs3GRBAniHL-gChFVbc_JKBzCQm4D_vArREZXMpE9iDY4HujQKn1
 Host: localhost:8080
 
 {
@@ -1895,7 +1787,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_11_request_fields"><a class="link" href="#_request_11_request_fields">Request fields</a></h5>
+<h5 id="_request_12_request_fields"><a class="link" href="#_request_12_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -1973,15 +1865,15 @@ Content-Length: 27
 <div class="sect2">
 <h3 id="_보호소_회원가입"><a class="link" href="#_보호소_회원가입">보호소 회원가입</a></h3>
 <div class="sect3">
-<h4 id="_request_12"><a class="link" href="#_request_12">Request</a></h4>
+<h4 id="_request_13"><a class="link" href="#_request_13">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_12_http_request"><a class="link" href="#_request_12_http_request">HTTP request</a></h5>
+<h5 id="_request_13_http_request"><a class="link" href="#_request_13_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/shelters HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 305
-X-CSRF-TOKEN: 1bERfNQINfS5ZhcBLkGUMm7ISnpkQYaHB8vSirr95x02P1z15tcmGbE5ApGUBCRjT2ygBg35ZxgFILWqPv_ivN7MgXsBCj_D
+X-CSRF-TOKEN: j-g0lMB9OVeyU6cOPCCegBj_Y00xSJzeBaEGHmoFEloUbnrOvosFoPgeW2GfMMVqXQ2qtXvGTnVSev7zN5czK1tkJm8iVhuo
 Host: localhost:8080
 
 {
@@ -1998,7 +1890,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_12_request_fields"><a class="link" href="#_request_12_request_fields">Request fields</a></h5>
+<h5 id="_request_13_request_fields"><a class="link" href="#_request_13_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2147,21 +2039,21 @@ Content-Length: 21
 <div class="sect2">
 <h3 id="_보호소_프로필_조회"><a class="link" href="#_보호소_프로필_조회">보호소 프로필 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_13"><a class="link" href="#_request_13">Request</a></h4>
+<h4 id="_request_14"><a class="link" href="#_request_14">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_13_http_request"><a class="link" href="#_request_13_http_request">HTTP request</a></h5>
+<h5 id="_request_14_http_request"><a class="link" href="#_request_14_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/1/profile HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzgsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.aPScMV2fjbysBU6XjizoSDdgs39C9StYaXD44pL2FJgg1GX593NPrTuU_j8EfQ5Z
-X-CSRF-TOKEN: zqGpiDFSLzzFmqnL5ziLFmrwP_4NPtDGpo6153R2xPTm5YQW_8eeuwMxTQ_o-Jn8gRW_J1uUEsdsWObrlOjU3kJDoZDW1uUk
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjgsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.7ovZwph9hX5v7xdpqR4rV1uekdFwHF955sqE4X3nyMHIS95VpYT-Kp1Mu27c5Vsv
+X-CSRF-TOKEN: 2pp6X9snCnsBPIydvIKvhs4MhLehk9iNiPUdLzRpQ7K6prdx6_tKa-wVbEMsD-qo2a-bvvlpqY-Uqumgu8wkTFAPdIXbntUX
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_13_path_parameters"><a class="link" href="#_request_13_path_parameters">Path parameters</a></h5>
+<h5 id="_request_14_path_parameters"><a class="link" href="#_request_14_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/{shelterId}/profile</caption>
 <colgroup>
@@ -2194,17 +2086,17 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 255
+Content-Length: 304
 
 {
   "shelterId" : 1,
-  "email" : "shelterEmail@email.com",
-  "name" : "shelterName",
-  "address" : "shelterAddress",
-  "addressDetail" : "shelterAddressDetail",
-  "phoneNumber" : "010-1234-5678",
-  "sparePhoneNumber" : "010-8765-4321",
-  "imageUrl" : ""
+  "shelterEmail" : "shelterEmail@email.com",
+  "shelterName" : "shelterName",
+  "shelterAddress" : "shelterAddress",
+  "shelterAddressDetail" : "shelterAddressDetail",
+  "shelterPhoneNumber" : "010-1234-5678",
+  "shelterSparePhoneNumber" : "010-8765-4321",
+  "shelterImageUrl" : ""
 }</code></pre>
 </div>
 </div>
@@ -2231,37 +2123,37 @@ Content-Length: 255
 <td class="tableblock halign-left valign-top"><p class="tableblock">보호소 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterEmail</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">보호소 이메일</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">보호소 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>address</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterAddress</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">보호소 주소</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>addressDetail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterAddressDetail</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">보호소 상세주소</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>phoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterPhoneNumber</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">보호소 전화번호</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sparePhoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterSparePhoneNumber</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">보호소 임시 전화번호</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shelterImageUrl</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">보호소 이미지 Url</p></td>
 </tr>
@@ -2273,20 +2165,20 @@ Content-Length: 255
 <div class="sect2">
 <h3 id="_보호소_간단_정보_조회"><a class="link" href="#_보호소_간단_정보_조회">보호소 간단 정보 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_14"><a class="link" href="#_request_14">Request</a></h4>
+<h4 id="_request_15"><a class="link" href="#_request_15">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_14_http_request"><a class="link" href="#_request_14_http_request">HTTP request</a></h5>
+<h5 id="_request_15_http_request"><a class="link" href="#_request_15_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/1/profile/simple HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-X-CSRF-TOKEN: b012FRjsqPwdUdtkcMGZVhIr2mDY-plhBKPO3AcXHo0o9ORzDHRHdiCIy8kwNLkGQeytMnAa9wG8y_xMYJWq7zIhLr5Ll4AW
+X-CSRF-TOKEN: t05I99QvDnRz0laWqp9jLYVVgNEBDdUy6VMXDctm6cifOv7XgX95wuAYbBJe4Temy7JXTLYxrbMwaOcf3Gcgaahf2a2uDpzj
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_14_path_parameters"><a class="link" href="#_request_14_path_parameters">Path parameters</a></h5>
+<h5 id="_request_15_path_parameters"><a class="link" href="#_request_15_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/{shelterId}/profile/simple</caption>
 <colgroup>
@@ -2379,21 +2271,21 @@ Content-Length: 145
 <div class="sect2">
 <h3 id="_보호소_마이_페이지_조회"><a class="link" href="#_보호소_마이_페이지_조회">보호소 마이 페이지 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_15"><a class="link" href="#_request_15">Request</a></h4>
+<h4 id="_request_16"><a class="link" href="#_request_16">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_15_http_request"><a class="link" href="#_request_15_http_request">HTTP request</a></h5>
+<h5 id="_request_16_http_request"><a class="link" href="#_request_16_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/me HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzgsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ZynwkJYCXp8D9aymH75kI7OXHkdNY1Vk3r5r34jPJKw2U9DKnpTtG1JABTfDNQlR
-X-CSRF-TOKEN: lsuzhIw-e3HbTu909_RKzN5EnxTYMPxJicPKUObPQqZOpYYLr6-FsrgLShP2f91Axtl-_uonsiztAcVku6H4aNesIZN4xLUz
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjgsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.Hf1Vy0Er82pv2Ynp_dhFBJl9fXslb0SXnVPg1_H6jqLha0ZR-9lIk1OxZUWMyboH
+X-CSRF-TOKEN: 2XIwLSOLY2PCJvSqi6iJxZVVV0gZ70tt3WNSDnidj8q5AjOm4RBRTBXpAgLvH5WZv4W98_NtenAqinJAu1Axb0r86vyNYQrD
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_15_request_headers"><a class="link" href="#_request_15_request_headers">Request headers</a></h5>
+<h5 id="_request_16_request_headers"><a class="link" href="#_request_16_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2510,16 +2402,16 @@ Content-Length: 339
 <div class="sect2">
 <h3 id="_보호소_비밀_번호_변경"><a class="link" href="#_보호소_비밀_번호_변경">보호소 비밀 번호 변경</a></h3>
 <div class="sect3">
-<h4 id="_request_16"><a class="link" href="#_request_16">Request</a></h4>
+<h4 id="_request_17"><a class="link" href="#_request_17">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_16_http_request"><a class="link" href="#_request_16_http_request">HTTP request</a></h5>
+<h5 id="_request_17_http_request"><a class="link" href="#_request_17_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/me/passwords HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzgsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ZynwkJYCXp8D9aymH75kI7OXHkdNY1Vk3r5r34jPJKw2U9DKnpTtG1JABTfDNQlR
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjgsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.Hf1Vy0Er82pv2Ynp_dhFBJl9fXslb0SXnVPg1_H6jqLha0ZR-9lIk1OxZUWMyboH
 Content-Length: 76
-X-CSRF-TOKEN: vt5yvDA36yOVLXIMNuSmpjw0SFYXOIRLNskW8iEWH1azJf0Dj-gXhAlUiBG4SUo4BMmSwgoEZW5xDrxmBKtywhZ1J2WLEs86
+X-CSRF-TOKEN: D-YeZDW0o0cJLPme66i912b4BskIWMJEP1S69tzHrzpHOypoNoAtVgfRxXIkTcCq34WJ4wTNK_A6aaRpWWPfw-uhnw4mWB5d
 Host: localhost:8080
 
 {
@@ -2530,7 +2422,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_16_request_headers"><a class="link" href="#_request_16_request_headers">Request headers</a></h5>
+<h5 id="_request_17_request_headers"><a class="link" href="#_request_17_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2551,7 +2443,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_16_request_fields"><a class="link" href="#_request_16_request_fields">Request fields</a></h5>
+<h5 id="_request_17_request_fields"><a class="link" href="#_request_17_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2606,16 +2498,16 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_보호소_상세_주소_공개_여부_변경"><a class="link" href="#_보호소_상세_주소_공개_여부_변경">보호소 상세 주소 공개 여부 변경</a></h3>
 <div class="sect3">
-<h4 id="_request_17"><a class="link" href="#_request_17">Request</a></h4>
+<h4 id="_request_18"><a class="link" href="#_request_18">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_17_http_request"><a class="link" href="#_request_17_http_request">HTTP request</a></h5>
+<h5 id="_request_18_http_request"><a class="link" href="#_request_18_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/me/address/status HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzgsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ZynwkJYCXp8D9aymH75kI7OXHkdNY1Vk3r5r34jPJKw2U9DKnpTtG1JABTfDNQlR
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjgsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.Hf1Vy0Er82pv2Ynp_dhFBJl9fXslb0SXnVPg1_H6jqLha0ZR-9lIk1OxZUWMyboH
 Content-Length: 31
-X-CSRF-TOKEN: fb63ynuM1oNsU6oXQ3h9z7FzizpKeq51dtHVlQcQEKrT1_UsRYvWq07ps-FBYZ51clVJq4JCplh7HppYFee38TN0IJy2ss1I
+X-CSRF-TOKEN: Nrs_HbaI05Grl9g_xZfHh2G3q8kRfcWj4brZ-yTIah3EeX55BYhcKdC66qeGp-9e_Lrz4lfShvApTqOOhIPomUGsXSqiSBhB
 Host: localhost:8080
 
 {
@@ -2625,7 +2517,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_17_request_headers"><a class="link" href="#_request_17_request_headers">Request headers</a></h5>
+<h5 id="_request_18_request_headers"><a class="link" href="#_request_18_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2646,7 +2538,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_17_request_fields"><a class="link" href="#_request_17_request_fields">Request fields</a></h5>
+<h5 id="_request_18_request_fields"><a class="link" href="#_request_18_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2694,16 +2586,16 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_보호소_정보_수정"><a class="link" href="#_보호소_정보_수정">보호소 정보 수정</a></h3>
 <div class="sect3">
-<h4 id="_request_18"><a class="link" href="#_request_18">Request</a></h4>
+<h4 id="_request_19"><a class="link" href="#_request_19">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_18_http_request"><a class="link" href="#_request_18_http_request">HTTP request</a></h5>
+<h5 id="_request_19_http_request"><a class="link" href="#_request_19_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/me HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzgsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ZynwkJYCXp8D9aymH75kI7OXHkdNY1Vk3r5r34jPJKw2U9DKnpTtG1JABTfDNQlR
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjgsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.Hf1Vy0Er82pv2Ynp_dhFBJl9fXslb0SXnVPg1_H6jqLha0ZR-9lIk1OxZUWMyboH
 Content-Length: 226
-X-CSRF-TOKEN: MtU5CNQ9Xj_59eedcmc0kS-syrrVtNSNKKZayWYlF884RkfIBbMBP-cFZwzUl4WpRkoApU6e54Lh17CgSsNp-lcTdfYOInL7
+X-CSRF-TOKEN: Z0SrroQj-2mBGvKn_mdygTSrLAq9X6lOmN1kSC4eP0KBFswUBnLNz-AUnlqsfMqWzkpGsAeZAWiNa5tjr7tTLkwrCHrgcP92
 Host: localhost:8080
 
 {
@@ -2719,7 +2611,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_18_request_headers"><a class="link" href="#_request_18_request_headers">Request headers</a></h5>
+<h5 id="_request_19_request_headers"><a class="link" href="#_request_19_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2740,7 +2632,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_18_request_fields"><a class="link" href="#_request_18_request_fields">Request fields</a></h5>
+<h5 id="_request_19_request_fields"><a class="link" href="#_request_19_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2841,19 +2733,19 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_봉사_모집글_목록_조회_검색"><a class="link" href="#_봉사_모집글_목록_조회_검색">봉사 모집글 목록 조회 &amp; 검색</a></h3>
 <div class="sect3">
-<h4 id="_request_19"><a class="link" href="#_request_19">Request</a></h4>
+<h4 id="_request_20"><a class="link" href="#_request_20">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_19_http_request"><a class="link" href="#_request_19_http_request">HTTP request</a></h5>
+<h5 id="_request_20_http_request"><a class="link" href="#_request_20_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-11-30&amp;endDate=2023-11-30&amp;closedFilter=IS_OPENED&amp;keywordFilter=IS_CONTENT&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
-X-CSRF-TOKEN: k7I9wdtHfjENgQxm7rnfNsfyfjr8_LXgWnatAKFh8t7Hf5mxpddY-eJ-HVQgt2hU25TrA6LAU1vIy4DNPhWbYcBUy-z-TfuD
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-12-01&amp;endDate=2023-12-01&amp;closedFilter=IS_OPENED&amp;keywordFilter=IS_CONTENT&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
+X-CSRF-TOKEN: MtfDp8hNaKyIPrdthRE25xUGz8zflSA8sOTnvCvRmYvA5PI7B7H7n6p7C5SlDdII5jwC1yMy4q278BIRgdHRjR7gq7mi3JAO
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_19_query_parameters"><a class="link" href="#_request_19_query_parameters">Query parameters</a></h5>
+<h5 id="_request_20_query_parameters"><a class="link" href="#_request_20_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -2933,9 +2825,9 @@ Content-Length: 511
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-12-30T18:32:42.615696",
-    "recruitmentEndTime" : "2023-12-30T20:32:42.615696",
-    "recruitmentDeadline" : "2023-12-29T18:32:42.615696",
+    "recruitmentStartTime" : "2024-01-01T16:55:51.990128",
+    "recruitmentEndTime" : "2024-01-01T18:55:51.990128",
+    "recruitmentDeadline" : "2023-12-31T16:55:51.990128",
     "recruitmentIsClosed" : false,
     "recruitmentApplicantCount" : 0,
     "recruitmentCapacity" : 10,
@@ -3044,19 +2936,19 @@ Content-Length: 511
 <div class="sect2">
 <h3 id="_봉사_모집글_목록_조회_검색_v2"><a class="link" href="#_봉사_모집글_목록_조회_검색_v2">봉사 모집글 목록 조회 &amp; 검색 V2</a></h3>
 <div class="sect3">
-<h4 id="_request_20"><a class="link" href="#_request_20">Request</a></h4>
+<h4 id="_request_21"><a class="link" href="#_request_21">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_20_http_request"><a class="link" href="#_request_20_http_request">HTTP request</a></h5>
+<h5 id="_request_21_http_request"><a class="link" href="#_request_21_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v2/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-11-30&amp;endDate=2023-11-30&amp;closedFilter=IS_OPENED&amp;keywordFilter=IS_CONTENT&amp;recruitmentId=1&amp;createdAt=2023-11-30T18%3A32%3A56.211861&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
-X-CSRF-TOKEN: _07tiKDL6vNsGwC-xk6YgUDv2XGFxyeMx1shtOP6f3Msf6GjzXiPu8b9jpFBKjaMomOs5yWM9BCx9EWh_z0RjNSeTkoaSpKX
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v2/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-12-01&amp;endDate=2023-12-01&amp;closedFilter=IS_OPENED&amp;keywordFilter=IS_CONTENT&amp;recruitmentId=1&amp;createdAt=2023-12-01T16%3A56%3A06.186548&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
+X-CSRF-TOKEN: G32YfTRkOs3zaDzXxgQ34if22d-jLPDZfP3mgy-v-GeRe7mffhyoSQQCW_7eXV-z9ikD0ReU9L7AH5P0H8_SthbNzlGiSY-o
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_20_query_parameters"><a class="link" href="#_request_20_query_parameters">Query parameters</a></h5>
+<h5 id="_request_21_query_parameters"><a class="link" href="#_request_21_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -3148,9 +3040,9 @@ Content-Length: 511
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-12-30T18:32:42.615696",
-    "recruitmentEndTime" : "2023-12-30T20:32:42.615696",
-    "recruitmentDeadline" : "2023-12-29T18:32:42.615696",
+    "recruitmentStartTime" : "2024-01-01T16:55:51.990128",
+    "recruitmentEndTime" : "2024-01-01T18:55:51.990128",
+    "recruitmentDeadline" : "2023-12-31T16:55:51.990128",
     "recruitmentIsClosed" : false,
     "recruitmentApplicantCount" : 0,
     "recruitmentCapacity" : 10,
@@ -3259,20 +3151,20 @@ Content-Length: 511
 <div class="sect2">
 <h3 id="_봉사_모집글_상세_조회"><a class="link" href="#_봉사_모집글_상세_조회">봉사 모집글 상세 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_21"><a class="link" href="#_request_21">Request</a></h4>
+<h4 id="_request_22"><a class="link" href="#_request_22">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_21_http_request"><a class="link" href="#_request_21_http_request">HTTP request</a></h5>
+<h5 id="_request_22_http_request"><a class="link" href="#_request_22_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/recruitments/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-X-CSRF-TOKEN: Q9DQCqOdVsPu_ucHW6C1nL7FOIygazxcTofjmHU5YbrlQiH-e-XjaMevNfrDnYMzY42BrIz0Fe2RCQpxL-TT_BAJAtvXchmf
+X-CSRF-TOKEN: 7tCQsjOy1VVSEF6GWtzs-aeqsOGOrrmKUdGgq2dQ-zdH5Wbu37WiggfQ7Wx_Jz21PPHYzpGZnYO3zYqnYOWQygVpzAMm0QWP
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_21_path_parameters"><a class="link" href="#_request_21_path_parameters">Path parameters</a></h5>
+<h5 id="_request_22_path_parameters"><a class="link" href="#_request_22_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/recruitments/{recruitmentId}</caption>
 <colgroup>
@@ -3312,10 +3204,10 @@ Content-Length: 500
   "recruitmentApplicantCount" : 0,
   "recruitmentCapacity" : 10,
   "recruitmentContent" : "recruitmentContent",
-  "recruitmentStartTime" : "2023-12-30T18:32:42.615696",
-  "recruitmentEndTime" : "2023-12-30T20:32:42.615696",
+  "recruitmentStartTime" : "2024-01-01T16:55:51.990128",
+  "recruitmentEndTime" : "2024-01-01T18:55:51.990128",
   "recruitmentIsClosed" : false,
-  "recruitmentDeadline" : "2023-12-29T18:32:42.615696",
+  "recruitmentDeadline" : "2023-12-31T16:55:51.990128",
   "recruitmentCreatedAt" : null,
   "recruitmentUpdatedAt" : null,
   "recruitmentImageUrls" : [ "imageUrl1", "imageUrl2" ],
@@ -3408,20 +3300,20 @@ Content-Length: 500
 <div class="sect2">
 <h3 id="_보호소가_작성한_봉사_모집글_목록_조회"><a class="link" href="#_보호소가_작성한_봉사_모집글_목록_조회">보호소가 작성한 봉사 모집글 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_22"><a class="link" href="#_request_22">Request</a></h4>
+<h4 id="_request_23"><a class="link" href="#_request_23">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_22_http_request"><a class="link" href="#_request_22_http_request">HTTP request</a></h5>
+<h5 id="_request_23_http_request"><a class="link" href="#_request_23_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/1/recruitments HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-X-CSRF-TOKEN: hcFtB_hAjJGz46s5haH4TzVD1p8Kpxf56s_ZMSpQQsxIqUIz5vBZP5smvfWe05IJ54zMfQZy-_48wSDUiKruBhwzI_wum3JR
+X-CSRF-TOKEN: dp1HS2B1Ka7ZeRpbdwEWmoRWDYWK2UXERJlfqesdIQ15lgqZRKoiclRBSsz0QCtuQSwiouBgILy47SbpIao8no1_F25Mr2_6
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_22_path_parameters"><a class="link" href="#_request_22_path_parameters">Path parameters</a></h5>
+<h5 id="_request_23_path_parameters"><a class="link" href="#_request_23_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/{shelterId}/recruitments</caption>
 <colgroup>
@@ -3443,7 +3335,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_22_query_parameters"><a class="link" href="#_request_22_query_parameters">Query parameters</a></h5>
+<h5 id="_request_23_query_parameters"><a class="link" href="#_request_23_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -3497,8 +3389,8 @@ Content-Length: 356
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-12-30T18:32:42.615696",
-    "recruitmentDeadline" : "2023-12-29T18:32:42.615696",
+    "recruitmentStartTime" : "2024-01-01T16:55:51.990128",
+    "recruitmentDeadline" : "2023-12-31T16:55:51.990128",
     "recruitmentCapacity" : 10,
     "recruitmentApplicantCount" : 0
   } ]
@@ -3580,21 +3472,21 @@ Content-Length: 356
 <div class="sect2">
 <h3 id="_내보호소가_작성한_봉사_모집글_목록_조회_검색"><a class="link" href="#_내보호소가_작성한_봉사_모집글_목록_조회_검색">내(보호소)가 작성한 봉사 모집글 목록 조회 &amp; 검색</a></h3>
 <div class="sect3">
-<h4 id="_request_23"><a class="link" href="#_request_23">Request</a></h4>
+<h4 id="_request_24"><a class="link" href="#_request_24">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_23_http_request"><a class="link" href="#_request_23_http_request">HTTP request</a></h5>
+<h5 id="_request_24_http_request"><a class="link" href="#_request_24_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-11-30&amp;endDate=2023-11-30&amp;closedFilter=IS_OPENED&amp;keywordFilter=IS_SHELTER_NAME&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/recruitments?keyword=%EA%B2%85%EC%83%89%EC%96%B4&amp;startDate=2023-12-01&amp;endDate=2023-12-01&amp;closedFilter=IS_OPENED&amp;keywordFilter=IS_SHELTER_NAME&amp;pageNumber=0&amp;pageSize=10 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzYsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ARhGHD6v-MSvxNdCmFRCVY44KdgtKkK01XdbuMOd0M-s3OSVpZbldrV2if3O9-QZ
-X-CSRF-TOKEN: OJlc_l3vrCbHVi8Q8kL1cgiVOd9JIQlgAt8vXb7xDgOe62wGDaptyz_YnUfqYBxxlm_BFG3xFOd5RDFNNO9Nad_JaDH73A9k
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjYsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.XqxkNqYqc8pagy6ziHSr9nsJ-JBAMxn_mXHjbrJiqcgacV7FeizUfOcRwuHhv8Ox
+X-CSRF-TOKEN: aGRjp2M5CbSyMvADuMdvnZSKALM9pRzwd0Sic-KqS0HzLnstWQUFwlVfatefB5Fgjepb-KW8LYoOxy7dTnCTR9KafSPGTRlM
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_23_request_headers"><a class="link" href="#_request_23_request_headers">Request headers</a></h5>
+<h5 id="_request_24_request_headers"><a class="link" href="#_request_24_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3615,7 +3507,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_23_query_parameters"><a class="link" href="#_request_23_query_parameters">Query parameters</a></h5>
+<h5 id="_request_24_query_parameters"><a class="link" href="#_request_24_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -3699,9 +3591,9 @@ Content-Length: 448
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-12-30T18:32:42.615696",
-    "recruitmentEndTime" : "2023-12-30T20:32:42.615696",
-    "recruitmentDeadline" : "2023-12-29T18:32:42.615696",
+    "recruitmentStartTime" : "2024-01-01T16:55:51.990128",
+    "recruitmentEndTime" : "2024-01-01T18:55:51.990128",
+    "recruitmentDeadline" : "2023-12-31T16:55:51.990128",
     "recruitmentIsClosed" : false,
     "recruitmentApplicantCount" : 0,
     "recruitmentCapacity" : 10
@@ -3789,23 +3681,23 @@ Content-Length: 448
 <div class="sect2">
 <h3 id="_봉사_모집글_등록"><a class="link" href="#_봉사_모집글_등록">봉사 모집글 등록</a></h3>
 <div class="sect3">
-<h4 id="_request_24"><a class="link" href="#_request_24">Request</a></h4>
+<h4 id="_request_25"><a class="link" href="#_request_25">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_24_http_request"><a class="link" href="#_request_24_http_request">HTTP request</a></h5>
+<h5 id="_request_25_http_request"><a class="link" href="#_request_25_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/shelters/recruitments HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzYsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ARhGHD6v-MSvxNdCmFRCVY44KdgtKkK01XdbuMOd0M-s3OSVpZbldrV2if3O9-QZ
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjYsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.XqxkNqYqc8pagy6ziHSr9nsJ-JBAMxn_mXHjbrJiqcgacV7FeizUfOcRwuHhv8Ox
 Content-Length: 223
-X-CSRF-TOKEN: BW9dysC3GYt5K44am6Ogto2esZEuNWmYi9J8GSFOaLut1CoRMlc4r_GEK-pUTbkq-Y6U0Lr8nPMeVF216rZFLEd-Dd3JsBhy
+X-CSRF-TOKEN: cB-UaI4sFG93-LIxBPr-Z7Js4zgL0LjA5QHgJ94ZWMkCnN9CQymkWupJJV1ay4UHMNfKUItezgFq4Irt3TGEEOh_YP5hrud1
 Host: localhost:8080
 
 {
   "title" : "title",
-  "startTime" : "2023-12-01T18:32:56.243067",
-  "endTime" : "2023-12-01T19:32:56.243067",
-  "deadline" : "2023-11-30T23:32:56.243067",
+  "startTime" : "2023-12-02T16:56:06.216046",
+  "endTime" : "2023-12-02T17:56:06.216046",
+  "deadline" : "2023-12-01T21:56:06.216046",
   "capacity" : 10,
   "content" : "content",
   "imageUrls" : [ ]
@@ -3814,7 +3706,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_24_request_headers"><a class="link" href="#_request_24_request_headers">Request headers</a></h5>
+<h5 id="_request_25_request_headers"><a class="link" href="#_request_25_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3835,7 +3727,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_24_request_fields"><a class="link" href="#_request_24_request_fields">Request fields</a></h5>
+<h5 id="_request_25_request_fields"><a class="link" href="#_request_25_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -3953,20 +3845,20 @@ Content-Length: 25
 <div class="sect2">
 <h3 id="_봉사_모집글_마감"><a class="link" href="#_봉사_모집글_마감">봉사 모집글 마감</a></h3>
 <div class="sect3">
-<h4 id="_request_25"><a class="link" href="#_request_25">Request</a></h4>
+<h4 id="_request_26"><a class="link" href="#_request_26">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_25_http_request"><a class="link" href="#_request_25_http_request">HTTP request</a></h5>
+<h5 id="_request_26_http_request"><a class="link" href="#_request_26_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1/close HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzYsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ARhGHD6v-MSvxNdCmFRCVY44KdgtKkK01XdbuMOd0M-s3OSVpZbldrV2if3O9-QZ
-X-CSRF-TOKEN: NzVqsA1bXo9e1_4-4ftcCrdIE4u8sKRfHH7Qn-SVxTBZjnwwVAFT0jluPLZz4pha0tZoPY59PuqO1ZByL0m2rdP29AU7vhoG
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjYsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.XqxkNqYqc8pagy6ziHSr9nsJ-JBAMxn_mXHjbrJiqcgacV7FeizUfOcRwuHhv8Ox
+X-CSRF-TOKEN: fcxYYZXEWN9W4rt5A9wt_Tj4fBD-PAkmWALDlyvQxRqYpqpJHq9uUPbwOuZ7gYhKN_EZnAnJUXLNWjALazD7rxrl8i-rwJ8q
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_25_request_headers"><a class="link" href="#_request_25_request_headers">Request headers</a></h5>
+<h5 id="_request_26_request_headers"><a class="link" href="#_request_26_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3987,7 +3879,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_25_path_parameters"><a class="link" href="#_request_25_path_parameters">Path parameters</a></h5>
+<h5 id="_request_26_path_parameters"><a class="link" href="#_request_26_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/recruitments/{recruitmentId}/close</caption>
 <colgroup>
@@ -4027,23 +3919,23 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_봉사_모집글_수정"><a class="link" href="#_봉사_모집글_수정">봉사 모집글 수정</a></h3>
 <div class="sect3">
-<h4 id="_request_26"><a class="link" href="#_request_26">Request</a></h4>
+<h4 id="_request_27"><a class="link" href="#_request_27">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_26_http_request"><a class="link" href="#_request_26_http_request">HTTP request</a></h5>
+<h5 id="_request_27_http_request"><a class="link" href="#_request_27_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzYsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ARhGHD6v-MSvxNdCmFRCVY44KdgtKkK01XdbuMOd0M-s3OSVpZbldrV2if3O9-QZ
-Content-Length: 234
-X-CSRF-TOKEN: Uhn56HMnnIjU2A3bC5yzpqTVTA4iXrQRfRQ313r-aRHE4RytZi-a3kFCqr357G_qbrGHn5flYTZDZtc8GCRW5EycDyal1ymc
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjYsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.XqxkNqYqc8pagy6ziHSr9nsJ-JBAMxn_mXHjbrJiqcgacV7FeizUfOcRwuHhv8Ox
+Content-Length: 228
+X-CSRF-TOKEN: GEvK8zopmREKuU3LuOAq_oJSgNiQvtpW55Kbq1nAAzz40pSBfC77yltLqHcn3Cn6ic0emuBqrbn2jb571_atnGj2MQ6e5qe1
 Host: localhost:8080
 
 {
   "title" : "title",
-  "startTime" : "2023-12-30T18:32:56.227024",
-  "endTime" : "2023-12-30T19:32:56.227024",
-  "deadline" : "2023-12-29T18:32:56.227024",
+  "startTime" : "2024-01-01T16:56:06.2019",
+  "endTime" : "2024-01-01T17:56:06.2019",
+  "deadline" : "2023-12-31T16:56:06.2019",
   "capacity" : 10,
   "content" : "content",
   "imageUrls" : [ "a1", "a2" ]
@@ -4052,7 +3944,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_26_request_headers"><a class="link" href="#_request_26_request_headers">Request headers</a></h5>
+<h5 id="_request_27_request_headers"><a class="link" href="#_request_27_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -4073,7 +3965,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_26_path_parameters"><a class="link" href="#_request_26_path_parameters">Path parameters</a></h5>
+<h5 id="_request_27_path_parameters"><a class="link" href="#_request_27_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/recruitments/{recruitmentId}</caption>
 <colgroup>
@@ -4095,7 +3987,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_26_request_fields"><a class="link" href="#_request_26_request_fields">Request fields</a></h5>
+<h5 id="_request_27_request_fields"><a class="link" href="#_request_27_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -4185,20 +4077,20 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_봉사_모집글_삭제"><a class="link" href="#_봉사_모집글_삭제">봉사 모집글 삭제</a></h3>
 <div class="sect3">
-<h4 id="_request_27"><a class="link" href="#_request_27">Request</a></h4>
+<h4 id="_request_28"><a class="link" href="#_request_28">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_27_http_request"><a class="link" href="#_request_27_http_request">HTTP request</a></h5>
+<h5 id="_request_28_http_request"><a class="link" href="#_request_28_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/shelters/recruitments/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzYsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ARhGHD6v-MSvxNdCmFRCVY44KdgtKkK01XdbuMOd0M-s3OSVpZbldrV2if3O9-QZ
-X-CSRF-TOKEN: eXXFqNPbNMSiyeIXcf1BXrvUPGlctlzaK3RyHn66JXRPwGm7S0X1n7G9VfGPqIB2FdB1atrjEQhu1G73SkZHek-KEU138AiD
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjYsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.XqxkNqYqc8pagy6ziHSr9nsJ-JBAMxn_mXHjbrJiqcgacV7FeizUfOcRwuHhv8Ox
+X-CSRF-TOKEN: cek3CViJfFM7P-Gz0QAMBViDAqLgH6IlyrJDursqLy6M3sh9EtkCPmG4T2EWDNjX5C04ZGm3L5qBfZYI84ZwgolJSkzpvf4b
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_27_request_headers"><a class="link" href="#_request_27_request_headers">Request headers</a></h5>
+<h5 id="_request_28_request_headers"><a class="link" href="#_request_28_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -4219,7 +4111,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_27_path_parameters"><a class="link" href="#_request_27_path_parameters">Path parameters</a></h5>
+<h5 id="_request_28_path_parameters"><a class="link" href="#_request_28_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/recruitments/{recruitmentId}</caption>
 <colgroup>
@@ -4259,20 +4151,20 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_봉사자가_완료한_봉사_모집글_조회"><a class="link" href="#_봉사자가_완료한_봉사_모집글_조회">봉사자가 완료한 봉사 모집글 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_28"><a class="link" href="#_request_28">Request</a></h4>
+<h4 id="_request_29"><a class="link" href="#_request_29">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_28_http_request"><a class="link" href="#_request_28_http_request">HTTP request</a></h5>
+<h5 id="_request_29_http_request"><a class="link" href="#_request_29_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/volunteers/1/recruitments/completed?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzYsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ARhGHD6v-MSvxNdCmFRCVY44KdgtKkK01XdbuMOd0M-s3OSVpZbldrV2if3O9-QZ
-X-CSRF-TOKEN: 7SE2HrlKI1smi8jaEbeEag4KAB2AlPTFLOETcmhf9CJZpdWz3RRSLYtyGzgLs_3jcpqwDms8LXzi8c3oGdEhQA5rkUZtkOaF
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjYsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjYsInJvbGUiOiJST0xFX1NIRUxURVIifQ.XqxkNqYqc8pagy6ziHSr9nsJ-JBAMxn_mXHjbrJiqcgacV7FeizUfOcRwuHhv8Ox
+X-CSRF-TOKEN: NG38-kiZvOw_9Y1AVL-YxiE8upvHUl_9zYDKTisgQKuZborMBguYnnmohYkSxekiMZKs9xAMl6P3ZT3Q_uHyeE4VJZKuCrmq
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_28_path_parameters"><a class="link" href="#_request_28_path_parameters">Path parameters</a></h5>
+<h5 id="_request_29_path_parameters"><a class="link" href="#_request_29_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/volunteers/{volunteerId}/recruitments/completed</caption>
 <colgroup>
@@ -4294,7 +4186,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_28_query_parameters"><a class="link" href="#_request_28_query_parameters">Query parameters</a></h5>
+<h5 id="_request_29_query_parameters"><a class="link" href="#_request_29_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -4344,7 +4236,7 @@ Content-Length: 264
   "recruitments" : [ {
     "recruitmentId" : 1,
     "recruitmentTitle" : "recruitmentTitle",
-    "recruitmentStartTime" : "2023-12-30T18:32:42.615696",
+    "recruitmentStartTime" : "2024-01-01T16:55:51.990128",
     "shelterName" : "shelterName"
   } ],
   "pageInfo" : {
@@ -4430,21 +4322,21 @@ Content-Length: 264
 <div class="sect2">
 <h3 id="_봉사_신청_2"><a class="link" href="#_봉사_신청_2">봉사 신청</a></h3>
 <div class="sect3">
-<h4 id="_request_29"><a class="link" href="#_request_29">Request</a></h4>
+<h4 id="_request_30"><a class="link" href="#_request_30">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_29_http_request"><a class="link" href="#_request_29_http_request">HTTP request</a></h5>
+<h5 id="_request_30_http_request"><a class="link" href="#_request_30_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/volunteers/recruitments/1/apply HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjIsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.Lmd7gRzq-Mw076urFTkMHMSwK9LGZWaYw3aoOUM_jhNNhPRh59a5FsDGj_XvlMJb
-X-CSRF-TOKEN: erS7tOtEsElZcJBjRVqt0bqomr1v9DHJmjcCd8HD-q_VwFIOQ4CNjN91gi90FKEAfHeZ6dmYt4VekFPkqwM3QvX7nprn9zQ9
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.8b4CgIb24Mh_4IddxEFT53XZ3z0BugpA9C-ASRAMMNqJ0L-4Y1PQRV7trDsJrMAv
+X-CSRF-TOKEN: DEE_HqREfKm3WlCBfqYgP7nvDJ9SK5ZcaoIZZ65R5KTgJZeFb3EJJpInS82abjW0G4sUC4mNIaZlT_VxU7YvAcwygcbSRPPg
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_29_request_headers"><a class="link" href="#_request_29_request_headers">Request headers</a></h5>
+<h5 id="_request_30_request_headers"><a class="link" href="#_request_30_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -4465,7 +4357,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_29_path_parameters"><a class="link" href="#_request_29_path_parameters">Path parameters</a></h5>
+<h5 id="_request_30_path_parameters"><a class="link" href="#_request_30_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/volunteers/recruitments/{recruitmentId}/apply</caption>
 <colgroup>
@@ -4505,20 +4397,20 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_봉사_신청_여부_조회"><a class="link" href="#_봉사_신청_여부_조회">봉사 신청 여부 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_30"><a class="link" href="#_request_30">Request</a></h4>
+<h4 id="_request_31"><a class="link" href="#_request_31">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_30_http_request"><a class="link" href="#_request_30_http_request">HTTP request</a></h5>
+<h5 id="_request_31_http_request"><a class="link" href="#_request_31_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/recruitments/1/apply HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjIsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.Lmd7gRzq-Mw076urFTkMHMSwK9LGZWaYw3aoOUM_jhNNhPRh59a5FsDGj_XvlMJb
-X-CSRF-TOKEN: DbJRgeWzVkKrLUqCxFp_I-x8s6BPt4X4Yg99Dp8jvAYwfxq1a4Zmt4GAMHSGGnO79ndLFYpKnsJ70-DVVTZLPf0WizRUG3iG
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.8b4CgIb24Mh_4IddxEFT53XZ3z0BugpA9C-ASRAMMNqJ0L-4Y1PQRV7trDsJrMAv
+X-CSRF-TOKEN: hwQ2VMlBu1J7P0hWLYewr7o_T8xgu54rZ25xlO3nHvlgyKbc5TBXZ6p4ijNWWX5jHqqEn4gIYq1SiPgGUwwXrdjTe8tV8JS6
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_30_request_headers"><a class="link" href="#_request_30_request_headers">Request headers</a></h5>
+<h5 id="_request_31_request_headers"><a class="link" href="#_request_31_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -4539,7 +4431,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_30_path_parameters"><a class="link" href="#_request_30_path_parameters">Path parameters</a></h5>
+<h5 id="_request_31_path_parameters"><a class="link" href="#_request_31_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/volunteers/recruitments/{recruitmentId}/apply</caption>
 <colgroup>
@@ -4609,21 +4501,21 @@ Content-Length: 35
 <div class="sect2">
 <h3 id="_내봉사자가_신청한_봉사_신청_목록_조회"><a class="link" href="#_내봉사자가_신청한_봉사_신청_목록_조회">내(봉사자)가 신청한 봉사 신청 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_31"><a class="link" href="#_request_31">Request</a></h4>
+<h4 id="_request_32"><a class="link" href="#_request_32">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_31_http_request"><a class="link" href="#_request_31_http_request">HTTP request</a></h5>
+<h5 id="_request_32_http_request"><a class="link" href="#_request_32_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/applicants?pageNumber=0&amp;pageSize=10 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjIsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.Lmd7gRzq-Mw076urFTkMHMSwK9LGZWaYw3aoOUM_jhNNhPRh59a5FsDGj_XvlMJb
-X-CSRF-TOKEN: QrgZ9a69HXth4RV9Ul6DffJwH6xHJS33MUnmwNdLNokoODinJ48gwJqJeB9M1iFMa3O3TZMUMs1zFxzaUC3Q97YuVbkaAQqW
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.8b4CgIb24Mh_4IddxEFT53XZ3z0BugpA9C-ASRAMMNqJ0L-4Y1PQRV7trDsJrMAv
+X-CSRF-TOKEN: lLPSu8mPwKWhu8MJ9oqrBO-UmsZ_RrTnqskdZ_KGKs8fvODTrIvk2Kzs88OM2Po4xKefZYmht_5GcI3Km6oqBsewTv18j4Hj
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_31_request_headers"><a class="link" href="#_request_31_request_headers">Request headers</a></h5>
+<h5 id="_request_32_request_headers"><a class="link" href="#_request_32_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -4670,7 +4562,7 @@ Content-Length: 387
     "shelterName" : "보호소 이름",
     "applicantStatus" : "ATTENDANCE",
     "applicantIsWritedReview" : true,
-    "recruitmentStartTime" : "2023-11-30T18:32:42.754145"
+    "recruitmentStartTime" : "2023-12-01T16:55:52.166137"
   } ]
 }</code></pre>
 </div>
@@ -4765,21 +4657,21 @@ Content-Length: 387
 <div class="sect2">
 <h3 id="_봉사_신청자_목록_조회"><a class="link" href="#_봉사_신청자_목록_조회">봉사 신청자 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_32"><a class="link" href="#_request_32">Request</a></h4>
+<h4 id="_request_33"><a class="link" href="#_request_33">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_32_http_request"><a class="link" href="#_request_32_http_request">HTTP request</a></h5>
+<h5 id="_request_33_http_request"><a class="link" href="#_request_33_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/recruitments/1/applicants HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjIsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.tNnHZxL6p2gxBYDfv3cm4yoOzejDTypMj6okpJ55GEtbHhb3fzzN-tOpwkHNYYwW
-X-CSRF-TOKEN: M5a0dABQoxx0yVcyAW8pErBPsPkmnmH4OhqvWq0kXcDPDdIoCvWEQWZnmipZ-TRXZUIdJdN-nZgT-APVWHmWOcsUavP5b-NO
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.QiOvBYAPuW5hWlU0-p3TWvN8EZ5kpPAiVVjO_RWc8kiuJi_ncPqYldZadbkXxVW_
+X-CSRF-TOKEN: uL8ItzpDDJOa7OL6MYJ1lOl0WskI_euEQkaJnwEKApjlCGxuidtugFwmave33oPKAq9BpdxGd6huzNypJn67rDU9M_7Qa15a
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_32_request_headers"><a class="link" href="#_request_32_request_headers">Request headers</a></h5>
+<h5 id="_request_33_request_headers"><a class="link" href="#_request_33_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -4800,7 +4692,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_32_path_parameters"><a class="link" href="#_request_32_path_parameters">Path parameters</a></h5>
+<h5 id="_request_33_path_parameters"><a class="link" href="#_request_33_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/recruitments/{recruitmentId}/applicants</caption>
 <colgroup>
@@ -4840,7 +4732,7 @@ Content-Length: 324
     "volunteerId" : 1,
     "applicantId" : 1,
     "volunteerName" : "봉사자 이름",
-    "volunteerBirthDate" : "2023-11-30",
+    "volunteerBirthDate" : "2023-12-01",
     "volunteerGender" : "MALE",
     "completedVolunteerCount" : 5,
     "volunteerTemperature" : 36,
@@ -4925,21 +4817,21 @@ Content-Length: 324
 <div class="sect2">
 <h3 id="_봉사_신청_승인자_목록_조회"><a class="link" href="#_봉사_신청_승인자_목록_조회">봉사 신청 승인자 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_33"><a class="link" href="#_request_33">Request</a></h4>
+<h4 id="_request_34"><a class="link" href="#_request_34">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_33_http_request"><a class="link" href="#_request_33_http_request">HTTP request</a></h5>
+<h5 id="_request_34_http_request"><a class="link" href="#_request_34_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/recruitments/1/approval HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjIsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.tNnHZxL6p2gxBYDfv3cm4yoOzejDTypMj6okpJ55GEtbHhb3fzzN-tOpwkHNYYwW
-X-CSRF-TOKEN: W6x-lb4ZDRa25LZ_WbwGdUqMOIEO1VQNfEbOuEWxDnHH4e39as9H9tt9aCKb0oZLbpEyRiu1Fbhq7TYgT3b_jnLTORKhh9rL
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.QiOvBYAPuW5hWlU0-p3TWvN8EZ5kpPAiVVjO_RWc8kiuJi_ncPqYldZadbkXxVW_
+X-CSRF-TOKEN: PAyHhJyNNcrx8pFldN8NIQTzdsOfdr9AZ7Xwyn9BFAQj_XphCW2y5_nuDf_cxaRRQPI5QzeSW_r-RIptXtHE_R5wcGUaxUpY
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_33_request_headers"><a class="link" href="#_request_33_request_headers">Request headers</a></h5>
+<h5 id="_request_34_request_headers"><a class="link" href="#_request_34_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -4960,7 +4852,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_33_path_parameters"><a class="link" href="#_request_33_path_parameters">Path parameters</a></h5>
+<h5 id="_request_34_path_parameters"><a class="link" href="#_request_34_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/recruitments/{recruitmentId}/approval</caption>
 <colgroup>
@@ -5060,16 +4952,16 @@ Content-Length: 24
 <div class="sect2">
 <h3 id="_봉사_신청자_승인_여부_수정"><a class="link" href="#_봉사_신청자_승인_여부_수정">봉사 신청자 승인 여부 수정</a></h3>
 <div class="sect3">
-<h4 id="_request_34"><a class="link" href="#_request_34">Request</a></h4>
+<h4 id="_request_35"><a class="link" href="#_request_35">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_34_http_request"><a class="link" href="#_request_34_http_request">HTTP request</a></h5>
+<h5 id="_request_35_http_request"><a class="link" href="#_request_35_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1/applicants/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjIsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.tNnHZxL6p2gxBYDfv3cm4yoOzejDTypMj6okpJ55GEtbHhb3fzzN-tOpwkHNYYwW
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.QiOvBYAPuW5hWlU0-p3TWvN8EZ5kpPAiVVjO_RWc8kiuJi_ncPqYldZadbkXxVW_
 Content-Length: 25
-X-CSRF-TOKEN: 9iDuDvp3DRf4ovLWbNGAEPXfSg5JjiNBLJkjUZFUEqt566VqwRbZb8sWbifVlcfuCPy0J5S5Z2x46EZsT_wXNKBgcMlIiJIL
+X-CSRF-TOKEN: 7f0tpNaLeN7B7a44nlUzg7aB2csMsHTCmie-kKrV9pQCQQyFjM0VkuW4QLjs354O-HgH4oa19KlvgkfvrxeIp8jll_Y1d2qw
 Host: localhost:8080
 
 {
@@ -5079,7 +4971,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_34_request_headers"><a class="link" href="#_request_34_request_headers">Request headers</a></h5>
+<h5 id="_request_35_request_headers"><a class="link" href="#_request_35_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -5100,7 +4992,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_34_path_parameters"><a class="link" href="#_request_34_path_parameters">Path parameters</a></h5>
+<h5 id="_request_35_path_parameters"><a class="link" href="#_request_35_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/recruitments/{recruitmentId}/applicants/{applicantId}</caption>
 <colgroup>
@@ -5126,7 +5018,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_34_request_fields"><a class="link" href="#_request_34_request_fields">Request fields</a></h5>
+<h5 id="_request_35_request_fields"><a class="link" href="#_request_35_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -5174,16 +5066,16 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_봉사_신청_승인자_출석_상태_수정"><a class="link" href="#_봉사_신청_승인자_출석_상태_수정">봉사 신청 승인자 출석 상태 수정</a></h3>
 <div class="sect3">
-<h4 id="_request_35"><a class="link" href="#_request_35">Request</a></h4>
+<h4 id="_request_36"><a class="link" href="#_request_36">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_35_http_request"><a class="link" href="#_request_35_http_request">HTTP request</a></h5>
+<h5 id="_request_36_http_request"><a class="link" href="#_request_36_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/recruitments/1/approval HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjIsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.tNnHZxL6p2gxBYDfv3cm4yoOzejDTypMj6okpJ55GEtbHhb3fzzN-tOpwkHNYYwW
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.QiOvBYAPuW5hWlU0-p3TWvN8EZ5kpPAiVVjO_RWc8kiuJi_ncPqYldZadbkXxVW_
 Content-Length: 77
-X-CSRF-TOKEN: qXh_dx26XdajWlqIWzpy48NFaQ_FlyzFY-Y2Co9KdZG__vuQnR1PQC_ZOe-OaGrrPxdG2qAhRG32oBXoW9cHPOouFvfcnJ-i
+X-CSRF-TOKEN: BSV11MrOkDB79QIjJUghsYZ_VHTfnEVwW1lBNYBlw87JweJ1Z0cT7PitqVRWwmBFFWUVhOUaeRbo-SddOWsnUbJd86yo8IRH
 Host: localhost:8080
 
 {
@@ -5196,7 +5088,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_35_request_headers"><a class="link" href="#_request_35_request_headers">Request headers</a></h5>
+<h5 id="_request_36_request_headers"><a class="link" href="#_request_36_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -5217,7 +5109,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_35_path_parameters"><a class="link" href="#_request_35_path_parameters">Path parameters</a></h5>
+<h5 id="_request_36_path_parameters"><a class="link" href="#_request_36_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/recruitments/{recruitmentId}/approval</caption>
 <colgroup>
@@ -5239,7 +5131,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_35_request_fields"><a class="link" href="#_request_35_request_fields">Request fields</a></h5>
+<h5 id="_request_36_request_fields"><a class="link" href="#_request_36_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -5312,19 +5204,19 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_보호소의_봉사_리뷰_목록_조회"><a class="link" href="#_보호소의_봉사_리뷰_목록_조회">보호소의 봉사 리뷰 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_36"><a class="link" href="#_request_36">Request</a></h4>
+<h4 id="_request_37"><a class="link" href="#_request_37">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_36_http_request"><a class="link" href="#_request_36_http_request">HTTP request</a></h5>
+<h5 id="_request_37_http_request"><a class="link" href="#_request_37_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/1/reviews?pageNumber=0&amp;pageSize=10 HTTP/1.1
-X-CSRF-TOKEN: yeL4iiNiwwILkLwOyIVJQa4VG0ZqEQUldt4uZQ7B68326xDVqNGevxRR9jAmpN4_8ah9JZYmNn5dIjIIQO0YVGj13v_E03Ph
+X-CSRF-TOKEN: W0pNtlC4k30FD8qYnB3IgsPTyGqDP_pZ2j8gfpBrBgTPAcCcbnN0hWfeq08obPuuqzD8t_ux5VKzCZx07wwRS_VeMGL-NPSl
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_36_path_parameters"><a class="link" href="#_request_36_path_parameters">Path parameters</a></h5>
+<h5 id="_request_37_path_parameters"><a class="link" href="#_request_37_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/{shelterId}/reviews</caption>
 <colgroup>
@@ -5346,7 +5238,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_36_query_parameters"><a class="link" href="#_request_36_query_parameters">Query parameters</a></h5>
+<h5 id="_request_37_query_parameters"><a class="link" href="#_request_37_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -5390,13 +5282,13 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 335
+Content-Length: 336
 
 {
   "reviews" : [ {
     "reviewId" : 1,
     "volunteerTemperature" : 36,
-    "reviewCreatedAt" : "2023-11-30T18:32:58.50678",
+    "reviewCreatedAt" : "2023-12-01T16:56:08.419686",
     "reviewContent" : "reviewContent",
     "volunteerEmail" : "asdf@gmail.com",
     "reviewImageUrls" : [ "imageUrl1", "imageUrl2" ]
@@ -5488,16 +5380,16 @@ Content-Length: 335
 <div class="sect2">
 <h3 id="_봉사_후기_등록"><a class="link" href="#_봉사_후기_등록">봉사 후기 등록</a></h3>
 <div class="sect3">
-<h4 id="_request_37"><a class="link" href="#_request_37">Request</a></h4>
+<h4 id="_request_38"><a class="link" href="#_request_38">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_37_http_request"><a class="link" href="#_request_37_http_request">HTTP request</a></h5>
+<h5 id="_request_38_http_request"><a class="link" href="#_request_38_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/volunteers/reviews HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzgsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.aPScMV2fjbysBU6XjizoSDdgs39C9StYaXD44pL2FJgg1GX593NPrTuU_j8EfQ5Z
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjgsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.7ovZwph9hX5v7xdpqR4rV1uekdFwHF955sqE4X3nyMHIS95VpYT-Kp1Mu27c5Vsv
 Content-Length: 102
-X-CSRF-TOKEN: 5-hmW54ljZrlxMu3W_gujxqIKCTbvy-M7ohJV4jpY8DE664Tgd1QbasXu_nIoq-Ba9Ua6S27BUXs2huh2Ol7M-7ZBvGh05ki
+X-CSRF-TOKEN: e2OieTXchrgYpZzgqEob3hpW2lg75T785RRZT03XlFNTKzNZTQLBH1Ttv941wKvWnmcvuHww92AI1QvR3Sxsfy7n9zVgHgBt
 Host: localhost:8080
 
 {
@@ -5509,7 +5401,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_37_request_headers"><a class="link" href="#_request_37_request_headers">Request headers</a></h5>
+<h5 id="_request_38_request_headers"><a class="link" href="#_request_38_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -5530,7 +5422,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_37_request_fields"><a class="link" href="#_request_37_request_fields">Request fields</a></h5>
+<h5 id="_request_38_request_fields"><a class="link" href="#_request_38_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -5561,14 +5453,14 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@461b4471</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@d5d0478</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageUrls[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@605c1355</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@183eb663</p></td>
 </tr>
 </tbody>
 </table>
@@ -5599,21 +5491,21 @@ Content-Length: 20
 <div class="sect2">
 <h3 id="_봉사_후기_상세_조회"><a class="link" href="#_봉사_후기_상세_조회">봉사 후기 상세 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_38"><a class="link" href="#_request_38">Request</a></h4>
+<h4 id="_request_39"><a class="link" href="#_request_39">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_38_http_request"><a class="link" href="#_request_38_http_request">HTTP request</a></h5>
+<h5 id="_request_39_http_request"><a class="link" href="#_request_39_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/reviews/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzgsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.aPScMV2fjbysBU6XjizoSDdgs39C9StYaXD44pL2FJgg1GX593NPrTuU_j8EfQ5Z
-X-CSRF-TOKEN: vLW5TY5anTPGQE3vbqkRxZqO9jK5jHqVOg4fzjmrWV0lWEaB3YfcdLlipAbrJH-NXoQloPzt21OJukm4AjorrADOO29DYX6x
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjgsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.7ovZwph9hX5v7xdpqR4rV1uekdFwHF955sqE4X3nyMHIS95VpYT-Kp1Mu27c5Vsv
+X-CSRF-TOKEN: kmd_09i-Sn6vuhIdT5qI7Lb3ptGTXl2kyAU06vH0B3Gp3pMM8QJKsbuLK0eCiyskebe82IDHi7OnZjmJq2MH0sOQNUfM6PU_
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_38_request_headers"><a class="link" href="#_request_38_request_headers">Request headers</a></h5>
+<h5 id="_request_39_request_headers"><a class="link" href="#_request_39_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -5634,7 +5526,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_38_path_parameters"><a class="link" href="#_request_38_path_parameters">Path parameters</a></h5>
+<h5 id="_request_39_path_parameters"><a class="link" href="#_request_39_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/volunteers/reviews/{reviewId}</caption>
 <colgroup>
@@ -5716,133 +5608,22 @@ Content-Length: 109
 <div class="sect2">
 <h3 id="_봉사_후기_수정"><a class="link" href="#_봉사_후기_수정">봉사 후기 수정</a></h3>
 <div class="sect3">
-<h4 id="_request_39"><a class="link" href="#_request_39">Request</a></h4>
+<h4 id="_request_40"><a class="link" href="#_request_40">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_39_http_request"><a class="link" href="#_request_39_http_request">HTTP request</a></h5>
+<h5 id="_request_40_http_request"><a class="link" href="#_request_40_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/volunteers/reviews/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzgsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.aPScMV2fjbysBU6XjizoSDdgs39C9StYaXD44pL2FJgg1GX593NPrTuU_j8EfQ5Z
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjgsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.7ovZwph9hX5v7xdpqR4rV1uekdFwHF955sqE4X3nyMHIS95VpYT-Kp1Mu27c5Vsv
 Content-Length: 66
-X-CSRF-TOKEN: Yq82BMeE-Trl-zRWdnWpkLK3RbhzGTiw8oJry04WsvqcSC7VVcxXM_Hmzg_InVBgRlid8tCAaIAXKAGdyuFSqHkg08_-LRng
+X-CSRF-TOKEN: SrpxWsK65ZebY1_ezNejNz59a9zA7L6ly4ERnb46u5NSSWYEKNhCafff1qa2Bzq_-vqXBw8YRuT02IqI_LQo-Yxfj_U2fFYx
 Host: localhost:8080
 
 {
   "content" : "글 내용",
   "imageUrls" : [ "url1", "url2" ]
 }</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_request_39_request_headers"><a class="link" href="#_request_39_request_headers">Request headers</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사자 액세스 토큰</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_request_39_path_parameters"><a class="link" href="#_request_39_path_parameters">Path parameters</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /api/volunteers/reviews/{reviewId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 ID</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_request_39_request_fields"><a class="link" href="#_request_39_request_fields">Request fields</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">제약</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@6caa1c3</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageUrls[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@627bdb8b</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_39"><a class="link" href="#_response_39">Response</a></h4>
-<div class="sect4">
-<h5 id="_response_39_http_response"><a class="link" href="#_response_39_http_response">HTTP response</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_봉사_후기_삭제"><a class="link" href="#_봉사_후기_삭제">봉사 후기 삭제</a></h3>
-<div class="sect3">
-<h4 id="_request_40"><a class="link" href="#_request_40">Request</a></h4>
-<div class="sect4">
-<h5 id="_request_40_http_request"><a class="link" href="#_request_40_http_request">HTTP request</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/volunteers/reviews/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzgsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.aPScMV2fjbysBU6XjizoSDdgs39C9StYaXD44pL2FJgg1GX593NPrTuU_j8EfQ5Z
-X-CSRF-TOKEN: KYzcskvE8YlwRVvZn-bZb0zh6uh7NZ7D_XgFpZBSTGPaaAH-HO2_g3r3wbtdIWi_qsvtV3_Tx9FIBfzuyRtglPI0L1DvXzDN
-Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
@@ -5884,16 +5665,53 @@ Host: localhost:8080</code></pre>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 후기 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_request_40_request_fields"><a class="link" href="#_request_40_request_fields">Request fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">제약</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@ef70f85</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>imageUrls[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.restdocs.snippet.Attributes$Attribute@2f0504cd</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_40"><a class="link" href="#_response_40">Response</a></h4>
+<h4 id="_response_39"><a class="link" href="#_response_39">Response</a></h4>
 <div class="sect4">
-<h5 id="_response_40_http_response"><a class="link" href="#_response_40_http_response">HTTP response</a></h5>
+<h5 id="_response_39_http_response"><a class="link" href="#_response_39_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -5906,16 +5724,16 @@ Vary: Access-Control-Request-Headers</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_내봉사자가_작성한_후기_리스트_조회"><a class="link" href="#_내봉사자가_작성한_후기_리스트_조회">내(봉사자)가 작성한 후기 리스트 조회</a></h3>
+<h3 id="_봉사_후기_삭제"><a class="link" href="#_봉사_후기_삭제">봉사 후기 삭제</a></h3>
 <div class="sect3">
 <h4 id="_request_41"><a class="link" href="#_request_41">Request</a></h4>
 <div class="sect4">
 <h5 id="_request_41_http_request"><a class="link" href="#_request_41_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/me/reviews?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzgsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.aPScMV2fjbysBU6XjizoSDdgs39C9StYaXD44pL2FJgg1GX593NPrTuU_j8EfQ5Z
-X-CSRF-TOKEN: Aj8uWxm26Gk5A3qkWAiQ4HDwkebXLsxhIMTsJymhMeImVx5kMwYYY3qCjAoUNU_CbyWk2BHDvIfmF_1MFaaIRR_EB9EXbisC
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/volunteers/reviews/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjgsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.7ovZwph9hX5v7xdpqR4rV1uekdFwHF955sqE4X3nyMHIS95VpYT-Kp1Mu27c5Vsv
+X-CSRF-TOKEN: o8Ivj_Tolpuw9ivde3tXeGkhhQM9LxleSAwODrH11pf9M4A6xqEctsTeoP-dlEnoTlZjQV4VqDoEFiFzezk-NtPE4KSfC-II
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -5942,7 +5760,81 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_41_query_parameters"><a class="link" href="#_request_41_query_parameters">Query parameters</a></h5>
+<h5 id="_request_41_path_parameters"><a class="link" href="#_request_41_path_parameters">Path parameters</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/volunteers/reviews/{reviewId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사 후기 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_40"><a class="link" href="#_response_40">Response</a></h4>
+<div class="sect4">
+<h5 id="_response_40_http_response"><a class="link" href="#_response_40_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_내봉사자가_작성한_후기_리스트_조회"><a class="link" href="#_내봉사자가_작성한_후기_리스트_조회">내(봉사자)가 작성한 후기 리스트 조회</a></h3>
+<div class="sect3">
+<h4 id="_request_42"><a class="link" href="#_request_42">Request</a></h4>
+<div class="sect4">
+<h5 id="_request_42_http_request"><a class="link" href="#_request_42_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/me/reviews?pageNumber=0&amp;pageSize=10 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjgsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjgsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.7ovZwph9hX5v7xdpqR4rV1uekdFwHF955sqE4X3nyMHIS95VpYT-Kp1Mu27c5Vsv
+X-CSRF-TOKEN: Yzlqxwr5p1eckXBwWZ9N6h854Fj4_zT5Mg-ATazwTPSykAlbU1sMpW7BxTKxoEcUO7J50yoAzTqbxgDUUz3kepXDepDQ8T85
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_request_42_request_headers"><a class="link" href="#_request_42_request_headers">Request headers</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">봉사자 액세스 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_request_42_query_parameters"><a class="link" href="#_request_42_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -5997,7 +5889,7 @@ Content-Length: 318
     "reviewId" : 1,
     "shelterId" : 1,
     "shelterName" : "shelterName",
-    "reviewCreatedAt" : "2023-11-30T18:32:58.496937",
+    "reviewCreatedAt" : "2023-12-01T16:56:08.408104",
     "reviewContent" : "reviewContent",
     "reviewImageUrls" : [ "imageUrl1", "imageUrl2" ]
   } ]
@@ -6084,20 +5976,20 @@ Content-Length: 318
 <div class="sect2">
 <h3 id="_봉사자가_작성한_후기_리스트_조회"><a class="link" href="#_봉사자가_작성한_후기_리스트_조회">봉사자가 작성한 후기 리스트 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_42"><a class="link" href="#_request_42">Request</a></h4>
+<h4 id="_request_43"><a class="link" href="#_request_43">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_42_http_request"><a class="link" href="#_request_42_http_request">HTTP request</a></h5>
+<h5 id="_request_43_http_request"><a class="link" href="#_request_43_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/volunteers/1/reviews?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzgsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ZynwkJYCXp8D9aymH75kI7OXHkdNY1Vk3r5r34jPJKw2U9DKnpTtG1JABTfDNQlR
-X-CSRF-TOKEN: kFSboJL0azz9z3tEPP-cLYlkfEDEKfnG-h7pttPFs21rHLzH8mSjwvTBDw7Q9x4iWdKoGetWUXigTczrmHzd17amhwhbfoWk
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjgsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.Hf1Vy0Er82pv2Ynp_dhFBJl9fXslb0SXnVPg1_H6jqLha0ZR-9lIk1OxZUWMyboH
+X-CSRF-TOKEN: fpncROuRqGNcUIUzmZNR72ObttJCMSiLP5xNO6P2VqlfPwqbHaG4fdvym1ZxY7NR-75l3Qasm-ojVE2mWql1ApbHN5lrD2v_
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_42_request_headers"><a class="link" href="#_request_42_request_headers">Request headers</a></h5>
+<h5 id="_request_43_request_headers"><a class="link" href="#_request_43_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -6118,7 +6010,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_42_path_parameters"><a class="link" href="#_request_42_path_parameters">Path parameters</a></h5>
+<h5 id="_request_43_path_parameters"><a class="link" href="#_request_43_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/volunteers/{volunteerId}/reviews</caption>
 <colgroup>
@@ -6140,7 +6032,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_42_query_parameters"><a class="link" href="#_request_42_query_parameters">Query parameters</a></h5>
+<h5 id="_request_43_query_parameters"><a class="link" href="#_request_43_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -6195,7 +6087,7 @@ Content-Length: 318
     "reviewId" : 1,
     "shelterId" : 1,
     "shelterName" : "shelterName",
-    "reviewCreatedAt" : "2023-11-30T18:32:58.444879",
+    "reviewCreatedAt" : "2023-12-01T16:56:08.372018",
     "reviewContent" : "reviewContent",
     "reviewImageUrls" : [ "imageUrl1", "imageUrl2" ]
   } ]
@@ -6277,20 +6169,20 @@ Content-Length: 318
 <div class="sect2">
 <h3 id="_내보호소가_받은_후기_리스트_조회"><a class="link" href="#_내보호소가_받은_후기_리스트_조회">내(보호소)가 받은 후기 리스트 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_43"><a class="link" href="#_request_43">Request</a></h4>
+<h4 id="_request_44"><a class="link" href="#_request_44">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_43_http_request"><a class="link" href="#_request_43_http_request">HTTP request</a></h5>
+<h5 id="_request_44_http_request"><a class="link" href="#_request_44_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/me/reviews?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NzgsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NzgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.ZynwkJYCXp8D9aymH75kI7OXHkdNY1Vk3r5r34jPJKw2U9DKnpTtG1JABTfDNQlR
-X-CSRF-TOKEN: TzvnXambjf1ya-wRInor9lz0gLxMuKOZWp7EYqJpsoxEHvWIfw_UZJ6vu8RfCtQhE1cfxjqRrYR0jMK0Pq2hWpoIhul8Jsyx
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNjgsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNjgsInJvbGUiOiJST0xFX1NIRUxURVIifQ.Hf1Vy0Er82pv2Ynp_dhFBJl9fXslb0SXnVPg1_H6jqLha0ZR-9lIk1OxZUWMyboH
+X-CSRF-TOKEN: j8sqDlJvm6Io_YSXxbmUratsi3IPshr0yE7cJf9pQX9Amqgpu_NIPTRXqcAFybymoZSgn81VpktpgH_Z_Su-Rs0MIht4qpEe
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_43_request_headers"><a class="link" href="#_request_43_request_headers">Request headers</a></h5>
+<h5 id="_request_44_request_headers"><a class="link" href="#_request_44_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -6311,7 +6203,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_43_query_parameters"><a class="link" href="#_request_43_query_parameters">Query parameters</a></h5>
+<h5 id="_request_44_query_parameters"><a class="link" href="#_request_44_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -6355,14 +6247,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 394
+Content-Length: 376
 
 {
   "reviews" : [ {
     "reviewId" : 1,
-    "createdAt" : "2023-11-30T18:32:58.374252",
+    "createdAt" : "2023-12-01T16:56:08.332948",
     "content" : "reviewContent",
-    "reviewImageUrls" : [ "imageUrl1", "imageUrl2" ],
+    "reviewImageUrls" : [ "urls" ],
     "volunteerId" : 1,
     "volunteerName" : "김봉사",
     "temperature" : 36,
@@ -6477,20 +6369,20 @@ Content-Length: 394
 <div class="sect2">
 <h3 id="_보호_동물_검색_조회"><a class="link" href="#_보호_동물_검색_조회">보호 동물 검색 &amp; 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_44"><a class="link" href="#_request_44">Request</a></h4>
+<h4 id="_request_45"><a class="link" href="#_request_45">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_44_http_request"><a class="link" href="#_request_44_http_request">HTTP request</a></h5>
+<h5 id="_request_45_http_request"><a class="link" href="#_request_45_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/animals?type=DOG&amp;gender=FEMALE&amp;neuteredFilter=IS_NEUTERED&amp;active=ACTIVE&amp;animalSize=SMALL&amp;animalSize=10&amp;age=ADULT&amp;page=0 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NTUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NTUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.X3spqHe2HIbvzGwnjuOL6gCu5RPGxrHq20bRJhP_ZTKzwxlCMSs1rsV4el25nVDa
-X-CSRF-TOKEN: P0nlhx_7AMhe6-FfMJQTqfUza9pS0DfWYRuqOxza6JhO-wCNDHvUtCzKM_tziIVoUrknz5EBRuMw5lT7A3rPDyjs2a4omDW_
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNDIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNDIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.FOoR7thEc0lUGqOXren2hYRq2-iI0B0b2V0Izyy1VdiQ1DOzaJvJFCtKbUyocUaL
+X-CSRF-TOKEN: cZZDc-dwP-V3w4JG4QP2jPvNIrngKbBoEB73LJYNHlAiystKQqN1Rd5GWdxapeYg1C7C6J37D9jWT4BFcXjAH_U0LmgSrP5_
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_44_query_parameters"><a class="link" href="#_request_44_query_parameters">Query parameters</a></h5>
+<h5 id="_request_45_query_parameters"><a class="link" href="#_request_45_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -6651,19 +6543,19 @@ Content-Length: 267
 <div class="sect2">
 <h3 id="_보호_동물_검색_조회_v2"><a class="link" href="#_보호_동물_검색_조회_v2">보호 동물 검색 &amp; 조회 v2</a></h3>
 <div class="sect3">
-<h4 id="_request_45"><a class="link" href="#_request_45">Request</a></h4>
+<h4 id="_request_46"><a class="link" href="#_request_46">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_45_http_request"><a class="link" href="#_request_45_http_request">HTTP request</a></h5>
+<h5 id="_request_46_http_request"><a class="link" href="#_request_46_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v2/animals?type=DOG&amp;gender=FEMALE&amp;neuteredFilter=IS_NEUTERED&amp;active=ACTIVE&amp;animalSize=SMALL&amp;animalSize=10&amp;age=ADULT&amp;animalId=1&amp;createdAt=2023-11-30T18%3A32%3A35.697741&amp;page=0 HTTP/1.1
-X-CSRF-TOKEN: p1y_l-xgjuP9yyn-H9FEqyYJov4_3Vke-cfYMtvfjPVWsdqsxjre9d1Z6tTQ-x3Nfvxwkhc-j5wPvzszzvXuB-Pr7pBkiO-Y
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v2/animals?type=DOG&amp;gender=FEMALE&amp;neuteredFilter=IS_NEUTERED&amp;active=ACTIVE&amp;animalSize=SMALL&amp;animalSize=10&amp;age=ADULT&amp;animalId=1&amp;createdAt=2023-12-01T16%3A55%3A42.914158&amp;page=0 HTTP/1.1
+X-CSRF-TOKEN: q6cwNMzm4aVzZ9sdqe7gbZhyJijwplYeDk-7SiI8uqtCT1iNzZVUVa7R08deBOslmsPUCflGC0mWxW8zaCyMLkQMiZghfjvr
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_45_query_parameters"><a class="link" href="#_request_45_query_parameters">Query parameters</a></h5>
+<h5 id="_request_46_query_parameters"><a class="link" href="#_request_46_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -6836,21 +6728,21 @@ Content-Length: 267
 <div class="sect2">
 <h3 id="_보호_동물_상세_조회"><a class="link" href="#_보호_동물_상세_조회">보호 동물 상세 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_46"><a class="link" href="#_request_46">Request</a></h4>
+<h4 id="_request_47"><a class="link" href="#_request_47">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_46_http_request"><a class="link" href="#_request_46_http_request">HTTP request</a></h5>
+<h5 id="_request_47_http_request"><a class="link" href="#_request_47_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/animals/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NTUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NTUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.X3spqHe2HIbvzGwnjuOL6gCu5RPGxrHq20bRJhP_ZTKzwxlCMSs1rsV4el25nVDa
-X-CSRF-TOKEN: clHquvt4yAgFFaaXYsC-oArODptD_hA4WXmMF7GGuaGn9ZYNETfcispO-jgoIZeiUu2KxTz_I6J0ySEVOk7oIYG325XExvU7
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNDIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNDIsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.FOoR7thEc0lUGqOXren2hYRq2-iI0B0b2V0Izyy1VdiQ1DOzaJvJFCtKbUyocUaL
+X-CSRF-TOKEN: p-iec4cErlF8XlAxyHWQageHz7JEiRXbl7jbtjQUK6P3K_cMw4z4RrQwzzdRaDIB_FikWmXj4tMhvXH28trt0gAmSZfCH8U6
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_46_path_parameters"><a class="link" href="#_request_46_path_parameters">Path parameters</a></h5>
+<h5 id="_request_47_path_parameters"><a class="link" href="#_request_47_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/animals/{animalId}</caption>
 <colgroup>
@@ -6888,7 +6780,7 @@ Content-Length: 395
 {
   "animalId" : 1,
   "animalName" : "animalName",
-  "animalBirthDate" : "2023-11-30",
+  "animalBirthDate" : "2023-12-01",
   "animalType" : "DOG",
   "animalBreed" : "animalBreed",
   "animalGender" : "FEMALE",
@@ -6991,21 +6883,21 @@ Content-Length: 395
 <div class="sect2">
 <h3 id="_보호_동물_등록"><a class="link" href="#_보호_동물_등록">보호 동물 등록</a></h3>
 <div class="sect3">
-<h4 id="_request_47"><a class="link" href="#_request_47">Request</a></h4>
+<h4 id="_request_48"><a class="link" href="#_request_48">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_47_http_request"><a class="link" href="#_request_47_http_request">HTTP request</a></h5>
+<h5 id="_request_48_http_request"><a class="link" href="#_request_48_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/shelters/animals HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NTUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.1qz9bCKyDcqaisR9MI-l5dibeeP2RR1CiXnjYiFF8A_QzGPH4Wl3s_ZtnAtWmxKf
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNDIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNDIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.sWvsItg7reWfb7GPSmulW2m0GjHamhzKCtxQDtgO58P_Oz1pQXmqjQIWml1g_jAv
 Content-Length: 253
-X-CSRF-TOKEN: hnVokq5634-mpVg7HXeGpUNDD57oQfcn3wAZLClyq3SwpTc_tBZeopYY67mLkWxZKlqywCImIqeLcZEKuWR4FB5LyEWEwVUM
+X-CSRF-TOKEN: -LNcZmqA5aBwMiQGb1bErS5RU1TUbS_NlJUjEI78U_JjbJtnyIM6Xwm3gcZdUUA2DHvwnx9pfm3lCBng8a0bJuzJa8IBD6xf
 Host: localhost:8080
 
 {
   "name" : "name",
-  "birthDate" : "2023-11-30",
+  "birthDate" : "2023-12-01",
   "type" : "DOG",
   "breed" : "품종",
   "gender" : "FEMALE",
@@ -7019,7 +6911,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_47_request_headers"><a class="link" href="#_request_47_request_headers">Request headers</a></h5>
+<h5 id="_request_48_request_headers"><a class="link" href="#_request_48_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -7065,20 +6957,20 @@ Content-Length: 20
 <div class="sect2">
 <h3 id="_내보호소가_작성한_보호_동물_목록_조회"><a class="link" href="#_내보호소가_작성한_보호_동물_목록_조회">내(보호소)가 작성한 보호 동물 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_48"><a class="link" href="#_request_48">Request</a></h4>
+<h4 id="_request_49"><a class="link" href="#_request_49">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_48_http_request"><a class="link" href="#_request_48_http_request">HTTP request</a></h5>
+<h5 id="_request_49_http_request"><a class="link" href="#_request_49_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/animals?keyword=%EA%B2%80%EC%83%89%EC%96%B4&amp;type=DOG&amp;gender=MALE&amp;neuteredFilter=IS_NEUTERED&amp;active=ACTIVE&amp;animalSize=SMALL&amp;age=BABY&amp;page=0&amp;size=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NTUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.1qz9bCKyDcqaisR9MI-l5dibeeP2RR1CiXnjYiFF8A_QzGPH4Wl3s_ZtnAtWmxKf
-X-CSRF-TOKEN: 9Dz7hmdxRnowa4kydBDs1QIcBLLza-tHN0qNJnVHT4YC_IqxkV7N41dHf00dCOhTQz3YtDAsKdPECY5qBS7vQBEhfrQ3nbvT
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNDIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNDIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.sWvsItg7reWfb7GPSmulW2m0GjHamhzKCtxQDtgO58P_Oz1pQXmqjQIWml1g_jAv
+X-CSRF-TOKEN: N3qeAcJgQXNoRaT1t0zl0zrTAotV6Tf90xYGck2dOkqyqOqXUUivNPQGeBZFc5CQjmHRtg7kL-ljiwPQtSQ-QHmtCH-DmNii
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_48_request_headers"><a class="link" href="#_request_48_request_headers">Request headers</a></h5>
+<h5 id="_request_49_request_headers"><a class="link" href="#_request_49_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -7106,8 +6998,8 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/animals?keyword=%EA%B2%80%EC%83%89%EC%96%B4&amp;type=DOG&amp;gender=MALE&amp;neuteredFilter=IS_NEUTERED&amp;active=ACTIVE&amp;animalSize=SMALL&amp;age=BABY&amp;page=0&amp;size=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NTUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.1qz9bCKyDcqaisR9MI-l5dibeeP2RR1CiXnjYiFF8A_QzGPH4Wl3s_ZtnAtWmxKf
-X-CSRF-TOKEN: 9Dz7hmdxRnowa4kydBDs1QIcBLLza-tHN0qNJnVHT4YC_IqxkV7N41dHf00dCOhTQz3YtDAsKdPECY5qBS7vQBEhfrQ3nbvT
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNDIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNDIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.sWvsItg7reWfb7GPSmulW2m0GjHamhzKCtxQDtgO58P_Oz1pQXmqjQIWml1g_jAv
+X-CSRF-TOKEN: N3qeAcJgQXNoRaT1t0zl0zrTAotV6Tf90xYGck2dOkqyqOqXUUivNPQGeBZFc5CQjmHRtg7kL-ljiwPQtSQ-QHmtCH-DmNii
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -7138,21 +7030,21 @@ Host: localhost:8080</code></pre>
 <div class="sect2">
 <h3 id="_보호_동물_수정"><a class="link" href="#_보호_동물_수정">보호 동물 수정</a></h3>
 <div class="sect3">
-<h4 id="_request_49"><a class="link" href="#_request_49">Request</a></h4>
+<h4 id="_request_50"><a class="link" href="#_request_50">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_49_http_request"><a class="link" href="#_request_49_http_request">HTTP request</a></h5>
+<h5 id="_request_50_http_request"><a class="link" href="#_request_50_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/animals/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NTUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.1qz9bCKyDcqaisR9MI-l5dibeeP2RR1CiXnjYiFF8A_QzGPH4Wl3s_ZtnAtWmxKf
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNDIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNDIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.sWvsItg7reWfb7GPSmulW2m0GjHamhzKCtxQDtgO58P_Oz1pQXmqjQIWml1g_jAv
 Content-Length: 266
-X-CSRF-TOKEN: EcxI7XVw_iR853cKt_wlxy6nuA85BJAA2mKuTTQzMLrnloTEc_x8iRBGxxJR0EA8gdER8B6VlTcLZvMtvlSbKQVWA4vVr7D0
+X-CSRF-TOKEN: Q2Sjlb56UC8RyBVrPNI-fw52oYeV-FKDN2gN54GHHj6ukPwydF2Q8NhDaU48rnFbX_8KSz4UjL6kymKuAFA00-DlfwrIqc0K
 Host: localhost:8080
 
 {
   "name" : "animalName",
-  "birthDate" : "2023-11-30",
+  "birthDate" : "2023-12-01",
   "type" : "DOG",
   "breed" : "animalBreed",
   "gender" : "MALE",
@@ -7166,7 +7058,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_49_request_headers"><a class="link" href="#_request_49_request_headers">Request headers</a></h5>
+<h5 id="_request_50_request_headers"><a class="link" href="#_request_50_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -7205,16 +7097,16 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_보호_동물_입양_상태_변경"><a class="link" href="#_보호_동물_입양_상태_변경">보호 동물 입양 상태 변경</a></h3>
 <div class="sect3">
-<h4 id="_request_50"><a class="link" href="#_request_50">Request</a></h4>
+<h4 id="_request_51"><a class="link" href="#_request_51">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_50_http_request"><a class="link" href="#_request_50_http_request">HTTP request</a></h5>
+<h5 id="_request_51_http_request"><a class="link" href="#_request_51_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/animals/1/status HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NTUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.1qz9bCKyDcqaisR9MI-l5dibeeP2RR1CiXnjYiFF8A_QzGPH4Wl3s_ZtnAtWmxKf
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNDIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNDIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.sWvsItg7reWfb7GPSmulW2m0GjHamhzKCtxQDtgO58P_Oz1pQXmqjQIWml1g_jAv
 Content-Length: 24
-X-CSRF-TOKEN: fQfNXpqkxqXfiG5OnRrD4D77Rax5XEfEMm4J0IDrhbPs0u6QTDKvP6vG95Dy61h6qzf32AvNaM5AaXDpAV1qteXdvYTZ4dml
+X-CSRF-TOKEN: rAifoRkIMs9Z9Kz2CROw6GketHYaHu87QVs25pbvgiCPcd6OnjmpmSpqVqx0l5qTaD6E0VopmU95KNoWdWwF0a-MtBXtRue-
 Host: localhost:8080
 
 {
@@ -7224,7 +7116,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_50_request_headers"><a class="link" href="#_request_50_request_headers">Request headers</a></h5>
+<h5 id="_request_51_request_headers"><a class="link" href="#_request_51_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -7263,20 +7155,20 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_보호_동물_삭제"><a class="link" href="#_보호_동물_삭제">보호 동물 삭제</a></h3>
 <div class="sect3">
-<h4 id="_request_51"><a class="link" href="#_request_51">Request</a></h4>
+<h4 id="_request_52"><a class="link" href="#_request_52">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_51_http_request"><a class="link" href="#_request_51_http_request">HTTP request</a></h5>
+<h5 id="_request_52_http_request"><a class="link" href="#_request_52_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/shelters/animals/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NTUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.1qz9bCKyDcqaisR9MI-l5dibeeP2RR1CiXnjYiFF8A_QzGPH4Wl3s_ZtnAtWmxKf
-X-CSRF-TOKEN: bXrbRr4Tk_MYunJ59l3IXnxJtH5M88aMbeSGMGJstvHHqvw9Dknjc9hxqpE1gkcdxXD8axpxmUd0waehCdDjAFte0pLwm58E
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNDIsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNDIsInJvbGUiOiJST0xFX1NIRUxURVIifQ.sWvsItg7reWfb7GPSmulW2m0GjHamhzKCtxQDtgO58P_Oz1pQXmqjQIWml1g_jAv
+X-CSRF-TOKEN: mB_UPotiLOQzIs6bhNB69zbaXbVLEIMro1tsFQGw8J-68C7Iqy3sBrJSTdweF6qvs_1OzgficNRyJ7sGk2tbc2OGwfyLkxr-
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_51_request_headers"><a class="link" href="#_request_51_request_headers">Request headers</a></h5>
+<h5 id="_request_52_request_headers"><a class="link" href="#_request_52_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -7297,7 +7189,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_51_path_parameters"><a class="link" href="#_request_51_path_parameters">Path parameters</a></h5>
+<h5 id="_request_52_path_parameters"><a class="link" href="#_request_52_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/shelters/animals/{animalId}</caption>
 <colgroup>
@@ -7348,20 +7240,20 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_채팅방_메시지_목록_조회"><a class="link" href="#_채팅방_메시지_목록_조회">채팅방 메시지 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_52"><a class="link" href="#_request_52">Request</a></h4>
+<h4 id="_request_53"><a class="link" href="#_request_53">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_52_http_request"><a class="link" href="#_request_52_http_request">HTTP request</a></h5>
+<h5 id="_request_53_http_request"><a class="link" href="#_request_53_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/chat/rooms/1/messages?pageNumber=0&amp;pageSize=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.kzy0KkqMEI8iri8WC5dkPtUfkMv-S_yecErtlr5fdkC9OupyJYDoULwSeegWgecJ
-X-CSRF-TOKEN: C0VSrXJiuhOEpUcuTSWnlXomTf98pjCo5qF-khyToi6FDlJrbXBhnxAHgiqpxn4WfQiT8R4fYJ4dx1KFhMNJ8yWlkx21P2JS
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTUsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.kiP-uJWz1qnG-O_HYhrmGXMSJc5g0RgWiu8bv-n1VSwQU_Rb68deKjJg3l4XaOhh
+X-CSRF-TOKEN: KZePAaRuH5MIzlyVaTecM_51Ew7hVk0S2yLXQfF5uSSHw1MQT_XpOccMK6Ql92vxCxqoBMhBPjaAN3o_6BLnecZLiBSypzdy
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_52_path_parameters"><a class="link" href="#_request_52_path_parameters">Path parameters</a></h5>
+<h5 id="_request_53_path_parameters"><a class="link" href="#_request_53_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/chat/rooms/{chatRoomId}/messages</caption>
 <colgroup>
@@ -7383,7 +7275,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_52_query_parameters"><a class="link" href="#_request_52_query_parameters">Query parameters</a></h5>
+<h5 id="_request_53_query_parameters"><a class="link" href="#_request_53_query_parameters">Query parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -7434,7 +7326,7 @@ Content-Length: 244
     "chatSenderId" : 1,
     "chatSenderRole" : "ROLE_VOLUNTEER",
     "chatMessage" : "message",
-    "createdAt" : "2023-11-30T18:32:45.559304"
+    "createdAt" : "2023-12-01T16:55:55.771361"
   } ],
   "pageInfo" : {
     "totalElements" : 1,
@@ -7513,20 +7405,20 @@ Content-Length: 244
 <div class="sect2">
 <h3 id="_채팅방_id_조회"><a class="link" href="#_채팅방_id_조회">채팅방 ID 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_53"><a class="link" href="#_request_53">Request</a></h4>
+<h4 id="_request_54"><a class="link" href="#_request_54">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_53_http_request"><a class="link" href="#_request_53_http_request">HTTP request</a></h5>
+<h5 id="_request_54_http_request"><a class="link" href="#_request_54_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/chat/rooms/shelters/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.XYIp-_TQrURcCv2BxAL1qxbet6MPvmsG2YhjCw41NT4V8lEItFypK2W7VJQtmfHY
-X-CSRF-TOKEN: dOotgLd7cTDAo7lNfQf8zj349Gs4ywelZmB5rjPkN5ZFJwJoRttM5NFOFwXtx4l9SirIrwnK2VJc_T6IB1hAmlHQBvR0H2Rf
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTUsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.O6djFlwdXknYPaQahaNRQcfohb4aMnOUNPLV0x8rYsPZV0NWfgTRtMPR3R0e08NN
+X-CSRF-TOKEN: 9w4orNMGc7Wn-QR3j8nhvPL4jrTFZVDKqXfD2qMLUZvODVQ7z2sanOs3Q4yKmzJCtuTV2MrNo9X2U2jnnhOmuJFvNK32OWYK
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_53_request_headers"><a class="link" href="#_request_53_request_headers">Request headers</a></h5>
+<h5 id="_request_54_request_headers"><a class="link" href="#_request_54_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -7547,7 +7439,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_53_path_parameters"><a class="link" href="#_request_53_path_parameters">Path parameters</a></h5>
+<h5 id="_request_54_path_parameters"><a class="link" href="#_request_54_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/volunteers/chat/rooms/shelters/{shelterId}</caption>
 <colgroup>
@@ -7617,16 +7509,16 @@ Content-Length: 25
 <div class="sect2">
 <h3 id="_채팅방_생성"><a class="link" href="#_채팅방_생성">채팅방 생성</a></h3>
 <div class="sect3">
-<h4 id="_request_54"><a class="link" href="#_request_54">Request</a></h4>
+<h4 id="_request_55"><a class="link" href="#_request_55">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_54_http_request"><a class="link" href="#_request_54_http_request">HTTP request</a></h5>
+<h5 id="_request_55_http_request"><a class="link" href="#_request_55_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/volunteers/chat/rooms HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.XYIp-_TQrURcCv2BxAL1qxbet6MPvmsG2YhjCw41NT4V8lEItFypK2W7VJQtmfHY
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTUsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.O6djFlwdXknYPaQahaNRQcfohb4aMnOUNPLV0x8rYsPZV0NWfgTRtMPR3R0e08NN
 Content-Length: 21
-X-CSRF-TOKEN: 5DfzVWSH5oXSA-dteKUK6fn_n-ZmrsaejwUklgZ_0nBUlKAN0Q_FMFSw1LT_N4VdQYg-0MnPsocAnfGzuGZA8mIZsxUypZk_
+X-CSRF-TOKEN: baNef1wB79n8962BDXExyrZMGWYD54QPivVchcYINW3-Ic9VWJBnG20w3bvRk5vgPlwFqYF7NAdh17QiusA5sv84U12fEaxj
 Host: localhost:8080
 
 {
@@ -7636,7 +7528,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_54_request_headers"><a class="link" href="#_request_54_request_headers">Request headers</a></h5>
+<h5 id="_request_55_request_headers"><a class="link" href="#_request_55_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -7657,7 +7549,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_54_request_fields"><a class="link" href="#_request_54_request_fields">Request fields</a></h5>
+<h5 id="_request_55_request_fields"><a class="link" href="#_request_55_request_fields">Request fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -7757,20 +7649,20 @@ Content-Length: 22
 <div class="sect2">
 <h3 id="_채팅방_목록_조회"><a class="link" href="#_채팅방_목록_조회">채팅방 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_55"><a class="link" href="#_request_55">Request</a></h4>
+<h4 id="_request_56"><a class="link" href="#_request_56">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_55_http_request"><a class="link" href="#_request_55_http_request">HTTP request</a></h5>
+<h5 id="_request_56_http_request"><a class="link" href="#_request_56_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/chat/rooms HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.XYIp-_TQrURcCv2BxAL1qxbet6MPvmsG2YhjCw41NT4V8lEItFypK2W7VJQtmfHY
-X-CSRF-TOKEN: 1G9Xq1gVqErvLbaRneNdsKFkG1E4RDRPWc6p4mKsxR_5CN185Vkyymt0n3nCToT3-M5p1cdTNjANfFdib_ib0wac93maOO1O
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTUsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.O6djFlwdXknYPaQahaNRQcfohb4aMnOUNPLV0x8rYsPZV0NWfgTRtMPR3R0e08NN
+X-CSRF-TOKEN: WqfzcLZ9dszmqjuXKxSf03eJ3ttbjmAdzrKM4wsJICshU6DcOJSSSNNFRvrLzwqjGDmrtUC887pttlkw-Yvvgm89RRlCa5Xp
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_55_request_headers"><a class="link" href="#_request_55_request_headers">Request headers</a></h5>
+<h5 id="_request_56_request_headers"><a class="link" href="#_request_56_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -7802,7 +7694,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 284
+Content-Length: 283
 
 {
   "chatRooms" : [ {
@@ -7810,7 +7702,7 @@ Content-Length: 284
     "chatRecentMessage" : "최근 메시지",
     "chatPartnerName" : "채팅 상대방 이름",
     "charPartnerImageUrl" : "채팅 상대방 이미지 url",
-    "createdAt" : "2023-11-30T18:32:45.498133",
+    "createdAt" : "2023-12-01T16:55:55.70798",
     "chatUnReadCount" : 5
   } ]
 }</code></pre>
@@ -7876,20 +7768,20 @@ Content-Length: 284
 <div class="sect2">
 <h3 id="_채팅방_상세_조회"><a class="link" href="#_채팅방_상세_조회">채팅방 상세 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_56"><a class="link" href="#_request_56">Request</a></h4>
+<h4 id="_request_57"><a class="link" href="#_request_57">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_56_http_request"><a class="link" href="#_request_56_http_request">HTTP request</a></h5>
+<h5 id="_request_57_http_request"><a class="link" href="#_request_57_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/chat/rooms/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.XYIp-_TQrURcCv2BxAL1qxbet6MPvmsG2YhjCw41NT4V8lEItFypK2W7VJQtmfHY
-X-CSRF-TOKEN: AHoc9lmInS7eqrjz9RVuEU5nhq_B_og99SKMFkpF0jITjaY9YUMuxW26rRrzndrHkThaKSwBq5egzO4QwRW0IHMjtAN37JVf
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTUsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.O6djFlwdXknYPaQahaNRQcfohb4aMnOUNPLV0x8rYsPZV0NWfgTRtMPR3R0e08NN
+X-CSRF-TOKEN: nbCtgdqAvEECHLvz-UIc044WwweTCNPmJ86FC0qfKsfppz3g-ITIs-m1jHcvf4vLyW8osep37malOOfLQfyzMnr-EvKIkFmF
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_56_request_headers"><a class="link" href="#_request_56_request_headers">Request headers</a></h5>
+<h5 id="_request_57_request_headers"><a class="link" href="#_request_57_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -7910,7 +7802,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_request_56_path_parameters"><a class="link" href="#_request_56_path_parameters">Path parameters</a></h5>
+<h5 id="_request_57_path_parameters"><a class="link" href="#_request_57_path_parameters">Path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. /api/volunteers/chat/rooms/{chatRoomId}</caption>
 <colgroup>
@@ -7986,20 +7878,20 @@ Content-Length: 78
 <div class="sect2">
 <h3 id="_안_읽은_메시지_총_수_조회"><a class="link" href="#_안_읽은_메시지_총_수_조회">안 읽은 메시지 총 수 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_57"><a class="link" href="#_request_57">Request</a></h4>
+<h4 id="_request_58"><a class="link" href="#_request_58">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_57_http_request"><a class="link" href="#_request_57_http_request">HTTP request</a></h5>
+<h5 id="_request_58_http_request"><a class="link" href="#_request_58_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/chat/rooms/unread HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.XYIp-_TQrURcCv2BxAL1qxbet6MPvmsG2YhjCw41NT4V8lEItFypK2W7VJQtmfHY
-X-CSRF-TOKEN: wvk-i38EF1JhU1Z_Ic8NTVWCw93er_7SuH1UEBSSeRhrFJFdp5tYvU0wIGNMN2FKReI5eW3m7uXrmcf_iExkdSarTXldJfM4
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTUsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTUsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.O6djFlwdXknYPaQahaNRQcfohb4aMnOUNPLV0x8rYsPZV0NWfgTRtMPR3R0e08NN
+X-CSRF-TOKEN: 47bHfqMj_5JTBEsPq5GlYlcFEcsHfk3lpF7AJMU0RiFbC0LagoWiTcdBnat-N3NqybyRVjFhPKkxGHvIljzxEKMAdxlsM3bj
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_57_request_headers"><a class="link" href="#_request_57_request_headers">Request headers</a></h5>
+<h5 id="_request_58_request_headers"><a class="link" href="#_request_58_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -8073,20 +7965,20 @@ Content-Length: 28
 <div class="sect2">
 <h3 id="_채팅방_목록_조회_2"><a class="link" href="#_채팅방_목록_조회_2">채팅방 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_58"><a class="link" href="#_request_58">Request</a></h4>
+<h4 id="_request_59"><a class="link" href="#_request_59">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_58_http_request"><a class="link" href="#_request_58_http_request">HTTP request</a></h5>
+<h5 id="_request_59_http_request"><a class="link" href="#_request_59_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/chat/rooms HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.kzy0KkqMEI8iri8WC5dkPtUfkMv-S_yecErtlr5fdkC9OupyJYDoULwSeegWgecJ
-X-CSRF-TOKEN: CVVZNdYcGTlmvWrvTsei150qvliuyVSf8BZWrGcxSAVn2J_cO2ZqV7N6fwlL3ljbeOqWsf4ak2DK8TayyCBjylYALTYEvf7q
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTUsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.kiP-uJWz1qnG-O_HYhrmGXMSJc5g0RgWiu8bv-n1VSwQU_Rb68deKjJg3l4XaOhh
+X-CSRF-TOKEN: Lx40oLyU9D55L7fAZcjdvxQRqACCog8btMawZEpZRmecUEBcFioBxtmjxF9USYfwBOXpjHYmhTnnlm02jf6GBX49fgSsZHZv
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_58_request_headers"><a class="link" href="#_request_58_request_headers">Request headers</a></h5>
+<h5 id="_request_59_request_headers"><a class="link" href="#_request_59_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -8126,7 +8018,7 @@ Content-Length: 284
     "chatRecentMessage" : "최근 메시지",
     "chatPartnerName" : "채팅 상대방 이름",
     "charPartnerImageUrl" : "채팅 상대방 이미지 url",
-    "createdAt" : "2023-11-30T18:32:45.575908",
+    "createdAt" : "2023-12-01T16:55:55.792191",
     "chatUnReadCount" : 5
   } ]
 }</code></pre>
@@ -8192,20 +8084,20 @@ Content-Length: 284
 <div class="sect2">
 <h3 id="_채팅방_상세_조회보호소"><a class="link" href="#_채팅방_상세_조회보호소">채팅방 상세 조회(보호소)</a></h3>
 <div class="sect3">
-<h4 id="_request_59"><a class="link" href="#_request_59">Request</a></h4>
+<h4 id="_request_60"><a class="link" href="#_request_60">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_59_http_request"><a class="link" href="#_request_59_http_request">HTTP request</a></h5>
+<h5 id="_request_60_http_request"><a class="link" href="#_request_60_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/chat/rooms/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.kzy0KkqMEI8iri8WC5dkPtUfkMv-S_yecErtlr5fdkC9OupyJYDoULwSeegWgecJ
-X-CSRF-TOKEN: kVOBC5g1I6wP_oyaGq_MP_0NC2Nx7xCQ5EtV6RpwPqFJa0AzqDe5PfkDRc0iyumjLIL4W8k_JloQ3SO913JjiHhEDMAtCSZS
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTUsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.kiP-uJWz1qnG-O_HYhrmGXMSJc5g0RgWiu8bv-n1VSwQU_Rb68deKjJg3l4XaOhh
+X-CSRF-TOKEN: 19LnNDLnQef6Tmc9ktyqLc-Z_UADEV5ZfwPOPlS53fk5iN_wseqFB1eBJ9_XLAZYo_GeFan_0HhlJWl0TmKoCWHbvJgNu-rF
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_59_request_headers"><a class="link" href="#_request_59_request_headers">Request headers</a></h5>
+<h5 id="_request_60_request_headers"><a class="link" href="#_request_60_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -8280,20 +8172,20 @@ Content-Length: 89
 <div class="sect2">
 <h3 id="_안_읽은_메시지_총_수_조회_2"><a class="link" href="#_안_읽은_메시지_총_수_조회_2">안 읽은 메시지 총 수 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_60"><a class="link" href="#_request_60">Request</a></h4>
+<h4 id="_request_61"><a class="link" href="#_request_61">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_60_http_request"><a class="link" href="#_request_60_http_request">HTTP request</a></h5>
+<h5 id="_request_61_http_request"><a class="link" href="#_request_61_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/chat/rooms/unread HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjUsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.kzy0KkqMEI8iri8WC5dkPtUfkMv-S_yecErtlr5fdkC9OupyJYDoULwSeegWgecJ
-X-CSRF-TOKEN: sAYROEuJc3jj4zWu4iG8OArA6SwJw2fy2J00mh9AT1eswGYqiWcmCCrrRh7OglGc0QyIDGvzxE5q8QLf7a5Vqn51K2Kd9FEf
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTUsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTUsInJvbGUiOiJST0xFX1NIRUxURVIifQ.kiP-uJWz1qnG-O_HYhrmGXMSJc5g0RgWiu8bv-n1VSwQU_Rb68deKjJg3l4XaOhh
+X-CSRF-TOKEN: UuZ0uA2h8sQnIxV_UwPrSHSOtnPi2S0aJ2vyKtPG2dvR0-b1MN8R2TiVk_IKQHAeYC7fcUDrmxKH7E43FljBSLL27bq14IXF
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_60_request_headers"><a class="link" href="#_request_60_request_headers">Request headers</a></h5>
+<h5 id="_request_61_request_headers"><a class="link" href="#_request_61_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -8373,21 +8265,21 @@ Content-Length: 28
 <div class="sect2">
 <h3 id="_알림_목록_조회"><a class="link" href="#_알림_목록_조회">알림 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_61"><a class="link" href="#_request_61">Request</a></h4>
+<h4 id="_request_62"><a class="link" href="#_request_62">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_61_http_request"><a class="link" href="#_request_61_http_request">HTTP request</a></h5>
+<h5 id="_request_62_http_request"><a class="link" href="#_request_62_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/notifications HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjcsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.Oy5JqMes9DMYtqgTHnfTkaW8oH1wZc8jhDvKnblz59JVFRWZGUpEte9bDZRr2p8E
-X-CSRF-TOKEN: CZ-J4IxbIKRbp3ovVZkvuLFJO8n_IxRivQdYHYJJ-HcmJ1pgbKbv0u06GJx2nkJOZ7QbiddwFquaECdP22FsLLJ-nhQQRj4G
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTcsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.42RKzaHdauqySnWOxeDHEt2qbuZiS-xRUbR98PVxWHvUml-_IxNR3lgKc_-DwTTT
+X-CSRF-TOKEN: -i3lL7f24nE8gT6MvHWBKWOHXc-3HGBgXWBPadsHpMo06dUPn0zSGoLB1BMRsli_ili1HwK1cK3RKFRNP1B7WeIxwvpV2OU5
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_61_request_headers"><a class="link" href="#_request_61_request_headers">Request headers</a></h5>
+<h5 id="_request_62_request_headers"><a class="link" href="#_request_62_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -8487,21 +8379,21 @@ Content-Length: 213
 <div class="sect2">
 <h3 id="_새로운_알림_여부_조회"><a class="link" href="#_새로운_알림_여부_조회">새로운 알림 여부 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_62"><a class="link" href="#_request_62">Request</a></h4>
+<h4 id="_request_63"><a class="link" href="#_request_63">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_62_http_request"><a class="link" href="#_request_62_http_request">HTTP request</a></h5>
+<h5 id="_request_63_http_request"><a class="link" href="#_request_63_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/volunteers/notifications/read HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjcsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.Oy5JqMes9DMYtqgTHnfTkaW8oH1wZc8jhDvKnblz59JVFRWZGUpEte9bDZRr2p8E
-X-CSRF-TOKEN: p_c7KPs6v1bfIZAnavYtXlanNCD6u6_KoTSsYfanntPsJ9ZmlpVeTM0LimDyQKBCXtsZaWKTGRnKj5bnklKZU8LDquPeFLcD
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTcsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.42RKzaHdauqySnWOxeDHEt2qbuZiS-xRUbR98PVxWHvUml-_IxNR3lgKc_-DwTTT
+X-CSRF-TOKEN: g6_B_D-nb6Cq5Xccfqy1B9TtNLydbt_yHix37zrtsZBBPtUHsZ70mV6eWMOHh0Z-TIGBZOSIGd2oDL3ffxVE3l6LgKV5W-Qy
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_62_request_headers"><a class="link" href="#_request_62_request_headers">Request headers</a></h5>
+<h5 id="_request_63_request_headers"><a class="link" href="#_request_63_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -8570,21 +8462,21 @@ Content-Length: 33
 <div class="sect2">
 <h3 id="_알림_확인"><a class="link" href="#_알림_확인">알림 확인</a></h3>
 <div class="sect3">
-<h4 id="_request_63"><a class="link" href="#_request_63">Request</a></h4>
+<h4 id="_request_64"><a class="link" href="#_request_64">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_63_http_request"><a class="link" href="#_request_63_http_request">HTTP request</a></h5>
+<h5 id="_request_64_http_request"><a class="link" href="#_request_64_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/volunteers/notifications/read HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjcsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.Oy5JqMes9DMYtqgTHnfTkaW8oH1wZc8jhDvKnblz59JVFRWZGUpEte9bDZRr2p8E
-X-CSRF-TOKEN: Hge_I5Ff1lyuP2hDV3hKT-9nhNykSLqH8qzL8WmPtr1cygnnLGONE_NusziDDF17ZFV-ftcGqb2cKYmqkc_zwFHu1dk-qTjW
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTcsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTcsInJvbGUiOiJST0xFX1ZPTFVOVEVFUiJ9.42RKzaHdauqySnWOxeDHEt2qbuZiS-xRUbR98PVxWHvUml-_IxNR3lgKc_-DwTTT
+X-CSRF-TOKEN: mGYAO_XO70sosugRRey33eWNNutTOaD1MRXkQP5YVV-PbPrN-gQ3DZT223oFg94idcGD6NG9G9NqAJDYAHSCcJ9tYzy_XZms
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_63_request_headers"><a class="link" href="#_request_63_request_headers">Request headers</a></h5>
+<h5 id="_request_64_request_headers"><a class="link" href="#_request_64_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -8628,21 +8520,21 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_알림_목록_조회_2"><a class="link" href="#_알림_목록_조회_2">알림 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_64"><a class="link" href="#_request_64">Request</a></h4>
+<h4 id="_request_65"><a class="link" href="#_request_65">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_64_http_request"><a class="link" href="#_request_64_http_request">HTTP request</a></h5>
+<h5 id="_request_65_http_request"><a class="link" href="#_request_65_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/notifications HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjcsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.LZFZDblPG80bm1u0J1scfyI5ivAuj5MMyRioJ_tEYk5yQzE1UHKfY8783A8k3t3j
-X-CSRF-TOKEN: ZM-orN0mY6b1aUkUvaK99LzGZU4r1lUuqueYRPfW8Xuff4UUVfjOn-UVV8DYWn0j2Y-Jl4_0SCxO4jQDm976IM-1wBmpTrBy
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTcsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.hynmY3U-geP8FongoT4xoix1OAyEvtwnSN5l3Y_pBDLC_nVc2oJE94Iuq-xGQvAg
+X-CSRF-TOKEN: dP4TaxUo-9bu7C6ojaMOKfCjapX5g-x_bZOFdysmce0PrcxzTMYmXydMmeTDih3OuY46H8bCR6zPsNRSWaSxQh8VE947zvtF
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_64_request_headers"><a class="link" href="#_request_64_request_headers">Request headers</a></h5>
+<h5 id="_request_65_request_headers"><a class="link" href="#_request_65_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -8742,21 +8634,21 @@ Content-Length: 208
 <div class="sect2">
 <h3 id="_새로운_알림_여부_조회_2"><a class="link" href="#_새로운_알림_여부_조회_2">새로운 알림 여부 조회</a></h3>
 <div class="sect3">
-<h4 id="_request_65"><a class="link" href="#_request_65">Request</a></h4>
+<h4 id="_request_66"><a class="link" href="#_request_66">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_65_http_request"><a class="link" href="#_request_65_http_request">HTTP request</a></h5>
+<h5 id="_request_66_http_request"><a class="link" href="#_request_66_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/shelters/notifications/read HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjcsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.LZFZDblPG80bm1u0J1scfyI5ivAuj5MMyRioJ_tEYk5yQzE1UHKfY8783A8k3t3j
-X-CSRF-TOKEN: KE0WrrM8RkP9O2Ko2sxXHddy9P4bS6pGRdrjsxUxeAXz7Em0HXwjnNAOIybQWFvJ7eFjKuZD2ccuKpxrJu7X0C1QGjXKjXuB
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTcsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.hynmY3U-geP8FongoT4xoix1OAyEvtwnSN5l3Y_pBDLC_nVc2oJE94Iuq-xGQvAg
+X-CSRF-TOKEN: mQRO_pMPpVfIY4IDkmIWgHcFgM6vxPSW1sws7jX13w0eKuSC_2J3yqo2ljHlV7Az9E8is0Jhra-c_Me7t_8ejVHF6zgrGYfj
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_65_request_headers"><a class="link" href="#_request_65_request_headers">Request headers</a></h5>
+<h5 id="_request_66_request_headers"><a class="link" href="#_request_66_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -8825,21 +8717,21 @@ Content-Length: 33
 <div class="sect2">
 <h3 id="_알림_확인_2"><a class="link" href="#_알림_확인_2">알림 확인</a></h3>
 <div class="sect3">
-<h4 id="_request_66"><a class="link" href="#_request_66">Request</a></h4>
+<h4 id="_request_67"><a class="link" href="#_request_67">Request</a></h4>
 <div class="sect4">
-<h5 id="_request_66_http_request"><a class="link" href="#_request_66_http_request">HTTP request</a></h5>
+<h5 id="_request_67_http_request"><a class="link" href="#_request_67_http_request">HTTP request</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/shelters/notification/read HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDEzMzY3NjcsInN1YiI6IjEiLCJleHAiOjE3MDEzMzc3NjcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.LZFZDblPG80bm1u0J1scfyI5ivAuj5MMyRioJ_tEYk5yQzE1UHKfY8783A8k3t3j
-X-CSRF-TOKEN: kyB8LnhWUMctBvps5PGfZoELiIcaSMMrnsVo1IZ_cB3vtPYy8BNIHU1hYaYAZ5lc09yrAuJppeV8ePEGraNYsrYaSXvajc8K
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJpc3N1ZXIiLCJpYXQiOjE3MDE0MTczNTcsInN1YiI6IjEiLCJleHAiOjE3MDE0MTgzNTcsInJvbGUiOiJST0xFX1NIRUxURVIifQ.hynmY3U-geP8FongoT4xoix1OAyEvtwnSN5l3Y_pBDLC_nVc2oJE94Iuq-xGQvAg
+X-CSRF-TOKEN: eQMYeC6mQ2713swyvFZdQapSTWKSr70l3y7xfqyAONUxB0HOQDItGRiUdgjY7_5U2Xtpc5tkYFrzlt4IuhzET5iwD-VVMieq
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_request_66_request_headers"><a class="link" href="#_request_66_request_headers">Request headers</a></h5>
+<h5 id="_request_67_request_headers"><a class="link" href="#_request_67_request_headers">Request headers</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -9166,7 +9058,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-11-30 18:32:17 +0900
+Last updated 2023-12-01 16:53:41 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
