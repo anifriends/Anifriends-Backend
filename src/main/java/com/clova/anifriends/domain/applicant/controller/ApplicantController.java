@@ -41,6 +41,16 @@ public class ApplicantController {
     }
 
     @VolunteerOnly
+    @PostMapping("/v0/volunteers/recruitments/{recruitmentId}/apply")
+    public ResponseEntity<Void> registerApplicantV0(
+        @PathVariable Long recruitmentId,
+        @LoginUser Long volunteerId
+    ) {
+        applicantService.registerApplicantWithOptimisticLock(recruitmentId, volunteerId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @VolunteerOnly
     @GetMapping("/volunteers/recruitments/{recruitmentId}/apply")
     public ResponseEntity<IsAppliedRecruitmentResponse> isAppliedRecruitment(
         @PathVariable Long recruitmentId,
