@@ -235,16 +235,7 @@ public class RecruitmentRepositoryImpl implements
     }
 
     Predicate getKeywordCondition(String keyword, Boolean content, Boolean title) {
-        BooleanExpression predicate = recruitment.isNotNull();
-        if (keyword == null || keyword.isBlank()) {
-            return predicate;
-        }
-        if (content) {
-            predicate = predicate.or(recruitment.content.content.contains(keyword));
-        }
-        if (title) {
-            predicate = predicate.or(recruitment.title.title.contains(keyword));
-        }
-        return predicate;
+        return nullSafeBuilder(() -> title != null ? recruitmentTitleContains(keyword, title) : null)
+            .or(nullSafeBuilder(() -> content != null ? recruitmentContentContains(keyword, content) : null));
     }
 }

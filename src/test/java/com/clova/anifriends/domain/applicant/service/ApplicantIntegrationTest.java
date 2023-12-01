@@ -8,7 +8,7 @@ import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
-import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
+import com.clova.anifriends.domain.applicant.exception.ApplicantCanNotApplyException;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
@@ -63,7 +63,7 @@ public class ApplicantIntegrationTest extends BaseIntegrationTest {
                     volunteer.getVolunteerId()));
 
             // then
-            assertThat(exception).isInstanceOf(ApplicantConflictException.class);
+            assertThat(exception).isInstanceOf(ApplicantCanNotApplyException.class);
         }
 
         @Test
