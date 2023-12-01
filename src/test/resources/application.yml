@@ -44,3 +44,4 @@ schedules:
       encourage-check-attendance: 0/2 * * * * ?
     recruitment:
       auto-close: 0/2 * * * * ?
+      
