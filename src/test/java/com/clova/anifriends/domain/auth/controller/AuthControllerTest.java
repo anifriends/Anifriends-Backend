@@ -6,8 +6,6 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.cookies.CookieDocumentation.responseCookies;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -56,7 +54,7 @@ class AuthControllerTest extends BaseControllerTest {
                         .optional()
                 ),
                 responseCookies(
-                    cookieWithName("refreshToken").description("리프레시 토큰")
+                    cookieWithName("volunteerRefreshToken").description("리프레시 토큰")
                 ),
                 responseFields(
                     fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
@@ -91,7 +89,7 @@ class AuthControllerTest extends BaseControllerTest {
                         .optional()
                 ),
                 responseCookies(
-                    cookieWithName("refreshToken").description("리프레시 토큰")
+                    cookieWithName("shelterRefreshToken").description("리프레시 토큰")
                 ),
                 responseFields(
                     fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
@@ -102,27 +100,50 @@ class AuthControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("성공: 액세스 토큰 갱신 api 호출 시")
-    void refreshAccessToken() throws Exception {
+    @DisplayName("성공: 봉사자 액세스 토큰 갱신 api 호출 시")
+    void volunteerRefreshAccessToken() throws Exception {
         //given
         TokenResponse tokenResponse = AuthFixture.userToken();
-        Cookie refreshTokenCookie = AuthFixture.refreshTokenCookie();
+        Cookie refreshTokenCookie = AuthFixture.volunteerRefreshTokenCookie();
 
         given(authService.refreshAccessToken(anyString())).willReturn(tokenResponse);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/auth/refresh")
-            .header(AUTHORIZATION, volunteerAccessToken)
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/volunteers/refresh")
             .cookie(refreshTokenCookie));
 
         //then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
-                requestCookies(
-                    cookieWithName("refreshToken").description("리프레시 토큰")
-                ),
                 responseCookies(
-                    cookieWithName("refreshToken").description("갱신된 리프레시 토큰")
+                    cookieWithName("volunteerRefreshToken").description("갱신된 리프레시 토큰")
+                ),
+                responseFields(
+                    fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
+                    fieldWithPath("role").type(STRING).description("사용자 역할"),
+                    fieldWithPath("accessToken").type(STRING).description("갱신된 액세스 토큰")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 보호소 액세스 토큰 갱신 api 호출 시")
+    void shelterRefreshAccessToken() throws Exception {
+        //given
+        TokenResponse tokenResponse = AuthFixture.userToken();
+        Cookie refreshTokenCookie = AuthFixture.shelterRefreshTokenCookie();
+
+        given(authService.refreshAccessToken(anyString())).willReturn(tokenResponse);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/shelters/refresh")
+            .cookie(refreshTokenCookie));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                responseCookies(
+                    cookieWithName("shelterRefreshToken").description("갱신된 보호소 리프레시 토큰")
                 ),
                 responseFields(
                     fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
@@ -137,8 +158,7 @@ class AuthControllerTest extends BaseControllerTest {
     void exceptionWhenNullRefreshToken() throws Exception {
         //given
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/auth/refresh")
-            .header(AUTHORIZATION, volunteerAccessToken));
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/shelters/refresh"));
 
         //then
         resultActions.andExpect(status().isUnauthorized())
