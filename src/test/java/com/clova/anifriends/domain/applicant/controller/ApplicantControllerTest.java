@@ -38,7 +38,7 @@ import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicants
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.service.IsAppliedRecruitmentResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.IsAppliedRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;

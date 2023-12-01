@@ -18,7 +18,7 @@ import com.clova.anifriends.domain.notification.vo.NotificationType;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
-import com.clova.anifriends.domain.recruitment.service.IsAppliedRecruitmentResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.IsAppliedRecruitmentResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
