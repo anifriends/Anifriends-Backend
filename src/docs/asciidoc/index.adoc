@@ -29,25 +29,45 @@ operation::auth-controller-test/volunteer-login[snippets='http-request,request-f
 
 operation::auth-controller-test/volunteer-login[snippets='http-response,response-fields,response-cookies']
 
-=== 액세스 토큰 갱신
+=== 봉사자 액세스 토큰 갱신
 
 ==== Request
 
-operation::auth-controller-test/refresh-access-token[snippets='http-request,request-cookies']
+operation::auth-controller-test/volunteer-refresh-access-token[snippets='http-request,request-cookies']
 
 ==== Response
 
-operation::auth-controller-test/refresh-access-token[snippets='http-response,response-fields,response-cookies']
+operation::auth-controller-test/volunteer-refresh-access-token[snippets='http-response,response-cookies,response-fields']
 
-=== 로그아웃
+=== 보호소 액세스 토큰 갱신
 
 ==== Request
 
-operation::auth-controller-test/logout[snippets='http-request,request-headers,request-cookies']
+operation::auth-controller-test/shelter-refresh-access-token[snippets='http-request,request-cookies']
 
 ==== Response
 
-operation::auth-controller-test/logout[snippets='http-response,response-cookies']
+operation::auth-controller-test/shelter-refresh-access-token[snippets='http-response,response-cookies,response-fields']
+
+=== 봉사자 로그아웃
+
+==== Request
+
+operation::auth-controller-test/volunteer-logout[snippets='http-request,request-cookies']
+
+==== Response
+
+operation::auth-controller-test/volunteer-logout[snippets='http-response,response-cookies']
+
+=== 보호소 로그아웃
+
+==== Request
+
+operation::auth-controller-test/shelter-logout[snippets='http-request,request-cookies']
+
+==== Response
+
+operation::auth-controller-test/shelter-logout[snippets='http-response,response-cookies']
 
 == 봉사자
 

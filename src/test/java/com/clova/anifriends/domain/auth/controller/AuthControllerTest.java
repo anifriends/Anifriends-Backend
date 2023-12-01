@@ -6,8 +6,6 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.cookies.CookieDocumentation.responseCookies;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -56,7 +54,7 @@ class AuthControllerTest extends BaseControllerTest {
                         .optional()
                 ),
                 responseCookies(
-                    cookieWithName("refreshToken").description("리프레시 토큰")
+                    cookieWithName("volunteerRefreshToken").description("리프레시 토큰")
                 ),
                 responseFields(
                     fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
@@ -91,7 +89,7 @@ class AuthControllerTest extends BaseControllerTest {
                         .optional()
                 ),
                 responseCookies(
-                    cookieWithName("refreshToken").description("리프레시 토큰")
+                    cookieWithName("shelterRefreshToken").description("리프레시 토큰")
                 ),
                 responseFields(
                     fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
@@ -102,27 +100,56 @@ class AuthControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("성공: 액세스 토큰 갱신 api 호출 시")
-    void refreshAccessToken() throws Exception {
+    @DisplayName("성공: 봉사자 액세스 토큰 갱신 api 호출 시")
+    void volunteerRefreshAccessToken() throws Exception {
         //given
         TokenResponse tokenResponse = AuthFixture.userToken();
-        Cookie refreshTokenCookie = AuthFixture.refreshTokenCookie();
+        Cookie refreshTokenCookie = AuthFixture.volunteerRefreshTokenCookie();
 
         given(authService.refreshAccessToken(anyString())).willReturn(tokenResponse);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/auth/refresh")
-            .header(AUTHORIZATION, volunteerAccessToken)
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/volunteers/refresh")
             .cookie(refreshTokenCookie));
 
         //then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
                 requestCookies(
-                    cookieWithName("refreshToken").description("리프레시 토큰")
+                    cookieWithName("volunteerRefreshToken").description("봉사자 리프레시 토큰")
                 ),
                 responseCookies(
-                    cookieWithName("refreshToken").description("갱신된 리프레시 토큰")
+                    cookieWithName("volunteerRefreshToken").description("갱신된 리프레시 토큰")
+                ),
+                responseFields(
+                    fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
+                    fieldWithPath("role").type(STRING).description("사용자 역할"),
+                    fieldWithPath("accessToken").type(STRING).description("갱신된 액세스 토큰")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("성공: 보호소 액세스 토큰 갱신 api 호출 시")
+    void shelterRefreshAccessToken() throws Exception {
+        //given
+        TokenResponse tokenResponse = AuthFixture.userToken();
+        Cookie refreshTokenCookie = AuthFixture.shelterRefreshTokenCookie();
+
+        given(authService.refreshAccessToken(anyString())).willReturn(tokenResponse);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/shelters/refresh")
+            .cookie(refreshTokenCookie));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestCookies(
+                    cookieWithName("shelterRefreshToken").description("보호소 리프레시 토큰")
+                ),
+                responseCookies(
+                    cookieWithName("shelterRefreshToken").description("갱신된 보호소 리프레시 토큰")
                 ),
                 responseFields(
                     fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
@@ -137,7 +164,42 @@ class AuthControllerTest extends BaseControllerTest {
     void exceptionWhenNullRefreshToken() throws Exception {
         //given
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/auth/refresh")
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/shelters/refresh"));
+
+        //then
+        resultActions.andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.errorCode")
+                .value(ErrorCode.NOT_EXISTS_REFRESH_TOKEN.getValue()));
+    }
+
+    @Test
+    @DisplayName("성공: 봉사자 로그아웃 API 호출 시")
+    void volunteerLogout() throws Exception {
+        //given
+        Cookie refreshTokenCookie = AuthFixture.volunteerRefreshTokenCookie();
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/volunteers/logout")
+            .cookie(refreshTokenCookie));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                requestCookies(
+                    cookieWithName("volunteerRefreshToken").description("봉사자 리프레시 토큰 쿠키")
+                ),
+                responseCookies(
+                    cookieWithName("volunteerRefreshToken").description("리프레시 토큰 쿠키 무효화 설정 쿠키")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("예외(AuthAuthenticationException): 봉사자 로그아웃 API 호출 시 리프레시 토큰 쿠기가 포함되지 않은 경우")
+    void exceptionWhenVolunteerLogoutWithoutRefreshTokenCookie() throws Exception {
+        //given
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/volunteers/logout")
             .header(AUTHORIZATION, volunteerAccessToken));
 
         //then
@@ -147,42 +209,37 @@ class AuthControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("성공: 로그아웃 API 호출 시")
-    void logout() throws Exception {
+    @DisplayName("성공: 봉사자 로그아웃 API 호출 시")
+    void shelterLogout() throws Exception {
         //given
-        Cookie refreshTokenCookie = AuthFixture.refreshTokenCookie();
+        Cookie refreshTokenCookie = AuthFixture.shelterRefreshTokenCookie();
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/auth/logout")
-            .header(AUTHORIZATION, volunteerAccessToken)
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/shelters/logout")
             .cookie(refreshTokenCookie));
 
         //then
         resultActions.andExpect(status().isNoContent())
             .andDo(restDocs.document(
-                requestHeaders(
-                    headerWithName(AUTHORIZATION).description("사용자 액세스 토큰")
-                ),
                 requestCookies(
-                    cookieWithName("refreshToken").description("사용자 리프레시 토큰 쿠키")
+                    cookieWithName("shelterRefreshToken").description("보호소 리프레시 토큰 쿠키")
                 ),
                 responseCookies(
-                    cookieWithName("refreshToken").description("리프레시 토큰 쿠키 무효화 설정 쿠키")
+                    cookieWithName("shelterRefreshToken").description("리프레시 토큰 쿠키 무효화 설정 쿠키")
                 )
             ));
     }
 
     @Test
-    @DisplayName("예외(AuthAuthenticationException): 로그아웃 API 호출 시 리프레시 토큰 쿠기가 포함되지 않은 경우")
-    void exceptionWhenLogoutWithoutRefreshTokenCookie() throws Exception {
+    @DisplayName("예외(AuthAuthenticationException): 보호소 로그아웃 API 호출 시 리프레시 토큰 쿠기가 포함되지 않은 경우")
+    void exceptionWhenShelterLogoutWithoutRefreshTokenCookie() throws Exception {
         //given
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/auth/logout")
-            .header(AUTHORIZATION, volunteerAccessToken));
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/shelters/logout"));
 
         //then
         resultActions.andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.errorCode")
-                    .value(ErrorCode.NOT_EXISTS_REFRESH_TOKEN.getValue()));
+                .value(ErrorCode.NOT_EXISTS_REFRESH_TOKEN.getValue()));
     }
 }

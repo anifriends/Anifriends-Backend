@@ -46,8 +46,20 @@ public final class AuthFixture {
         return new RefreshToken(userToken().refreshToken(), USER_ID, UserRole.ROLE_VOLUNTEER);
     }
 
-    public static Cookie refreshTokenCookie() {
-        MockCookie refreshToken = new MockCookie("refreshToken", userToken().refreshToken());
+    public static Cookie volunteerRefreshTokenCookie() {
+        MockCookie refreshToken
+            = new MockCookie("volunteerRefreshToken", userToken().refreshToken());
+        refreshToken.setPath("/api/auth");
+        refreshToken.setHttpOnly(true);
+        refreshToken.setSecure(true);
+        refreshToken.setDomain(".anifriends.site");
+        refreshToken.setSameSite("None");
+        return refreshToken;
+    }
+
+    public static Cookie shelterRefreshTokenCookie() {
+        MockCookie refreshToken
+            = new MockCookie("shelterRefreshToken", userToken().refreshToken());
         refreshToken.setPath("/api/auth");
         refreshToken.setHttpOnly(true);
         refreshToken.setSecure(true);

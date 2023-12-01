@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.applicant;
 
 import com.clova.anifriends.domain.applicant.exception.ApplicantBadRequestException;
-import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
+import com.clova.anifriends.domain.applicant.exception.ApplicantCanNotApplyException;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.recruitment.Recruitment;
@@ -76,7 +76,7 @@ public class Applicant extends BaseTimeEntity {
             throw new ApplicantBadRequestException("봉사는 필수 입력 항목입니다.");
         }
         if (recruitment.isClosed() || recruitment.getDeadline().isBefore(LocalDateTime.now())) {
-            throw new ApplicantBadRequestException("모집이 마감된 봉사입니다.");
+            throw new ApplicantCanNotApplyException(ErrorCode.CONCURRENCY, "모집이 마감된 봉사입니다.");
         }
     }
 
@@ -88,7 +88,7 @@ public class Applicant extends BaseTimeEntity {
 
     private void validateApplicantCount(Recruitment recruitment) {
         if (recruitment.isFullApplicants()) {
-            throw new ApplicantConflictException(ErrorCode.CONCURRENCY, "모집 인원이 초과되었습니다.");
+            throw new ApplicantCanNotApplyException(ErrorCode.CONCURRENCY, "모집 인원이 초과되었습니다.");
         }
     }
 

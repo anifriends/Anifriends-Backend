@@ -1,6 +1,5 @@
 package com.clova.anifriends.domain.auth.controller;
 
-import com.clova.anifriends.domain.auth.authorization.UserOnly;
 import com.clova.anifriends.domain.auth.dto.request.LoginRequest;
 import com.clova.anifriends.domain.auth.dto.response.LoginResponse;
 import com.clova.anifriends.domain.auth.dto.response.TokenResponse;
@@ -24,7 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private static final String REFRESH_TOKEN_COOKIE = "refreshToken";
+    private static final String VOLUNTEER_REFRESH_TOKEN_COOKIE = "volunteerRefreshToken";
+    private static final String SHELTER_REFRESH_TOKEN_COOKIE = "shelterRefreshToken";
     private static final int ZERO = 0;
     private static final String SAME_SITE_NONE = "None";
     private static final String COOKIE_PATH = "/api/auth";
@@ -40,7 +40,7 @@ public class AuthController {
             loginRequest.email(),
             loginRequest.password(),
             loginRequest.deviceToken());
-        addRefreshTokenCookie(response, tokenResponse);
+        addRefreshTokenCookie(response, tokenResponse, VOLUNTEER_REFRESH_TOKEN_COOKIE);
         LoginResponse loginResponse = LoginResponse.from(tokenResponse);
         return ResponseEntity.ok(loginResponse);
     }
@@ -53,14 +53,39 @@ public class AuthController {
             loginRequest.email(),
             loginRequest.password(),
             loginRequest.deviceToken());
-        addRefreshTokenCookie(response, tokenResponse);
+        addRefreshTokenCookie(response, tokenResponse, SHELTER_REFRESH_TOKEN_COOKIE);
         LoginResponse loginResponse = LoginResponse.from(tokenResponse);
         return ResponseEntity.ok(loginResponse);
     }
 
-    private void addRefreshTokenCookie(HttpServletResponse response, TokenResponse tokenResponse) {
+    @PostMapping("/volunteers/refresh")
+    public ResponseEntity<LoginResponse> volunteerRefreshAccessToken(
+        @CookieValue(value = VOLUNTEER_REFRESH_TOKEN_COOKIE, required = false) String refreshToken,
+        HttpServletResponse response) {
+        checkRefreshTokenNotNull(refreshToken);
+        TokenResponse tokenResponse = authService.refreshAccessToken(refreshToken);
+        addRefreshTokenCookie(response, tokenResponse, VOLUNTEER_REFRESH_TOKEN_COOKIE);
+        LoginResponse loginResponse = LoginResponse.from(tokenResponse);
+        return ResponseEntity.ok(loginResponse);
+    }
+
+    @PostMapping("/shelters/refresh")
+    public ResponseEntity<LoginResponse> shelterRefreshAccessToken(
+        @CookieValue(value = SHELTER_REFRESH_TOKEN_COOKIE, required = false) String refreshToken,
+        HttpServletResponse response) {
+        checkRefreshTokenNotNull(refreshToken);
+        TokenResponse tokenResponse = authService.refreshAccessToken(refreshToken);
+        addRefreshTokenCookie(response, tokenResponse, SHELTER_REFRESH_TOKEN_COOKIE);
+        LoginResponse loginResponse = LoginResponse.from(tokenResponse);
+        return ResponseEntity.ok(loginResponse);
+    }
+
+    private void addRefreshTokenCookie(
+        HttpServletResponse response,
+        TokenResponse tokenResponse,
+        String cookieName) {
         ResponseCookie refreshTokenCookie = ResponseCookie
-            .from(REFRESH_TOKEN_COOKIE, tokenResponse.refreshToken())
+            .from(cookieName, tokenResponse.refreshToken())
             .path("/api/auth")
             .httpOnly(true)
             .secure(true)
@@ -70,26 +95,23 @@ public class AuthController {
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
     }
 
-    @UserOnly
-    @PostMapping("/refresh")
-    public ResponseEntity<LoginResponse> refreshAccessToken(
-        @CookieValue(value = REFRESH_TOKEN_COOKIE, required = false) String refreshToken,
-        HttpServletResponse response) {
-        checkRefreshTokenNotNull(refreshToken);
-        TokenResponse tokenResponse = authService.refreshAccessToken(refreshToken);
-        addRefreshTokenCookie(response, tokenResponse);
-        LoginResponse loginResponse = LoginResponse.from(tokenResponse);
-        return ResponseEntity.ok(loginResponse);
-    }
-
-    @UserOnly
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(
-        @CookieValue(value = REFRESH_TOKEN_COOKIE, required = false) String refreshToken,
+    @PostMapping("/volunteers/logout")
+    public ResponseEntity<Void> volunteerLogout(
+        @CookieValue(value = VOLUNTEER_REFRESH_TOKEN_COOKIE, required = false) String refreshToken,
         HttpServletResponse response) {
         checkRefreshTokenNotNull(refreshToken);
         authService.logout(refreshToken);
-        invalidatedRefreshTokenCookie(response);
+        invalidatedRefreshTokenCookie(response, VOLUNTEER_REFRESH_TOKEN_COOKIE);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/shelters/logout")
+    public ResponseEntity<Void> shelterLogout(
+        @CookieValue(value = SHELTER_REFRESH_TOKEN_COOKIE, required = false) String refreshToken,
+        HttpServletResponse response) {
+        checkRefreshTokenNotNull(refreshToken);
+        authService.logout(refreshToken);
+        invalidatedRefreshTokenCookie(response, SHELTER_REFRESH_TOKEN_COOKIE);
         return ResponseEntity.noContent().build();
     }
 
@@ -100,9 +122,9 @@ public class AuthController {
         }
     }
 
-    private void invalidatedRefreshTokenCookie(HttpServletResponse response) {
+    private void invalidatedRefreshTokenCookie(HttpServletResponse response, String cookieName) {
         ResponseCookie refreshTokenCookie = ResponseCookie
-            .from(REFRESH_TOKEN_COOKIE, "")
+            .from(cookieName, "")
             .path(COOKIE_PATH)
             .httpOnly(true)
             .secure(true)
