@@ -95,26 +95,23 @@ public class AuthController {
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
     }
 
-    @UserOnly
-    @PostMapping("/refresh")
-    public ResponseEntity<LoginResponse> refreshAccessToken(
-        @CookieValue(value = REFRESH_TOKEN_COOKIE, required = false) String refreshToken,
-        HttpServletResponse response) {
-        checkRefreshTokenNotNull(refreshToken);
-        TokenResponse tokenResponse = authService.refreshAccessToken(refreshToken);
-        addRefreshTokenCookie(response, tokenResponse);
-        LoginResponse loginResponse = LoginResponse.from(tokenResponse);
-        return ResponseEntity.ok(loginResponse);
-    }
-
-    @UserOnly
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(
-        @CookieValue(value = REFRESH_TOKEN_COOKIE, required = false) String refreshToken,
+    @PostMapping("/volunteers/logout")
+    public ResponseEntity<Void> volunteerLogout(
+        @CookieValue(value = VOLUNTEER_REFRESH_TOKEN_COOKIE, required = false) String refreshToken,
         HttpServletResponse response) {
         checkRefreshTokenNotNull(refreshToken);
         authService.logout(refreshToken);
-        invalidatedRefreshTokenCookie(response);
+        invalidatedRefreshTokenCookie(response, VOLUNTEER_REFRESH_TOKEN_COOKIE);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/shelters/logout")
+    public ResponseEntity<Void> shelterLogout(
+        @CookieValue(value = SHELTER_REFRESH_TOKEN_COOKIE, required = false) String refreshToken,
+        HttpServletResponse response) {
+        checkRefreshTokenNotNull(refreshToken);
+        authService.logout(refreshToken);
+        invalidatedRefreshTokenCookie(response, SHELTER_REFRESH_TOKEN_COOKIE);
         return ResponseEntity.noContent().build();
     }
 
@@ -125,9 +122,9 @@ public class AuthController {
         }
     }
 
-    private void invalidatedRefreshTokenCookie(HttpServletResponse response) {
+    private void invalidatedRefreshTokenCookie(HttpServletResponse response, String cookieName) {
         ResponseCookie refreshTokenCookie = ResponseCookie
-            .from(REFRESH_TOKEN_COOKIE, "")
+            .from(cookieName, "")
             .path(COOKIE_PATH)
             .httpOnly(true)
             .secure(true)
