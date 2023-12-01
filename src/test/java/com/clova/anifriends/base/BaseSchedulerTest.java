@@ -1,20 +1,43 @@
 package com.clova.anifriends.base;
 
+import com.clova.anifriends.base.BaseSchedulerTest.SchedulerConfig;
 import com.clova.anifriends.domain.notification.service.ShelterNotificationService;
 import com.clova.anifriends.domain.notification.service.VolunteerNotificationService;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentService;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import java.util.Properties;
+import org.junit.jupiter.api.BeforeAll;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-@SpringBootTest
+@SpringJUnitConfig(SchedulerConfig.class)
 public abstract class BaseSchedulerTest {
 
-    @SpyBean
+    @TestConfiguration
+    @EnableScheduling
+    @ComponentScan("com.clova.anifriends.global.scheduler")
+    static class SchedulerConfig {
+
+    }
+
+    @BeforeAll
+    static void beforeAll() {
+        Properties properties = System.getProperties();
+        properties.setProperty("schedules.cron.notification.a-day-before-volunteer", "* * * * * ?");
+        properties.setProperty("schedules.cron.notification.three-day-before-volunteer", "* * * * * ?");
+        properties.setProperty("schedules.cron.notification.encourage-write-review", "* * * * * ?");
+        properties.setProperty("schedules.cron.notification.encourage-check-attendance", "* * * * * ?");
+        properties.setProperty("schedules.cron.recruitment.auto-close", "* * * * * ?");
+    }
+
+    @MockBean
     protected RecruitmentService recruitmentService;
 
-    @SpyBean
+    @MockBean
     protected VolunteerNotificationService volunteerNotificationService;
 
-    @SpyBean
+    @MockBean
     protected ShelterNotificationService shelterNotificationService;
 }
