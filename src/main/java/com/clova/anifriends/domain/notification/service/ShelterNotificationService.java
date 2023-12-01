@@ -10,7 +10,6 @@ import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +39,6 @@ public class ShelterNotificationService {
     }
 
     @Transactional
-    @Scheduled(cron = "${schedules.cron.notification.encourage-check-attendance}")
     public void notifyEncourageCheckAttendance() {
         LocalDateTime time1 = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
         LocalDateTime time2 = LocalDateTime.now().withMinute(59).withSecond(59)
