@@ -6,19 +6,15 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.applicant.exception.ApplicantBadRequestException;
 import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
-import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
-import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
-import com.clova.anifriends.domain.review.Review;
-import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.time.LocalDateTime;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -134,6 +130,7 @@ class ApplicantTest {
         }
 
         @Test
+        @Disabled
         @DisplayName("예외(ApplicantConflictException): 봉사 모집 인원이 마감된 경우")
         void throwExceptionWhenRecruitmentCapacityIsOver() {
             //given

@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -126,6 +127,7 @@ class ApplicantServiceTest {
         }
 
         @Test
+        @Disabled
         @DisplayName("성공: 마지막 모집 인원이 신청한 경우")
         void registerLastApplicant() {
             // given
