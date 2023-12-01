@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.recruitment.repository;
 
 import static com.clova.anifriends.domain.recruitment.QRecruitment.recruitment;
+import static com.clova.anifriends.domain.shelter.QShelter.shelter;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.querydsl.core.BooleanBuilder;
@@ -33,8 +34,8 @@ public class RecruitmentRepositoryImpl implements
         boolean shelterNameContains, Pageable pageable) {
         List<Recruitment> content = query.select(recruitment)
             .from(recruitment)
-            .join(recruitment.shelter)
-            .leftJoin(recruitment.applicants)
+            .join(recruitment.shelter).fetchJoin()
+            .leftJoin(shelter.image).fetchJoin()
             .where(
                 keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
                 recruitmentIsClosed(isClosed),
@@ -65,8 +66,8 @@ public class RecruitmentRepositoryImpl implements
         Pageable pageable) {
         List<Recruitment> content = query.select(recruitment)
             .from(recruitment)
-            .join(recruitment.shelter)
-            .leftJoin(recruitment.applicants)
+            .join(recruitment.shelter).fetchJoin()
+            .leftJoin(shelter.image).fetchJoin()
             .where(
                 keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
                 recruitmentIsClosed(isClosed),

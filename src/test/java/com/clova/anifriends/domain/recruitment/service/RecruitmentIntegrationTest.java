@@ -8,6 +8,7 @@ import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.RecruitmentImage;
+import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -16,6 +17,7 @@ import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import com.clova.anifriends.global.image.S3Service;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
 
 public class RecruitmentIntegrationTest extends BaseIntegrationTest {
 
@@ -127,6 +130,45 @@ public class RecruitmentIntegrationTest extends BaseIntegrationTest {
             Recruitment findRecruitment = entityManager.find(Recruitment.class,
                 recruitment.getRecruitmentId());
             assertThat(findRecruitment).isNull();
+        }
+    }
+
+    @Nested
+    @DisplayName("Recruitment N+1 검증 시")
+    class NPlusOneTest {
+
+        String keyword;
+        LocalDate startDate;
+        LocalDate endDate;
+        Boolean isClosed;
+        boolean titleContains;
+        boolean contentContains;
+        boolean shelterNameContains;
+
+        @BeforeEach
+        void setUp() {
+            titleContains = true;
+            contentContains = true;
+            shelterNameContains = true;
+        }
+
+        @Test
+        @DisplayName("findRecruitments 메서드 호출 시")
+        void findRecruitments() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
+            //when
+            FindRecruitmentsResponse recruitments = recruitmentService.findRecruitments(keyword,
+                startDate, endDate, isClosed, titleContains, contentContains, shelterNameContains,
+                pageRequest);
+
+            //then
+            assertThat(recruitments.recruitments()).hasSize(1);
         }
     }
 }
