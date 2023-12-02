@@ -49,7 +49,7 @@ public class ReviewController {
     ) {
         RegisterReviewResponse registerReviewResponse = reviewService.registerReview(
             volunteerId,
-            request.applicationId(),
+            request.applicantId(),
             request.content(),
             request.imageUrls());
         URI location = URI.create("/api/volunteers/reviews/" + registerReviewResponse.reviewId());
