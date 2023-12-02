@@ -19,22 +19,17 @@ import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
-import com.clova.anifriends.global.image.S3Service;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 public class ReviewIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     ReviewService reviewService;
-
-    @MockBean
-    S3Service s3Service;
 
     @Nested
     @DisplayName("deleteReview 메서드 호출 시")

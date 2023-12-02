@@ -17,8 +17,8 @@ spring:
   jpa:
     properties:
       hibernate:
-        format_sql: true
-        show_sql: true
+#        format_sql: true
+#        show_sql: true
   data:
     redis:
       host: localhost
@@ -38,10 +38,10 @@ cloud:
 schedules:
   cron:
     notification:
-      a-day-before-volunteer: 0/2 * * * * ?
-      three-day-before-volunteer: 0/2 * * * * ?
-      encourage-write-review: 0/2 * * * * ?
-      encourage-check-attendance: 0/2 * * * * ?
+      a-day-before-volunteer: "* * * * * ?"
+      three-day-before-volunteer: "* * * * * ?"
+      encourage-write-review: "* * * * * ?"
+      encourage-check-attendance: "* * * * * ?"
     recruitment:
-      auto-close: 0/2 * * * * ?
-      
+      auto-close: "* * * * * ?"
+

@@ -10,10 +10,12 @@ import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.global.config.RedisConfig;
 import com.clova.anifriends.global.config.SecurityConfig;
+import com.clova.anifriends.global.image.S3Service;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -51,6 +53,9 @@ public abstract class BaseIntegrationTest extends TestContainerStarter {
 
     @Autowired
     protected AnimalRepository animalRepository;
+
+    @MockBean
+    protected S3Service s3Service;
 
     @BeforeEach
     void setUp() {

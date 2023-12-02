@@ -20,14 +20,12 @@ import com.clova.anifriends.domain.animal.vo.AnimalGender;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
-import com.clova.anifriends.global.image.S3Service;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,9 +37,6 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     AnimalCacheRepository animalCacheRepository;
-
-    @MockBean
-    S3Service s3Service;
 
     @Nested
     @DisplayName("registerAnimal 메서드 실행 시")

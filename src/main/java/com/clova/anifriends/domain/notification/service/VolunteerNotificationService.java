@@ -13,7 +13,6 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +43,6 @@ public class VolunteerNotificationService {
     }
 
     @Transactional
-    @Scheduled(cron = "${schedules.cron.notification.a-day-before-volunteer}")
     public void notifyADayBeforeVolunteer() {
         LocalDateTime time1 = LocalDateTime.now().plusDays(1).with(LocalTime.of(0, 1));
         LocalDateTime time2 = LocalDateTime.now().plusDays(1).with(LocalTime.of(23, 59));
@@ -63,7 +61,6 @@ public class VolunteerNotificationService {
     }
 
     @Transactional
-    @Scheduled(cron = "${schedules.cron.notification.three-day-before-volunteer}")
     public void notifyThreeDayBeforeVolunteer() {
         LocalDateTime time1 = LocalDateTime.now().plusDays(3).with(LocalTime.of(0, 1));
         LocalDateTime time2 = LocalDateTime.now().plusDays(3).with(LocalTime.of(23, 59));
@@ -81,7 +78,6 @@ public class VolunteerNotificationService {
     }
 
     @Transactional
-    @Scheduled(cron = "${schedules.cron.notification.encourage-write-review}")
     public void notifyEncourageWriteReview() {
         LocalDateTime time1 = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
         LocalDateTime time2 = LocalDateTime.now().withMinute(59).withSecond(59)

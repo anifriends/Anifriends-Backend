@@ -24,7 +24,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -283,7 +282,6 @@ public class RecruitmentService {
     }
 
     @Transactional
-    @Scheduled(cron = "${schedules.cron.recruitment.auto-close}")
     public void autoCloseRecruitment() {
         LocalDateTime now = LocalDateTime.now();
         List<Recruitment> recruitments = recruitmentRepository
