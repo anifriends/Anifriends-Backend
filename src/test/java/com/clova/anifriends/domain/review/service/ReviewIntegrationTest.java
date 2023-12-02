@@ -150,7 +150,12 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
                 updateContent, updateImageUrls);
 
             //then
-            Review updatedReview = entityManager.find(Review.class, review.getReviewId());
+            Review updatedReview = entityManager.createQuery(
+                    "select r from Review r"
+                        + " left join fetch r.images"
+                        + " where r.reviewId = :reviewId", Review.class)
+                .setParameter("reviewId", review.getReviewId())
+                .getSingleResult();
             assertThat(updatedReview.getContent()).isEqualTo(updateContent);
             assertThat(updatedReview.getImages()).containsExactlyElementsOf(updateImageUrls);
         }

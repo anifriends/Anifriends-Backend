@@ -109,12 +109,9 @@ public class Review extends BaseTimeEntity {
     private void addNewImageUrls(List<String> updateImageUrls) {
         List<ReviewImage> existsReviewImages = filterRemainImages(updateImageUrls);
         List<ReviewImage> newReviewImages = filterNewImages(updateImageUrls);
-
-        List<ReviewImage> newImages = new ArrayList<>();
-        newImages.addAll(existsReviewImages);
-        newImages.addAll(newReviewImages);
-
-        this.images = newImages;
+        this.images.clear();
+        this.images.addAll(existsReviewImages);
+        this.images.addAll(newReviewImages);
     }
 
     private List<ReviewImage> filterRemainImages(List<String> updateImageUrls) {
