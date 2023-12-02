@@ -200,7 +200,7 @@ class ReviewControllerTest extends BaseControllerTest {
                     headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
                 ),
                 requestFields(
-                    fieldWithPath("applicationId").type(NUMBER).description("봉사 신청 ID"),
+                    fieldWithPath("applicantId").type(NUMBER).description("봉사 신청 ID"),
                     fieldWithPath("content").type(STRING).description("리뷰 내용")
                         .description(DocumentationFormatGenerator.getConstraint("10 ~ 300자")),
                     fieldWithPath("imageUrls[]").type(ARRAY).description("리뷰 이미지 url 리스트")
