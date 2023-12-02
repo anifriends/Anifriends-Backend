@@ -113,4 +113,51 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
 
         }
     }
+
+    @Nested
+    @DisplayName("updateReview 메서드 호출 시")
+    class UpdateReviewTest {
+
+        Shelter shelter;
+        Recruitment recruitment;
+        Volunteer volunteer;
+
+        @BeforeEach
+        void setUp() {
+            shelter = ShelterFixture.shelter();
+            recruitment = RecruitmentFixture.recruitment(shelter);
+            volunteer = VolunteerFixture.volunteer();
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+            volunteerRepository.save(volunteer);
+        }
+
+        @Test
+        @DisplayName("성공: 리뷰 업데이트 됨")
+        void updateReviewImages() {
+            //given
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer,
+                ApplicantStatus.ATTENDANCE);
+            applicantRepository.save(applicant);
+            Review review = ReviewFixture.review(applicant);
+            reviewRepository.save(review);
+
+            String updateContent = "a".repeat(50);
+            List<String> updateImageUrls = List.of("updateImage1", "updateImage2");
+
+            //when
+            reviewService.updateReview(volunteer.getVolunteerId(), review.getReviewId(),
+                updateContent, updateImageUrls);
+
+            //then
+            Review updatedReview = entityManager.createQuery(
+                    "select r from Review r"
+                        + " left join fetch r.images"
+                        + " where r.reviewId = :reviewId", Review.class)
+                .setParameter("reviewId", review.getReviewId())
+                .getSingleResult();
+            assertThat(updatedReview.getContent()).isEqualTo(updateContent);
+            assertThat(updatedReview.getImages()).containsExactlyElementsOf(updateImageUrls);
+        }
+    }
 }
