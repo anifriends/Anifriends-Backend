@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.review.repository;
 
 import com.clova.anifriends.domain.review.Review;
-import com.clova.anifriends.domain.review.repository.response.FindShelterReviewResult;
+import com.clova.anifriends.domain.shelter.Shelter;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,22 +32,12 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         @Param("volunteerId") Long volunteerId,
         Pageable pageable);
 
-
-    @Query("select "
-        + "r.reviewId as reviewId, "
-        + "r.createdAt as createdAt, "
-        + "r.content.content as content, "
-        + "r.images as reviewImages, "
-        + "v.volunteerId as volunteerId, "
-        + "v.name.name as volunteerName, "
-        + "v.temperature.temperature as temperature, "
-        + "(select count(r2.reviewId) from Review r2 "
-        + "where r2.applicant.volunteer.volunteerId = v.volunteerId) as volunteerReviewCount, "
-        + "i.imageUrl as volunteerImageUrl "
-        + "from Review r "
-        + "join r.applicant.volunteer v "
-        + "left join v.image i "
-        + "where r.applicant.recruitment.shelter.shelterId = :shelterId")
-    Page<FindShelterReviewResult> findShelterReviewsByShelter(@Param("shelterId") Long shelterId,
+    @Query("select r from Review r"
+        + " left join fetch r.images" 
+        + " join fetch r.applicant a"
+        + " join fetch a.volunteer v"
+        + " left join fetch v.image"
+        + " where r.applicant.recruitment.shelter = :shelter")
+    Page<Review> findShelterReviewsByShelter(@Param("shelter") Shelter shelter,
         Pageable pageable);
 }

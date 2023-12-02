@@ -17,7 +17,9 @@ import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewConflictException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
-import com.clova.anifriends.domain.review.repository.response.FindShelterReviewResult;
+import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
+import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.global.aspect.DataIntegrityHandler;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,14 +33,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ReviewService {
 
-    public static final int REVIEW_BONUS_TEMPERATURE = 3;
+    private static final int REVIEW_BONUS_TEMPERATURE = 3;
+
     private final ReviewRepository reviewRepository;
-
     private final ApplicantRepository applicantRepository;
-
     private final ApplicationEventPublisher applicationEventPublisher;
-
     private final ShelterNotificationRepository shelterNotificationRepository;
+    private final ShelterRepository shelterRepository;
 
     @Transactional(readOnly = true)
     public FindReviewResponse findReview(Long userId, Long reviewId) {
@@ -49,8 +50,11 @@ public class ReviewService {
     public FindShelterReviewsByShelterResponse findShelterReviewsByShelter(
         Long shelterId,
         Pageable pageable) {
-        Page<FindShelterReviewResult> reviewPage = reviewRepository.findShelterReviewsByShelter(shelterId, pageable);
-        return ReviewMapper.resultToResponse(reviewPage);
+        Shelter shelter = shelterRepository.findById(shelterId)
+            .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
+        Page<Review> shelterReviewsByShelter = reviewRepository.findShelterReviewsByShelter(
+            shelter, pageable);
+        return FindShelterReviewsByShelterResponse.from(shelterReviewsByShelter);
     }
 
     @Transactional
