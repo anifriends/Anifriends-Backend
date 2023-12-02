@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "voulunteer_image")
+@Table(name = "volunteer_image")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VolunteerImage extends BaseTimeEntity {
 
