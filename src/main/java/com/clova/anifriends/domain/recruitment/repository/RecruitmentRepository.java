@@ -31,7 +31,7 @@ public interface RecruitmentRepository
         @Param("shelterId") long shelterId, @Param("recruitmentId") long recruitmentId);
 
     @Query("select r from Recruitment r"
-        + " join fetch r.images"
+        + " left join fetch r.images"
         + " where r.recruitmentId = :recruitmentId"
         + " and r.shelter.shelterId = :shelterId")
     Optional<Recruitment> findByShelterIdAndRecruitmentIdWithImages(

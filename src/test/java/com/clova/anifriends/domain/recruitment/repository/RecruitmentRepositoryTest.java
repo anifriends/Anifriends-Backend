@@ -496,4 +496,28 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
             assertThat(recruitments.get(0)).isEqualTo(recruitment1);
         }
     }
+
+    @Nested
+    @DisplayName("findByShelterIdAndRecruitmentId 메서드 실행 시")
+    class FindByShelterIdAndRecruitmentIdTest {
+
+        @Test
+        @DisplayName("성공: 모집 글의 이미지가 없는 경우")
+        void findByShelterIdAndRecruitmentId() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitmentWithImages(shelter, List.of());
+
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+
+            // when
+            Optional<Recruitment> result = recruitmentRepository.findByShelterIdAndRecruitmentId(
+                shelter.getShelterId(), recruitment.getRecruitmentId());
+
+            // then
+            assertThat(result).isPresent();
+            assertThat(result.get()).isEqualTo(recruitment);
+        }
+    }
 }
