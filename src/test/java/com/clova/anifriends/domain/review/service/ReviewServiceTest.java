@@ -27,18 +27,17 @@ import com.clova.anifriends.domain.notification.ShelterNotification;
 import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
-import com.clova.anifriends.domain.review.ReviewImage;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse.FindShelterReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
-import com.clova.anifriends.domain.review.repository.response.FindShelterReviewResult;
-import com.clova.anifriends.domain.review.support.ReviewDtoFixture;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerTemperature;
 import java.util.List;
@@ -73,6 +72,9 @@ class ReviewServiceTest {
 
     @Mock
     private ShelterNotificationRepository shelterNotificationRepository;
+
+    @Mock
+    ShelterRepository shelterRepository;
 
 
     @Nested
@@ -198,18 +200,10 @@ class ReviewServiceTest {
             Volunteer volunteer = volunteer();
             Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
             Review review = review(applicant);
-            ReflectionTestUtils.setField(review, "reviewId", 1L);
-            FindShelterReviewResult findShelterReviewResult = ReviewDtoFixture.findShelterReviewResult(
-                review.getReviewId(), review.getCreatedAt(),
-                review.getContent(), review.getVolunteer().getVolunteerId(),
-                review.getVolunteer().getName(),
-                review.getVolunteer().getTemperature(),
-                review.getVolunteer().getVolunteerImageUrl(),
-                review.getVolunteer().getReviewCount(), List.of(new ReviewImage(review, "urls")));
-            PageImpl<FindShelterReviewResult> reviewPage = new PageImpl<>(List.of(findShelterReviewResult));
-            FindShelterReviewsByShelterResponse expected = ReviewMapper.resultToResponse(reviewPage);
+            PageImpl<Review> reviewPage = new PageImpl<>(List.of(review), pageRequest, 10);
 
-            given(reviewRepository.findShelterReviewsByShelter(anyLong(), any()))
+            given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
+            given(reviewRepository.findShelterReviewsByShelter(any(), any()))
                 .willReturn(reviewPage);
 
             //then
@@ -217,9 +211,13 @@ class ReviewServiceTest {
                 = reviewService.findShelterReviewsByShelter(shelterId, pageRequest);
 
             //then
-            assertThat(response).usingRecursiveComparison()
-                .ignoringFields("reviewId")
-                .isEqualTo(expected);
+            FindShelterReviewResponse findReview = response.reviews().get(0);
+            assertThat(findReview.content()).isEqualTo(review.getContent());
+            assertThat(findReview.reviewImageUrls()).isEqualTo(review.getImages());
+            assertThat(findReview.temperature()).isEqualTo(volunteer.getTemperature());
+            assertThat(findReview.VolunteerReviewCount()).isEqualTo(volunteer.getReviewCount());
+            assertThat(findReview.volunteerName()).isEqualTo(volunteer.getName());
+            assertThat(findReview.volunteerImageUrl()).isEqualTo(volunteer.getVolunteerImageUrl());
         }
     }
 
