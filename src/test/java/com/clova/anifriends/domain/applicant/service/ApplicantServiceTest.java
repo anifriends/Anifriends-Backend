@@ -35,7 +35,7 @@ import com.clova.anifriends.domain.notification.repository.VolunteerNotification
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
-import com.clova.anifriends.domain.recruitment.service.IsAppliedRecruitmentResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.IsAppliedRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentApplicantCount;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;

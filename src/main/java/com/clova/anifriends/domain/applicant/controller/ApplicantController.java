@@ -10,7 +10,7 @@ import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendan
 import com.clova.anifriends.domain.auth.LoginUser;
 import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
 import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
-import com.clova.anifriends.domain.recruitment.service.IsAppliedRecruitmentResponse;
+import com.clova.anifriends.domain.recruitment.dto.response.IsAppliedRecruitmentResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

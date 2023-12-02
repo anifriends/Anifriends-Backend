@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.recruitment.service;
+package com.clova.anifriends.domain.recruitment.dto.response;
 
 public record IsAppliedRecruitmentResponse(boolean isAppliedRecruitment) {
 
