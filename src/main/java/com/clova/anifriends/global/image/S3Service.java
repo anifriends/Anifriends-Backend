@@ -28,7 +28,7 @@ public class S3Service implements ImageRemover {
     private final AmazonS3 amazonS3;
     private static final String s3FolderName = "images";
     private static final List<String> FILE_EXTENSIONS = List.of(".jpg", ".jpeg", ".png", ".JPG",
-        ".JPEG", ".PNG");
+        ".JPEG", ".PNG", ".webp", ".WEBP");
 
     public List<String> uploadImages(List<MultipartFile> multipartFileList) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
