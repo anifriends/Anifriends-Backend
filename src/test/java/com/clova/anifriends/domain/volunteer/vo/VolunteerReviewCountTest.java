@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.catchException;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -41,6 +42,25 @@ class VolunteerReviewCountTest {
 
             //then
             assertThat(exception).isInstanceOf(VolunteerBadRequestException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("increase 메서드 호출 시")
+    class IncreaseTest {
+
+        @Test
+        @DisplayName("성공: 리뷰 개수가 1 증가한다.")
+        void increase() {
+            //given
+            VolunteerReviewCount volunteerReviewCount = new VolunteerReviewCount(0);
+
+            //when
+            VolunteerReviewCount updatedVolunteerReviewCount = volunteerReviewCount.increase();
+
+            //then
+            assertThat(updatedVolunteerReviewCount.getReviewCount()).isEqualTo(1);
+            assertThat(updatedVolunteerReviewCount).isNotSameAs(volunteerReviewCount);
         }
     }
 }

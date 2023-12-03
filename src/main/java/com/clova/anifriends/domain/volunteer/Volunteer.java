@@ -12,6 +12,7 @@ import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerName;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerPassword;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerPhoneNumber;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerReviewCount;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerTemperature;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -42,6 +43,7 @@ import lombok.NoArgsConstructor;
 public class Volunteer extends BaseTimeEntity {
 
     private static final String BLANK = "";
+    private static final int ZERO = 0;
 
     @Id
     @Column(name = "volunteer_id")
@@ -72,6 +74,9 @@ public class Volunteer extends BaseTimeEntity {
 
     @Embedded
     private VolunteerDeviceToken deviceToken;
+
+    @Embedded
+    private VolunteerReviewCount volunteerReviewCount = new VolunteerReviewCount(ZERO);
 
     @OneToMany(mappedBy = "volunteer", fetch = FetchType.LAZY)
     private List<Applicant> applicants = new ArrayList<>();
@@ -172,10 +177,16 @@ public class Volunteer extends BaseTimeEntity {
         this.temperature = this.temperature.decrease(temperature);
     }
 
+    public void increaseReviewCount() {
+        this.volunteerReviewCount = this.volunteerReviewCount.increase();
+    }
+
+    public void decreaseReviewCount() {
+        this.volunteerReviewCount = this.volunteerReviewCount.decrease();
+    }
+
     public long getReviewCount() {
-        return applicants.stream()
-            .filter(applicant -> Objects.nonNull(applicant.getReview()))
-            .count();
+        return volunteerReviewCount.getReviewCount();
     }
 
     public Long getVolunteerId() {

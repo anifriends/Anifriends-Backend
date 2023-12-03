@@ -42,6 +42,7 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerTemperature;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -122,18 +123,19 @@ class ReviewServiceTest {
     @DisplayName("registerReview 메서드 실행 시")
     class RegisterReview {
 
+        Shelter shelter;
+        Volunteer volunteer;
+
+        @BeforeEach
+        void setUp() {
+            shelter = shelter();
+            volunteer = volunteer();
+        }
+
         @Test
         @DisplayName("성공")
         void registerReview() {
             // given
-            Shelter shelter = shelter();
-            int originTemperature = 36;
-            int reviewBonusTemperature = 3;
-
-            Volunteer volunteer = volunteer();
-            ReflectionTestUtils.setField(volunteer, "temperature",
-                new VolunteerTemperature(originTemperature));
-
             Applicant applicant = applicant(recruitment(shelter), volunteer, ATTENDANCE);
 
             when(applicantRepository.findByApplicantIdAndVolunteerId(anyLong(), anyLong()))
@@ -145,8 +147,30 @@ class ReviewServiceTest {
             // then
             verify(reviewRepository, times(1)).save(any(Review.class));
             verify(shelterNotificationRepository, times(1)).save(any(ShelterNotification.class));
+        }
+
+
+        @Test
+        @DisplayName("성공: 봉사자의 리뷰 개수, 온도가 증가")
+        void registerReviewThenIncreaseVolunteerReviewCount() {
+            //given
+            int originTemperature = 36;
+            int reviewBonusTemperature = 3;
+            ReflectionTestUtils.setField(volunteer, "temperature",
+                new VolunteerTemperature(originTemperature));
+            Recruitment recruitment = recruitment(shelter);
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+
+            given(applicantRepository.findByApplicantIdAndVolunteerId(anyLong(), anyLong()))
+                .willReturn(Optional.of(applicant));
+
+            //when
+            reviewService.registerReview(1L, 1L, "a".repeat(10), null);
+
+            //then
             assertThat(volunteer.getTemperature())
                 .isEqualTo(originTemperature + reviewBonusTemperature);
+            assertThat(volunteer.getReviewCount()).isEqualTo(1);
         }
 
         @Test
@@ -182,7 +206,6 @@ class ReviewServiceTest {
             // then
             assertThat(exception).isInstanceOf(DataIntegrityViolationException.class);
         }
-
     }
 
     @Nested

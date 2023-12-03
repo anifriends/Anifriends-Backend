@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class VolunteerReviewCount {
 
     private static final int ZERO = 0;
+    private static final int ONE = 1;
 
     @Column(name = "review_count")
     private int reviewCount;
@@ -29,5 +30,9 @@ public class VolunteerReviewCount {
             throw new VolunteerBadRequestException(ErrorCode.BAD_REQUEST,
                 MessageFormat.format("봉사자의 봉사 후기 개수는 {0} 이상이어야 합니다.", ZERO));
         }
+    }
+
+    public VolunteerReviewCount increase() {
+        return new VolunteerReviewCount(reviewCount + ONE);
     }
 }

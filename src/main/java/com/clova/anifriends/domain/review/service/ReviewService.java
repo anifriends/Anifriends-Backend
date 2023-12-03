@@ -20,6 +20,7 @@ import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
+import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.global.aspect.DataIntegrityHandler;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ public class ReviewService {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ShelterNotificationRepository shelterNotificationRepository;
     private final ShelterRepository shelterRepository;
+    private final VolunteerRepository volunteerRepository;
 
     @Transactional(readOnly = true)
     public FindReviewResponse findReview(Long userId, Long reviewId) {
@@ -59,13 +61,15 @@ public class ReviewService {
 
     @Transactional
     @DataIntegrityHandler(message = "이미 작성한 리뷰가 존재합니다.", exceptionClass = ReviewConflictException.class)
-    public RegisterReviewResponse registerReview(Long userId, Long applicationId, String content,
+    public RegisterReviewResponse registerReview(
+        Long volunteerId,
+        Long applicationId,
+        String content,
         List<String> imageUrls) {
-        Applicant applicant = getApplicant(userId, applicationId);
-
+        Applicant applicant = getApplicant(volunteerId, applicationId);
         Review review = new Review(applicant, content, imageUrls);
-        reviewRepository.save(review);
         applicant.increaseTemperature(REVIEW_BONUS_TEMPERATURE);
+        reviewRepository.save(review);
         shelterNotificationRepository.save(makeNewReviewNotification(applicant));
         return RegisterReviewResponse.from(review);
     }
@@ -107,10 +111,8 @@ public class ReviewService {
     @Transactional
     public void deleteReview(Long volunteerId, Long reviewId) {
         Review review = getReview(volunteerId, reviewId);
-
         List<String> imagesToDelete = review.getImages();
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
-
         reviewRepository.delete(review);
     }
 
