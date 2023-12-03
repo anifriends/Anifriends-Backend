@@ -20,6 +20,8 @@ import com.clova.anifriends.domain.review.repository.ReviewRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
+import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.global.aspect.DataIntegrityHandler;
 import java.util.List;
@@ -110,10 +112,17 @@ public class ReviewService {
 
     @Transactional
     public void deleteReview(Long volunteerId, Long reviewId) {
+        Volunteer volunteer = getVolunteer(volunteerId);
         Review review = getReview(volunteerId, reviewId);
+        volunteer.decreaseReviewCount();
         List<String> imagesToDelete = review.getImages();
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
         reviewRepository.delete(review);
+    }
+
+    private Volunteer getVolunteer(Long volunteerId) {
+        return volunteerRepository.findById(volunteerId)
+            .orElseThrow(() -> new VolunteerNotFoundException("존재하지 않는 봉사자입니다."));
     }
 
     private Review getReview(Long userId, Long reviewId) {

@@ -63,4 +63,36 @@ class VolunteerReviewCountTest {
             assertThat(updatedVolunteerReviewCount).isNotSameAs(volunteerReviewCount);
         }
     }
+
+    @Nested
+    @DisplayName("decrease 메서드 호출 시")
+    class DecreaseTest {
+
+        @Test
+        @DisplayName("성공: 리뷰 개수가 1 감소한다.")
+        void decrease() {
+            //given
+            VolunteerReviewCount volunteerReviewCount = new VolunteerReviewCount(1);
+
+            //when
+            VolunteerReviewCount decreasedVolunteerCount = volunteerReviewCount.decrease();
+
+            //then
+            assertThat(decreasedVolunteerCount.getReviewCount()).isEqualTo(0);
+            assertThat(decreasedVolunteerCount).isNotSameAs(volunteerReviewCount);
+        }
+
+        @Test
+        @DisplayName("예외(VolunteerBadRequestException): 리뷰 개수는 0 보다 작아질 수 없다.")
+        void exceptionWhenTryDecreaseUnderZero() {
+            //given
+            VolunteerReviewCount volunteerReviewCount = new VolunteerReviewCount(0);
+
+            //when
+            Exception exception = catchException(volunteerReviewCount::decrease);
+
+            //then
+            assertThat(exception).isInstanceOf(VolunteerBadRequestException.class);
+        }
+    }
 }

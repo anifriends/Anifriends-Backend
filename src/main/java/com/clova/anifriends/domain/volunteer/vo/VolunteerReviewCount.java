@@ -35,4 +35,8 @@ public class VolunteerReviewCount {
     public VolunteerReviewCount increase() {
         return new VolunteerReviewCount(reviewCount + ONE);
     }
+
+    public VolunteerReviewCount decrease() {
+        return new VolunteerReviewCount(reviewCount - ONE);
+    }
 }

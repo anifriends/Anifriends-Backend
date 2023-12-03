@@ -47,6 +47,7 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
             shelter = ShelterFixture.shelter();
             recruitment = RecruitmentFixture.recruitment(shelter);
             volunteer = VolunteerFixture.volunteer();
+            volunteer.increaseReviewCount();
             applicant = ApplicantFixture.applicant(recruitment, volunteer,
                 ApplicantStatus.ATTENDANCE);
             shelterRepository.save(shelter);
@@ -56,8 +57,8 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("성공")
-        void deleteReview() {
+        @DisplayName("성공: 리뷰 이미지 삭제를 시도함")
+        void deleteReviewThenTryDeleteImages() {
             //given
             Review review = ReviewFixture.review(applicant);
             review.updateReview(null, List.of("image1", "image2"));
@@ -68,12 +69,30 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
 
             //then
             verify(s3Service, times(1)).deleteImages(List.of("image1", "image2"));
+
+        }
+
+        @Test
+        @DisplayName("성공: 리뷰가 삭제 됨")
+        void deleteReview() {
+            //given
+            Review review = ReviewFixture.review(applicant);
+            review.updateReview(null, List.of("image1", "image2"));
+            reviewRepository.save(review);
+
+            //when
+            reviewService.deleteReview(volunteer.getVolunteerId(), review.getReviewId());
+
+            //then
             Review findReview = entityManager.find(Review.class, review.getReviewId());
-            assertThat(findReview).isNull();
             List<ReviewImage> findReviewImages = entityManager.createQuery(
                     "select ri from ReviewImage ri", ReviewImage.class)
                 .getResultList();
+            Volunteer findVolunteer = entityManager.find(Volunteer.class,
+                volunteer.getVolunteerId());
+            assertThat(findReview).isNull();
             assertThat(findReviewImages).isEmpty();
+            assertThat(findVolunteer.getReviewCount()).isNotEqualTo(volunteer.getReviewCount());
         }
     }
 

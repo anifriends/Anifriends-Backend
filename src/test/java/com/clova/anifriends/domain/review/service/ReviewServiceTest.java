@@ -39,6 +39,8 @@ import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.volunteer.Volunteer;
+import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
+import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerTemperature;
 import java.util.List;
 import java.util.Optional;
@@ -76,6 +78,9 @@ class ReviewServiceTest {
 
     @Mock
     ShelterRepository shelterRepository;
+
+    @Mock
+    VolunteerRepository volunteerRepository;
 
 
     @Nested
@@ -360,16 +365,25 @@ class ReviewServiceTest {
     @DisplayName("deleteReview 메서드 호출 시")
     class DeleteReviewTest {
 
+        Shelter shelter;
+        Volunteer volunteer;
+        Recruitment recruitment;
+
+        @BeforeEach
+        void setUp() {
+            shelter = shelter();
+            volunteer = volunteer();
+            recruitment = recruitment(shelter);
+        }
+
         @Test
         @DisplayName("성공")
         void deleteReview() {
             //given
-            Shelter shelter = shelter();
-            Recruitment recruitment = recruitment(shelter);
-            Volunteer volunteer = volunteer();
             Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
             Review review = review(applicant);
 
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
             given(reviewRepository.findByReviewIdAndVolunteerId(anyLong(), anyLong()))
                 .willReturn(Optional.of(review));
 
@@ -384,6 +398,7 @@ class ReviewServiceTest {
         @DisplayName("예외(ReviewNotFoundException): 존재하지 않는 봉사 후기")
         void exceptionWhenReviewNotFound() {
             //given
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.of(volunteer));
             given(reviewRepository.findByReviewIdAndVolunteerId(anyLong(), anyLong()))
                 .willReturn(Optional.empty());
 
@@ -392,6 +407,19 @@ class ReviewServiceTest {
 
             //then
             assertThat(exception).isInstanceOf(ReviewNotFoundException.class);
+        }
+
+        @Test
+        @DisplayName("예외(VolunteerNotFoundException): 존재하지 않는 봉사자")
+        void exceptionWhenVolunteerNotFound() {
+            //given
+            given(volunteerRepository.findById(anyLong())).willReturn(Optional.empty());
+
+            //when
+            Exception exception = catchException(() -> reviewService.deleteReview(1L, 1L));
+
+            //then
+            assertThat(exception).isInstanceOf(VolunteerNotFoundException.class);
         }
     }
 }
