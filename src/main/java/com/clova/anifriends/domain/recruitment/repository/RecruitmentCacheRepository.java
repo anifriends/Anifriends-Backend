@@ -2,8 +2,11 @@ package com.clova.anifriends.domain.recruitment.repository;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -22,6 +25,7 @@ public class RecruitmentCacheRepository {
     private static final int MAX_CACHED_SIZE = 30;
     private static final int PAGE_SIZE = 20;
     private static final int ZERO = 0;
+    public static final ZoneOffset CREATED_AT_SCORE_TIME_ZONE = ZoneOffset.UTC;
 
     private final ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments;
 
@@ -88,7 +92,7 @@ public class RecruitmentCacheRepository {
     }
 
     private long getCreatedAtScore(Recruitment recruitment) {
-        return recruitment.getCreatedAt().toEpochSecond(ZoneOffset.UTC);
+        return recruitment.getCreatedAt().toEpochSecond(CREATED_AT_SCORE_TIME_ZONE);
     }
 
     private boolean isEqualsId(
@@ -100,5 +104,52 @@ public class RecruitmentCacheRepository {
     public void delete(final Recruitment recruitment) {
         FindRecruitmentResponse recruitmentResponse = FindRecruitmentResponse.from(recruitment);
         cachedRecruitments.remove(RECRUITMENT_KEY, recruitmentResponse);
+    }
+
+    public void closeRecruitmentsIfNeedToBe() {
+        LocalDateTime now = LocalDateTime.now();
+        Set<FindRecruitmentResponse> findRecruitments = cachedRecruitments.range(RECRUITMENT_KEY,
+            ZERO, UNTIL_LAST_ELEMENT);
+        if(Objects.nonNull(findRecruitments)) {
+            Map<FindRecruitmentResponse, FindRecruitmentResponse> cachedKeyAndUpdatedValue
+                = new HashMap<>();
+            findRecruitments.stream()
+                .filter(recruitment -> needToClose(recruitment, now))
+                .forEach(recruitment -> {
+                    FindRecruitmentResponse closedRecruitment = closeCachedRecruitment(recruitment);
+                    cachedKeyAndUpdatedValue.put(recruitment, closedRecruitment);
+                });
+
+            cachedKeyAndUpdatedValue.forEach((key, value) -> {
+                cachedRecruitments.remove(RECRUITMENT_KEY, key);
+                long createdAtScore = value.recruitmentCreatedAt()
+                    .toEpochSecond(CREATED_AT_SCORE_TIME_ZONE);
+                cachedRecruitments.add(RECRUITMENT_KEY, value, createdAtScore);
+            });
+        }
+    }
+
+    private boolean needToClose(FindRecruitmentResponse recruitment, LocalDateTime now) {
+        boolean isClosed = recruitment.recruitmentIsClosed();
+        LocalDateTime deadline = recruitment.recruitmentDeadline();
+        boolean notYetClosed = !isClosed;
+        boolean passedDeadline = deadline.isBefore(now) || deadline.isEqual(now);
+        return notYetClosed && passedDeadline;
+    }
+
+    private FindRecruitmentResponse closeCachedRecruitment(FindRecruitmentResponse recruitment) {
+        return new FindRecruitmentResponse(
+            recruitment.recruitmentId(),
+            recruitment.recruitmentTitle(),
+            recruitment.recruitmentStartTime(),
+            recruitment.recruitmentEndTime(),
+            recruitment.recruitmentDeadline(),
+            true,
+            recruitment.recruitmentApplicantCount(),
+            recruitment.recruitmentCapacity(),
+            recruitment.shelterName(),
+            recruitment.shelterImageUrl(),
+            recruitment.recruitmentCreatedAt()
+        );
     }
 }
