@@ -13,6 +13,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.ReviewImage;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.exception.ReviewConflictException;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 public class ReviewIntegrationTest extends BaseIntegrationTest {
 
@@ -153,6 +155,35 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
                 .getSingleResult();
             assertThat(updatedReview.getContent()).isEqualTo(updateContent);
             assertThat(updatedReview.getImages()).containsExactlyElementsOf(updateImageUrls);
+        }
+    }
+
+    @Nested
+    @DisplayName("Review N+1을 테스트")
+    class NPlusOneTest {
+
+        @Test
+        @DisplayName("findShelterReviewsByShelter 메서드 호출 시")
+        void findShelterReviewsByShelter() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer,
+                ApplicantStatus.ATTENDANCE);
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+            volunteerRepository.save(volunteer);
+            applicantRepository.save(applicant);
+            Review review = ReviewFixture.review(applicant);
+            reviewRepository.save(review);
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
+            //when
+            FindShelterReviewsByShelterResponse shelterReviewsByShelter = reviewService.findShelterReviewsByShelter(
+                shelter.getShelterId(), pageRequest);
+
+            //then
         }
     }
 }
