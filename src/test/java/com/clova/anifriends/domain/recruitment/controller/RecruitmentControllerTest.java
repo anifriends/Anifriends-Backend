@@ -190,6 +190,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         Shelter shelter = shelter();
         Recruitment recruitment = recruitment(shelter);
         ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+        ReflectionTestUtils.setField(recruitment, "createdAt", LocalDateTime.now());
         FindRecruitmentResponse findRecruitmentResponse
             = FindRecruitmentResponse.from(recruitment);
         PageInfo pageInfo = new PageInfo(1, false);
@@ -245,6 +246,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("recruitments[].shelterName").type(STRING).description("보호소 이름"),
                     fieldWithPath("recruitments[].shelterImageUrl").type(STRING)
                         .description("보호소 이미지 url").optional(),
+                    fieldWithPath("recruitments[].recruitmentCreatedAt").type(STRING)
+                        .description("봉사 모집글 생성 시간"),
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
                     fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부")
@@ -269,6 +272,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         Shelter shelter = shelter();
         Recruitment recruitment = recruitment(shelter);
         ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+        ReflectionTestUtils.setField(recruitment, "createdAt", LocalDateTime.now());
         FindRecruitmentResponse findRecruitmentResponse
             = FindRecruitmentResponse.from(recruitment);
         PageInfo pageInfo = new PageInfo(1, false);
@@ -326,6 +330,8 @@ class RecruitmentControllerTest extends BaseControllerTest {
                     fieldWithPath("recruitments[].shelterName").type(STRING).description("보호소 이름"),
                     fieldWithPath("recruitments[].shelterImageUrl").type(STRING)
                         .description("보호소 이미지 url").optional(),
+                    fieldWithPath("recruitments[].recruitmentCreatedAt").type(STRING)
+                        .description("봉사 모집글 생성 시간"),
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
                     fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부")

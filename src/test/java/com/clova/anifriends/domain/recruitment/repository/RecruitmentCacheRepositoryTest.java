@@ -6,6 +6,7 @@ import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
+import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
@@ -135,7 +137,8 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             PageRequest pageRequest = PageRequest.of(0, 20);
 
             //when
-            Slice<FindRecruitmentResponse> recruitments = recruitmentCacheRepository.findAll(pageRequest);
+            Slice<FindRecruitmentResponse> recruitments = recruitmentCacheRepository.findAll(
+                pageRequest);
 
             //then
             assertThat(recruitments.getContent())
@@ -348,6 +351,79 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             Set<FindRecruitmentResponse> recruitments = cachedRecruitments.rangeByScore(
                 RECRUITMENT_KEY, createdAtScore, createdAtScore);
             assertThat(recruitments).isEmpty();
+        }
+    }
+
+    @Nested
+    @DisplayName("closeRecruitmentsIfNeedToBe 메서드 호출 시")
+    class CloseRecruitmentsIfNeedToBeTest {
+
+        Shelter shelter;
+
+        @BeforeEach
+        void setUp() {
+            shelter = ShelterFixture.shelter();
+            shelterRepository.save(shelter);
+        }
+
+        @Test
+        @DisplayName("성공: A(마감 대상), B(마감 시간 전)")
+        void closeRecruitmentsIfNeedToBe() {
+            //given
+            Recruitment recruitmentB = RecruitmentFixture.recruitment(shelter);
+            Recruitment recruitmentA = RecruitmentFixture.recruitment(shelter);
+            RecruitmentInfo recruitmentInfo = new RecruitmentInfo(recruitmentA.getStartTime(),
+                recruitmentA.getEndTime(), recruitmentA.getDeadline(), recruitmentA.isClosed(),
+                recruitmentA.getCapacity());
+            LocalDateTime deadlineBeforeNow = LocalDateTime.now().minusDays(1);
+            ReflectionTestUtils.setField(recruitmentInfo, "deadline", deadlineBeforeNow);
+            ReflectionTestUtils.setField(recruitmentA, "info", recruitmentInfo);
+            recruitmentRepository.save(recruitmentA);
+            recruitmentRepository.save(recruitmentB);
+            recruitmentCacheRepository.save(recruitmentA);
+            recruitmentCacheRepository.save(recruitmentB);
+
+            //when
+            recruitmentCacheRepository.closeRecruitmentsIfNeedToBe();
+
+            //then
+            Set<FindRecruitmentResponse> cachedRecruitments = redisTemplate.opsForZSet()
+                .range(RECRUITMENT_KEY, ZERO, ALL_ELEMENT);
+            Optional<FindRecruitmentResponse> findRecruitmentA = cachedRecruitments.stream()
+                .filter(FindRecruitmentResponse::recruitmentIsClosed)
+                .findFirst();
+            Optional<FindRecruitmentResponse> findRecruitmentB = cachedRecruitments.stream()
+                .filter(recruitment -> !recruitment.recruitmentIsClosed())
+                .findFirst();
+            assertThat(findRecruitmentA).isNotEmpty();
+            assertThat(findRecruitmentB).isNotEmpty();
+            assertThat(findRecruitmentA.get().recruitmentIsClosed()).isTrue();
+            assertThat(findRecruitmentB.get().recruitmentIsClosed()).isFalse();
+        }
+
+        @Test
+        @DisplayName("성공: A(이미 마감 됨)")
+        void closeRecruitmentsIfNeedToBeButAlreadyClosed() {
+            //given
+            Recruitment recruitmentA = RecruitmentFixture.recruitment(shelter);
+            RecruitmentInfo recruitmentInfo = new RecruitmentInfo(recruitmentA.getStartTime(),
+                recruitmentA.getEndTime(), recruitmentA.getDeadline(), recruitmentA.isClosed(),
+                recruitmentA.getCapacity());
+            ReflectionTestUtils.setField(recruitmentInfo, "isClosed", true);
+            ReflectionTestUtils.setField(recruitmentA, "info", recruitmentInfo);
+            recruitmentRepository.save(recruitmentA);
+            recruitmentCacheRepository.save(recruitmentA);
+
+            //when
+            recruitmentCacheRepository.closeRecruitmentsIfNeedToBe();
+
+            //then
+            Set<FindRecruitmentResponse> cachedRecruitments = redisTemplate.opsForZSet()
+                .range(RECRUITMENT_KEY, ZERO, ALL_ELEMENT);
+            Optional<FindRecruitmentResponse> findRecruitmentA = cachedRecruitments.stream()
+                .filter(FindRecruitmentResponse::recruitmentIsClosed)
+                .findFirst();
+            assertThat(findRecruitmentA).isNotEmpty();
         }
     }
 }

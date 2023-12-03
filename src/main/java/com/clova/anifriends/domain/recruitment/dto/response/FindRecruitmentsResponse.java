@@ -27,7 +27,8 @@ public record FindRecruitmentsResponse(
         int recruitmentApplicantCount,
         int recruitmentCapacity,
         String shelterName,
-        String shelterImageUrl) {
+        String shelterImageUrl,
+        LocalDateTime recruitmentCreatedAt) {
 
         public static FindRecruitmentResponse from(Recruitment recruitment) {
             return new FindRecruitmentResponse(
@@ -36,11 +37,12 @@ public record FindRecruitmentsResponse(
                 recruitment.getStartTime(),
                 recruitment.getEndTime(),
                 recruitment.getDeadline(),
-                recruitment.isClosed() || recruitment.getDeadline().isBefore(LocalDateTime.now()),
+                recruitment.isClosed(),
                 recruitment.getApplicantCount(),
                 recruitment.getCapacity(),
                 recruitment.getShelter().getName(),
-                recruitment.getShelter().getImage()
+                recruitment.getShelter().getImage(),
+                recruitment.getCreatedAt()
             );
         }
     }

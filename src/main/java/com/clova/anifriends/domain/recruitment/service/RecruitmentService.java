@@ -283,10 +283,7 @@ public class RecruitmentService {
 
     @Transactional
     public void autoCloseRecruitment() {
-        LocalDateTime now = LocalDateTime.now();
-        List<Recruitment> recruitments = recruitmentRepository
-            .findByInfo_IsClosedFalseAndInfo_DeadlineBefore(now);
-        recruitments.forEach(Recruitment::closeRecruitment);
-        recruitments.forEach(recruitmentCacheRepository::update);
+        recruitmentRepository.closeRecruitmentsIfNeedToBe();
+        recruitmentCacheRepository.closeRecruitmentsIfNeedToBe();
     }
 }
