@@ -11,12 +11,12 @@ public record FindShelterReviewsByShelterResponse(List<FindShelterReviewResponse
 
     public record FindShelterReviewResponse(
         Long reviewId,
-        LocalDateTime createdAt,
-        String content,
+        LocalDateTime reviewCreatedAt,
+        String reviewContent,
         List<String> reviewImageUrls,
         Long volunteerId,
         String volunteerName,
-        int temperature,
+        int volunteerTemperature,
         String volunteerImageUrl,
         long volunteerReviewCount) {
 

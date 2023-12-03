@@ -152,13 +152,14 @@ class ReviewControllerTest extends BaseControllerTest {
                 responseFields(
                     fieldWithPath("reviews").type(ARRAY).description("리뷰 리스트"),
                     fieldWithPath("reviews[].reviewId").type(NUMBER).description("리뷰 ID"),
-                    fieldWithPath("reviews[].createdAt").type(STRING).description("리뷰 생성일"),
-                    fieldWithPath("reviews[].content").type(STRING).description("리뷰 내용"),
+                    fieldWithPath("reviews[].reviewCreatedAt").type(STRING).description("리뷰 생성일"),
+                    fieldWithPath("reviews[].reviewContent").type(STRING).description("리뷰 내용"),
                     fieldWithPath("reviews[].reviewImageUrls").type(ARRAY)
                         .description("리뷰 이미지 url 리스트").optional(),
                     fieldWithPath("reviews[].volunteerId").type(NUMBER).description("봉사자 ID"),
                     fieldWithPath("reviews[].volunteerName").type(STRING).description("봉사자 이름"),
-                    fieldWithPath("reviews[].temperature").type(NUMBER).description("봉사자 온도"),
+                    fieldWithPath("reviews[].volunteerTemperature").type(NUMBER)
+                        .description("봉사자 온도"),
                     fieldWithPath("reviews[].volunteerImageUrl").type(STRING)
                         .description("봉사자 프로필 이미지 url").optional(),
                     fieldWithPath("reviews[].volunteerReviewCount").type(NUMBER)
