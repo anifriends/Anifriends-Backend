@@ -83,7 +83,6 @@ public class ReviewService {
     ) {
         Page<Review> reviewPage
             = reviewRepository.findAllByShelterId(shelterId, pageable);
-
         return FindShelterReviewsResponse.from(reviewPage);
     }
 

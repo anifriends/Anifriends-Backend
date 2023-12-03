@@ -38,12 +38,10 @@ public record FindShelterReviewsResponse(
         Page<Review> reviewPage
     ) {
         PageInfo pageInfo = PageInfo.of(reviewPage.getTotalElements(), reviewPage.hasNext());
-
         List<FindShelterReviewByVolunteerResponse> reviews = reviewPage
             .map(FindShelterReviewByVolunteerResponse::from)
             .stream()
             .toList();
-
         return new FindShelterReviewsResponse(reviews, pageInfo);
     }
 }
