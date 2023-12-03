@@ -98,16 +98,17 @@ public class Applicant extends BaseTimeEntity {
 
     public void registerReview(Review review) {
         this.review = review;
+        this.volunteer.increaseReviewCount();
+    }
+
+    public void increaseTemperature(int temperature) {
+        this.volunteer.increaseTemperature(temperature);
     }
 
     public void updateApplicantStatus(Boolean isApproved) {
         if (Objects.nonNull(isApproved)) {
             this.status = isApproved ? ApplicantStatus.ATTENDANCE : ApplicantStatus.REFUSED;
         }
-    }
-
-    public void increaseTemperature(int temperature) {
-        this.volunteer.increaseTemperature(temperature);
     }
 
     public ApplicantStatus getStatus() {
