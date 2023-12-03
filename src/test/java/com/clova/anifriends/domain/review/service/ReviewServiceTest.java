@@ -215,7 +215,7 @@ class ReviewServiceTest {
             assertThat(findReview.content()).isEqualTo(review.getContent());
             assertThat(findReview.reviewImageUrls()).isEqualTo(review.getImages());
             assertThat(findReview.temperature()).isEqualTo(volunteer.getTemperature());
-            assertThat(findReview.VolunteerReviewCount()).isEqualTo(volunteer.getReviewCount());
+            assertThat(findReview.volunteerReviewCount()).isEqualTo(volunteer.getReviewCount());
             assertThat(findReview.volunteerName()).isEqualTo(volunteer.getName());
             assertThat(findReview.volunteerImageUrl()).isEqualTo(volunteer.getVolunteerImageUrl());
         }

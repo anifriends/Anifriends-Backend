@@ -126,7 +126,8 @@ class ReviewControllerTest extends BaseControllerTest {
             review.getVolunteer().getTemperature(),
             review.getVolunteer().getVolunteerImageUrl(),
             review.getVolunteer().getReviewCount(), List.of(new ReviewImage(review, "urls")));
-        PageImpl<FindShelterReviewResult> reviewPage = new PageImpl<>(List.of(findShelterReviewResult));
+        PageImpl<FindShelterReviewResult> reviewPage = new PageImpl<>(
+            List.of(findShelterReviewResult));
         FindShelterReviewsByShelterResponse response = ReviewMapper.resultToResponse(reviewPage);
 
         given(reviewService.findShelterReviewsByShelter(anyLong(), any())).willReturn(response);
@@ -160,7 +161,7 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("reviews[].temperature").type(NUMBER).description("봉사자 온도"),
                     fieldWithPath("reviews[].volunteerImageUrl").type(STRING)
                         .description("봉사자 프로필 이미지 url").optional(),
-                    fieldWithPath("reviews[].VolunteerReviewCount").type(NUMBER)
+                    fieldWithPath("reviews[].volunteerReviewCount").type(NUMBER)
                         .description("봉사자 리뷰 수"),
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
                     fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
