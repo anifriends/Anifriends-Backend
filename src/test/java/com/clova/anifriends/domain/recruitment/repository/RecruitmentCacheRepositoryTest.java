@@ -367,7 +367,7 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("성공: A(마감 대상), B(대상 아님)")
+        @DisplayName("성공: A(마감 대상), B(마감 시간 전)")
         void closeRecruitmentsIfNeedToBe() {
             //given
             Recruitment recruitmentB = RecruitmentFixture.recruitment(shelter);
@@ -399,6 +399,31 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             assertThat(findRecruitmentB).isNotEmpty();
             assertThat(findRecruitmentA.get().recruitmentIsClosed()).isTrue();
             assertThat(findRecruitmentB.get().recruitmentIsClosed()).isFalse();
+        }
+
+        @Test
+        @DisplayName("성공: A(이미 마감 됨)")
+        void closeRecruitmentsIfNeedToBeButAlreadyClosed() {
+            //given
+            Recruitment recruitmentA = RecruitmentFixture.recruitment(shelter);
+            RecruitmentInfo recruitmentInfo = new RecruitmentInfo(recruitmentA.getStartTime(),
+                recruitmentA.getEndTime(), recruitmentA.getDeadline(), recruitmentA.isClosed(),
+                recruitmentA.getCapacity());
+            ReflectionTestUtils.setField(recruitmentInfo, "isClosed", true);
+            ReflectionTestUtils.setField(recruitmentA, "info", recruitmentInfo);
+            recruitmentRepository.save(recruitmentA);
+            recruitmentCacheRepository.save(recruitmentA);
+
+            //when
+            recruitmentCacheRepository.closeRecruitmentsIfNeedToBe();
+
+            //then
+            Set<FindRecruitmentResponse> cachedRecruitments = redisTemplate.opsForZSet()
+                .range(RECRUITMENT_KEY, ZERO, ALL_ELEMENT);
+            Optional<FindRecruitmentResponse> findRecruitmentA = cachedRecruitments.stream()
+                .filter(FindRecruitmentResponse::recruitmentIsClosed)
+                .findFirst();
+            assertThat(findRecruitmentA).isNotEmpty();
         }
     }
 }
