@@ -18,7 +18,7 @@ public record FindShelterReviewsByShelterResponse(List<FindShelterReviewResponse
         String volunteerName,
         int temperature,
         String volunteerImageUrl,
-        long VolunteerReviewCount) {
+        long volunteerReviewCount) {
 
         public static FindShelterReviewResponse from(Review review) {
             return new FindShelterReviewResponse(
