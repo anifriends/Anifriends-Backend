@@ -35,6 +35,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("select r from Review r"
         + " join fetch r.applicant a"
         + " join fetch a.volunteer v"
+        + " left join fetch r.images"
         + " left join fetch v.image"
         + " where r.applicant.recruitment.shelter = :shelter")
     Page<Review> findShelterReviewsByShelter(@Param("shelter") Shelter shelter,

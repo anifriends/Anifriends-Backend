@@ -188,6 +188,7 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
             Shelter shelter = ShelterFixture.shelter();
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
             Volunteer volunteer = VolunteerFixture.volunteer();
+            volunteer.updateVolunteerInfo(null, null, null, null, "imageUrl");
             Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer,
                 ApplicantStatus.ATTENDANCE);
             shelterRepository.save(shelter);
@@ -203,6 +204,7 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
                 shelter.getShelterId(), pageRequest);
 
             //then
+            assertThat(shelterReviewsByShelter.reviews()).hasSize(1);
         }
     }
 }
