@@ -37,7 +37,7 @@ public record FindRecruitmentsResponse(
                 recruitment.getStartTime(),
                 recruitment.getEndTime(),
                 recruitment.getDeadline(),
-                recruitment.isClosed() || recruitment.getDeadline().isBefore(LocalDateTime.now()),
+                recruitment.isClosed(),
                 recruitment.getApplicantCount(),
                 recruitment.getCapacity(),
                 recruitment.getShelter().getName(),
