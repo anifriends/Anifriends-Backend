@@ -186,17 +186,24 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
         void findShelterReviewsByShelter() {
             //given
             Shelter shelter = ShelterFixture.shelter();
-            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            Recruitment recruitmentA = RecruitmentFixture.recruitment(shelter);
+            Recruitment recruitmentB = RecruitmentFixture.recruitment(shelter);
             Volunteer volunteer = VolunteerFixture.volunteer();
             volunteer.updateVolunteerInfo(null, null, null, null, "imageUrl");
-            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer,
+            Applicant applicantA = ApplicantFixture.applicant(recruitmentA, volunteer,
+                ApplicantStatus.ATTENDANCE);
+            Applicant applicantB = ApplicantFixture.applicant(recruitmentB, volunteer,
                 ApplicantStatus.ATTENDANCE);
             shelterRepository.save(shelter);
-            recruitmentRepository.save(recruitment);
+            recruitmentRepository.save(recruitmentA);
+            recruitmentRepository.save(recruitmentB);
             volunteerRepository.save(volunteer);
-            applicantRepository.save(applicant);
-            Review review = ReviewFixture.review(applicant);
-            reviewRepository.save(review);
+            applicantRepository.save(applicantA);
+            applicantRepository.save(applicantB);
+            Review reviewA = ReviewFixture.review(applicantA);
+            Review reviewB = ReviewFixture.review(applicantB);
+            reviewRepository.save(reviewA);
+            reviewRepository.save(reviewB);
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             //when
@@ -204,7 +211,7 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
                 shelter.getShelterId(), pageRequest);
 
             //then
-            assertThat(shelterReviewsByShelter.reviews()).hasSize(1);
+            assertThat(shelterReviewsByShelter.reviews()).hasSize(2);
         }
     }
 }
