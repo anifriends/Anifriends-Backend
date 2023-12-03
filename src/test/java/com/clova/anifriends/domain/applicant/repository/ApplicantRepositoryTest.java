@@ -18,12 +18,14 @@ import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVol
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
+import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class ApplicantRepositoryTest extends BaseRepositoryTest {
 
@@ -203,50 +206,100 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
     class FindApplicantsTest {
 
         Shelter shelter;
-        Recruitment recruitment;
 
         @BeforeEach
         void setUp() {
             shelter = ShelterFixture.shelter();
-            recruitment = RecruitmentFixture.recruitment(shelter);
             shelterRepository.save(shelter);
-            recruitmentRepository.save(recruitment);
         }
 
         @Test
-        @DisplayName("성공")
+        @DisplayName("성공: A(신청, 1번 완료) 응답 확인")
         void findApplicants() {
             //given
-            Volunteer volunteerAttendance = volunteer();
-            Volunteer volunteerNoShow = volunteer();
-            Applicant applicantAttendance = applicant(recruitment, volunteerAttendance, ATTENDANCE);
-            Applicant applicantNoShow = applicant(recruitment, volunteerNoShow, NOSHOW);
+            Volunteer volunteerA = volunteer();
+            Recruitment targetRecruitment = recruitment(shelter);
+            Recruitment pastRecruitment = recruitment(shelter);
+            Applicant applicantA = applicant(targetRecruitment, volunteerA);
+            Applicant applicantAttend = applicant(pastRecruitment, volunteerA, ATTENDANCE);
 
-            volunteerRepository.saveAll(
-                List.of(volunteerAttendance, volunteerNoShow));
-            applicantRepository.saveAll(
-                List.of(applicantAttendance, applicantNoShow));
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime startTime = now.plusHours(1);
+            RecruitmentInfo pastRecruitmentInfo = new RecruitmentInfo(startTime,
+                startTime.plusHours(1), startTime.minusMinutes(20), false, 10);
+            LocalDateTime pastStartTime = now.minusHours(1);
+            ReflectionTestUtils.setField(pastRecruitmentInfo, "startTime", pastStartTime);
+            ReflectionTestUtils.setField(pastRecruitment, "info", pastRecruitmentInfo);
+
+            recruitmentRepository.saveAll(List.of(targetRecruitment, pastRecruitment));
+            volunteerRepository.save(volunteerA);
+            applicantRepository.saveAll(List.of(applicantA, applicantAttend));
 
             //when
             List<FindApplicantResult> applicants = applicantRepository.findApplicants(
-                recruitment, shelter);
+                targetRecruitment, shelter);
 
             //then
-            assertThat(applicants).hasSize(2);
+            assertThat(applicants).hasSize(1);
             FindApplicantResult result0 = applicants.get(0);
-            assertThat(result0.getVolunteerId()).isEqualTo(volunteerAttendance.getVolunteerId());
-            assertThat(result0.getApplicantId()).isEqualTo(applicantAttendance.getApplicantId());
-            assertThat(result0.getVolunteerBirthDate()).isEqualTo(volunteerAttendance.getBirthDate());
-            assertThat(result0.getVolunteerGender()).isEqualTo(volunteerAttendance.getGender());
+            assertThat(result0.getVolunteerId()).isEqualTo(volunteerA.getVolunteerId());
+            assertThat(result0.getApplicantId()).isEqualTo(applicantA.getApplicantId());
+            assertThat(result0.getVolunteerBirthDate()).isEqualTo(volunteerA.getBirthDate());
+            assertThat(result0.getVolunteerGender()).isEqualTo(volunteerA.getGender());
             assertThat(result0.getCompletedVolunteerCount()).isEqualTo(1);
             assertThat(result0.getVolunteerTemperature())
-                .isEqualTo(volunteerAttendance.getTemperature());
+                .isEqualTo(volunteerA.getTemperature());
             assertThat(result0.getApplicantStatus())
-                .isEqualTo(applicantAttendance.getStatus());
+                .isEqualTo(applicantA.getStatus());
+        }
 
-            FindApplicantResult result1 = applicants.get(1);
-            assertThat(result1.getApplicantStatus()).isEqualTo(applicantNoShow.getStatus());
-            assertThat(result1.getCompletedVolunteerCount()).isZero();
+        @Test
+        @DisplayName("성공: A(신청, 1번 완료), B(신청, 1번 노쇼), C(신청, 1번 승인)")
+        void findApplicantsWithMultipleVolunteer() {
+            //given
+            Volunteer volunteerA = volunteer();
+            Volunteer volunteerB = volunteer();
+            Volunteer volunteerC = volunteer();
+            Recruitment targetRecruitment = recruitment(shelter);
+            Recruitment pastRecruitment = recruitment(shelter);
+            Recruitment recruitmentNotStart = recruitment(shelter);
+
+            Applicant applicantA = applicant(targetRecruitment, volunteerA);
+            Applicant applicantB = applicant(targetRecruitment, volunteerB);
+            Applicant applicantC = applicant(targetRecruitment, volunteerC);
+
+            Applicant applicantAttend = applicant(pastRecruitment, volunteerA, ATTENDANCE);
+            Applicant applicantNoShow = applicant(pastRecruitment, volunteerB, NOSHOW);
+            Applicant applicantNotStart = applicant(recruitmentNotStart, volunteerC, ATTENDANCE);
+
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime startTime = now.plusHours(1);
+            RecruitmentInfo pastRecruitmentInfo = new RecruitmentInfo(startTime,
+                startTime.plusHours(1), startTime.minusMinutes(20), false, 10);
+            LocalDateTime pastStartTime = now.minusHours(1);
+            ReflectionTestUtils.setField(pastRecruitmentInfo, "startTime", pastStartTime);
+            ReflectionTestUtils.setField(pastRecruitment, "info", pastRecruitmentInfo);
+
+            recruitmentRepository.saveAll(
+                List.of(targetRecruitment, pastRecruitment, recruitmentNotStart));
+            volunteerRepository.saveAll(
+                List.of(volunteerA, volunteerB, volunteerC));
+            applicantRepository.saveAll(
+                List.of(applicantA, applicantB, applicantC, applicantAttend, applicantNoShow,
+                    applicantNotStart));
+
+            //when
+            List<FindApplicantResult> applicants = applicantRepository.findApplicants(
+                targetRecruitment, shelter);
+
+            //then
+            assertThat(applicants).hasSize(3);
+            FindApplicantResult resultA = applicants.get(0);
+            FindApplicantResult resultB = applicants.get(1);
+            FindApplicantResult resultC = applicants.get(2);
+            assertThat(resultA.getCompletedVolunteerCount()).isEqualTo(1);
+            assertThat(resultB.getCompletedVolunteerCount()).isEqualTo(0);
+            assertThat(resultC.getCompletedVolunteerCount()).isEqualTo(0);
         }
     }
 

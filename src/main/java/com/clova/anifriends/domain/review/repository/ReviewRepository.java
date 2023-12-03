@@ -33,7 +33,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         Pageable pageable);
 
     @Query("select r from Review r"
-        + " left join fetch r.images" 
         + " join fetch r.applicant a"
         + " join fetch a.volunteer v"
         + " left join fetch v.image"
