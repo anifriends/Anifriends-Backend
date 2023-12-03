@@ -23,6 +23,7 @@ import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
+import com.clova.anifriends.domain.common.util.EmailMasker;
 import com.clova.anifriends.domain.notification.ShelterNotification;
 import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
@@ -31,6 +32,7 @@ import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse.FindShelterReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse.FindShelterReviewByVolunteerResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
@@ -313,6 +315,35 @@ class ReviewServiceTest {
             assertThat(response).usingRecursiveComparison()
                 .ignoringFields("reviewId")
                 .isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("성공: 봉사자 이메일 마스킹 됨")
+        void findShelterReviewsThenReturnMaskedEmail() {
+            //given
+            Long shelterId = 1L;
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            Shelter shelter = shelter();
+            Recruitment recruitment = recruitment(shelter);
+            Volunteer volunteer = volunteer();
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+            Review review = review(applicant);
+            PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
+            FindShelterReviewsResponse expected = FindShelterReviewsResponse.from(
+                reviewPage);
+
+            given(reviewRepository.findAllByShelterId(anyLong(), any()))
+                .willReturn(reviewPage);
+
+            //then
+            FindShelterReviewsResponse response
+                = reviewService.findShelterReviews(shelterId, pageRequest);
+
+            //then
+            assertThat(response.reviews()).hasSize(1);
+            FindShelterReviewByVolunteerResponse findReview = response.reviews().get(0);
+            assertThat(findReview.volunteerEmail()).isEqualTo(
+                EmailMasker.masking(volunteer.getEmail()));
         }
     }
 
