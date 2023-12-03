@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.review.dto.response;
 
 import com.clova.anifriends.domain.common.PageInfo;
+import com.clova.anifriends.domain.common.util.EmailMasker;
 import com.clova.anifriends.domain.review.Review;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +29,7 @@ public record FindShelterReviewsResponse(
                 review.getApplicant().getVolunteer().getTemperature(),
                 review.getCreatedAt(),
                 review.getContent(),
-                review.getApplicant().getVolunteer().getEmail(),
+                EmailMasker.masking(review.getApplicant().getVolunteer().getEmail()),
                 review.getImages()
             );
         }
