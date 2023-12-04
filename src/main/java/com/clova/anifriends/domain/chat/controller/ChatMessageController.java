@@ -1,13 +1,13 @@
 package com.clova.anifriends.domain.chat.controller;
 
-import com.clova.anifriends.domain.chat.message.pub.NewChatMessagePub;
-import com.clova.anifriends.domain.chat.message.sub.ChatMessageSub;
+import com.clova.anifriends.domain.chat.dto.request.ChatMessageRequest;
+import com.clova.anifriends.domain.chat.dto.response.ChatMessageResponse;
 import com.clova.anifriends.domain.chat.service.ChatMessageService;
+import com.clova.anifriends.domain.chat.service.MessagePublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -15,16 +15,28 @@ import org.springframework.stereotype.Controller;
 public class ChatMessageController {
 
     private final ChatMessageService chatMessageService;
+    private final MessagePublisher messagePublisher;
 
-    @MessageMapping("/new/chat/rooms/{chatRoomId}/shelters/{shelterId}")
-    @SendTo("/sub/new/chat/rooms/shelters/{shelterId}")
-    public NewChatMessagePub newChatMessage(
+    @MessageMapping("/chat/new/rooms/{chatRoomId}/shelters/{shelterId}")
+    public void chatMessageOfNewRoom(
         @DestinationVariable Long chatRoomId,
-        @Payload ChatMessageSub chatMessageSub
+        @DestinationVariable Long shelterId,
+        @Payload ChatMessageRequest chatMessageResponse
     ) {
-        return chatMessageService.registerChatMessage(
-            chatRoomId, chatMessageSub.chatSenderId(), chatMessageSub.chatSenderRole(),
-            chatMessageSub.chatMessage());
+        ChatMessageResponse response = chatMessageService.registerChatMessage(
+            chatRoomId, chatMessageResponse.chatSenderId(), chatMessageResponse.chatSenderRole(),
+            chatMessageResponse.chatMessage());
+        messagePublisher.publish("/sub/chat/new/rooms/shelters/" + shelterId, response);
     }
 
+    @MessageMapping("/chat/rooms/{chatRoomId}")
+    public void chatMessage(
+        @DestinationVariable Long chatRoomId,
+        @Payload ChatMessageRequest chatMessageResponse
+    ) {
+        ChatMessageResponse response = chatMessageService.registerChatMessage(
+            chatRoomId, chatMessageResponse.chatSenderId(), chatMessageResponse.chatSenderRole(),
+            chatMessageResponse.chatMessage());
+        messagePublisher.publish("/sub/chat/rooms/" + chatRoomId, response);
+    }
 }

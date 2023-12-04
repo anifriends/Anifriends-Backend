@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.notification.dto.response;
 
 import com.clova.anifriends.domain.notification.ShelterNotification;
-import com.clova.anifriends.domain.notification.wrapper.NotificationType;
+import com.clova.anifriends.domain.notification.vo.NotificationType;
 import java.util.List;
 
 public record FindShelterNotificationsResponse(

@@ -1,7 +1,6 @@
 package com.clova.anifriends.domain.volunteer;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
 import com.clova.anifriends.global.exception.ErrorCode;
 import jakarta.persistence.Column;
@@ -19,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "voulunteer_image")
+@Table(name = "volunteer_image")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VolunteerImage extends BaseTimeEntity {
 
@@ -54,11 +53,11 @@ public class VolunteerImage extends BaseTimeEntity {
         }
     }
 
-    public boolean isEqualImageUrl(String imageUrl) {
+    public boolean isSameWith(String imageUrl) {
         return this.imageUrl.equals(imageUrl);
     }
 
-    public void removeImage(ImageRemover imageRemover) {
-        imageRemover.removeImage(imageUrl);
+    public boolean isDifferentFrom(String imageUrl) {
+        return !this.imageUrl.equals(imageUrl);
     }
 }

@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.clova.anifriends.domain.common.ImageRemover;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,15 +20,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class S3Service {
+public class S3Service implements ImageRemover {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     private final AmazonS3 amazonS3;
-    private static final String FOLDER = "images";
+    private static final String s3FolderName = "images";
     private static final List<String> FILE_EXTENSIONS = List.of(".jpg", ".jpeg", ".png", ".JPG",
-        ".JPEG", ".PNG");
+        ".JPEG", ".PNG", ".webp", ".WEBP");
 
     public List<String> uploadImages(List<MultipartFile> multipartFileList) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -40,10 +41,10 @@ public class S3Service {
 
             try (InputStream inputStream = multipartFile.getInputStream()) {
                 amazonS3.putObject(
-                    new PutObjectRequest(bucket + "/" + FOLDER, fileName, inputStream,
+                    new PutObjectRequest(bucket + "/" + s3FolderName, fileName, inputStream,
                         objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
-                imageUrls.add(amazonS3.getUrl(bucket + "/" + FOLDER, fileName).toString());
+                imageUrls.add(amazonS3.getUrl(bucket + "/" + s3FolderName, fileName).toString());
             } catch (IOException exception) {
                 throw new S3BadRequestException("S3에 이미지를 업로드하는데 실패했습니다.");
             }
@@ -51,10 +52,11 @@ public class S3Service {
         return imageUrls;
     }
 
+    @Override
     public void deleteImages(List<String> imageUrls) {
         try {
             imageUrls.forEach(
-                imageUrl -> amazonS3.deleteObject(bucket + "/" + FOLDER, imageUrl)
+                imageUrl -> amazonS3.deleteObject(bucket + "/" + s3FolderName, imageUrl)
             );
         } catch (SdkClientException exception) {
             throw new S3BadRequestException("S3에 이미지를 제거하는데 실패했습니다.");

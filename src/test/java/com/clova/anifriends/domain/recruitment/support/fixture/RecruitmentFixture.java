@@ -5,6 +5,7 @@ import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.shelter.Shelter;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class RecruitmentFixture {
@@ -31,6 +32,38 @@ public class RecruitmentFixture {
         );
     }
 
+    public static List<Recruitment> recruitments(Shelter shelter, int end) {
+        return IntStream.range(0, end)
+            .mapToObj(i -> recruitment(shelter))
+            .toList();
+    }
+
+    public static Recruitment recruitment(Shelter shelter, int capacity) {
+        return new Recruitment(
+            shelter,
+            RECRUITMENT_TITLE,
+            capacity,
+            RECRUITMENT_CONTENT,
+            START_TIME,
+            END_TIME,
+            DEADLINE,
+            IMAGE_URL_LIST
+        );
+    }
+
+    public static Recruitment recruitmentWithImages(Shelter shelter, List<String> imageUrls) {
+        return new Recruitment(
+            shelter,
+            RECRUITMENT_TITLE,
+            CAPACITY,
+            RECRUITMENT_CONTENT,
+            START_TIME,
+            END_TIME,
+            DEADLINE,
+            imageUrls
+        );
+    }
+
     public static List<Recruitment> createRecruitments(List<Shelter> shelters) {
         return shelters.stream()
             .map(RecruitmentFixture::recruitment)
@@ -42,4 +75,5 @@ public class RecruitmentFixture {
         ReflectionTestUtils.setField(recruitment, "applicants", applicants);
         return recruitment;
     }
+
 }

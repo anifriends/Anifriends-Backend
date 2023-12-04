@@ -1,17 +1,20 @@
 package com.clova.anifriends.domain.review.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.clova.anifriends.base.BaseIntegrationTest;
-import com.clova.anifriends.base.MockImageRemover;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
-import com.clova.anifriends.domain.common.ImageRemover;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.ReviewImage;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
+import com.clova.anifriends.domain.review.exception.ReviewConflictException;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -23,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 public class ReviewIntegrationTest extends BaseIntegrationTest {
 
@@ -43,6 +47,7 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
             shelter = ShelterFixture.shelter();
             recruitment = RecruitmentFixture.recruitment(shelter);
             volunteer = VolunteerFixture.volunteer();
+            volunteer.increaseReviewCount();
             applicant = ApplicantFixture.applicant(recruitment, volunteer,
                 ApplicantStatus.ATTENDANCE);
             shelterRepository.save(shelter);
@@ -52,12 +57,27 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("성공")
+        @DisplayName("성공: 리뷰 이미지 삭제를 시도함")
+        void deleteReviewThenTryDeleteImages() {
+            //given
+            Review review = ReviewFixture.review(applicant);
+            review.updateReview(null, List.of("image1", "image2"));
+            reviewRepository.save(review);
+
+            //when
+            reviewService.deleteReview(volunteer.getVolunteerId(), review.getReviewId());
+
+            //then
+            verify(s3Service, times(1)).deleteImages(List.of("image1", "image2"));
+
+        }
+
+        @Test
+        @DisplayName("성공: 리뷰가 삭제 됨")
         void deleteReview() {
             //given
-            ImageRemover imageRemover = new MockImageRemover();
             Review review = ReviewFixture.review(applicant);
-            review.updateReview(null, List.of("image1", "image2"), imageRemover);
+            review.updateReview(null, List.of("image1", "image2"));
             reviewRepository.save(review);
 
             //when
@@ -65,11 +85,133 @@ public class ReviewIntegrationTest extends BaseIntegrationTest {
 
             //then
             Review findReview = entityManager.find(Review.class, review.getReviewId());
-            assertThat(findReview).isNull();
             List<ReviewImage> findReviewImages = entityManager.createQuery(
                     "select ri from ReviewImage ri", ReviewImage.class)
                 .getResultList();
+            Volunteer findVolunteer = entityManager.find(Volunteer.class,
+                volunteer.getVolunteerId());
+            assertThat(findReview).isNull();
             assertThat(findReviewImages).isEmpty();
+            assertThat(findVolunteer.getReviewCount()).isNotEqualTo(volunteer.getReviewCount());
+        }
+    }
+
+    @Nested
+    @DisplayName("registerReview 메서드 호출 시")
+    class RegisterReviewTest {
+
+        @Test
+        @DisplayName("예외(ReviewConflictException): 중복된 후기")
+        void exceptionWhenDuplicateReview() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer,
+                ApplicantStatus.ATTENDANCE);
+
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+            volunteerRepository.save(volunteer);
+            applicantRepository.save(applicant);
+
+            Review review = ReviewFixture.review(applicant);
+            reviewRepository.save(review);
+
+            // when
+            Exception exception = catchException(
+                () -> reviewService.registerReview(volunteer.getVolunteerId(),
+                    applicant.getApplicantId(),
+                    "강아지들 진짜 귀여워요 나만 없어 강아지..", List.of("image1", "image2")));
+
+            // then
+            assertThat(exception).isInstanceOf(ReviewConflictException.class);
+
+        }
+    }
+
+    @Nested
+    @DisplayName("updateReview 메서드 호출 시")
+    class UpdateReviewTest {
+
+        Shelter shelter;
+        Recruitment recruitment;
+        Volunteer volunteer;
+
+        @BeforeEach
+        void setUp() {
+            shelter = ShelterFixture.shelter();
+            recruitment = RecruitmentFixture.recruitment(shelter);
+            volunteer = VolunteerFixture.volunteer();
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitment);
+            volunteerRepository.save(volunteer);
+        }
+
+        @Test
+        @DisplayName("성공: 리뷰 업데이트 됨")
+        void updateReviewImages() {
+            //given
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer,
+                ApplicantStatus.ATTENDANCE);
+            applicantRepository.save(applicant);
+            Review review = ReviewFixture.review(applicant);
+            reviewRepository.save(review);
+
+            String updateContent = "a".repeat(50);
+            List<String> updateImageUrls = List.of("updateImage1", "updateImage2");
+
+            //when
+            reviewService.updateReview(volunteer.getVolunteerId(), review.getReviewId(),
+                updateContent, updateImageUrls);
+
+            //then
+            Review updatedReview = entityManager.createQuery(
+                    "select r from Review r"
+                        + " left join fetch r.images"
+                        + " where r.reviewId = :reviewId", Review.class)
+                .setParameter("reviewId", review.getReviewId())
+                .getSingleResult();
+            assertThat(updatedReview.getContent()).isEqualTo(updateContent);
+            assertThat(updatedReview.getImages()).containsExactlyElementsOf(updateImageUrls);
+        }
+    }
+
+    @Nested
+    @DisplayName("Review N+1을 테스트")
+    class NPlusOneTest {
+
+        @Test
+        @DisplayName("findShelterReviewsByShelter 메서드 호출 시")
+        void findShelterReviewsByShelter() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            Recruitment recruitmentA = RecruitmentFixture.recruitment(shelter);
+            Recruitment recruitmentB = RecruitmentFixture.recruitment(shelter);
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            volunteer.updateVolunteerInfo(null, null, null, null, "imageUrl");
+            Applicant applicantA = ApplicantFixture.applicant(recruitmentA, volunteer,
+                ApplicantStatus.ATTENDANCE);
+            Applicant applicantB = ApplicantFixture.applicant(recruitmentB, volunteer,
+                ApplicantStatus.ATTENDANCE);
+            shelterRepository.save(shelter);
+            recruitmentRepository.save(recruitmentA);
+            recruitmentRepository.save(recruitmentB);
+            volunteerRepository.save(volunteer);
+            applicantRepository.save(applicantA);
+            applicantRepository.save(applicantB);
+            Review reviewA = ReviewFixture.review(applicantA);
+            Review reviewB = ReviewFixture.review(applicantB);
+            reviewRepository.save(reviewA);
+            reviewRepository.save(reviewB);
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
+            //when
+            FindShelterReviewsByShelterResponse shelterReviewsByShelter = reviewService.findShelterReviewsByShelter(
+                shelter.getShelterId(), pageRequest);
+
+            //then
+            assertThat(shelterReviewsByShelter.reviews()).hasSize(2);
         }
     }
 }

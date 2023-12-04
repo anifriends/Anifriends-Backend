@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ChatRoomMapper {
 
-    public static FindChatRoomsResponse toResponse(List<FindChatRoomResult> findChatRoomsResult) {
+    public static FindChatRoomsResponse resultToResponse(
+        List<FindChatRoomResult> findChatRoomsResult) {
         List<FindChatRoomResponse> chatRooms = findChatRoomsResult.stream()
             .map(chatRoom -> new FindChatRoomResponse(
                 chatRoom.getChatRoomId(),

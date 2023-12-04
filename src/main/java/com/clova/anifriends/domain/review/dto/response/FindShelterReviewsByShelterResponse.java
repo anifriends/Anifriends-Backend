@@ -2,7 +2,6 @@ package com.clova.anifriends.domain.review.dto.response;
 
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.review.Review;
-import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -12,37 +11,35 @@ public record FindShelterReviewsByShelterResponse(List<FindShelterReviewResponse
 
     public record FindShelterReviewResponse(
         Long reviewId,
-        LocalDateTime createdAt,
-        String content,
+        LocalDateTime reviewCreatedAt,
+        String reviewContent,
         List<String> reviewImageUrls,
         Long volunteerId,
-
         String volunteerName,
-        int temperature,
+        int volunteerTemperature,
         String volunteerImageUrl,
-        long VolunteerReviewCount) {
+        long volunteerReviewCount) {
 
         public static FindShelterReviewResponse from(Review review) {
-            Volunteer volunteer = review.getApplicant().getVolunteer();
             return new FindShelterReviewResponse(
                 review.getReviewId(),
                 review.getCreatedAt(),
                 review.getContent(),
                 review.getImages(),
-                volunteer.getVolunteerId(),
-                volunteer.getName(),
-                volunteer.getTemperature(),
-                volunteer.getVolunteerImageUrl(),
-                volunteer.getReviewCount()
+                review.getVolunteer().getVolunteerId(),
+                review.getVolunteer().getName(),
+                review.getVolunteer().getTemperature(),
+                review.getVolunteer().getVolunteerImageUrl(),
+                review.getVolunteer().getReviewCount()
             );
         }
     }
 
     public static FindShelterReviewsByShelterResponse from(Page<Review> reviewPage) {
-        PageInfo pageInfo = PageInfo.of(reviewPage.getTotalElements(), reviewPage.hasNext());
-        List<FindShelterReviewResponse> reviews = reviewPage
+        List<FindShelterReviewResponse> content = reviewPage
             .map(FindShelterReviewResponse::from)
-            .stream().toList();
-        return new FindShelterReviewsByShelterResponse(reviews, pageInfo);
+            .toList();
+        PageInfo pageInfo = PageInfo.of(reviewPage.getTotalElements(), reviewPage.hasNext());
+        return new FindShelterReviewsByShelterResponse(content, pageInfo);
     }
 }

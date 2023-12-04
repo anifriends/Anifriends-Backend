@@ -1,13 +1,14 @@
 package com.clova.anifriends.domain.animal.support.fixture;
 
 import com.clova.anifriends.domain.animal.Animal;
-import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
-import com.clova.anifriends.domain.animal.wrapper.AnimalAdopted;
-import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
-import com.clova.anifriends.domain.animal.wrapper.AnimalType;
+import com.clova.anifriends.domain.animal.vo.AnimalActive;
+import com.clova.anifriends.domain.animal.vo.AnimalAdopted;
+import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class AnimalFixture {
@@ -36,6 +37,28 @@ public class AnimalFixture {
             WEIGHT,
             ANIMAL_INFORMATION,
             IMAGE_URLS
+        );
+    }
+
+    public static List<Animal> animals(Shelter shelter, long count) {
+        return IntStream.range(0, (int) count)
+            .mapToObj(i -> animal(shelter))
+            .toList();
+    }
+
+    public static Animal animal(Shelter shelter, List<String> imageUrls) {
+        return new Animal(
+            shelter,
+            ANIMAL_NAME,
+            ANIMAL_BIRTH_DATE,
+            ANIMAL_TYPE,
+            ANIMAL_BREED,
+            ANIMAL_GENDER,
+            IS_NEUTERED,
+            ANIMAL_ACTIVE,
+            WEIGHT,
+            ANIMAL_INFORMATION,
+            imageUrls
         );
     }
 

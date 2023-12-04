@@ -1,20 +1,24 @@
 package com.clova.anifriends.domain.animal.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalImage;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse.FindAnimalResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
-import com.clova.anifriends.domain.animal.repository.AnimalRepository;
+import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
+import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
+import com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
-import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
-import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
-import com.clova.anifriends.domain.animal.wrapper.AnimalType;
-import com.clova.anifriends.domain.common.ImageRemover;
+import com.clova.anifriends.domain.animal.vo.AnimalActive;
+import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
-import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +26,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.transaction.annotation.Transactional;
 
 public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
 
@@ -29,13 +36,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
     AnimalService animalService;
 
     @Autowired
-    ShelterRepository shelterRepository;
-
-    @Autowired
-    AnimalRepository animalRepository;
-
-    @Autowired
-    ImageRemover imageRemover;
+    AnimalCacheRepository animalCacheRepository;
 
     @Nested
     @DisplayName("registerAnimal 메서드 실행 시")
@@ -89,6 +90,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             Shelter shelter = ShelterFixture.shelter();
             Animal animal = AnimalFixture.animal(shelter);
             List<String> imageUrls = List.of("image1", "image2", "image3");
+
             animal.updateAnimal(
                 animal.getName(),
                 animal.getBirthDate(),
@@ -99,8 +101,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
                 animal.getActive(),
                 animal.getWeight(),
                 animal.getInformation(),
-                imageUrls,
-                imageRemover
+                imageUrls
             );
             shelterRepository.save(shelter);
             animalRepository.save(animal);
@@ -109,12 +110,194 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             animalService.deleteAnimal(shelter.getShelterId(), animal.getAnimalId());
 
             //then
+            verify(s3Service, times(1)).deleteImages(imageUrls);
             Animal findAnimal = entityManager.find(Animal.class, animal.getAnimalId());
             assertThat(findAnimal).isNull();
             List<AnimalImage> findAnimalImages = entityManager.createQuery(
                     "select ai from AnimalImage ai", AnimalImage.class)
                 .getResultList();
             assertThat(findAnimalImages).isEmpty();
+        }
+    }
+
+    @Nested
+    @Transactional
+    @DisplayName("findAnimalsByVolunteerV2 실행 시 (첫 페이지 캐싱 테스트)")
+    class FindAnimalsByVolunteerV2Test {
+
+        @Test
+        @DisplayName("성공: 30개 데이터, 30개 캐싱, 20개 조회 -> 20개 조회")
+        void findAnimalsByVolunteer1() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            shelterRepository.save(shelter);
+
+            long animalCount = 30;
+            int size = 20;
+            List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
+            animalRepository.saveAll(animals);
+
+            Slice<FindAnimalsResult> pagination = animalRepository.findAnimalsV2(null,
+                null, null, null, null, null,
+                null, null, PageRequest.of(0, size));
+            FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
+                animalCount);
+
+            animalCacheRepository.synchronizeCache();
+
+            // when
+            FindAnimalsResponse result = animalService.findAnimalsV2(
+                null, null, null, null, null, null,
+                null, null, PageRequest.of(0, size));
+
+            // then
+            assertThat(result.animals()).hasSize(Math.min(size, (int) animalCount));
+            assertThat(result.pageInfo()).isEqualTo(expected.pageInfo());
+            assertThat(result.animals()).containsExactlyInAnyOrderElementsOf(expected.animals());
+
+        }
+
+        @Test
+        @DisplayName("성공: 10개 데이터, 10개 캐싱, 20개 조회 -> 10개 조회")
+        void findAnimalsByVolunteer2() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            shelterRepository.save(shelter);
+
+            long animalCount = 10;
+            int size = 20;
+            List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
+            animalRepository.saveAll(animals);
+
+            Slice<FindAnimalsResult> pagination = animalRepository.findAnimalsV2(null,
+                null, null, null, null, null,
+                null, null, PageRequest.of(0, size));
+            FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
+                animalCount);
+
+            animalCacheRepository.synchronizeCache();
+
+            // when
+            FindAnimalsResponse result = animalService.findAnimalsV2(
+                null, null, null, null, null, null,
+                null, null, PageRequest.of(0, size));
+
+            // then
+            assertThat(result.animals()).hasSize(Math.min(size, (int) animalCount));
+            assertThat(result.pageInfo()).isEqualTo(expected.pageInfo());
+            assertThat(result.animals()).containsExactlyInAnyOrderElementsOf(expected.animals());
+
+        }
+
+        @Test
+        @DisplayName("성공: 30개 데이터, 20개 캐싱, 1개 삭제, 20개 조회 -> 20개 조회")
+        void findAnimalsByVolunteer3() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            shelterRepository.save(shelter);
+
+            long animalCount = 30;
+            int size = 20;
+            List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
+            animalRepository.saveAll(animals);
+
+            animalCacheRepository.synchronizeCache();
+
+            Animal animalToDelete = animals.get((int) animalCount - 1);
+            FindAnimalResponse responseToDelete = FindAnimalResponse.from(animalToDelete);
+
+            animalService.deleteAnimal(shelter.getShelterId(), animalToDelete.getAnimalId());
+
+            Slice<FindAnimalsResult> pagination = animalRepository.findAnimalsV2(null,
+                null, null, null, null, null,
+                null, null, PageRequest.of(0, size));
+            FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
+                animalCount - 1);
+
+            // when
+            FindAnimalsResponse result = animalService.findAnimalsV2(
+                null, null, null, null, null, null,
+                null, null, PageRequest.of(0, size));
+
+            // then
+            assertThat(result.animals()).hasSize(Math.min(size, (int) animalCount));
+            assertThat(result.pageInfo()).isEqualTo(expected.pageInfo());
+            assertThat(result.animals()).containsExactlyInAnyOrderElementsOf(expected.animals());
+            assertThat(result.animals()).doesNotContain(responseToDelete);
+
+        }
+
+        @Test
+        @DisplayName("성공: 20개 데이터, 20개 캐싱, 1개 삭제, 20개 조회 -> 19개 조회")
+        void findAnimalsByVolunteer4() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            shelterRepository.save(shelter);
+
+            long animalCount = 20;
+            int size = 20;
+            List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
+            animalRepository.saveAll(animals);
+
+            animalCacheRepository.synchronizeCache();
+
+            Animal animalToDelete = animals.get((int) animalCount - 1);
+            FindAnimalResponse responseToDelete = FindAnimalResponse.from(animalToDelete);
+
+            animalService.deleteAnimal(shelter.getShelterId(), animalToDelete.getAnimalId());
+
+            Slice<FindAnimalsResult> pagination = animalRepository.findAnimalsV2(null,
+                null, null, null, null, null,
+                null, null, PageRequest.of(0, size));
+            FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
+                animalCount - 1);
+
+            // when
+            FindAnimalsResponse result = animalService.findAnimalsV2(
+                null, null, null, null, null, null,
+                null, null, PageRequest.of(0, size));
+
+            // then
+            assertThat(result.animals()).hasSize(Math.min(size, (int) animalCount - 1));
+            assertThat(result.pageInfo()).isEqualTo(expected.pageInfo());
+            assertThat(result.animals()).containsExactlyInAnyOrderElementsOf(expected.animals());
+            assertThat(result.animals()).doesNotContain(responseToDelete);
+        }
+
+        @Test
+        @DisplayName("성공: 19개 데이터, 19개 캐싱, 1개 추가, 20개 조회 -> 20개 조회")
+        void findAnimalsByVolunteer5() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            shelterRepository.save(shelter);
+
+            long animalCount = 19;
+            int size = 20;
+            List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
+            animalRepository.saveAll(animals);
+
+            animalCacheRepository.synchronizeCache();
+
+            Animal animalToAdd = AnimalFixture.animal(shelter);
+
+            animalService.registerAnimal(shelter.getShelterId(),
+                AnimalDtoFixture.registerAnimal(animalToAdd));
+
+            Slice<FindAnimalsResult> pagination = animalRepository.findAnimalsV2(null,
+                null, null, null, null, null,
+                null, null, PageRequest.of(0, size));
+            FindAnimalsResponse expected = FindAnimalsResponse.fromV2(pagination,
+                animalCount + 1);
+
+            // when
+            FindAnimalsResponse result = animalService.findAnimalsV2(
+                null, null, null, null, null, null,
+                null, null, PageRequest.of(0, size));
+
+            // then
+            assertThat(result.animals()).hasSize(Math.min(size, (int) animalCount + 1));
+            assertThat(result.pageInfo()).isEqualTo(expected.pageInfo());
+            assertThat(result.animals()).containsExactlyInAnyOrderElementsOf(expected.animals());
         }
     }
 }

@@ -6,12 +6,14 @@ import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.chat.ChatMessage;
 import com.clova.anifriends.domain.chat.ChatRoom;
+import com.clova.anifriends.domain.chat.support.ChatMessageFixture;
 import com.clova.anifriends.domain.chat.support.ChatRoomFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -71,6 +73,51 @@ class ChatMessageRepositoryTest extends BaseRepositoryTest {
             assertThat(volunteerMessages)
                 .hasSize(2)
                 .allSatisfy(message -> assertThat(message.isRead()).isFalse());
+        }
+    }
+
+    @Nested
+    @DisplayName("findUnreadCount 메서드 호출 시")
+    class FindUnreadCountTest {
+
+        Volunteer volunteer;
+        Shelter shelter;
+        ChatRoom chatRoom;
+
+        @BeforeEach
+        void setUp() {
+            volunteer = VolunteerFixture.volunteer();
+            shelter = ShelterFixture.shelter();
+            chatRoom = ChatRoomFixture.chatRoom(volunteer, shelter);
+            volunteerRepository.save(volunteer);
+            shelterRepository.save(shelter);
+            chatRoomRepository.save(chatRoom);
+        }
+
+        @Test
+        @DisplayName("성공")
+        void findUnreadCount() {
+            //given
+            int chatMessagesEachCount = 10;
+            List<ChatMessage> oldChatMessagesByShelter = IntStream.range(0, chatMessagesEachCount)
+                .mapToObj(i -> ChatMessageFixture.shelterMessage(chatRoom, shelter))
+                .toList();
+            chatMessageRepository.saveAll(oldChatMessagesByShelter);
+            chatMessageRepository.readPartnerMessages(chatRoom, UserRole.ROLE_VOLUNTEER);
+            List<ChatMessage> chatMessagesByShelter = IntStream.range(0, chatMessagesEachCount)
+                .mapToObj(i -> ChatMessageFixture.shelterMessage(chatRoom, shelter))
+                .toList();
+            List<ChatMessage> chatMessagesByVolunteer = IntStream.range(0, chatMessagesEachCount)
+                .mapToObj(i -> ChatMessageFixture.volunteerMessage(chatRoom, volunteer))
+                .toList();
+            chatMessageRepository.saveAll(chatMessagesByShelter);
+            chatMessageRepository.saveAll(chatMessagesByVolunteer);
+
+            //when
+            Long unreadCount = chatMessageRepository.findUnreadCountByVolunteer(volunteer);
+
+            //then
+            assertThat(unreadCount).isEqualTo(chatMessagesEachCount);
         }
     }
 }

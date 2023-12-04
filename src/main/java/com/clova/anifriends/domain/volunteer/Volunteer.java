@@ -5,15 +5,15 @@ import static com.clova.anifriends.global.exception.ErrorCode.BAD_REQUEST;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.domain.common.ImageRemover;
-import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerBadRequestException;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerEmail;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerName;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerPassword;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerPhoneNumber;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerTemperature;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerDeviceToken;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerEmail;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerName;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerPassword;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerPhoneNumber;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerReviewCount;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerTemperature;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -40,6 +41,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "volunteer")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Volunteer extends BaseTimeEntity {
+
+    private static final String BLANK = "";
+    private static final int ZERO = 0;
 
     @Id
     @Column(name = "volunteer_id")
@@ -67,6 +71,12 @@ public class Volunteer extends BaseTimeEntity {
 
     @Embedded
     private VolunteerName name;
+
+    @Embedded
+    private VolunteerDeviceToken deviceToken;
+
+    @Embedded
+    private VolunteerReviewCount volunteerReviewCount = new VolunteerReviewCount(ZERO);
 
     @OneToMany(mappedBy = "volunteer", fetch = FetchType.LAZY)
     private List<Applicant> applicants = new ArrayList<>();
@@ -117,13 +127,20 @@ public class Volunteer extends BaseTimeEntity {
         VolunteerGender gender,
         LocalDate birthDate,
         String phoneNumber,
-        String imageUrl,
-        ImageRemover imageRemover) {
+        String imageUrl
+    ) {
         this.name = this.name.updateName(name);
         this.gender = updateGender(gender);
         this.birthDate = updateBirthDate(birthDate);
         this.phoneNumber = this.phoneNumber.updatePhoneNumber(phoneNumber);
-        this.image = updateVolunteerImage(imageUrl, imageRemover);
+        this.image = updateVolunteerImage(imageUrl);
+    }
+
+    public Optional<String> findImageToDelete(String newImageUrl) {
+        if (Objects.nonNull(image) && image.isDifferentFrom(newImageUrl)) {
+            return Optional.of(image.getImageUrl());
+        }
+        return Optional.empty();
     }
 
     private LocalDate updateBirthDate(LocalDate birthDate) {
@@ -134,27 +151,42 @@ public class Volunteer extends BaseTimeEntity {
         return gender != null ? gender : this.gender;
     }
 
-    private VolunteerImage updateVolunteerImage(String imageUrl, ImageRemover imageRemover) {
-        if (Objects.nonNull(image) && image.isEqualImageUrl(imageUrl)) {
-            return this.image;
+    private VolunteerImage updateVolunteerImage(String imageUrl) {
+        if (Objects.nonNull(imageUrl)) {
+            if (imageUrl.isBlank()) {
+                return null;
+            }
+            if (Objects.nonNull(image) && image.isSameWith(imageUrl)) {
+                return image;
+            }
+            return new VolunteerImage(this, imageUrl);
         }
-        clearVolunteerImageIfExists(imageRemover);
-        if (Objects.isNull(imageUrl)) {
-            return null;
-        }
-        return new VolunteerImage(this, imageUrl);
+        return image;
     }
 
-    private void clearVolunteerImageIfExists(ImageRemover imageRemover) {
-        if (Objects.nonNull(image)) {
-            image.removeImage(imageRemover);
-        }
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceToken = new VolunteerDeviceToken(deviceToken);
+    }
+
+    public void increaseTemperature(int temperature) {
+        this.temperature = this.temperature.increase(temperature);
+
+    }
+
+    public void decreaseTemperature(int temperature) {
+        this.temperature = this.temperature.decrease(temperature);
+    }
+
+    public void increaseReviewCount() {
+        this.volunteerReviewCount = this.volunteerReviewCount.increase();
+    }
+
+    public void decreaseReviewCount() {
+        this.volunteerReviewCount = this.volunteerReviewCount.decrease();
     }
 
     public long getReviewCount() {
-        return applicants.stream()
-            .filter(applicant -> Objects.nonNull(applicant.getReview()))
-            .count();
+        return volunteerReviewCount.getReviewCount();
     }
 
     public Long getVolunteerId() {
@@ -190,16 +222,14 @@ public class Volunteer extends BaseTimeEntity {
     }
 
     public String getVolunteerImageUrl() {
-        return this.image == null ? null : image.getImageUrl();
+        return this.image == null ? BLANK : image.getImageUrl();
     }
 
     public List<Applicant> getApplicants() {
         return Collections.unmodifiableList(applicants);
     }
 
-    public Integer getApplicantCompletedCount() {
-        return Math.toIntExact(applicants.stream()
-            .filter(Applicant::isCompleted)
-            .count());
+    public String getDeviceToken() {
+        return this.deviceToken == null ? null : this.deviceToken.getDeviceToken();
     }
 }

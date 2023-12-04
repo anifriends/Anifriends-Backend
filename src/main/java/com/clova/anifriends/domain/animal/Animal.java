@@ -1,17 +1,16 @@
 package com.clova.anifriends.domain.animal;
 
 import com.clova.anifriends.domain.animal.exception.AnimalBadRequestException;
-import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
-import com.clova.anifriends.domain.animal.wrapper.AnimalAdopted;
-import com.clova.anifriends.domain.animal.wrapper.AnimalBreed;
-import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
-import com.clova.anifriends.domain.animal.wrapper.AnimalInformation;
-import com.clova.anifriends.domain.animal.wrapper.AnimalName;
-import com.clova.anifriends.domain.animal.wrapper.AnimalNeutered;
-import com.clova.anifriends.domain.animal.wrapper.AnimalType;
-import com.clova.anifriends.domain.animal.wrapper.AnimalWeight;
+import com.clova.anifriends.domain.animal.vo.AnimalActive;
+import com.clova.anifriends.domain.animal.vo.AnimalAdopted;
+import com.clova.anifriends.domain.animal.vo.AnimalBreed;
+import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalInformation;
+import com.clova.anifriends.domain.animal.vo.AnimalName;
+import com.clova.anifriends.domain.animal.vo.AnimalNeutered;
+import com.clova.anifriends.domain.animal.vo.AnimalType;
+import com.clova.anifriends.domain.animal.vo.AnimalWeight;
 import com.clova.anifriends.domain.common.BaseTimeEntity;
-import com.clova.anifriends.domain.common.ImageRemover;
 import com.clova.anifriends.domain.shelter.Shelter;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "animal")
@@ -84,6 +84,7 @@ public class Animal extends BaseTimeEntity {
     @Embedded
     private AnimalAdopted adopted = new AnimalAdopted(IS_ADOPTED_DEFAULT);
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "animal", cascade = CascadeType.PERSIST,
         fetch = FetchType.LAZY, orphanRemoval = true)
     private List<AnimalImage> images = new ArrayList<>();
@@ -134,8 +135,7 @@ public class Animal extends BaseTimeEntity {
         AnimalActive active,
         Double weight,
         String information,
-        List<String> imageUrls,
-        ImageRemover imageRemover
+        List<String> imageUrls
     ) {
         this.name = this.name.updateName(name);
         this.birthDate = LocalDate.of(
@@ -150,30 +150,23 @@ public class Animal extends BaseTimeEntity {
         this.active = active;
         this.weight = this.weight.updateWeight(weight);
         this.information = this.information.updateInformation(information);
-        updateImages(imageUrls, imageRemover);
+        updateImages(imageUrls);
     }
 
-    private void updateImages(
-        List<String> images, ImageRemover imageRemover
-    ) {
-        if (Objects.nonNull(images)) {
-            validateImageSize(images);
-            validateImageIsNotNull(images);
-
-            deleteNotContainsImageUrls(images, imageRemover);
-            addNewImageUrls(images);
+    public List<String> findImagesToDelete(List<String> imageUrls) {
+        if (Objects.isNull(imageUrls)) {
+            return getImages();
         }
+        return this.images.stream()
+            .map(AnimalImage::getImageUrl)
+            .filter(existsImageUrl -> !imageUrls.contains(existsImageUrl))
+            .toList();
     }
 
-    private void deleteNotContainsImageUrls(
-        List<String> updateImageUrls,
-        ImageRemover imageRemover
-    ) {
-        List<String> deleteImageUrls = this.images.stream()
-            .map(AnimalImage::getImageUrl)
-            .filter(existsImageUrl -> !updateImageUrls.contains(existsImageUrl))
-            .toList();
-        imageRemover.removeImages(deleteImageUrls);
+    private void updateImages(List<String> images) {
+        validateImageIsNotNull(images);
+        validateImageSize(images);
+        addNewImageUrls(images);
     }
 
     private void addNewImageUrls(List<String> updateImageUrls) {
@@ -212,11 +205,6 @@ public class Animal extends BaseTimeEntity {
         if (imageUrls.isEmpty() || imageUrls.size() > MAX_IMAGES_SIZE) {
             throw new AnimalBadRequestException("보호 동물 이미지 크기는 1장 이상, 5장 이하여야 합니다.");
         }
-    }
-
-    public void deleteImages(ImageRemover imageRemover) {
-        imageRemover.removeImages(getImages());
-        this.images.clear();
     }
 
     public Long getAnimalId() {

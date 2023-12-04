@@ -1,5 +1,8 @@
 front:
-  server: ThisIsJustTestFrontServerUrl
+  volunteer:
+    server: ThisIsJustTestFrontVolunteerServerUrl
+  shelter:
+    server: ThisIsJustTestFrontShelterServerUrl
 jwt:
   issuer: test
   expiry-seconds: 10000
@@ -16,6 +19,10 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
 cloud:
   aws:
     credentials:
@@ -27,3 +34,14 @@ cloud:
       bucket: BuckeyIsThatYou
     stack:
       auto: false        
+
+schedules:
+  cron:
+    notification:
+      a-day-before-volunteer: "* * * * * ?"
+      three-day-before-volunteer: "* * * * * ?"
+      encourage-write-review: "* * * * * ?"
+      encourage-check-attendance: "* * * * * ?"
+    recruitment:
+      auto-close: "* * * * * ?"
+

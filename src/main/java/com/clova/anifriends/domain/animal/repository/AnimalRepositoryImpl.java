@@ -1,22 +1,31 @@
 package com.clova.anifriends.domain.animal.repository;
 
 import static com.clova.anifriends.domain.animal.QAnimal.animal;
+import static com.clova.anifriends.domain.animal.QAnimalImage.animalImage;
+import static com.querydsl.jpa.JPAExpressions.select;
 
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
-import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
-import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
-import com.clova.anifriends.domain.animal.wrapper.AnimalType;
+import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
+import com.clova.anifriends.domain.animal.repository.response.QFindAnimalsResult;
+import com.clova.anifriends.domain.animal.vo.AnimalActive;
+import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
+import com.clova.anifriends.domain.animal.vo.AnimalType;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -31,7 +40,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
         String keyword,
         AnimalType type,
         AnimalGender gender,
-        Boolean isNeutered,
+        AnimalNeuteredFilter neuteredFilter,
         AnimalActive active,
         AnimalSize size,
         AnimalAge age,
@@ -44,7 +53,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
                 animalNameContains(keyword),
                 animalTypeContains(type),
                 animalGenderContains(gender),
-                animalIsNeutered(isNeutered),
+                animalIsNeutered(neuteredFilter),
                 animalActiveContains(active),
                 animalSizeContains(size),
                 animalAgeContains(age)
@@ -61,7 +70,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
                 animalNameContains(keyword),
                 animalTypeContains(type),
                 animalGenderContains(gender),
-                animalIsNeutered(isNeutered),
+                animalIsNeutered(neuteredFilter),
                 animalActiveContains(active),
                 animalSizeContains(size),
                 animalAgeContains(age)
@@ -75,7 +84,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     public Page<Animal> findAnimals(
         AnimalType type,
         AnimalActive active,
-        Boolean isNeutered,
+        AnimalNeuteredFilter neuteredFilter,
         AnimalAge age,
         AnimalGender gender,
         AnimalSize size,
@@ -86,7 +95,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
             .where(
                 animalTypeContains(type),
                 animalActiveContains(active),
-                animalIsNeutered(isNeutered),
+                animalIsNeutered(neuteredFilter),
                 animalAgeContains(age),
                 animalGenderContains(gender),
                 animalSizeContains(size)
@@ -102,7 +111,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
             .where(
                 animalTypeContains(type),
                 animalActiveContains(active),
-                animalIsNeutered(isNeutered),
+                animalIsNeutered(neuteredFilter),
                 animalAgeContains(age),
                 animalGenderContains(gender),
                 animalSizeContains(size)
@@ -110,6 +119,109 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
             .fetchOne();
 
         return new PageImpl<>(animals, pageable, count == null ? 0 : count);
+    }
+
+    @Override
+    public Slice<FindAnimalsResult> findAnimalsV2(
+        AnimalType type,
+        AnimalActive active,
+        AnimalNeuteredFilter neuteredFilter,
+        AnimalAge age,
+        AnimalGender gender,
+        AnimalSize size,
+        LocalDateTime createdAt,
+        Long animalId,
+        Pageable pageable
+    ) {
+        List<FindAnimalsResult> animals = query.select(new QFindAnimalsResult(
+                animal.animalId,
+                animal.name.name,
+                animal.createdAt,
+                animal.shelter.name.name,
+                animal.shelter.addressInfo.address,
+                ExpressionUtils.as(
+                    select(animalImage.imageUrl)
+                        .from(animalImage)
+                        .where(animalImage.animalImageId.eq(
+                            select(animalImage.animalImageId.min())
+                                .from(animalImage)
+                                .where(animalImage.animal.eq(animal)
+                                ))), "animalImageUrl")
+            ))
+            .from(animal)
+            .where(
+                animalTypeContains(type),
+                animalActiveContains(active),
+                animalIsNeutered(neuteredFilter),
+                animalAgeContains(age),
+                animalGenderContains(gender),
+                animalSizeContains(size),
+                cursorId(animalId, createdAt)
+            )
+            .orderBy(animal.createdAt.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize() + 1L)
+            .fetch();
+
+        boolean hasNext = hasNext(pageable.getPageSize(), animals);
+        return new SliceImpl<>(animals, pageable, hasNext);
+    }
+
+    private BooleanExpression cursorId(Long animalId, LocalDateTime createdAt) {
+        if (animalId == null || createdAt == null) {
+            return null;
+        }
+
+        return animal.createdAt.lt(createdAt)
+            .or(
+                animal.animalId.lt(animalId)
+                    .and(animal.createdAt.eq(createdAt)
+                    )
+            );
+    }
+
+    private boolean hasNext(int pageSize, List<FindAnimalsResult> animals) {
+        if (animals.size() <= pageSize) {
+            return false;
+        }
+
+        animals.remove(pageSize);
+        return true;
+    }
+
+
+    @Override
+    public long countAnimalsV2(
+        AnimalType type,
+        AnimalActive active,
+        AnimalNeuteredFilter neuteredFilter,
+        AnimalAge age,
+        AnimalGender gender,
+        AnimalSize size
+    ) {
+        Long count = query.select(animal.count())
+            .from(animal)
+            .join(animal.shelter)
+            .where(
+                animalTypeContains(type),
+                animalActiveContains(active),
+                animalIsNeutered(neuteredFilter),
+                animalAgeContains(age),
+                animalGenderContains(gender),
+                animalSizeContains(size)
+            )
+            .fetchOne();
+
+        return count == null ? 0 : count;
+    }
+
+    @Override
+    public long countAllAnimalsExceptAdopted() {
+        Long count = query.select(animal.count())
+            .from(animal)
+            .where(animal.adopted.isAdopted.eq(false))
+            .fetchOne();
+        return count != null ? count : 0;
     }
 
     private BooleanExpression animalNameContains(String keyword) {
@@ -129,9 +241,10 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     }
 
     private BooleanExpression animalIsNeutered(
-        Boolean isNeutered
+        AnimalNeuteredFilter neuteredFilter
     ) {
-        return isNeutered != null ? animal.neutered.isNeutered.eq(isNeutered) : null;
+        return neuteredFilter != null ? animal.neutered.isNeutered.eq(neuteredFilter.isNeutered())
+            : null;
     }
 
     private BooleanExpression animalActiveContains(

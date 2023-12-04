@@ -5,11 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.notification.VolunteerNotification;
 import com.clova.anifriends.domain.notification.support.fixture.VolunteerNotificationFixture;
-import com.clova.anifriends.domain.notification.wrapper.NotificationRead;
+import com.clova.anifriends.domain.notification.vo.NotificationRead;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -26,10 +27,14 @@ class VolunteerNotificationRepositoryTest extends BaseRepositoryTest {
         void findByVolunteer_VolunteerIdOrderByCreatedAtDesc() {
             // given
             Volunteer volunteer = VolunteerFixture.volunteer();
-            VolunteerNotification notification1 = VolunteerNotificationFixture.volunteerNotification(volunteer);
-            VolunteerNotification notification2 = VolunteerNotificationFixture.volunteerNotification(volunteer);
-            ReflectionTestUtils.setField(notification1, "createdAt", LocalDateTime.now().minusDays(3));
-            ReflectionTestUtils.setField(notification2, "createdAt", LocalDateTime.now().minusDays(1));
+            VolunteerNotification notification1 = VolunteerNotificationFixture.volunteerNotification(
+                volunteer);
+            VolunteerNotification notification2 = VolunteerNotificationFixture.volunteerNotification(
+                volunteer);
+            ReflectionTestUtils.setField(notification1, "createdAt",
+                LocalDateTime.now().minusDays(3));
+            ReflectionTestUtils.setField(notification2, "createdAt",
+                LocalDateTime.now().minusDays(1));
 
             volunteerRepository.save(volunteer);
             volunteerNotificationRepository.save(notification1);
@@ -90,6 +95,37 @@ class VolunteerNotificationRepositoryTest extends BaseRepositoryTest {
 
             // then
             assertThat(expected).isTrue();
+        }
+    }
+
+    @Nested
+    @DisplayName("updateBulkRead")
+    class UpdateBulkReadTest {
+
+        @Test
+        @DisplayName("성공: 읽음 처리")
+        void updateBulkRead() {
+            // given
+            Volunteer volunteer = VolunteerFixture.volunteer();
+            VolunteerNotification notification1 = VolunteerNotificationFixture.volunteerNotification(
+                volunteer);
+            VolunteerNotification notification2 = VolunteerNotificationFixture.volunteerNotification(
+                volunteer);
+
+            volunteerRepository.save(volunteer);
+            volunteerNotificationRepository.save(notification1);
+            volunteerNotificationRepository.save(notification2);
+
+            // when
+            volunteerNotificationRepository.updateBulkRead(volunteer.getVolunteerId());
+
+            // then
+            Optional<VolunteerNotification> found1 = volunteerNotificationRepository.findById(
+                notification1.getVolunteerNotificationId());
+            Optional<VolunteerNotification> found2 = volunteerNotificationRepository.findById(
+                notification2.getVolunteerNotificationId());
+            assertThat(found1.get().getIsRead()).isTrue();
+            assertThat(found2.get().getIsRead()).isTrue();
         }
     }
 }

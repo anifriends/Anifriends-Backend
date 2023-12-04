@@ -1,8 +1,8 @@
 package com.clova.anifriends.domain.review;
 
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.PENDING;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.PENDING;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static com.clova.anifriends.domain.volunteer.support.VolunteerFixture.volunteer;
@@ -11,13 +11,10 @@ import static org.assertj.core.api.Assertions.catchException;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
-import com.clova.anifriends.domain.common.ImageRemover;
-import com.clova.anifriends.domain.common.MockImageRemover;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.exception.ReviewAuthorizationException;
 import com.clova.anifriends.domain.review.exception.ReviewBadRequestException;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
-import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,7 +91,6 @@ class ReviewTest {
     class UpdateReviewTest {
 
         Review review;
-        ImageRemover imageRemover;
 
         @BeforeEach
         void setUp() {
@@ -102,7 +98,6 @@ class ReviewTest {
             Volunteer volunteer = volunteer();
             Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer, ATTENDANCE);
             review = ReviewFixture.review(applicant);
-            imageRemover = new MockImageRemover();
         }
 
         @Test
@@ -120,7 +115,7 @@ class ReviewTest {
             );
 
             //when
-            review.updateReview(content, imageUrls, imageRemover);
+            review.updateReview(content, imageUrls);
 
             //then
             assertThat(review.getContent()).isEqualTo(content);
@@ -137,7 +132,7 @@ class ReviewTest {
             List<String> givenImageUrls = review.getImages();
 
             //when
-            review.updateReview(content, imageUrls, imageRemover);
+            review.updateReview(content, imageUrls);
 
             //then
             assertThat(review.getContent()).isEqualTo(givenContent);
@@ -152,7 +147,7 @@ class ReviewTest {
             List<String> imageUrls = List.of();
 
             //when
-            review.updateReview(content, imageUrls, imageRemover);
+            review.updateReview(content, imageUrls);
 
             //then
             assertThat(review.getContent()).isEqualTo(content);
@@ -175,7 +170,7 @@ class ReviewTest {
 
             // when
             Exception exception = catchException(
-                () -> review.updateReview(content, imageUrls, imageRemover));
+                () -> review.updateReview(content, imageUrls));
 
             // then
             assertThat(exception).isInstanceOf(ReviewBadRequestException.class);
@@ -183,27 +178,73 @@ class ReviewTest {
     }
 
     @Nested
-    @DisplayName("deleteImages 메서드 호출 시")
-    class DeleteImagesTest {
+    @DisplayName("findImagesToDelete 메서드 호출 시")
+    class FindImagesToDelete {
 
         @Test
-        @DisplayName("성공")
-        void deleteImages() {
-            //given
-            Shelter shelter = shelter();
-            Recruitment recruitment = recruitment(shelter);
+        @DisplayName("성공: 기존 이미지 2개, 유지 이미지 0개, 새로운 이미지 0개")
+        void findImagesToDelete1() {
+            // given
+            Recruitment recruitment = recruitment(shelter());
             Volunteer volunteer = volunteer();
             Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
-            Review review = ReviewFixture.review(applicant);
-            ImageRemover imageRemover = new MockImageRemover();
-            List<String> newImageUrls = List.of("image1", "image2");
-            review.updateReview(null, newImageUrls, imageRemover);
 
-            //when
-            review.deleteImages(imageRemover);
+            String imageUrl1 = "www.aws.s3.com/1";
+            String imageUrl2 = "www.aws.s3.com/2";
+            List<String> existsImageUrls = List.of(imageUrl1, imageUrl2);
+            List<String> newImageUrls = List.of();
 
-            //then
-            assertThat(review.getImages()).isEmpty();
+            Review review = ReviewFixture.review(applicant, existsImageUrls);
+
+            // when
+            List<String> result = review.findImagesToDelete(newImageUrls);
+
+            // then
+            assertThat(result).isEqualTo(existsImageUrls);
+        }
+
+        @Test
+        @DisplayName("성공: 기존 이미지 0개, 유지 이미지 0개, 새로운 이미지 0개")
+        void findImagesToDelete2() {
+            // given
+            Recruitment recruitment = recruitment(shelter());
+            Volunteer volunteer = volunteer();
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+
+            List<String> existsImageUrls = List.of();
+            List<String> newImageUrls = List.of();
+
+            Review review = ReviewFixture.review(applicant, existsImageUrls);
+
+            // when
+            List<String> result = review.findImagesToDelete(newImageUrls);
+
+            // then
+            assertThat(result).isEmpty();
+        }
+
+        @Test
+        @DisplayName("성공: 기존 이미지 2개, 유지 이미지 1개, 새로운 이미지 1개")
+        void findImagesToDelete3() {
+            // given
+            Recruitment recruitment = recruitment(shelter());
+            Volunteer volunteer = volunteer();
+            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
+
+            String imageUrl1 = "www.aws.s3.com/1";
+            String imageUrl2 = "www.aws.s3.com/2";
+            String newImageUrl = imageUrl2;
+
+            List<String> existsImageUrls = List.of(imageUrl1, imageUrl2);
+            List<String> newImageUrls = List.of(newImageUrl);
+
+            Review review = ReviewFixture.review(applicant, existsImageUrls);
+
+            // when
+            List<String> result = review.findImagesToDelete(newImageUrls);
+
+            // then
+            assertThat(result).isEqualTo(List.of(imageUrl1));
         }
     }
 }

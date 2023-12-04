@@ -1,9 +1,10 @@
 package com.clova.anifriends.domain.volunteer.dto.response;
 
-import com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.volunteer.Volunteer;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record FindVolunteerMyPageResponse(
     long volunteerId,
@@ -26,7 +27,9 @@ public record FindVolunteerMyPageResponse(
             volunteer.getPhoneNumber(),
             volunteer.getTemperature(),
             volunteer.getApplicants().stream()
-                .filter(applicant -> applicant.getStatus().equals(ApplicantStatus.ATTENDANCE))
+                .filter(applicant -> applicant.getStatus().equals(ApplicantStatus.ATTENDANCE)
+                    && applicant.getRecruitment().getStartTime().isBefore(
+                    LocalDateTime.now()))
                 .count(),
             volunteer.getVolunteerImageUrl(),
             volunteer.getGender()

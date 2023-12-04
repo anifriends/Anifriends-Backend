@@ -4,12 +4,12 @@ import static java.util.Objects.nonNull;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.domain.common.ImageRemover;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterAddressInfo;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterName;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterPassword;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterPhoneNumberInfo;
+import com.clova.anifriends.domain.shelter.vo.ShelterAddressInfo;
+import com.clova.anifriends.domain.shelter.vo.ShelterDeviceToken;
+import com.clova.anifriends.domain.shelter.vo.ShelterEmail;
+import com.clova.anifriends.domain.shelter.vo.ShelterName;
+import com.clova.anifriends.domain.shelter.vo.ShelterPassword;
+import com.clova.anifriends.domain.shelter.vo.ShelterPhoneNumberInfo;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -20,6 +20,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +28,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "shelter")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Shelter extends BaseTimeEntity {
+
+    private static final String BLANK = "";
 
     @Id
     @Column(name = "shelter_id")
@@ -47,6 +50,9 @@ public class Shelter extends BaseTimeEntity {
 
     @Embedded
     private ShelterAddressInfo addressInfo;
+
+    @Embedded
+    private ShelterDeviceToken deviceToken;
 
     @OneToOne(mappedBy = "shelter", fetch = FetchType.LAZY,
         cascade = CascadeType.ALL, orphanRemoval = true)
@@ -77,26 +83,32 @@ public class Shelter extends BaseTimeEntity {
         String addressDetail,
         String phoneNumber,
         String sparePhoneNumber,
-        Boolean isOpenedAddress,
-        ImageRemover imageRemover
+        Boolean isOpenedAddress
     ) {
         this.name = this.name.update(name);
-        this.image = updateImage(imageUrl, imageRemover);
+        this.image = updateImage(imageUrl);
         this.addressInfo = this.addressInfo.update(address, addressDetail, isOpenedAddress);
         this.phoneNumberInfo = this.phoneNumberInfo.update(phoneNumber, sparePhoneNumber);
     }
 
-    private ShelterImage updateImage(String imageUrl, ImageRemover imageRemover) {
-        if (nonNull(this.image) && this.image.isDifferentFrom(imageUrl)) {
-            imageRemover.removeImage(this.image.getImageUrl());
-        }
-        if (nonNull(this.image) && this.image.isSameWith(imageUrl)) {
-            return this.image;
-        }
-        if (nonNull(imageUrl)) {
+    private ShelterImage updateImage(String imageUrl) {
+        if(nonNull(imageUrl)) {
+            if(imageUrl.isBlank()) {
+                return null;
+            }
+            if(nonNull(image) && image.isSameWith(imageUrl)) {
+                return image;
+            }
             return new ShelterImage(this, imageUrl);
         }
-        return null;
+        return image;
+    }
+
+    public Optional<String> findImageToDelete(String newImageUrl) {
+        if (nonNull(this.image) && this.image.isDifferentFrom(newImageUrl)) {
+            return Optional.of(this.image.getImageUrl());
+        }
+        return Optional.empty();
     }
 
     public void updatePassword(
@@ -149,6 +161,14 @@ public class Shelter extends BaseTimeEntity {
     }
 
     public String getImage() {
-        return this.image == null ? null : this.image.getImageUrl();
+        return this.image == null ? BLANK : this.image.getImageUrl();
+    }
+
+    public String getDeviceToken() {
+        return this.deviceToken == null ? null : this.deviceToken.getDeviceToken();
+    }
+
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceToken = new ShelterDeviceToken(deviceToken);
     }
 }

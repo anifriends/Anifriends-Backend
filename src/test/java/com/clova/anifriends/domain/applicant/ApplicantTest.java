@@ -5,10 +5,10 @@ import static org.assertj.core.api.Assertions.catchException;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.clova.anifriends.domain.applicant.exception.ApplicantBadRequestException;
-import com.clova.anifriends.domain.applicant.exception.ApplicantConflictException;
+import com.clova.anifriends.domain.applicant.exception.ApplicantCanNotApplyException;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
-import com.clova.anifriends.domain.recruitment.wrapper.RecruitmentInfo;
+import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
@@ -52,7 +52,7 @@ class ApplicantTest {
         }
 
         @Test
-        @DisplayName("예외(ApplicantBadRequestException): 모집이 마감된 경우")
+        @DisplayName("예외(ApplicantConflictException): 모집이 마감된 경우")
         void throwExceptionWhenRecruitmentIsClosed() {
             //given
             recruitmentInfo = new RecruitmentInfo(
@@ -70,11 +70,11 @@ class ApplicantTest {
             Exception exception = catchException(() -> new Applicant(recruitment, volunteer));
 
             //then
-            assertThat(exception).isInstanceOf(ApplicantBadRequestException.class);
+            assertThat(exception).isInstanceOf(ApplicantCanNotApplyException.class);
         }
 
         @Test
-        @DisplayName("예외(ApplicantBadRequestException): 모집 마감 시간이 지난 경우")
+        @DisplayName("예외(ApplicantConflictException): 모집 마감 시간이 지난 경우")
         void throwExceptionWhenRecruitmentDeadLineIsOver() {
             //given
             recruitmentInfo = new RecruitmentInfo(
@@ -93,7 +93,7 @@ class ApplicantTest {
             Exception exception = catchException(() -> new Applicant(recruitment, volunteer));
 
             //then
-            assertThat(exception).isInstanceOf(ApplicantBadRequestException.class);
+            assertThat(exception).isInstanceOf(ApplicantCanNotApplyException.class);
         }
 
         @Test
@@ -148,7 +148,7 @@ class ApplicantTest {
             Exception exception = catchException(() -> new Applicant(recruitment, volunteer));
 
             //then
-            assertThat(exception).isInstanceOf(ApplicantConflictException.class);
+            assertThat(exception).isInstanceOf(ApplicantCanNotApplyException.class);
         }
     }
 }

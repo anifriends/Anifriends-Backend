@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.review.controller;
 
 
 import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture.recruitment;
 import static com.clova.anifriends.domain.review.support.ReviewDtoFixture.findReviewResponse;
 import static com.clova.anifriends.domain.review.support.ReviewDtoFixture.registerReviewRequest;
@@ -41,12 +41,17 @@ import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
+import com.clova.anifriends.domain.review.ReviewImage;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
 import com.clova.anifriends.domain.review.dto.request.UpdateReviewRequest;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
+import com.clova.anifriends.domain.review.dto.response.RegisterReviewResponse;
+import com.clova.anifriends.domain.review.repository.response.FindShelterReviewResult;
+import com.clova.anifriends.domain.review.service.ReviewMapper;
+import com.clova.anifriends.domain.review.support.ReviewDtoFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.time.LocalDateTime;
@@ -113,9 +118,17 @@ class ReviewControllerTest extends BaseControllerTest {
         ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
         ReflectionTestUtils.setField(review, "reviewId", 1L);
         ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());
-        PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
-        FindShelterReviewsByShelterResponse response = FindShelterReviewsByShelterResponse.from(
-            reviewPage);
+
+        FindShelterReviewResult findShelterReviewResult = ReviewDtoFixture.findShelterReviewResult(
+            review.getReviewId(), review.getCreatedAt(),
+            review.getContent(), review.getVolunteer().getVolunteerId(),
+            review.getVolunteer().getName(),
+            review.getVolunteer().getTemperature(),
+            review.getVolunteer().getVolunteerImageUrl(),
+            review.getVolunteer().getReviewCount(), List.of(new ReviewImage(review, "urls")));
+        PageImpl<FindShelterReviewResult> reviewPage = new PageImpl<>(
+            List.of(findShelterReviewResult));
+        FindShelterReviewsByShelterResponse response = ReviewMapper.resultToResponse(reviewPage);
 
         given(reviewService.findShelterReviewsByShelter(anyLong(), any())).willReturn(response);
 
@@ -139,16 +152,17 @@ class ReviewControllerTest extends BaseControllerTest {
                 responseFields(
                     fieldWithPath("reviews").type(ARRAY).description("리뷰 리스트"),
                     fieldWithPath("reviews[].reviewId").type(NUMBER).description("리뷰 ID"),
-                    fieldWithPath("reviews[].createdAt").type(STRING).description("리뷰 생성일"),
-                    fieldWithPath("reviews[].content").type(STRING).description("리뷰 내용"),
+                    fieldWithPath("reviews[].reviewCreatedAt").type(STRING).description("리뷰 생성일"),
+                    fieldWithPath("reviews[].reviewContent").type(STRING).description("리뷰 내용"),
                     fieldWithPath("reviews[].reviewImageUrls").type(ARRAY)
-                    .description("리뷰 이미지 url 리스트").optional(),
+                        .description("리뷰 이미지 url 리스트").optional(),
                     fieldWithPath("reviews[].volunteerId").type(NUMBER).description("봉사자 ID"),
                     fieldWithPath("reviews[].volunteerName").type(STRING).description("봉사자 이름"),
-                    fieldWithPath("reviews[].temperature").type(NUMBER).description("봉사자 온도"),
+                    fieldWithPath("reviews[].volunteerTemperature").type(NUMBER)
+                        .description("봉사자 온도"),
                     fieldWithPath("reviews[].volunteerImageUrl").type(STRING)
                         .description("봉사자 프로필 이미지 url").optional(),
-                    fieldWithPath("reviews[].VolunteerReviewCount").type(NUMBER)
+                    fieldWithPath("reviews[].volunteerReviewCount").type(NUMBER)
                         .description("봉사자 리뷰 수"),
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
                     fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
@@ -161,15 +175,17 @@ class ReviewControllerTest extends BaseControllerTest {
     @DisplayName("성공: 리뷰 등록 api 호출")
     void registerReview() throws Exception {
         //given
+        long reviewId = 1L;
         Applicant applicant = applicant(recruitment(shelter()), volunteer(), ATTENDANCE);
         ReflectionTestUtils.setField(applicant, "applicantId", 1L);
         Review review = review(applicant);
-        ReflectionTestUtils.setField(review, "reviewId", 1L);
+        ReflectionTestUtils.setField(review, "reviewId", reviewId);
         RegisterReviewRequest request = registerReviewRequest(review(applicant));
+        RegisterReviewResponse registerReviewResponse = new RegisterReviewResponse(reviewId);
 
         when(reviewService.registerReview(anyLong(), eq(applicant.getApplicantId()),
             eq(review.getContent()), eq(review.getImages())))
-            .thenReturn(review.getReviewId());
+            .thenReturn(registerReviewResponse);
 
         //when
         ResultActions result = mockMvc.perform(
@@ -186,7 +202,7 @@ class ReviewControllerTest extends BaseControllerTest {
                     headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
                 ),
                 requestFields(
-                    fieldWithPath("applicationId").type(NUMBER).description("봉사 신청 ID"),
+                    fieldWithPath("applicantId").type(NUMBER).description("봉사 신청 ID"),
                     fieldWithPath("content").type(STRING).description("리뷰 내용")
                         .description(DocumentationFormatGenerator.getConstraint("10 ~ 300자")),
                     fieldWithPath("imageUrls[]").type(ARRAY).description("리뷰 이미지 url 리스트")
@@ -195,6 +211,9 @@ class ReviewControllerTest extends BaseControllerTest {
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 리소스에 대한 접근 api")
+                ),
+                responseFields(
+                    fieldWithPath("reviewId").type(NUMBER).description("생성된 리뷰 ID")
                 )
             ));
     }
@@ -211,6 +230,7 @@ class ReviewControllerTest extends BaseControllerTest {
         Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
         Review review = review(applicant);
         setField(review, "reviewId", 1L);
+        setField(shelter, "shelterId", 1L);
         setField(review, "createdAt", LocalDateTime.now());
         Page<Review> page = new PageImpl<>(List.of(review));
         FindVolunteerReviewsResponse response = FindVolunteerReviewsResponse.of(
@@ -244,6 +264,7 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
                     fieldWithPath("reviews").type(ARRAY).description("리뷰 리스트"),
                     fieldWithPath("reviews[].reviewId").type(NUMBER).description("리뷰 ID"),
+                    fieldWithPath("reviews[].shelterId").type(NUMBER).description("보호소 ID"),
                     fieldWithPath("reviews[].shelterName").type(STRING).description("보호소 이름"),
                     fieldWithPath("reviews[].reviewCreatedAt").type(STRING).description("리뷰 생성일"),
                     fieldWithPath("reviews[].reviewContent").type(STRING).description("리뷰 내용"),
@@ -264,6 +285,7 @@ class ReviewControllerTest extends BaseControllerTest {
         Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
         Review review = review(applicant);
         setField(review, "reviewId", 1L);
+        setField(shelter, "shelterId", 1L);
         setField(review, "createdAt", LocalDateTime.now());
         Page<Review> page = new PageImpl<>(List.of(review));
         FindVolunteerReviewsResponse response = FindVolunteerReviewsResponse.of(
@@ -294,6 +316,7 @@ class ReviewControllerTest extends BaseControllerTest {
                     fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
                     fieldWithPath("reviews").type(ARRAY).description("리뷰 리스트"),
                     fieldWithPath("reviews[].reviewId").type(NUMBER).description("리뷰 ID"),
+                    fieldWithPath("reviews[].shelterId").type(NUMBER).description("보호소 ID"),
                     fieldWithPath("reviews[].shelterName").type(STRING).description("보호소 이름"),
                     fieldWithPath("reviews[].reviewCreatedAt").type(STRING).description("리뷰 생성일"),
                     fieldWithPath("reviews[].reviewContent").type(STRING).description("리뷰 내용"),

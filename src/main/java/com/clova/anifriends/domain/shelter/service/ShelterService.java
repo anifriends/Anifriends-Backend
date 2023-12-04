@@ -1,16 +1,19 @@
 package com.clova.anifriends.domain.shelter.service;
 
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
-import com.clova.anifriends.domain.common.ImageRemover;
+import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.dto.response.CheckDuplicateShelterResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterDetailResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterMyPageResponse;
 import com.clova.anifriends.domain.shelter.dto.response.FindShelterSimpleResponse;
+import com.clova.anifriends.domain.shelter.dto.response.RegisterShelterResponse;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
-import com.clova.anifriends.domain.shelter.wrapper.ShelterEmail;
+import com.clova.anifriends.domain.shelter.vo.ShelterEmail;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +23,10 @@ public class ShelterService {
 
     private final ShelterRepository shelterRepository;
     private final CustomPasswordEncoder passwordEncoder;
-    private final ImageRemover imageRemover;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
-    public Long registerShelter(
+    public RegisterShelterResponse registerShelter(
         String email,
         String password,
         String name,
@@ -43,7 +46,7 @@ public class ShelterService {
             isOpenedAddress,
             passwordEncoder);
         shelterRepository.save(shelter);
-        return shelter.getShelterId();
+        return RegisterShelterResponse.from(shelter);
     }
 
     @Transactional
@@ -111,9 +114,15 @@ public class ShelterService {
         Boolean isOpenedAddress
     ) {
         Shelter shelter = getShelter(shelterId);
+        deleteImageFromS3(shelter, imageUrl);
         shelter.updateShelter(
-            name, imageUrl, address, addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress,
-            imageRemover
+            name, imageUrl, address, addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress
         );
+    }
+
+    private void deleteImageFromS3(Shelter shelter, String newImageUrl) {
+        shelter.findImageToDelete(newImageUrl)
+            .ifPresent(imageUrl -> applicationEventPublisher
+                .publishEvent(new ImageDeletionEvent(List.of(imageUrl))));
     }
 }

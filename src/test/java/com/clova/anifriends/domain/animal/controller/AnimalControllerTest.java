@@ -4,7 +4,6 @@ import static com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixtur
 import static com.clova.anifriends.domain.animal.support.fixture.AnimalFixture.animal;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -41,18 +40,23 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
-import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
-import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
-import com.clova.anifriends.domain.animal.wrapper.AnimalType;
+import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
+import com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture;
+import com.clova.anifriends.domain.animal.vo.AnimalActive;
+import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
+import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.shelter.Shelter;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
@@ -108,6 +112,9 @@ class AnimalControllerTest extends BaseControllerTest {
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 리소스에 접근 가능한 api")
+                ),
+                responseFields(
+                    fieldWithPath("animalId").type(NUMBER).description("생성된 보호 동물 ID")
                 )
             ));
     }
@@ -164,14 +171,14 @@ class AnimalControllerTest extends BaseControllerTest {
         //given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("keyword", "검색어");
-        params.add("type", "DOG");
-        params.add("gender", "MALE");
-        params.add("isNeutered", "true");
+        params.add("type", AnimalType.DOG.name());
+        params.add("gender", AnimalGender.MALE.name());
+        params.add("neuteredFilter", AnimalNeuteredFilter.IS_NEUTERED.name());
         params.add("active", "ACTIVE");
-        params.add("size", "SMALL");
+        params.add("animalSize", "SMALL");
         params.add("age", "BABY");
-        params.add("pageNumber", "0");
-        params.add("pageSize", "10");
+        params.add("page", "0");
+        params.add("size", "10");
 
         Long shelterId = 1L;
         Shelter shelter = shelter();
@@ -186,7 +193,7 @@ class AnimalControllerTest extends BaseControllerTest {
             List.of(findAnimalByShelterResponse), pageInfo);
 
         given(animalService.findAnimalsByShelter(
-            any(), anyString(), any(), any(), anyBoolean(),
+            any(), anyString(), any(), any(), any(),
             any(), any(), any(), any())).willReturn(response);
 
         // when
@@ -206,19 +213,19 @@ class AnimalControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint("DOG, CAT, ETC")),
                     parameterWithName("gender").description("보호 동물 성별").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("MALE, FEMALE")),
-                    parameterWithName("isNeutered").description("보호 동물 중성화 여부").optional()
+                    parameterWithName("neuteredFilter").description("보호 동물 중성화 여부").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("true, false")),
                     parameterWithName("active").description("보호 동물 성격").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint(
                             "QUIET, NORMAL, ACTIVE, VERY_ACTIVE")),
-                    parameterWithName("size").description("보호 동물 크기").optional()
+                    parameterWithName("animalSize").description("보호 동물 크기").optional()
                         .attributes(
                             DocumentationFormatGenerator.getConstraint("SMALL, MEDIUM, LARGE")),
                     parameterWithName("age").description("보호 동물 나이").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint(
                             "BABY, JUNIOR, ADULT, SENIOR")),
-                    parameterWithName("pageNumber").description("페이지 번호"),
-                    parameterWithName("pageSize").description("페이지 사이즈")
+                    parameterWithName("page").description("페이지 번호"),
+                    parameterWithName("size").description("페이지 사이즈")
                 ),
                 responseFields(
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
@@ -239,18 +246,18 @@ class AnimalControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("보호 동물 조회 & 검색 api 호출 시")
+    @DisplayName("보호 동물 조회 & 검색(봉사자) api 호출 시")
     void findAnimals() throws Exception {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("type", AnimalType.DOG.name());
         params.add("gender", AnimalGender.FEMALE.name());
-        params.add("isNeutered", String.valueOf(true));
+        params.add("neuteredFilter", AnimalNeuteredFilter.IS_NEUTERED.name());
         params.add("active", AnimalActive.ACTIVE.name());
-        params.add("size", AnimalSize.SMALL.name());
+        params.add("animalSize", AnimalSize.SMALL.name());
         params.add("age", AnimalAge.ADULT.name());
-        params.add("pageNumber", String.valueOf(0));
-        params.add("pageSize", String.valueOf(10));
+        params.add("page", String.valueOf(0));
+        params.add("animalSize", String.valueOf(10));
 
         Shelter shelter = shelter();
         Animal animal = animal(shelter);
@@ -262,7 +269,7 @@ class AnimalControllerTest extends BaseControllerTest {
         when(animalService.findAnimals(
             any(AnimalType.class),
             any(AnimalActive.class),
-            anyBoolean(),
+            any(AnimalNeuteredFilter.class),
             any(AnimalAge.class),
             any(AnimalGender.class),
             any(AnimalSize.class),
@@ -289,13 +296,13 @@ class AnimalControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint(
                             String.join(", ", Arrays.stream(AnimalGender.values()).map(
                                 AnimalGender::name).toArray(String[]::new)))),
-                    parameterWithName("isNeutered").description("보호 동물 중성화 여부").optional()
+                    parameterWithName("neuteredFilter").description("보호 동물 중성화 여부").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint("true, false")),
                     parameterWithName("active").description("보호 동물 성격").optional()
                         .attributes(DocumentationFormatGenerator.getConstraint(
                             String.join(", ", Arrays.stream(AnimalActive.values()).map(
                                 AnimalActive::name).toArray(String[]::new)))),
-                    parameterWithName("size").description("보호 동물 크기").optional()
+                    parameterWithName("animalSize").description("보호 동물 크기").optional()
                         .attributes(
                             DocumentationFormatGenerator.getConstraint(
                                 String.join(", ", Arrays.stream(AnimalSize.values()).map(
@@ -304,8 +311,94 @@ class AnimalControllerTest extends BaseControllerTest {
                         .attributes(DocumentationFormatGenerator.getConstraint(
                             String.join(", ", Arrays.stream(AnimalAge.values()).map(
                                 AnimalAge::name).toArray(String[]::new)))),
-                    parameterWithName("pageNumber").description("페이지 번호"),
-                    parameterWithName("pageSize").description("페이지 사이즈")
+                    parameterWithName("page").description("페이지 번호"),
+                    parameterWithName("animalSize").description("페이지 사이즈")
+                ),
+                responseFields(
+                    fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
+                    fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
+                    fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
+                    fieldWithPath("animals").type(ARRAY).description("보호 동물 리스트"),
+                    fieldWithPath("animals[].animalId").type(NUMBER).description("보호 동물 ID"),
+                    fieldWithPath("animals[].animalName").type(STRING).description("보호 동물 이름"),
+                    fieldWithPath("animals[].shelterName").type(STRING).description("보호소 이름"),
+                    fieldWithPath("animals[].shelterAddress").type(STRING).description("보호소 주소"),
+                    fieldWithPath("animals[].animalImageUrl").type(STRING)
+                        .description("보호 동물 이미지 url")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("보호 동물 조회 & 검색(봉사자) api 호출 시")
+    void findAnimalsV2() throws Exception {
+        // given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("type", AnimalType.DOG.name());
+        params.add("gender", AnimalGender.FEMALE.name());
+        params.add("neuteredFilter", AnimalNeuteredFilter.IS_NEUTERED.name());
+        params.add("active", AnimalActive.ACTIVE.name());
+        params.add("animalSize", AnimalSize.SMALL.name());
+        params.add("age", AnimalAge.ADULT.name());
+        params.add("animalId", String.valueOf(1L));
+        params.add("createdAt", String.valueOf(LocalDateTime.now()));
+        params.add("page", String.valueOf(0));
+        params.add("animalSize", String.valueOf(10));
+
+        Shelter shelter = shelter();
+        Animal animal = animal(shelter);
+        ReflectionTestUtils.setField(animal, "animalId", 1L);
+        FindAnimalsResult findAnimalsResult = AnimalDtoFixture.findAnimalsResult(animal);
+        FindAnimalsResponse response = FindAnimalsResponse
+            .fromV2(new SliceImpl<>(List.of(findAnimalsResult)), 1L);
+
+        when(animalService.findAnimalsV2(
+            any(AnimalType.class),
+            any(AnimalActive.class),
+            any(AnimalNeuteredFilter.class),
+            any(AnimalAge.class),
+            any(AnimalGender.class),
+            any(AnimalSize.class),
+            any(LocalDateTime.class),
+            anyLong(),
+            any(Pageable.class))
+        ).thenReturn(response);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/api/v2/animals")
+            .params(params));
+
+        // then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                queryParameters(
+                    parameterWithName("type").description("보호 동물 종류").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint(
+                            String.join(", ", Arrays.stream(AnimalType.values()).map(
+                                AnimalType::name).toArray(String[]::new)))),
+                    parameterWithName("gender").description("보호 동물 성별").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint(
+                            String.join(", ", Arrays.stream(AnimalGender.values()).map(
+                                AnimalGender::name).toArray(String[]::new)))),
+                    parameterWithName("neuteredFilter").description("보호 동물 중성화 여부").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint("true, false")),
+                    parameterWithName("active").description("보호 동물 성격").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint(
+                            String.join(", ", Arrays.stream(AnimalActive.values()).map(
+                                AnimalActive::name).toArray(String[]::new)))),
+                    parameterWithName("animalSize").description("보호 동물 크기").optional()
+                        .attributes(
+                            DocumentationFormatGenerator.getConstraint(
+                                String.join(", ", Arrays.stream(AnimalSize.values()).map(
+                                    AnimalSize::name).toArray(String[]::new)))),
+                    parameterWithName("age").description("보호 동물 나이").optional()
+                        .attributes(DocumentationFormatGenerator.getConstraint(
+                            String.join(", ", Arrays.stream(AnimalAge.values()).map(
+                                AnimalAge::name).toArray(String[]::new)))),
+                    parameterWithName("animalId").description("페이지 마지막 보호 동물 ID").optional(),
+                    parameterWithName("createdAt").description("페이지 마지막 보호 동물 생일").optional(),
+                    parameterWithName("page").description("페이지 번호"),
+                    parameterWithName("animalSize").description("페이지 사이즈")
                 ),
                 responseFields(
                     fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),

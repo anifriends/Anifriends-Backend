@@ -6,13 +6,17 @@ import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
+import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
+import com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
-import com.clova.anifriends.domain.animal.wrapper.AnimalActive;
-import com.clova.anifriends.domain.animal.wrapper.AnimalGender;
-import com.clova.anifriends.domain.animal.wrapper.AnimalType;
+import com.clova.anifriends.domain.animal.vo.AnimalActive;
+import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
+import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +24,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class AnimalRepositoryTest extends BaseRepositoryTest {
@@ -162,7 +167,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
                 "animalName",
                 AnimalType.DOG,
                 AnimalGender.FEMALE,
-                true,
+                AnimalNeuteredFilter.IS_NEUTERED,
                 null,
                 null,
                 null,
@@ -186,7 +191,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             AnimalType nullTypeFilter = null;
             AnimalActive nullActiveFilter = null;
-            Boolean nullIsNeuteredFilter = null;
+            AnimalNeuteredFilter nullIsNeuteredFilter = null;
             AnimalAge nullAgeFilter = null;
             AnimalGender nullGenderFilter = null;
 
@@ -255,7 +260,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             AnimalType nullTypeFilter = null;
             AnimalActive nullActiveFilter = null;
-            Boolean nullIsNeuteredFilter = null;
+            AnimalNeuteredFilter nullIsNeuteredFilter = null;
             AnimalAge nullAgeFilter = null;
             AnimalGender nullGenderFilter = null;
 
@@ -328,7 +333,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             AnimalType typeFilter = AnimalType.DOG;
             AnimalActive activeFilter = AnimalActive.ACTIVE;
-            Boolean isNeuteredFilter = true;
+            AnimalNeuteredFilter neuteredFilter = AnimalNeuteredFilter.IS_NEUTERED;
             AnimalAge ageFilter = AnimalAge.ADULT;
             AnimalGender genderFilter = AnimalGender.MALE;
             AnimalSize sizeFilter = AnimalSize.MEDIUM;
@@ -342,7 +347,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
                 typeFilter.getName(),
                 mockBreed,
                 genderFilter.getName(),
-                isNeuteredFilter,
+                neuteredFilter.isNeutered(),
                 activeFilter.getName(),
                 sizeFilter.getMinWeight(),
                 mockInformation,
@@ -356,7 +361,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
                 typeFilter.getName(),
                 mockBreed,
                 genderFilter.getName(),
-                isNeuteredFilter,
+                neuteredFilter.isNeutered(),
                 activeFilter.getName(),
                 sizeFilter.getMinWeight(),
                 mockInformation,
@@ -370,7 +375,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
                 typeFilter.getName(),
                 mockBreed,
                 genderFilter.getName(),
-                isNeuteredFilter ? false : true,
+                neuteredFilter.isNeutered() ? false : true,
                 activeFilter.getName(),
                 sizeFilter.getMinWeight(),
                 mockInformation,
@@ -386,7 +391,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             Page<Animal> result = animalRepository.findAnimals(
                 typeFilter,
                 activeFilter,
-                isNeuteredFilter,
+                neuteredFilter,
                 ageFilter,
                 genderFilter,
                 sizeFilter,
@@ -408,7 +413,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             AnimalType nullTypeFilter = null;
             AnimalActive nullActiveFilter = null;
-            Boolean nullIsNeuteredFilter = null;
+            AnimalNeuteredFilter nullIsNeuteredFilter = null;
             AnimalAge nullAgeFilter = null;
             AnimalGender nullGenderFilter = null;
             AnimalSize nullSizeFilter = null;
@@ -485,6 +490,350 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
 
             // then
             assertThat(result).isEqualTo(Optional.of(animal));
+        }
+    }
+
+    @Nested
+    @DisplayName("findAnimalsByVolunteerV2 실행 시")
+    class FindAnimalsByVolunteerV2Test {
+
+        @Test
+        @DisplayName("성공: 모든 필터링이 존재")
+        void allFilterExist() {
+            // given
+            String mockName = "animalName";
+            String mockInformation = "animalInformation";
+            String mockBreed = "animalBreed";
+            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
+
+            AnimalType typeFilter = AnimalType.DOG;
+            AnimalActive activeFilter = AnimalActive.ACTIVE;
+            AnimalNeuteredFilter neuteredFilter = AnimalNeuteredFilter.IS_NEUTERED;
+            AnimalAge ageFilter = AnimalAge.ADULT;
+            AnimalGender genderFilter = AnimalGender.MALE;
+            AnimalSize sizeFilter = AnimalSize.MEDIUM;
+
+            Shelter shelter = ShelterFixture.shelter();
+
+            Animal matchAnimal1 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now().minusMonths(ageFilter.getMinMonth()),
+                typeFilter.getName(),
+                mockBreed,
+                genderFilter.getName(),
+                neuteredFilter.isNeutered(),
+                activeFilter.getName(),
+                sizeFilter.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            Animal matchAnimal2 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now().minusMonths(ageFilter.getMinMonth()),
+                typeFilter.getName(),
+                mockBreed,
+                genderFilter.getName(),
+                neuteredFilter.isNeutered(),
+                activeFilter.getName(),
+                sizeFilter.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            Animal disMatchAnimal1 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now().minusMonths(ageFilter.getMinMonth()),
+                typeFilter.getName(),
+                mockBreed,
+                genderFilter.getName(),
+                neuteredFilter.isNeutered() ? false : true,
+                activeFilter.getName(),
+                sizeFilter.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            shelterRepository.save(shelter);
+            animalRepository.saveAll(List.of(matchAnimal1, matchAnimal2, disMatchAnimal1));
+
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            FindAnimalsResult findAnimalsResult1 = AnimalDtoFixture.findAnimalsResult(matchAnimal1);
+            FindAnimalsResult findAnimalsResult2 = AnimalDtoFixture.findAnimalsResult(matchAnimal2);
+
+            // when
+            Slice<FindAnimalsResult> result = animalRepository.findAnimalsV2(
+                typeFilter,
+                activeFilter,
+                neuteredFilter,
+                ageFilter,
+                genderFilter,
+                sizeFilter,
+                LocalDateTime.MIN,
+                0L,
+                pageRequest
+            );
+
+            // then
+            assertThat(result.hasNext()).isFalse();
+            assertThat(result.getNumberOfElements()).isEqualTo(2);
+            assertThat(result.getContent().get(0)).usingRecursiveComparison()
+                .ignoringFields("createdAt")
+                .isEqualTo(findAnimalsResult2);
+            assertThat(result.getContent().get(1)).usingRecursiveComparison()
+                .ignoringFields("createdAt")
+                .isEqualTo(findAnimalsResult1);
+        }
+
+        @Test
+        @DisplayName("성공: 모든 필터링이 존재하지 않음")
+        void allFilterNotExist() {
+            // given
+            String mockName = "animalName";
+            String mockInformation = "animalInformation";
+            String mockBreed = "animalBreed";
+            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
+
+            AnimalType nullTypeFilter = null;
+            AnimalActive nullActiveFilter = null;
+            AnimalNeuteredFilter nullIsNeuteredFilter = null;
+            AnimalAge nullAgeFilter = null;
+            AnimalGender nullGenderFilter = null;
+            AnimalSize nullSizeFilter = null;
+
+            Shelter shelter = ShelterFixture.shelter();
+
+            Animal matchAnimal1 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now(),
+                AnimalType.DOG.getName(),
+                mockBreed,
+                AnimalGender.MALE.getName(),
+                true,
+                AnimalActive.ACTIVE.getName(),
+                AnimalSize.LARGE.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            Animal matchAnimal2 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now(),
+                AnimalType.ETC.getName(),
+                mockBreed,
+                AnimalGender.FEMALE.getName(),
+                true,
+                AnimalActive.NORMAL.getName(),
+                AnimalSize.MEDIUM.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            shelterRepository.save(shelter);
+            animalRepository.saveAll(List.of(matchAnimal1, matchAnimal2));
+
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            FindAnimalsResult findAnimalsResult1 = AnimalDtoFixture.findAnimalsResult(matchAnimal1);
+            FindAnimalsResult findAnimalsResult2 = AnimalDtoFixture.findAnimalsResult(matchAnimal2);
+
+            // when
+            Slice<FindAnimalsResult> result = animalRepository.findAnimalsV2(
+                nullTypeFilter,
+                nullActiveFilter,
+                nullIsNeuteredFilter,
+                nullAgeFilter,
+                nullGenderFilter,
+                nullSizeFilter,
+                LocalDateTime.MIN,
+                0L,
+                pageRequest
+            );
+
+            // then
+            assertThat(result.hasNext()).isFalse();
+            assertThat(result.getNumberOfElements()).isEqualTo(2);
+            assertThat(result.getContent().get(0)).usingRecursiveComparison()
+                .ignoringFields("createdAt")
+                .isEqualTo(findAnimalsResult2);
+            assertThat(result.getContent().get(1)).usingRecursiveComparison()
+                .ignoringFields("createdAt")
+                .isEqualTo(findAnimalsResult1);
+        }
+    }
+
+    @Nested
+    @DisplayName("countAnimalsV2 실행 시")
+    class CountAnimalsV2Test {
+
+        @Test
+        @DisplayName("성공: 모든 필터링이 존재")
+        void allFilterExist() {
+            // given
+            String mockName = "animalName";
+            String mockInformation = "animalInformation";
+            String mockBreed = "animalBreed";
+            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
+
+            AnimalType typeFilter = AnimalType.DOG;
+            AnimalActive activeFilter = AnimalActive.ACTIVE;
+            AnimalNeuteredFilter neuteredFilter = AnimalNeuteredFilter.IS_NEUTERED;
+            AnimalAge ageFilter = AnimalAge.ADULT;
+            AnimalGender genderFilter = AnimalGender.MALE;
+            AnimalSize sizeFilter = AnimalSize.MEDIUM;
+
+            Shelter shelter = ShelterFixture.shelter();
+
+            Animal matchAnimal1 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now().minusMonths(ageFilter.getMinMonth()),
+                typeFilter.getName(),
+                mockBreed,
+                genderFilter.getName(),
+                neuteredFilter.isNeutered(),
+                activeFilter.getName(),
+                sizeFilter.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            Animal matchAnimal2 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now().minusMonths(ageFilter.getMinMonth()),
+                typeFilter.getName(),
+                mockBreed,
+                genderFilter.getName(),
+                neuteredFilter.isNeutered(),
+                activeFilter.getName(),
+                sizeFilter.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            Animal disMatchAnimal1 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now().minusMonths(ageFilter.getMinMonth()),
+                typeFilter.getName(),
+                mockBreed,
+                genderFilter.getName(),
+                neuteredFilter.isNeutered() ? false : true,
+                activeFilter.getName(),
+                sizeFilter.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            shelterRepository.save(shelter);
+            animalRepository.saveAll(List.of(matchAnimal1, matchAnimal2, disMatchAnimal1));
+
+            // when
+            Long result = animalRepository.countAnimalsV2(
+                typeFilter,
+                activeFilter,
+                neuteredFilter,
+                ageFilter,
+                genderFilter,
+                sizeFilter
+            );
+
+            // then
+            assertThat(result).isEqualTo(2);
+        }
+
+        @Test
+        @DisplayName("성공: 모든 필터링이 존재하지 않음")
+        void allFilterNotExist() {
+            // given
+            String mockName = "animalName";
+            String mockInformation = "animalInformation";
+            String mockBreed = "animalBreed";
+            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
+
+            AnimalType nullTypeFilter = null;
+            AnimalActive nullActiveFilter = null;
+            AnimalNeuteredFilter nullIsNeuteredFilter = null;
+            AnimalAge nullAgeFilter = null;
+            AnimalGender nullGenderFilter = null;
+            AnimalSize nullSizeFilter = null;
+
+            Shelter shelter = ShelterFixture.shelter();
+
+            Animal matchAnimal1 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now(),
+                AnimalType.DOG.getName(),
+                mockBreed,
+                AnimalGender.MALE.getName(),
+                true,
+                AnimalActive.ACTIVE.getName(),
+                AnimalSize.LARGE.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            Animal matchAnimal2 = new Animal(
+                shelter,
+                mockName,
+                LocalDate.now(),
+                AnimalType.ETC.getName(),
+                mockBreed,
+                AnimalGender.FEMALE.getName(),
+                true,
+                AnimalActive.NORMAL.getName(),
+                AnimalSize.MEDIUM.getMinWeight(),
+                mockInformation,
+                mockImageUrls
+            );
+
+            shelterRepository.save(shelter);
+            animalRepository.saveAll(List.of(matchAnimal1, matchAnimal2));
+
+            PageRequest pageRequest = PageRequest.of(0, 10);
+
+            // when
+            Long result = animalRepository.countAnimalsV2(
+                nullTypeFilter,
+                nullActiveFilter,
+                nullIsNeuteredFilter,
+                nullAgeFilter,
+                nullGenderFilter,
+                nullSizeFilter
+            );
+
+            // then
+            assertThat(result).isEqualTo(2);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("countAllAnimalsExceptAdopted 실행 시")
+    class CountAllAnimalsExceptAdoptedTest {
+
+        @Test
+        @DisplayName("성공")
+        void countAllAnimalsExceptAdopted() {
+            // given
+            Shelter shelter = ShelterFixture.shelter();
+            Animal animal1 = AnimalFixture.animal(shelter);
+            Animal animal2 = AnimalFixture.animal(shelter);
+            Animal animal3 = AnimalFixture.animal(shelter, true);
+            shelterRepository.save(shelter);
+            animalRepository.saveAll(List.of(animal1, animal2, animal3));
+
+            // when
+            long count = animalRepository.countAllAnimalsExceptAdopted();
+
+            // then
+            assertThat(count).isEqualTo(2L);
         }
     }
 }

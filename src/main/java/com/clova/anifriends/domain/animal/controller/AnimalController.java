@@ -1,5 +1,6 @@
 package com.clova.anifriends.domain.animal.controller;
 
+import com.clova.anifriends.domain.animal.dto.FindAnimalsRequestV2;
 import com.clova.anifriends.domain.animal.dto.request.FindAnimalsByShelterRequest;
 import com.clova.anifriends.domain.animal.dto.request.FindAnimalsRequest;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
@@ -11,6 +12,7 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.service.AnimalService;
 import com.clova.anifriends.domain.auth.LoginUser;
+import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -33,14 +35,15 @@ public class AnimalController {
 
     private final AnimalService animalService;
 
+    @ShelterOnly
     @PostMapping("/shelters/animals")
-    public ResponseEntity<Void> registerAnimal(
-        @LoginUser Long userId,
+    public ResponseEntity<RegisterAnimalResponse> registerAnimal(
+        @LoginUser Long volunteerId,
         @RequestBody @Valid RegisterAnimalRequest registerAnimalRequest) {
-        RegisterAnimalResponse registerAnimalResponse = animalService.registerAnimal(userId,
+        RegisterAnimalResponse registerAnimalResponse = animalService.registerAnimal(volunteerId,
             registerAnimalRequest);
         URI location = URI.create("/api/shelters/animals/" + registerAnimalResponse.animalId());
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(registerAnimalResponse);
     }
 
     @GetMapping("/animals/{animalId}")
@@ -49,6 +52,7 @@ public class AnimalController {
         return ResponseEntity.ok(animalService.findAnimalDetail(animalId));
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/animals")
     public ResponseEntity<FindAnimalsByShelterResponse> findAnimalsByShelter(
         @LoginUser Long shelterId,
@@ -60,9 +64,9 @@ public class AnimalController {
             findAnimalsByShelterRequest.keyword(),
             findAnimalsByShelterRequest.type(),
             findAnimalsByShelterRequest.gender(),
-            findAnimalsByShelterRequest.isNeutered(),
+            findAnimalsByShelterRequest.neuteredFilter(),
             findAnimalsByShelterRequest.active(),
-            findAnimalsByShelterRequest.size(),
+            findAnimalsByShelterRequest.animalSize(),
             findAnimalsByShelterRequest.age(),
             pageable
         ));
@@ -76,14 +80,33 @@ public class AnimalController {
         return ResponseEntity.ok(animalService.findAnimals(
             findAnimalsRequest.type(),
             findAnimalsRequest.active(),
-            findAnimalsRequest.isNeutered(),
+            findAnimalsRequest.neuteredFilter(),
             findAnimalsRequest.age(),
             findAnimalsRequest.gender(),
-            findAnimalsRequest.size(),
+            findAnimalsRequest.animalSize(),
             pageable
         ));
     }
 
+    @GetMapping("/v2/animals")
+    public ResponseEntity<FindAnimalsResponse> findAnimalsV2(
+        Pageable pageable,
+        @ModelAttribute FindAnimalsRequestV2 findAnimalsRequestV2
+    ) {
+        return ResponseEntity.ok(animalService.findAnimalsV2(
+            findAnimalsRequestV2.type(),
+            findAnimalsRequestV2.active(),
+            findAnimalsRequestV2.neuteredFilter(),
+            findAnimalsRequestV2.age(),
+            findAnimalsRequestV2.gender(),
+            findAnimalsRequestV2.animalSize(),
+            findAnimalsRequestV2.createdAt(),
+            findAnimalsRequestV2.animalId(),
+            pageable
+        ));
+    }
+
+    @ShelterOnly
     @PatchMapping("/shelters/animals/{animalId}/status")
     public ResponseEntity<Void> updateAnimalAdoptStatus(
         @LoginUser Long shelterId,
@@ -94,6 +117,7 @@ public class AnimalController {
         return ResponseEntity.noContent().build();
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/animals/{animalId}")
     public ResponseEntity<Void> updateAnimal(
         @LoginUser Long shelterId,
@@ -118,6 +142,7 @@ public class AnimalController {
         return ResponseEntity.noContent().build();
     }
 
+    @ShelterOnly
     @DeleteMapping("/shelters/animals/{animalId}")
     public ResponseEntity<Void> deleteAnimal(
         @LoginUser Long shelterId,

@@ -5,8 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.VolunteerImage;
+import com.clova.anifriends.domain.volunteer.dto.response.RegisterVolunteerResponse;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
-import com.clova.anifriends.domain.volunteer.wrapper.VolunteerGender;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +36,7 @@ public class VolunteerIntegrationTest extends BaseIntegrationTest {
         @BeforeEach
         void setUp() {
             volunteer = VolunteerFixture.volunteer();
-            givenVolunteerId = volunteerService.registerVolunteer(
+            RegisterVolunteerResponse registerVolunteerResponse = volunteerService.registerVolunteer(
                 volunteer.getEmail(),
                 volunteer.getPassword(),
                 volunteer.getName(),
@@ -43,6 +44,7 @@ public class VolunteerIntegrationTest extends BaseIntegrationTest {
                 volunteer.getPhoneNumber(),
                 volunteer.getGender().toString()
             );
+            givenVolunteerId = registerVolunteerResponse.volunteerId();
         }
 
         @Test

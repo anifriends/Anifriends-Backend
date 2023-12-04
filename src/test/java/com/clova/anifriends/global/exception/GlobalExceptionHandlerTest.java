@@ -90,4 +90,26 @@ class GlobalExceptionHandlerTest extends BaseControllerTest {
             resultActions.andExpect(status().isConflict());
         }
     }
+
+    @Test
+    @DisplayName("성공: 인증되지 않은 사용자가 권한이 필요한 api 접근 시 401")
+    void authenticationCredentialsNotFoundEx() throws Exception {
+        //given
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/test/access-denied"));
+
+        //then
+        resultActions.andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("성공: 권한 없는 사용자가 다른 권한의 api 접근 시 403")
+    void accessDeniedExTest() throws Exception {
+        //given
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/test/access-denied"));
+
+        //then
+        resultActions.andExpect(status().isUnauthorized());
+    }
 }

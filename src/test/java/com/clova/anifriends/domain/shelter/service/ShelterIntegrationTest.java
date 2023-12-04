@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.common.CustomPasswordEncoder;
 import com.clova.anifriends.domain.shelter.Shelter;
+import com.clova.anifriends.domain.shelter.dto.response.RegisterShelterResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -35,17 +36,18 @@ public class ShelterIntegrationTest extends BaseIntegrationTest {
             String sparePhoneNumber = "010-1234-1234";
             boolean isOpenedAddress = true;
 
-            Long registeredShelterId
-                = shelterService.registerShelter(email, oldRawPassword, shelterName, address,
+            RegisterShelterResponse registerShelterResponse = shelterService.registerShelter(email,
+                oldRawPassword, shelterName, address,
                 addressDetail, phoneNumber, sparePhoneNumber, isOpenedAddress);
             String newRawPassword = oldRawPassword + "a";
 
-
             //when
-            shelterService.updatePassword(registeredShelterId, oldRawPassword, newRawPassword);
+            shelterService.updatePassword(registerShelterResponse.shelterId(), oldRawPassword,
+                newRawPassword);
 
             //then
-            Shelter findShelter = entityManager.find(Shelter.class, registeredShelterId);
+            Shelter findShelter
+                = entityManager.find(Shelter.class, registerShelterResponse.shelterId());
             boolean isPasswordUpdated
                 = passwordEncoder.matchesPassword(newRawPassword, findShelter.getPassword());
             assertThat(isPasswordUpdated).isTrue();

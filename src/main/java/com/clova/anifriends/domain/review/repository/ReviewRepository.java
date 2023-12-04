@@ -1,6 +1,7 @@
 package com.clova.anifriends.domain.review.repository;
 
 import com.clova.anifriends.domain.review.Review;
+import com.clova.anifriends.domain.shelter.Shelter;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,4 +32,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         @Param("volunteerId") Long volunteerId,
         Pageable pageable);
 
+    @Query("select r from Review r"
+        + " join fetch r.applicant a"
+        + " join fetch a.volunteer v"
+        + " left join fetch v.image"
+        + " where r.applicant.recruitment.shelter = :shelter")
+    Page<Review> findShelterReviewsByShelter(@Param("shelter") Shelter shelter,
+        Pageable pageable);
 }

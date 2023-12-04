@@ -1,7 +1,8 @@
 package com.clova.anifriends.domain.applicant.controller;
 
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.ATTENDANCE;
-import static com.clova.anifriends.domain.applicant.wrapper.ApplicantStatus.PENDING;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE;
+import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.PENDING;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -10,36 +11,42 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
+import static org.springframework.restdocs.payload.JsonFieldType.OBJECT;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
+import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse.FindApplicantResponse;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantStatusRequest;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest.UpdateApplicantAttendanceRequest;
-import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse.FindApplyingVolunteerResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
+import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.dto.response.IsAppliedRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
-import com.clova.anifriends.domain.review.Review;
-import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
+import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,97 +72,87 @@ class ApplicantControllerTest extends BaseControllerTest {
         // then
         resultActions.andExpect(status().isNoContent())
             .andDo(restDocs.document(
-                requestHeaders(headerWithName("Authorization").description("액세스 토큰"))
+                requestHeaders(
+                    headerWithName("Authorization").description("액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("recruitmentId").description("봉사 모집글 ID")
+                )
             ));
     }
 
     @Test
-    @DisplayName("findApplyingVolunteers 실행 시")
+    @DisplayName("봉사 신청 목록 조회 API 실행 시")
     void findApplyingVolunteers() throws Exception {
         // given
-        Long shelterId = 1L;
-        Long volunteerId = 1L;
-        Long recruitmentId = 1L;
-        Long applicantShouldWriteReviewId = 1L;
-        Long applicantShouldNotWriteReviewId = 2L;
+        FindApplyingVolunteerResponse response = new FindApplyingVolunteerResponse(
+            1L,
+            1L,
+            1L,
+            "모집글 제목",
+            "보호소 이름",
+            ATTENDANCE,
+            true,
+            LocalDateTime.now());
+        PageInfo pageInfo = PageInfo.of(20, true);
+        FindApplyingVolunteersResponse findApplyingVolunteersResponse
+            = new FindApplyingVolunteersResponse(pageInfo, List.of(response));
 
-        Shelter shelter = ShelterFixture.shelter();
-        setField(shelter, "shelterId", shelterId);
-        Volunteer volunteer = VolunteerFixture.volunteer();
-        setField(volunteer, "volunteerId", volunteerId);
-
-        Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-        setField(recruitment, "recruitmentId", recruitmentId);
-
-        Applicant applicantShouldWriteReview = ApplicantFixture.applicant(recruitment,
-            volunteer, ATTENDANCE);
-        Applicant applicantShouldNotWriteReview = ApplicantFixture.applicant(recruitment,
-            volunteer, PENDING);
-
-        setField(applicantShouldWriteReview, "applicantId", applicantShouldWriteReviewId);
-        setField(applicantShouldNotWriteReview, "applicantId", applicantShouldNotWriteReviewId);
-
-        Review review = ReviewFixture.review(applicantShouldWriteReview);
-        setField(review, "reviewId", 1L);
-
-        FindApplyingVolunteersResponse findApplyingVolunteersResponse = FindApplyingVolunteersResponse.from(
-            List.of(
-                applicantShouldWriteReview,
-                applicantShouldNotWriteReview
-            )
-        );
-
-        given(applicantService.findApplyingVolunteers(volunteerId)).willReturn(
-            findApplyingVolunteersResponse);
+        given(applicantService.findApplyingVolunteers(anyLong(), any()))
+            .willReturn(findApplyingVolunteersResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(
             get("/api/volunteers/applicants")
+                .param("pageNumber", "0")
+                .param("pageSize", "10")
                 .header(AUTHORIZATION, volunteerAccessToken)
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
         resultActions.andExpect(status().isOk())
             .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
+                queryParameters(
+                    parameterWithName("pageNumber").description("페이지 번호"),
+                    parameterWithName("pageSize").description("페이지 사이즈")
+                ),
                 responseFields(
-                    fieldWithPath("findApplyingVolunteerResponses").type(JsonFieldType.ARRAY)
-                        .description("신청한 봉사 리스트"),
-                    fieldWithPath("findApplyingVolunteerResponses[].shelterId").type(
-                            JsonFieldType.NUMBER)
-                        .description("보호소 ID"),
-                    fieldWithPath("findApplyingVolunteerResponses[].recruitmentId").type(
-                            JsonFieldType.NUMBER)
-                        .description("봉사 모집글 ID"),
-                    fieldWithPath("findApplyingVolunteerResponses[].applicantId").type(
-                            JsonFieldType.NUMBER)
-                        .description("봉사 신청자 ID"),
-                    fieldWithPath("findApplyingVolunteerResponses[].recruitmentTitle").type(
-                            JsonFieldType.STRING)
-                        .description("모집글 제목"),
-                    fieldWithPath("findApplyingVolunteerResponses[].shelterName").type(
-                            JsonFieldType.STRING)
-                        .description("보호소 이름"),
-                    fieldWithPath("findApplyingVolunteerResponses[].applicantStatus").type(
-                            JsonFieldType.STRING)
-                        .description("승인 상태"),
-                    fieldWithPath("findApplyingVolunteerResponses[].applicantIsWritedReview").type(
-                            JsonFieldType.BOOLEAN)
-                        .description("후기 작성 가능 여부"),
-                    fieldWithPath("findApplyingVolunteerResponses[].recruitmentStartTime").type(
-                            JsonFieldType.STRING)
-                        .description("봉사 날짜")
+                    fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
+                    fieldWithPath("pageInfo.totalElements").type(NUMBER).description("총 요소 개수"),
+                    fieldWithPath("pageInfo.hasNext").type(BOOLEAN).description("다음 페이지 여부"),
+                    fieldWithPath("applicants")
+                        .type(JsonFieldType.ARRAY).description("신청한 봉사 리스트"),
+                    fieldWithPath("applicants[].shelterId")
+                        .type(JsonFieldType.NUMBER).description("보호소 ID"),
+                    fieldWithPath("applicants[].recruitmentId")
+                        .type(JsonFieldType.NUMBER).description("봉사 모집글 ID"),
+                    fieldWithPath("applicants[].applicantId")
+                        .type(JsonFieldType.NUMBER).description("봉사 신청자 ID"),
+                    fieldWithPath("applicants[].recruitmentTitle")
+                        .type(JsonFieldType.STRING).description("모집글 제목"),
+                    fieldWithPath("applicants[].shelterName")
+                        .type(JsonFieldType.STRING).description("보호소 이름"),
+                    fieldWithPath("applicants[].applicantStatus")
+                        .type(JsonFieldType.STRING).description("승인 상태"),
+                    fieldWithPath("applicants[].applicantIsWritedReview")
+                        .type(JsonFieldType.BOOLEAN).description("후기 작성 가능 여부"),
+                    fieldWithPath("applicants[].recruitmentStartTime")
+                        .type(JsonFieldType.STRING).description("봉사 날짜")
                 )
             ));
     }
 
     @Test
     @DisplayName("봉사 신청 승인자 조회 API 호출 시")
-    void findApplicantApproved() throws Exception {
+    void findApprovedApplicants() throws Exception {
         // given
-        FindApplicantsApprovedResponse.from(List.of());
+        FindApprovedApplicantsResponse.from(List.of());
 
-        when(applicantService.findApplicantsApproved(anyLong(), anyLong()))
-            .thenReturn(FindApplicantsApprovedResponse.from(List.of()));
+        when(applicantService.findApprovedApplicants(anyLong(), anyLong()))
+            .thenReturn(FindApprovedApplicantsResponse.from(List.of()));
 
         // when
         ResultActions result = mockMvc.perform(
@@ -192,20 +189,27 @@ class ApplicantControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("봉사 신청자 리스트 조회 API 호출 시")
-    void findApplicant() throws Exception {
+    void findApplicants() throws Exception {
         // given
-        Shelter shelter = ShelterFixture.shelter();
-        ReflectionTestUtils.setField(shelter, "shelterId", 1L);
-        Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-        ReflectionTestUtils.setField(recruitment, "recruitmentId", 1L);
+        FindApplicantResponse findApplicantResponse = new FindApplicantResponse(
+            1L,
+            1L,
+            "봉사자 이름",
+            LocalDate.now(),
+            VolunteerGender.MALE,
+            5,
+            36,
+            ATTENDANCE.convertToApprovalStatus().getName()
+        );
+        FindApplicantsResponse findApplicantsResponse = new FindApplicantsResponse(
+            List.of(findApplicantResponse), 10);
 
-        FindApplicantsResponse response = FindApplicantsResponse.from(List.of(), recruitment);
-        when(applicantService.findApplicants(anyLong(), anyLong())).thenReturn(response);
+        given(applicantService.findApplicants(anyLong(), anyLong()))
+            .willReturn(findApplicantsResponse);
 
         // when
         ResultActions result = mockMvc.perform(
-            get("/api/shelters/recruitments/{recruitmentId}/applicants",
-                recruitment.getRecruitmentId())
+            get("/api/shelters/recruitments/{recruitmentId}/applicants", 1L)
                 .header(AUTHORIZATION, shelterAccessToken)
                 .contentType(MediaType.APPLICATION_JSON)
         );
@@ -224,16 +228,16 @@ class ApplicantControllerTest extends BaseControllerTest {
                         fieldWithPath("applicants[]").type(ARRAY).description("봉사 신청자 리스트").optional(),
                         fieldWithPath("applicants[].volunteerId").type(NUMBER).description("봉사자 ID"),
                         fieldWithPath("applicants[].applicantId").type(NUMBER).description("봉사 신청 ID"),
-                        fieldWithPath("applicants[].volunteerName").type(NUMBER).description("봉사자 이름"),
+                        fieldWithPath("applicants[].volunteerName").type(STRING).description("봉사자 이름"),
                         fieldWithPath("applicants[].volunteerBirthDate").type(STRING)
                             .description("봉사자 생일"),
                         fieldWithPath("applicants[].volunteerGender").type(STRING)
                             .description("봉사자 성별"),
-                        fieldWithPath("applicants[].completedVolunteerCount").type(STRING)
+                        fieldWithPath("applicants[].completedVolunteerCount").type(NUMBER)
                             .description("봉사 횟수"),
-                        fieldWithPath("applicants[].volunteerTemperature").type(BOOLEAN)
+                        fieldWithPath("applicants[].volunteerTemperature").type(NUMBER)
                             .description("봉사자 온도"),
-                        fieldWithPath("applicants[].applicantStatus").type(BOOLEAN)
+                        fieldWithPath("applicants[].applicantStatus").type(STRING)
                             .description("신청 상태")
                     )
                 )
@@ -321,6 +325,36 @@ class ApplicantControllerTest extends BaseControllerTest {
                 ),
                 requestFields(
                     fieldWithPath("isApproved").type(BOOLEAN).description("승인 상태")
+                )
+            ));
+    }
+
+    @Test
+    @DisplayName("봉사 신청 여부 조회 API 호출 시")
+    void isAppliedRecruitment() throws Exception {
+        //given
+        IsAppliedRecruitmentResponse isAppliedRecruitmentResponse
+            = new IsAppliedRecruitmentResponse(true);
+
+        given(applicantService.isAppliedRecruitment(anyLong(), anyLong()))
+            .willReturn(isAppliedRecruitmentResponse);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            get("/api/volunteers/recruitments/{recruitmentId}/apply", 1L)
+                .header(AUTHORIZATION, volunteerAccessToken));
+
+        //then
+        resultActions.andExpect(status().isOk())
+            .andDo(restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("봉사자 액세스 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("recruitmentId").description("봉사 모집글 ID")
+                ),
+                responseFields(
+                    fieldWithPath("isAppliedRecruitment").type(BOOLEAN).description("봉사 신청 여부")
                 )
             ));
     }

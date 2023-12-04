@@ -2,7 +2,7 @@ package com.clova.anifriends.domain.notification;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.clova.anifriends.domain.notification.wrapper.NotificationType;
+import com.clova.anifriends.domain.notification.vo.NotificationType;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import org.junit.jupiter.api.DisplayName;

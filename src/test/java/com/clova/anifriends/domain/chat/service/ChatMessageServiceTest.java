@@ -11,8 +11,8 @@ import static org.mockito.Mockito.when;
 import com.clova.anifriends.domain.auth.jwt.UserRole;
 import com.clova.anifriends.domain.chat.ChatMessage;
 import com.clova.anifriends.domain.chat.ChatRoom;
+import com.clova.anifriends.domain.chat.dto.response.ChatMessageResponse;
 import com.clova.anifriends.domain.chat.exception.ChatRoomNotFoundException;
-import com.clova.anifriends.domain.chat.message.pub.NewChatMessagePub;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
 import com.clova.anifriends.domain.chat.repository.ChatRoomRepository;
 import com.clova.anifriends.domain.chat.support.ChatMessageFixture;
@@ -55,16 +55,19 @@ class ChatMessageServiceTest {
             ChatRoom chatRoom = ChatRoomFixture.chatRoom(volunteer, shelter);
             UserRole senderRole = UserRole.ROLE_VOLUNTEER;
             Long senderId = 1L;
+            Long chatRoomId = 1L;
 
             ChatMessage chatMessage = ChatMessageFixture.chatMessage(chatRoom, senderId,
                 senderRole);
-            NewChatMessagePub expect = NewChatMessagePub.from(chatMessage);
+            ChatMessageResponse expect = ChatMessageResponse.from(chatMessage);
 
             when(chatRoomRepository.findById(anyLong())).thenReturn(Optional.of(chatRoom));
+            when(chatMessageRepository.save(any(ChatMessage.class))).thenReturn(chatMessage);
 
             // when
-            NewChatMessagePub result = chatMessageService.registerChatMessage(1L,
-                chatMessage.getSenderId(), chatMessage.getSenderRole(), chatMessage.getMessage());
+            ChatMessageResponse result = chatMessageService.registerChatMessage(
+                chatRoomId, chatMessage.getSenderId(), chatMessage.getSenderRole(),
+                chatMessage.getMessage());
 
             // then
             verify(chatMessageRepository, times(1)).save(any(ChatMessage.class));
@@ -78,12 +81,15 @@ class ChatMessageServiceTest {
             // given
             UserRole senderRole = UserRole.ROLE_VOLUNTEER;
             String message = "악";
+            Long senderId = 1L;
+            Long chatRoomId = 1L;
 
             when(chatRoomRepository.findById(anyLong())).thenReturn(Optional.empty());
 
             // when
             Exception exception = catchException(
-                () -> chatMessageService.registerChatMessage(1L, 1L, senderRole, message));
+                () -> chatMessageService.registerChatMessage(chatRoomId, senderId,
+                    senderRole, message));
 
             // then
             assertThat(exception).isInstanceOf(ChatRoomNotFoundException.class);

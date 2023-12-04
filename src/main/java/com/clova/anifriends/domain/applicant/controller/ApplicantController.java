@@ -3,13 +3,17 @@ package com.clova.anifriends.domain.applicant.controller;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantStatusRequest;
 import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttendanceRequest;
-import com.clova.anifriends.domain.applicant.dto.response.FindApplicantsApprovedResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
 import com.clova.anifriends.domain.applicant.service.ApplicantService;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.auth.LoginUser;
+import com.clova.anifriends.domain.auth.authorization.ShelterOnly;
+import com.clova.anifriends.domain.auth.authorization.VolunteerOnly;
+import com.clova.anifriends.domain.recruitment.dto.response.IsAppliedRecruitmentResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,6 +30,7 @@ public class ApplicantController {
 
     private final ApplicantService applicantService;
 
+    @VolunteerOnly
     @PostMapping("/volunteers/recruitments/{recruitmentId}/apply")
     public ResponseEntity<Void> registerApplicant(
         @PathVariable Long recruitmentId,
@@ -35,22 +40,35 @@ public class ApplicantController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/volunteers/applicants")
-    public ResponseEntity<FindApplyingVolunteersResponse> findApplyingVolunteers(
-        @LoginUser Long volunteerId
-    ) {
-        return ResponseEntity.ok(applicantService.findApplyingVolunteers(volunteerId));
-
+    @VolunteerOnly
+    @GetMapping("/volunteers/recruitments/{recruitmentId}/apply")
+    public ResponseEntity<IsAppliedRecruitmentResponse> isAppliedRecruitment(
+        @PathVariable Long recruitmentId,
+        @LoginUser Long volunteerId) {
+        IsAppliedRecruitmentResponse isAppliedRecruitmentResponse
+            = applicantService.isAppliedRecruitment(volunteerId, recruitmentId);
+        return ResponseEntity.ok(isAppliedRecruitmentResponse);
     }
 
+    @VolunteerOnly
+    @GetMapping("/volunteers/applicants")
+    public ResponseEntity<FindApplyingVolunteersResponse> findApplyingVolunteers(
+        @LoginUser Long volunteerId,
+        Pageable pageable
+    ) {
+        return ResponseEntity.ok(applicantService.findApplyingVolunteers(volunteerId, pageable));
+    }
+
+    @ShelterOnly
     @GetMapping("/shelters/recruitments/{recruitmentId}/approval")
-    public ResponseEntity<FindApplicantsApprovedResponse> findApplicantApproved(
+    public ResponseEntity<FindApprovedApplicantsResponse> findApprovedApplicants(
         @LoginUser Long shelterId,
         @PathVariable Long recruitmentId
     ) {
-        return ResponseEntity.ok(applicantService.findApplicantsApproved(shelterId, recruitmentId));
+        return ResponseEntity.ok(applicantService.findApprovedApplicants(shelterId, recruitmentId));
     }
 
+    @ShelterOnly
     @GetMapping("/shelters/recruitments/{recruitmentId}/applicants")
     public ResponseEntity<FindApplicantsResponse> findApplicants(
         @LoginUser Long shelterId,
@@ -59,6 +77,7 @@ public class ApplicantController {
         return ResponseEntity.ok(applicantService.findApplicants(shelterId, recruitmentId));
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/recruitments/{recruitmentId}/approval")
     public ResponseEntity<Void> updateApplicantAttendance(
         @LoginUser Long shelterId,
@@ -78,6 +97,7 @@ public class ApplicantController {
         return ResponseEntity.noContent().build();
     }
 
+    @ShelterOnly
     @PatchMapping("/shelters/recruitments/{recruitmentId}/applicants/{applicantId}")
     public ResponseEntity<Void> updateApplicantStatus(
         @LoginUser Long shelterId,

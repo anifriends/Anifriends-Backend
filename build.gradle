@@ -63,6 +63,7 @@ dependencies {
     // DB
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     //RestDocs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
@@ -83,6 +84,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.awaitility:awaitility'
+    testImplementation "org.testcontainers:testcontainers:1.19.0"
+    testImplementation "org.testcontainers:junit-jupiter:1.19.0"
 
     // S3 AWS
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
@@ -91,6 +94,11 @@ dependencies {
     // Websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+    // Monitoring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
 tasks.named('test') {
@@ -164,7 +172,8 @@ private excludedClassFilesForReport(classDirectories) {
                         "**/*Response*",
                         "**/*Request*",
                         "**/exception/**",
-                        "**/Mock**"
+                        "**/Mock**",
+                        "**/aspect/**"
                 ])
             })
     )
