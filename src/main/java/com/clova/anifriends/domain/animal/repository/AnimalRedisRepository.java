@@ -22,11 +22,10 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
-public class AnimalRedisRepository {
+public class AnimalRedisRepository implements AnimalCacheRepository {
 
     private static final String ANIMAL_ZSET_KEY = "animal";
     private static final String TOTAL_NUMBER_OF_ANIMALS_KEY = "total_number_of_animals";
@@ -44,7 +43,6 @@ public class AnimalRedisRepository {
         zSetOperations = redisTemplate.opsForZSet();
     }
 
-    @Transactional(readOnly = true)
     public void synchronizeCache() {
         zSetOperations.removeRange(ANIMAL_ZSET_KEY, 0, -1);
         Pageable pageable = PageRequest.of(0, ANIMAL_CACHE_SIZE);
@@ -55,7 +53,7 @@ public class AnimalRedisRepository {
         redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, dbCount);
     }
 
-    @Transactional(readOnly = true)
+    @Override
     public Long getTotalNumberOfAnimals() {
         Object cachedCount = redisTemplate.opsForValue().get(TOTAL_NUMBER_OF_ANIMALS_KEY);
         if (Objects.nonNull(cachedCount)) {
@@ -66,24 +64,27 @@ public class AnimalRedisRepository {
         return dbCount;
     }
 
+    @Override
     public void saveAnimal(FindAnimalsResult animal) {
         FindAnimalResponse findAnimalResponse = FindAnimalResponse.from(animal);
         zSetOperations.add(ANIMAL_ZSET_KEY, findAnimalResponse, -getScore(animal.getCreatedAt()));
         trimCache();
     }
 
+    @Override
     public void saveAnimal(Animal animal) {
         FindAnimalResponse findAnimalResponse = FindAnimalResponse.from(animal);
         zSetOperations.add(ANIMAL_ZSET_KEY, findAnimalResponse, -getScore(animal.getCreatedAt()));
         trimCache();
     }
 
+    @Override
     public void deleteAnimal(Animal animal) {
         FindAnimalResponse findAnimalResponse = FindAnimalResponse.from(animal);
         zSetOperations.remove(ANIMAL_ZSET_KEY, findAnimalResponse);
     }
 
-    @Transactional(readOnly = true)
+    @Override
     public FindAnimalsResponse findAnimals(int size, long count) {
         if (requiresCacheUpdate(size)) {
             synchronizeCache();
@@ -113,13 +114,13 @@ public class AnimalRedisRepository {
         return instant.getEpochSecond() + instant.getNano() / NANO;
     }
 
-    @Transactional(readOnly = true)
+    @Override
     public void increaseTotalNumberOfAnimals() {
         Long cachedCount = getTotalNumberOfAnimals();
         redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, cachedCount + 1);
     }
 
-    @Transactional(readOnly = true)
+    @Override
     public void decreaseTotalNumberOfAnimals() {
         Long cachedCount = getTotalNumberOfAnimals();
         redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, cachedCount - 1);

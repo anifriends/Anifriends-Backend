@@ -23,7 +23,7 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
-import com.clova.anifriends.domain.animal.repository.AnimalRedisRepository;
+import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture;
@@ -62,7 +62,7 @@ class AnimalServiceTest {
     AnimalService animalService;
 
     @Mock
-    AnimalRedisRepository animalRedisRepository;
+    AnimalCacheRepository animalCacheRepository;
 
     @Mock
     AnimalRepository animalRepository;
@@ -102,10 +102,10 @@ class AnimalServiceTest {
             animalService.registerAnimal(1L, registerAnimalRequest);
 
             //then
-            then(animalRedisRepository).should().saveAnimal(any(Animal.class));
+            then(animalCacheRepository).should().saveAnimal(any(Animal.class));
             then(animalRepository).should().save(any());
             then(animalRepository).should().save(any());
-            then(animalRedisRepository).should().increaseTotalNumberOfAnimals();
+            then(animalCacheRepository).should().increaseTotalNumberOfAnimals();
         }
 
         @Test
@@ -276,8 +276,8 @@ class AnimalServiceTest {
                 ageFilter, genderFilter, sizeFilter, createdAt, animalId, PageRequest.of(0, 10));
 
             // then
-            verify(animalRedisRepository, times(1)).findAnimals(anyInt(), anyLong());
-            verify(animalRedisRepository, times(1)).getTotalNumberOfAnimals();
+            verify(animalCacheRepository, times(1)).findAnimals(anyInt(), anyLong());
+            verify(animalCacheRepository, times(1)).getTotalNumberOfAnimals();
         }
 
         @Test
@@ -304,7 +304,7 @@ class AnimalServiceTest {
                 ageFilter, genderFilter, sizeFilter, createdAt, animalId, PageRequest.of(0, 10));
 
             // then
-            verify(animalRedisRepository, times(0)).findAnimals(anyInt(), anyLong());
+            verify(animalCacheRepository, times(0)).findAnimals(anyInt(), anyLong());
         }
 
     }
@@ -507,8 +507,8 @@ class AnimalServiceTest {
                 () -> animalService.updateAnimalAdoptStatus(anyLong(), anyLong(), updateStatus));
 
             // then
-            verify(animalRedisRepository, never()).deleteAnimal(any());
-            verify(animalRedisRepository, never()).decreaseTotalNumberOfAnimals();
+            verify(animalCacheRepository, never()).deleteAnimal(any());
+            verify(animalCacheRepository, never()).decreaseTotalNumberOfAnimals();
             assertThat(exception).isNull();
         }
 
@@ -529,8 +529,8 @@ class AnimalServiceTest {
                 () -> animalService.updateAnimalAdoptStatus(anyLong(), anyLong(), updateStatus));
 
             // then
-            verify(animalRedisRepository, times(1)).deleteAnimal(any(Animal.class));
-            verify(animalRedisRepository, times(1)).decreaseTotalNumberOfAnimals();
+            verify(animalCacheRepository, times(1)).deleteAnimal(any(Animal.class));
+            verify(animalCacheRepository, times(1)).decreaseTotalNumberOfAnimals();
             assertThat(exception).isNull();
         }
     }
@@ -665,7 +665,7 @@ class AnimalServiceTest {
             verify(applicationEventPublisher, times(1)).publishEvent(
                 new ImageDeletionEvent(originImages));
             then(animalRepository).should().delete(any(Animal.class));
-            verify(animalRedisRepository, times(1)).decreaseTotalNumberOfAnimals();
+            verify(animalCacheRepository, times(1)).decreaseTotalNumberOfAnimals();
         }
 
         @Test
