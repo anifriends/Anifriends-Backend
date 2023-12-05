@@ -18,7 +18,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class RecruitmentRedisRepository {
+public class RecruitmentRedisRepository implements RecruitmentCacheRepository {
 
     private static final String RECRUITMENT_KEY = "recruitment";
     private static final int UNTIL_LAST_ELEMENT = -1;
@@ -33,6 +33,7 @@ public class RecruitmentRedisRepository {
         this.cachedRecruitments = redisTemplate.opsForZSet();
     }
 
+    @Override
     public void save(final Recruitment recruitment) {
         FindRecruitmentResponse recruitmentResponse = FindRecruitmentResponse.from(recruitment);
         long createdAtScore = getCreatedAtScore(recruitment);
@@ -57,6 +58,7 @@ public class RecruitmentRedisRepository {
      * @param pageable 조회해 올 리스트 pageable. 최대 사이즈 20
      * @return 캐시된 Recruitment dto 리스트
      */
+    @Override
     public Slice<FindRecruitmentResponse> findAll(Pageable pageable) {
         long size = pageable.getPageSize();
         if (size > PAGE_SIZE) {
@@ -74,6 +76,7 @@ public class RecruitmentRedisRepository {
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
+    @Override
     public void update(final Recruitment recruitment) {
         long createdAtScore = getCreatedAtScore(recruitment);
         Set<FindRecruitmentResponse> recruitments = cachedRecruitments.rangeByScore(
@@ -101,11 +104,13 @@ public class RecruitmentRedisRepository {
         return findRecruitmentResponse.recruitmentId().equals(recruitment.getRecruitmentId());
     }
 
+    @Override
     public void delete(final Recruitment recruitment) {
         FindRecruitmentResponse recruitmentResponse = FindRecruitmentResponse.from(recruitment);
         cachedRecruitments.remove(RECRUITMENT_KEY, recruitmentResponse);
     }
 
+    @Override
     public void closeRecruitmentsIfNeedToBe() {
         LocalDateTime now = LocalDateTime.now();
         Set<FindRecruitmentResponse> findRecruitments = cachedRecruitments.range(RECRUITMENT_KEY,

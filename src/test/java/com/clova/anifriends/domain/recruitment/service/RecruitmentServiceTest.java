@@ -29,7 +29,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResp
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse.FindRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindShelterRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
-import com.clova.anifriends.domain.recruitment.repository.RecruitmentRedisRepository;
+import com.clova.anifriends.domain.recruitment.repository.RecruitmentCacheRepository;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -71,7 +71,7 @@ class RecruitmentServiceTest {
     ApplicationEventPublisher applicationEventPublisher;
 
     @Mock
-    RecruitmentRedisRepository recruitmentRedisRepository;
+    RecruitmentCacheRepository recruitmentCacheRepository;
 
     @Mock
     RecruitmentCacheService recruitmentCacheService;
@@ -379,7 +379,7 @@ class RecruitmentServiceTest {
                 SliceImpl<FindRecruitmentResponse> cachedRecruitments
                     = new SliceImpl<>(recruitmentResponses, pageRequest, hasNext);
 
-                given(recruitmentRedisRepository.findAll(any(PageRequest.class)))
+                given(recruitmentCacheRepository.findAll(any(PageRequest.class)))
                     .willReturn(cachedRecruitments);
                 given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
                 given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
@@ -391,7 +391,7 @@ class RecruitmentServiceTest {
                     pageRequest);
 
                 //then
-                then(recruitmentRedisRepository).should().findAll(pageRequest);
+                then(recruitmentCacheRepository).should().findAll(pageRequest);
                 then(recruitmentRepository).should(times(0))
                     .findRecruitmentsV2(nullKeyword, nullStartDate, nullEndDate, nullIsClosed,
                         trueTitleContains, trueContentContains, trueShelterNameContains,
@@ -413,7 +413,7 @@ class RecruitmentServiceTest {
                 SliceImpl<Recruitment> findRecruitments = new SliceImpl<>(recruitments, pageRequest,
                     hasNext);
 
-                given(recruitmentRedisRepository.findAll(pageRequest))
+                given(recruitmentCacheRepository.findAll(pageRequest))
                     .willReturn(cachedRecruitments);
                 given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
                 given(recruitmentRepository.findRecruitmentsV2(nullKeyword, nullStartDate,
@@ -429,7 +429,7 @@ class RecruitmentServiceTest {
                     nullCreatedAt, nullRecruitmentId, pageRequest);
 
                 //then
-                then(recruitmentRedisRepository).should().findAll(pageRequest);
+                then(recruitmentCacheRepository).should().findAll(pageRequest);
                 then(recruitmentRepository).should()
                     .findRecruitmentsV2(nullKeyword, nullStartDate, nullEndDate, nullIsClosed,
                         trueTitleContains, trueContentContains, trueShelterNameContains,
@@ -695,7 +695,7 @@ class RecruitmentServiceTest {
 
             //then
             then(recruitmentRepository).should().closeRecruitmentsIfNeedToBe();
-            then(recruitmentRedisRepository).should().closeRecruitmentsIfNeedToBe();
+            then(recruitmentCacheRepository).should().closeRecruitmentsIfNeedToBe();
         }
     }
 }
