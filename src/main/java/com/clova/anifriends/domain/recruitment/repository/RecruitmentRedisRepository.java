@@ -18,7 +18,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class RecruitmentCacheRepository {
+public class RecruitmentRedisRepository {
 
     private static final String RECRUITMENT_KEY = "recruitment";
     private static final int UNTIL_LAST_ELEMENT = -1;
@@ -29,7 +29,7 @@ public class RecruitmentCacheRepository {
 
     private final ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments;
 
-    public RecruitmentCacheRepository(RedisTemplate<String, FindRecruitmentResponse> redisTemplate) {
+    public RecruitmentRedisRepository(RedisTemplate<String, FindRecruitmentResponse> redisTemplate) {
         this.cachedRecruitments = redisTemplate.opsForZSet();
     }
 

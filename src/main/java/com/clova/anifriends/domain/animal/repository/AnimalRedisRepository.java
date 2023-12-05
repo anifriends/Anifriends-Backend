@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
-public class AnimalCacheRepository {
+public class AnimalRedisRepository {
 
     private static final String ANIMAL_ZSET_KEY = "animal";
     private static final String TOTAL_NUMBER_OF_ANIMALS_KEY = "total_number_of_animals";

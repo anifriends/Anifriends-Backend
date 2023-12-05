@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse.FindAnimalResponse;
-import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
+import com.clova.anifriends.domain.animal.repository.AnimalRedisRepository;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -30,7 +30,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
     private static final int ANIMAL_CACHE_SIZE = 30;
 
     @Autowired
-    private AnimalCacheRepository animalCacheRepository;
+    private AnimalRedisRepository animalRedisRepository;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -63,7 +63,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
             // when
-            animalCacheRepository.synchronizeCache();
+            animalRedisRepository.synchronizeCache();
 
             // then
             assertThat(zSetOperations.size(ANIMAL_ZSET_KEY)).isEqualTo(cachedCount);
@@ -89,7 +89,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
             // when
-            animalCacheRepository.synchronizeCache();
+            animalRedisRepository.synchronizeCache();
 
             // then
             assertThat(zSetOperations.size(ANIMAL_ZSET_KEY)).isEqualTo(cachedCount);
@@ -115,7 +115,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
             // when
-            animalCacheRepository.synchronizeCache();
+            animalRedisRepository.synchronizeCache();
 
             // then
             assertThat(zSetOperations.size(ANIMAL_ZSET_KEY)).isEqualTo(cachedCount);
@@ -132,7 +132,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             int cachedCount = Math.min(animalCount, ANIMAL_CACHE_SIZE);
 
             // when
-            animalCacheRepository.synchronizeCache();
+            animalRedisRepository.synchronizeCache();
 
             // then
             assertThat(zSetOperations.size(ANIMAL_ZSET_KEY)).isEqualTo(cachedCount);
@@ -162,10 +162,10 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
-            animalCacheRepository.synchronizeCache();
+            animalRedisRepository.synchronizeCache();
 
             // when
-            animalCacheRepository.saveAnimal(newAnimal);
+            animalRedisRepository.saveAnimal(newAnimal);
 
             // then
             assertThat(zSetOperations.size(ANIMAL_ZSET_KEY)).isEqualTo(cachedCount);
@@ -193,10 +193,10 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
-            animalCacheRepository.synchronizeCache();
+            animalRedisRepository.synchronizeCache();
 
             // when
-            animalCacheRepository.saveAnimal(newAnimal);
+            animalRedisRepository.saveAnimal(newAnimal);
 
             // then
             assertThat(zSetOperations.size(ANIMAL_ZSET_KEY)).isEqualTo(cachedCount);
@@ -222,10 +222,10 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
                 null, null, null, null, null, null,
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
-            animalCacheRepository.synchronizeCache();
+            animalRedisRepository.synchronizeCache();
 
             // when
-            animalCacheRepository.saveAnimal(newAnimal);
+            animalRedisRepository.saveAnimal(newAnimal);
 
             // then
             assertThat(zSetOperations.size(ANIMAL_ZSET_KEY)).isEqualTo(cachedCount);
@@ -250,7 +250,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
             animalRepository.saveAll(animals);
 
-            animalCacheRepository.synchronizeCache();
+            animalRedisRepository.synchronizeCache();
 
             Animal animalToDelete = animals.get(0);
             animalRepository.deleteById(animalToDelete.getAnimalId());
@@ -261,7 +261,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
                 null, PageRequest.of(0, cachedCount)).get().map(FindAnimalResponse::from).toList();
 
             // when
-            animalCacheRepository.deleteAnimal(animalToDelete);
+            animalRedisRepository.deleteAnimal(animalToDelete);
 
             // then
             assertThat(zSetOperations.size(ANIMAL_ZSET_KEY)).isEqualTo(cachedCount);
@@ -281,14 +281,14 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
             animalRepository.saveAll(animals);
 
-            animalCacheRepository.synchronizeCache();
+            animalRedisRepository.synchronizeCache();
 
             Animal animalToDelete = animals.get(0);
             animalRepository.deleteById(animalToDelete.getAnimalId());
 
             int cachedCount = Math.min(animalCount - 1, ANIMAL_CACHE_SIZE);
             // when
-            animalCacheRepository.deleteAnimal(animalToDelete);
+            animalRedisRepository.deleteAnimal(animalToDelete);
 
             // then
             assertThat(zSetOperations.size(ANIMAL_ZSET_KEY)).isEqualTo(cachedCount);
@@ -310,7 +310,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
             animalRepository.saveAll(animals);
 
-            animalCacheRepository.synchronizeCache();
+            animalRedisRepository.synchronizeCache();
 
             int size = 20;
             List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
@@ -318,7 +318,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
                 null, PageRequest.of(0, size)).get().map(FindAnimalResponse::from).toList();
 
             // when
-            List<FindAnimalResponse> result = animalCacheRepository.findAnimals(size, animalCount)
+            List<FindAnimalResponse> result = animalRedisRepository.findAnimals(size, animalCount)
                 .animals();
 
             // then
@@ -338,7 +338,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
             animalRepository.saveAll(animals);
 
-            animalCacheRepository.synchronizeCache();
+            animalRedisRepository.synchronizeCache();
 
             int size = 20;
             List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
@@ -346,7 +346,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
                 null, PageRequest.of(0, size)).get().map(FindAnimalResponse::from).toList();
 
             // when
-            List<FindAnimalResponse> result = animalCacheRepository.findAnimals(size, animalCount)
+            List<FindAnimalResponse> result = animalRedisRepository.findAnimals(size, animalCount)
                 .animals();
 
             // then
@@ -365,7 +365,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
             animalRepository.saveAll(animals);
 
-            animalCacheRepository.synchronizeCache();
+            animalRedisRepository.synchronizeCache();
 
             int size = 20;
             List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
@@ -373,7 +373,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
                 null, PageRequest.of(0, size)).get().map(FindAnimalResponse::from).toList();
 
             // when
-            List<FindAnimalResponse> result = animalCacheRepository.findAnimals(size, animalCount)
+            List<FindAnimalResponse> result = animalRedisRepository.findAnimals(size, animalCount)
                 .animals();
 
             // then
@@ -387,7 +387,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             // given
             int animalCount = 0;
 
-            animalCacheRepository.synchronizeCache();
+            animalRedisRepository.synchronizeCache();
 
             int size = 20;
             List<FindAnimalResponse> expected = animalRepository.findAnimalsV2(null,
@@ -395,7 +395,7 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
                 null, PageRequest.of(0, size)).get().map(FindAnimalResponse::from).toList();
 
             // when
-            List<FindAnimalResponse> result = animalCacheRepository.findAnimals(size, animalCount)
+            List<FindAnimalResponse> result = animalRedisRepository.findAnimals(size, animalCount)
                 .animals();
 
             // then

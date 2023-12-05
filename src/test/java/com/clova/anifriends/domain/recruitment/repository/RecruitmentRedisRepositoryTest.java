@@ -31,14 +31,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
+class RecruitmentRedisRepositoryTest extends BaseIntegrationTest {
 
     private static final String RECRUITMENT_KEY = "recruitment";
     private static final int ZERO = 0;
     private static final int ALL_ELEMENT = -1;
 
     @Autowired
-    RecruitmentCacheRepository recruitmentCacheRepository;
+    RecruitmentRedisRepository recruitmentRedisRepository;
 
     @Autowired
     RedisTemplate<String, FindRecruitmentResponse> redisTemplate;
@@ -69,11 +69,11 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             recruitmentRepository.save(recruitment);
 
             //when
-            recruitmentCacheRepository.save(recruitment);
+            recruitmentRedisRepository.save(recruitment);
 
             //then
             PageRequest pageRequest = PageRequest.of(0, 20);
-            Slice<FindRecruitmentResponse> recruitments = recruitmentCacheRepository.findAll(
+            Slice<FindRecruitmentResponse> recruitments = recruitmentRedisRepository.findAll(
                 pageRequest);
             List<FindRecruitmentResponse> content = recruitments.getContent();
             assertThat(content).hasSize(1);
@@ -98,7 +98,7 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
 
             //when
             for (Recruitment recruitment : recruitments) {
-                recruitmentCacheRepository.save(recruitment);
+                recruitmentRedisRepository.save(recruitment);
             }
 
             //then
@@ -137,7 +137,7 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             PageRequest pageRequest = PageRequest.of(0, 20);
 
             //when
-            Slice<FindRecruitmentResponse> recruitments = recruitmentCacheRepository.findAll(
+            Slice<FindRecruitmentResponse> recruitments = recruitmentRedisRepository.findAll(
                 pageRequest);
 
             //then
@@ -160,13 +160,13 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             int hour = 0;
             for (Recruitment recruitment : recruitments) {
                 ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
-                recruitmentCacheRepository.save(recruitment);
+                recruitmentRedisRepository.save(recruitment);
             }
             PageRequest pageRequest = PageRequest.of(0, 20);
 
             //when
             Slice<FindRecruitmentResponse> cachedRecruitments
-                = recruitmentCacheRepository.findAll(pageRequest);
+                = recruitmentRedisRepository.findAll(pageRequest);
 
             //then
             List<Long> recruitmentIdsDesc = recruitments.stream()
@@ -193,11 +193,11 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             LocalDateTime now = LocalDateTime.now();
             for (Recruitment recruitment : recruitments) {
                 ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
-                recruitmentCacheRepository.save(recruitment);
+                recruitmentRedisRepository.save(recruitment);
             }
 
             //when
-            Slice<FindRecruitmentResponse> cachedRecruitments = recruitmentCacheRepository.findAll(
+            Slice<FindRecruitmentResponse> cachedRecruitments = recruitmentRedisRepository.findAll(
                 pageRequest);
 
             //then
@@ -219,11 +219,11 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             LocalDateTime now = LocalDateTime.now();
             for (Recruitment recruitment : recruitments) {
                 ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
-                recruitmentCacheRepository.save(recruitment);
+                recruitmentRedisRepository.save(recruitment);
             }
 
             //when
-            Slice<FindRecruitmentResponse> cachedRecruitments = recruitmentCacheRepository.findAll(
+            Slice<FindRecruitmentResponse> cachedRecruitments = recruitmentRedisRepository.findAll(
                 pageRequest);
 
             //then
@@ -254,7 +254,7 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             LocalDateTime now = LocalDateTime.now();
             for (Recruitment recruitment : recruitments) {
                 ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
-                recruitmentCacheRepository.save(recruitment);
+                recruitmentRedisRepository.save(recruitment);
             }
             Recruitment needToUpdateRecruitment = recruitments.get(20);
             FindRecruitmentResponse oldCachedRecruitment
@@ -262,11 +262,11 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             needToUpdateRecruitment.updateRecruitment("update", null, null, null, null, null, null);
 
             //when
-            recruitmentCacheRepository.update(needToUpdateRecruitment);
+            recruitmentRedisRepository.update(needToUpdateRecruitment);
 
             //then
             PageRequest pageRequest = PageRequest.of(0, 20);
-            Slice<FindRecruitmentResponse> cachedRecruitments = recruitmentCacheRepository.findAll(
+            Slice<FindRecruitmentResponse> cachedRecruitments = recruitmentRedisRepository.findAll(
                 pageRequest);
             FindRecruitmentResponse newCachedRecruitment
                 = FindRecruitmentResponse.from(needToUpdateRecruitment);
@@ -283,13 +283,13 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             LocalDateTime now = LocalDateTime.now();
             for (Recruitment recruitment : recruitments) {
                 ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
-                recruitmentCacheRepository.save(recruitment);
+                recruitmentRedisRepository.save(recruitment);
             }
             Recruitment needToUpdateRecruitment = recruitments.get(0);
             needToUpdateRecruitment.updateRecruitment("update", null, null, null, null, null, null);
 
             //when
-            recruitmentCacheRepository.update(needToUpdateRecruitment);
+            recruitmentRedisRepository.update(needToUpdateRecruitment);
 
             //then
             long createdAtScore
@@ -320,10 +320,10 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             //given
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
             recruitmentRepository.save(recruitment);
-            recruitmentCacheRepository.save(recruitment);
+            recruitmentRedisRepository.save(recruitment);
 
             //when
-            recruitmentCacheRepository.delete(recruitment);
+            recruitmentRedisRepository.delete(recruitment);
 
             //then
             ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
@@ -342,7 +342,7 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             recruitmentRepository.save(recruitment);
 
             //when
-            recruitmentCacheRepository.delete(recruitment);
+            recruitmentRedisRepository.delete(recruitment);
 
             //then
             ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments
@@ -380,11 +380,11 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             ReflectionTestUtils.setField(recruitmentA, "info", recruitmentInfo);
             recruitmentRepository.save(recruitmentA);
             recruitmentRepository.save(recruitmentB);
-            recruitmentCacheRepository.save(recruitmentA);
-            recruitmentCacheRepository.save(recruitmentB);
+            recruitmentRedisRepository.save(recruitmentA);
+            recruitmentRedisRepository.save(recruitmentB);
 
             //when
-            recruitmentCacheRepository.closeRecruitmentsIfNeedToBe();
+            recruitmentRedisRepository.closeRecruitmentsIfNeedToBe();
 
             //then
             Set<FindRecruitmentResponse> cachedRecruitments = redisTemplate.opsForZSet()
@@ -412,10 +412,10 @@ class RecruitmentCacheRepositoryTest extends BaseIntegrationTest {
             ReflectionTestUtils.setField(recruitmentInfo, "isClosed", true);
             ReflectionTestUtils.setField(recruitmentA, "info", recruitmentInfo);
             recruitmentRepository.save(recruitmentA);
-            recruitmentCacheRepository.save(recruitmentA);
+            recruitmentRedisRepository.save(recruitmentA);
 
             //when
-            recruitmentCacheRepository.closeRecruitmentsIfNeedToBe();
+            recruitmentRedisRepository.closeRecruitmentsIfNeedToBe();
 
             //then
             Set<FindRecruitmentResponse> cachedRecruitments = redisTemplate.opsForZSet()

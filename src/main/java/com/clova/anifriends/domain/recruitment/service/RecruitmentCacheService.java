@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.recruitment.service;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.repository.RecruitmentCacheRepository;
+import com.clova.anifriends.domain.recruitment.repository.RecruitmentRedisRepository;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +22,7 @@ public class RecruitmentCacheService {
     private static final String RECRUITMENT_CACHE_KEY = "recruitment:count";
 
     private final RecruitmentRepository recruitmentRepository;
-    private final RecruitmentCacheRepository recruitmentCacheRepository;
+    private final RecruitmentRedisRepository recruitmentRedisRepository;
     private final RedisTemplate<String, Long> redisTemplate;
 
 
@@ -33,7 +33,7 @@ public class RecruitmentCacheService {
             null, null, true, true, true, null,
             null, pageRequest);
         List<Recruitment> findRecruitments = recruitmentSlice.getContent();
-        findRecruitments.forEach(recruitmentCacheRepository::save);
+        findRecruitments.forEach(recruitmentRedisRepository::save);
     }
 
     public Long getRecruitmentCount() {

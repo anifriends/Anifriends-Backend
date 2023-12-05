@@ -10,7 +10,7 @@ import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResp
 import com.clova.anifriends.domain.recruitment.dto.response.FindShelterRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.RegisterRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
-import com.clova.anifriends.domain.recruitment.repository.RecruitmentCacheRepository;
+import com.clova.anifriends.domain.recruitment.repository.RecruitmentRedisRepository;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
@@ -36,7 +36,7 @@ public class RecruitmentService {
     private final ShelterRepository shelterRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
-    private final RecruitmentCacheRepository recruitmentCacheRepository;
+    private final RecruitmentRedisRepository recruitmentRedisRepository;
     private final RecruitmentCacheService recruitmentCacheService;
 
     @Transactional
@@ -61,7 +61,7 @@ public class RecruitmentService {
             imageUrls);
 
         recruitmentRepository.save(recruitment);
-        recruitmentCacheRepository.save(recruitment);
+        recruitmentRedisRepository.save(recruitment);
         recruitmentCacheService.plusOneToRecruitmentCount();
 
         return RegisterRecruitmentResponse.from(recruitment);
@@ -183,7 +183,7 @@ public class RecruitmentService {
         if (findRecruitmentsWithoutCondition(keyword, startDate, endDate, isClosed, titleContains,
             contentContains, shelterNameContains, recruitmentId)) {
             Slice<FindRecruitmentResponse> cachedRecruitments
-                = recruitmentCacheRepository.findAll(pageable);
+                = recruitmentRedisRepository.findAll(pageable);
             if(canTrustCached(cachedRecruitments)) {
                 return FindRecruitmentsResponse.fromCached(cachedRecruitments, count);
             }
@@ -217,7 +217,7 @@ public class RecruitmentService {
     @Transactional
     public void closeRecruitment(Long shelterId, Long recruitmentId) {
         Recruitment recruitment = getRecruitmentByShelter(shelterId, recruitmentId);
-        recruitmentCacheRepository.update(recruitment);
+        recruitmentRedisRepository.update(recruitment);
         recruitment.closeRecruitment();
     }
 
@@ -247,7 +247,7 @@ public class RecruitmentService {
             content,
             imageUrls
         );
-        recruitmentCacheRepository.update(recruitment);
+        recruitmentRedisRepository.update(recruitment);
     }
 
     @Transactional
@@ -259,7 +259,7 @@ public class RecruitmentService {
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
 
         recruitmentRepository.delete(recruitment);
-        recruitmentCacheRepository.delete(recruitment);
+        recruitmentRedisRepository.delete(recruitment);
         recruitmentCacheService.minusOneToRecruitmentCount();
     }
 
@@ -284,6 +284,6 @@ public class RecruitmentService {
     @Transactional
     public void autoCloseRecruitment() {
         recruitmentRepository.closeRecruitmentsIfNeedToBe();
-        recruitmentCacheRepository.closeRecruitmentsIfNeedToBe();
+        recruitmentRedisRepository.closeRecruitmentsIfNeedToBe();
     }
 }

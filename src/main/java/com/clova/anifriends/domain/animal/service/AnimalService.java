@@ -10,7 +10,7 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
 import com.clova.anifriends.domain.animal.mapper.AnimalMapper;
-import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
+import com.clova.anifriends.domain.animal.repository.AnimalRedisRepository;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
@@ -39,7 +39,7 @@ public class AnimalService {
 
     private final AnimalRepository animalRepository;
     private final ShelterRepository shelterRepository;
-    private final AnimalCacheRepository animalCacheRepository;
+    private final AnimalRedisRepository animalRedisRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
@@ -48,8 +48,8 @@ public class AnimalService {
         Shelter shelter = getShelterById(shelterId);
         Animal animal = AnimalMapper.toAnimal(shelter, registerAnimalRequest);
         animalRepository.save(animal);
-        animalCacheRepository.saveAnimal(animal);
-        animalCacheRepository.increaseTotalNumberOfAnimals();
+        animalRedisRepository.saveAnimal(animal);
+        animalRedisRepository.increaseTotalNumberOfAnimals();
         return RegisterAnimalResponse.from(animal);
     }
 
@@ -121,8 +121,8 @@ public class AnimalService {
     ) {
 
         if (isFirstPage(type, active, neuteredFilter, age, gender, size, createdAt, animalId)) {
-            return animalCacheRepository.findAnimals(pageable.getPageSize(),
-                animalCacheRepository.getTotalNumberOfAnimals());
+            return animalRedisRepository.findAnimals(pageable.getPageSize(),
+                animalRedisRepository.getTotalNumberOfAnimals());
         }
 
         long count = animalRepository.countAnimalsV2(
@@ -154,8 +154,8 @@ public class AnimalService {
         Animal animal = getAnimalByAnimalIdAndShelterId(animalId, shelterId);
         animal.updateAdoptStatus(isAdopted);
         if (isAdopted == true) {
-            animalCacheRepository.deleteAnimal(animal);
-            animalCacheRepository.decreaseTotalNumberOfAnimals();
+            animalRedisRepository.deleteAnimal(animal);
+            animalRedisRepository.decreaseTotalNumberOfAnimals();
         }
     }
 
@@ -175,14 +175,14 @@ public class AnimalService {
         List<String> imageUrls
     ) {
         Animal foundAnimal = getAnimalByAnimalIdAndShelterIdWithImages(animalId, shelterId);
-        animalCacheRepository.deleteAnimal(foundAnimal);
+        animalRedisRepository.deleteAnimal(foundAnimal);
 
         List<String> imagesToDelete = foundAnimal.findImagesToDelete(imageUrls);
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
 
         foundAnimal.updateAnimal(name, birthDate, type, breed, gender, isNeutered, active, weight,
             information, imageUrls);
-        animalCacheRepository.saveAnimal(foundAnimal);
+        animalRedisRepository.saveAnimal(foundAnimal);
     }
 
     @Transactional
@@ -191,8 +191,8 @@ public class AnimalService {
         List<String> imagesToDelete = animal.getImages();
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
         animalRepository.delete(animal);
-        animalCacheRepository.deleteAnimal(animal);
-        animalCacheRepository.decreaseTotalNumberOfAnimals();
+        animalRedisRepository.deleteAnimal(animal);
+        animalRedisRepository.decreaseTotalNumberOfAnimals();
     }
 
     private boolean isFirstPage(AnimalType type, AnimalActive active,
