@@ -33,7 +33,7 @@ cloud:
     s3:
       bucket: BuckeyIsThatYou
     stack:
-      auto: false        
+      auto: false
 
 schedules:
   cron:
@@ -44,4 +44,10 @@ schedules:
       encourage-check-attendance: "* * * * * ?"
     recruitment:
       auto-close: "* * * * * ?"
+payment:
+  toss:
+    success-url: successUrl
+    fail-url: failUrl
+    secret-key: tossPaySecretKey
+    confirm-url: tossPayConfirmUrl
 

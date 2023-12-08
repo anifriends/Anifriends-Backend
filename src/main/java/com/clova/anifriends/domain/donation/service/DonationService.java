@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.donation.service;
 
 import com.clova.anifriends.domain.donation.Donation;
-import com.clova.anifriends.domain.donation.dto.response.PaymentResponse;
+import com.clova.anifriends.domain.donation.dto.response.PaymentRequestResponse;
 import com.clova.anifriends.domain.payment.Payment;
 import com.clova.anifriends.domain.payment.repository.PaymentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -27,14 +27,15 @@ public class DonationService {
     private final PaymentRepository paymentRepository;
 
     @Transactional
-    public PaymentResponse registerDonation(Long volunteerId, Long shelterId, Integer amount) {
+    public PaymentRequestResponse registerDonation(Long volunteerId, Long shelterId,
+        Integer amount) {
         Shelter shelter = getShelter(shelterId);
         Volunteer volunteer = getVolunteer(volunteerId);
         Donation donation = new Donation(shelter, volunteer, amount);
         Payment payment = new Payment(donation);
         paymentRepository.save(payment);
 
-        return PaymentResponse.from(payment, successUrl, failUrl);
+        return PaymentRequestResponse.from(payment, successUrl, failUrl);
     }
 
     private Volunteer getVolunteer(Long volunteerId) {
