@@ -1,7 +1,7 @@
 package com.clova.anifriends.domain.recruitment.service;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.repository.RecruitmentRedisRepository;
+import com.clova.anifriends.domain.recruitment.repository.RecruitmentCacheRepository;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class RecruitmentCacheService {
     private static final int MAX_CACHED_SIZE = 30;
 
     private final RecruitmentRepository recruitmentRepository;
-    private final RecruitmentRedisRepository recruitmentRedisRepository;
+    private final RecruitmentCacheRepository recruitmentCacheRepository;
 
     @Transactional(readOnly = true)
     public void synchronizeRecruitmentsCache() {
@@ -26,6 +26,6 @@ public class RecruitmentCacheService {
             null, null, true, true, true, null,
             null, pageRequest);
         List<Recruitment> findRecruitments = recruitmentSlice.getContent();
-        findRecruitments.forEach(recruitmentRedisRepository::saveRecruitment);
+        findRecruitments.forEach(recruitmentCacheRepository::saveRecruitment);
     }
 }
