@@ -7,13 +7,21 @@ import org.springframework.data.domain.Slice;
 
 public interface RecruitmentCacheRepository {
 
-    void save(Recruitment recruitment);
+    void saveRecruitment(Recruitment recruitment);
 
-    Slice<FindRecruitmentResponse> findAll(Pageable pageable);
+    Slice<FindRecruitmentResponse> findRecruitments(Pageable pageable);
 
-    void update(Recruitment recruitment);
+    void updateRecruitment(Recruitment recruitment);
 
-    void delete(Recruitment recruitment);
+    void deleteRecruitment(Recruitment recruitment);
 
     void closeRecruitmentsIfNeedToBe();
+
+    Long getRecruitmentCount();
+
+    void saveRecruitmentCount(Long count);
+
+    void increaseRecruitmentCount();
+
+    void decreaseToRecruitmentCount();
 }

@@ -53,11 +53,11 @@ class RecruitmentCacheServiceTest {
                 .willReturn(recruitmentSlice);
 
             //when
-            recruitmentCacheService.synchronizeCache();
+            recruitmentCacheService.synchronizeRecruitmentsCache();
 
             //then
             then(recruitmentRedisRepository).should(times(30))
-                .save(any(Recruitment.class));
+                .saveRecruitment(any(Recruitment.class));
 
         }
     }

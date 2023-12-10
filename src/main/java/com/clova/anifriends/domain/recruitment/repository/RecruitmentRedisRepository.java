@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
@@ -21,20 +22,29 @@ import org.springframework.stereotype.Repository;
 public class RecruitmentRedisRepository implements RecruitmentCacheRepository {
 
     private static final String RECRUITMENT_KEY = "recruitment";
+    private static final String RECRUITMENT_COUNT_KEY = "recruitment:count";
     private static final int UNTIL_LAST_ELEMENT = -1;
+    private static final Long RECRUITMENT_COUNT_NO_CACHE = -1L;
+    private static final Long COUNT_ONE = 1L;
     private static final int MAX_CACHED_SIZE = 30;
     private static final int PAGE_SIZE = 20;
     private static final int ZERO = 0;
     public static final ZoneOffset CREATED_AT_SCORE_TIME_ZONE = ZoneOffset.UTC;
 
     private final ZSetOperations<String, FindRecruitmentResponse> cachedRecruitments;
+    private final ValueOperations<String, Long> cachedRecruitmentsCount;
+    private final RecruitmentRepository recruitmentRepository;
 
-    public RecruitmentRedisRepository(RedisTemplate<String, FindRecruitmentResponse> redisTemplate) {
-        this.cachedRecruitments = redisTemplate.opsForZSet();
+    public RecruitmentRedisRepository(
+        RedisTemplate<String, FindRecruitmentResponse> findRecruitmentTemplate,
+        RedisTemplate<String, Long> countTemplate, RecruitmentRepository recruitmentRepository) {
+        this.cachedRecruitments = findRecruitmentTemplate.opsForZSet();
+        this.cachedRecruitmentsCount = countTemplate.opsForValue();
+        this.recruitmentRepository = recruitmentRepository;
     }
 
     @Override
-    public void save(final Recruitment recruitment) {
+    public void saveRecruitment(final Recruitment recruitment) {
         FindRecruitmentResponse recruitmentResponse = FindRecruitmentResponse.from(recruitment);
         long createdAtScore = getCreatedAtScore(recruitment);
         cachedRecruitments.add(RECRUITMENT_KEY, recruitmentResponse, createdAtScore);
@@ -59,7 +69,7 @@ public class RecruitmentRedisRepository implements RecruitmentCacheRepository {
      * @return 캐시된 Recruitment dto 리스트
      */
     @Override
-    public Slice<FindRecruitmentResponse> findAll(Pageable pageable) {
+    public Slice<FindRecruitmentResponse> findRecruitments(Pageable pageable) {
         long size = pageable.getPageSize();
         if (size > PAGE_SIZE) {
             size = PAGE_SIZE;
@@ -77,7 +87,7 @@ public class RecruitmentRedisRepository implements RecruitmentCacheRepository {
     }
 
     @Override
-    public void update(final Recruitment recruitment) {
+    public void updateRecruitment(final Recruitment recruitment) {
         long createdAtScore = getCreatedAtScore(recruitment);
         Set<FindRecruitmentResponse> recruitments = cachedRecruitments.rangeByScore(
             RECRUITMENT_KEY, createdAtScore, createdAtScore);
@@ -105,7 +115,7 @@ public class RecruitmentRedisRepository implements RecruitmentCacheRepository {
     }
 
     @Override
-    public void delete(final Recruitment recruitment) {
+    public void deleteRecruitment(final Recruitment recruitment) {
         FindRecruitmentResponse recruitmentResponse = FindRecruitmentResponse.from(recruitment);
         cachedRecruitments.remove(RECRUITMENT_KEY, recruitmentResponse);
     }
@@ -156,5 +166,53 @@ public class RecruitmentRedisRepository implements RecruitmentCacheRepository {
             recruitment.shelterImageUrl(),
             recruitment.recruitmentCreatedAt()
         );
+    }
+
+    @Override
+    public Long getRecruitmentCount() {
+        Object cachedCount = cachedRecruitmentsCount.get(RECRUITMENT_COUNT_KEY);
+
+        if (Objects.isNull(cachedCount)) {
+            return RECRUITMENT_COUNT_NO_CACHE;
+        }
+
+        if (cachedCount instanceof Long) {
+            return (Long) cachedCount;
+        } else {
+            return ((Integer) cachedCount).longValue();
+        }
+    }
+
+    @Override
+    public void saveRecruitmentCount(
+        Long count
+    ) {
+        cachedRecruitmentsCount.set(RECRUITMENT_COUNT_KEY, count);
+    }
+
+    @Override
+    public void increaseRecruitmentCount() {
+        Object cachedCount = cachedRecruitmentsCount.get(RECRUITMENT_COUNT_KEY);
+
+        if (Objects.nonNull(cachedCount)) {
+            saveRecruitmentCount((Integer) cachedCount + COUNT_ONE);
+        }
+
+        long dbRecruitmentCount = recruitmentRepository.count();
+
+        saveRecruitmentCount(dbRecruitmentCount);
+    }
+
+    @Override
+    public void decreaseToRecruitmentCount() {
+        Object cachedCount = cachedRecruitmentsCount.get(RECRUITMENT_COUNT_KEY);
+
+        if (Objects.nonNull(cachedCount)) {
+            saveRecruitmentCount((Integer) cachedCount - COUNT_ONE);
+        }
+
+        long dbRecruitmentCount = recruitmentRepository.count();
+
+        saveRecruitmentCount(dbRecruitmentCount);
     }
 }

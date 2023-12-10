@@ -37,7 +37,6 @@ public class RecruitmentService {
     private final RecruitmentRepository recruitmentRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final RecruitmentCacheRepository recruitmentCacheRepository;
-    private final RecruitmentCacheService recruitmentCacheService;
 
     @Transactional
     public RegisterRecruitmentResponse registerRecruitment(
@@ -61,8 +60,8 @@ public class RecruitmentService {
             imageUrls);
 
         recruitmentRepository.save(recruitment);
-        recruitmentCacheRepository.save(recruitment);
-        recruitmentCacheService.plusOneToRecruitmentCount();
+        recruitmentCacheRepository.saveRecruitment(recruitment);
+        recruitmentCacheRepository.increaseRecruitmentCount();
 
         return RegisterRecruitmentResponse.from(recruitment);
     }
@@ -153,7 +152,7 @@ public class RecruitmentService {
         Long recruitmentId,
         Pageable pageable
     ) {
-        Long count = recruitmentCacheService.getRecruitmentCount();
+        Long count = recruitmentCacheRepository.getRecruitmentCount();
         if (findRecruitmentsWithoutCondition(keyword, startDate, endDate, isClosed, titleContains,
             contentContains, shelterNameContains, recruitmentId)) {
             if(Objects.equals(count, RECRUITMENT_COUNT_NO_CACHE)) {
@@ -166,7 +165,7 @@ public class RecruitmentService {
                     contentContains,
                     shelterNameContains
                 );
-                recruitmentCacheService.registerRecruitmentCount(count);
+                recruitmentCacheRepository.saveRecruitmentCount(count);
             }
         } else {
             count = recruitmentRepository.countFindRecruitmentsV2(
@@ -183,7 +182,7 @@ public class RecruitmentService {
         if (findRecruitmentsWithoutCondition(keyword, startDate, endDate, isClosed, titleContains,
             contentContains, shelterNameContains, recruitmentId)) {
             Slice<FindRecruitmentResponse> cachedRecruitments
-                = recruitmentCacheRepository.findAll(pageable);
+                = recruitmentCacheRepository.findRecruitments(pageable);
             if(canTrustCached(cachedRecruitments)) {
                 return FindRecruitmentsResponse.fromCached(cachedRecruitments, count);
             }
@@ -217,7 +216,7 @@ public class RecruitmentService {
     @Transactional
     public void closeRecruitment(Long shelterId, Long recruitmentId) {
         Recruitment recruitment = getRecruitmentByShelter(shelterId, recruitmentId);
-        recruitmentCacheRepository.update(recruitment);
+        recruitmentCacheRepository.updateRecruitment(recruitment);
         recruitment.closeRecruitment();
     }
 
@@ -247,7 +246,7 @@ public class RecruitmentService {
             content,
             imageUrls
         );
-        recruitmentCacheRepository.update(recruitment);
+        recruitmentCacheRepository.updateRecruitment(recruitment);
     }
 
     @Transactional
@@ -259,8 +258,8 @@ public class RecruitmentService {
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
 
         recruitmentRepository.delete(recruitment);
-        recruitmentCacheRepository.delete(recruitment);
-        recruitmentCacheService.minusOneToRecruitmentCount();
+        recruitmentCacheRepository.deleteRecruitment(recruitment);
+        recruitmentCacheRepository.decreaseToRecruitmentCount();
     }
 
     private Recruitment getRecruitmentByShelterWithImages(Long shelterId, Long recruitmentId) {

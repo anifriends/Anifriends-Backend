@@ -17,6 +17,6 @@ public class CacheWarmer {
     @EventListener(ApplicationReadyEvent.class)
     void synchronizeCache() {
         animalRedisRepository.synchronizeCache();
-        recruitmentCacheService.synchronizeCache();
+        recruitmentCacheService.synchronizeRecruitmentsCache();
     }
 }
