@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import com.clova.anifriends.base.BaseControllerTest.WebMvcTestConfig;
 import com.clova.anifriends.base.config.RestDocsConfig;
-import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
+import com.clova.anifriends.domain.animal.repository.AnimalRedisRepository;
 import com.clova.anifriends.domain.animal.service.AnimalService;
 import com.clova.anifriends.domain.applicant.service.ApplicantService;
 import com.clova.anifriends.domain.auth.authentication.JwtAuthenticationProvider;
@@ -91,7 +91,7 @@ public abstract class BaseControllerTest extends TestContainerStarter {
     protected AnimalService animalService;
 
     @MockBean
-    protected AnimalCacheRepository animalCacheRepository;
+    protected AnimalRedisRepository animalRedisRepository;
 
     @MockBean
     protected ShelterService shelterService;

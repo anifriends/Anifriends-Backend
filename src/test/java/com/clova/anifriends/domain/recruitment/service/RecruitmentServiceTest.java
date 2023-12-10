@@ -254,7 +254,7 @@ class RecruitmentServiceTest {
                 given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                     isClosed, titleContains, contentContains, shelterNameContains))
                     .willReturn(Long.valueOf(recruitments.getSize()));
-                given(recruitmentCacheService.getRecruitmentCount()).willReturn(-1L);
+                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(-1L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsByVolunteer
@@ -303,7 +303,7 @@ class RecruitmentServiceTest {
                 given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                     isClosed, titleContains, contentContains, shelterNameContains))
                     .willReturn(Long.valueOf(recruitments.getSize()));
-                given(recruitmentCacheService.getRecruitmentCount()).willReturn(-1L);
+                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(-1L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsByVolunteer
@@ -337,7 +337,7 @@ class RecruitmentServiceTest {
                 given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                     isClosed, titleContains, contentContains, shelterNameContains))
                     .willReturn(Long.valueOf(recruitments.getSize()));
-                given(recruitmentCacheService.getRecruitmentCount()).willReturn(-1L);
+                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(-1L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsByVolunteer
@@ -379,10 +379,10 @@ class RecruitmentServiceTest {
                 SliceImpl<FindRecruitmentResponse> cachedRecruitments
                     = new SliceImpl<>(recruitmentResponses, pageRequest, hasNext);
 
-                given(recruitmentCacheRepository.findAll(any(PageRequest.class)))
+                given(recruitmentCacheRepository.findRecruitments(any(PageRequest.class)))
                     .willReturn(cachedRecruitments);
-                given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
-                given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
+                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(10L);
+                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(10L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsV2 = recruitmentService.findRecruitmentsV2(
@@ -391,7 +391,7 @@ class RecruitmentServiceTest {
                     pageRequest);
 
                 //then
-                then(recruitmentCacheRepository).should().findAll(pageRequest);
+                then(recruitmentCacheRepository).should().findRecruitments(pageRequest);
                 then(recruitmentRepository).should(times(0))
                     .findRecruitmentsV2(nullKeyword, nullStartDate, nullEndDate, nullIsClosed,
                         trueTitleContains, trueContentContains, trueShelterNameContains,
@@ -413,14 +413,14 @@ class RecruitmentServiceTest {
                 SliceImpl<Recruitment> findRecruitments = new SliceImpl<>(recruitments, pageRequest,
                     hasNext);
 
-                given(recruitmentCacheRepository.findAll(pageRequest))
+                given(recruitmentCacheRepository.findRecruitments(pageRequest))
                     .willReturn(cachedRecruitments);
-                given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
+                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(10L);
                 given(recruitmentRepository.findRecruitmentsV2(nullKeyword, nullStartDate,
                     nullEndDate, nullIsClosed, trueTitleContains, trueContentContains,
                     trueShelterNameContains, nullCreatedAt, nullRecruitmentId, pageRequest))
                     .willReturn(findRecruitments);
-                given(recruitmentCacheService.getRecruitmentCount()).willReturn(10L);
+                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(10L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsV2 = recruitmentService.findRecruitmentsV2(
@@ -429,7 +429,7 @@ class RecruitmentServiceTest {
                     nullCreatedAt, nullRecruitmentId, pageRequest);
 
                 //then
-                then(recruitmentCacheRepository).should().findAll(pageRequest);
+                then(recruitmentCacheRepository).should().findRecruitments(pageRequest);
                 then(recruitmentRepository).should()
                     .findRecruitmentsV2(nullKeyword, nullStartDate, nullEndDate, nullIsClosed,
                         trueTitleContains, trueContentContains, trueShelterNameContains,

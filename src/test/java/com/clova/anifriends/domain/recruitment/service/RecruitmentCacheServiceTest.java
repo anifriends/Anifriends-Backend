@@ -6,7 +6,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.repository.RecruitmentCacheRepository;
+import com.clova.anifriends.domain.recruitment.repository.RecruitmentRedisRepository;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -32,7 +32,7 @@ class RecruitmentCacheServiceTest {
     RecruitmentRepository recruitmentRepository;
 
     @Mock
-    RecruitmentCacheRepository recruitmentCacheRepository;
+    RecruitmentRedisRepository recruitmentRedisRepository;
 
     @Nested
     @DisplayName("synchronizeCache 메서드 실행 시")
@@ -53,11 +53,11 @@ class RecruitmentCacheServiceTest {
                 .willReturn(recruitmentSlice);
 
             //when
-            recruitmentCacheService.synchronizeCache();
+            recruitmentCacheService.synchronizeRecruitmentsCache();
 
             //then
-            then(recruitmentCacheRepository).should(times(30))
-                .save(any(Recruitment.class));
+            then(recruitmentRedisRepository).should(times(30))
+                .saveRecruitment(any(Recruitment.class));
 
         }
     }
