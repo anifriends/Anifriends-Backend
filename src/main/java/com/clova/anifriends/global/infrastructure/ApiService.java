@@ -15,19 +15,8 @@ public class ApiService {
     private final WebClient webClient;
 
     public <T> T post(HttpEntity httpEntity, String url, Class<T> clazz) {
-        ResponseEntity<T> response = postExternalApi(url, httpEntity, clazz);
-        if (response.getStatusCode().isError()) {
-            throw new ExternalApiException("외부 API 호출 과정에서 오류가 발생했습니다");
-        }
-
-        return response.getBody();
-    }
-
-    private <T> ResponseEntity<T> postExternalApi(String url, HttpEntity httpEntity,
-        Class<T> clazz) {
-
         try {
-            return webClient
+            ResponseEntity<T> response = webClient
                 .post()
                 .uri(url)
                 .headers(headers -> headers.addAll(httpEntity.getHeaders()))
@@ -35,9 +24,10 @@ public class ApiService {
                 .retrieve()
                 .toEntity(clazz)
                 .block();
+
+            return response.getBody();
         } catch (Exception exception) {
             throw new ExternalApiException("외부 API 호출 과정에서 오류가 발생했습니다." + exception.getMessage());
         }
     }
-
 }
