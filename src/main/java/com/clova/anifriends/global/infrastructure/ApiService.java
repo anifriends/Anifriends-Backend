@@ -1,5 +1,7 @@
 package com.clova.anifriends.global.infrastructure;
 
+import static java.util.Objects.requireNonNull;
+
 import com.clova.anifriends.global.exception.ExternalApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -25,7 +27,7 @@ public class ApiService {
                 .toEntity(clazz)
                 .block();
 
-            return response.getBody();
+            return requireNonNull(response).getBody();
         } catch (Exception exception) {
             throw new ExternalApiException("외부 API 호출 과정에서 오류가 발생했습니다." + exception.getMessage());
         }
