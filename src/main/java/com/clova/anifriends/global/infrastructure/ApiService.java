@@ -1,7 +1,5 @@
 package com.clova.anifriends.global.infrastructure;
 
-import static java.util.Objects.isNull;
-
 import com.clova.anifriends.global.exception.ExternalApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -18,7 +16,7 @@ public class ApiService {
 
     public <T> T post(HttpEntity httpEntity, String url, Class<T> clazz) {
         ResponseEntity<T> response = postExternalApi(url, httpEntity, clazz);
-        if (isNull(response) || response.getStatusCode().isError()) {
+        if (response.getStatusCode().isError()) {
             throw new ExternalApiException("외부 API 호출 과정에서 오류가 발생했습니다");
         }
 

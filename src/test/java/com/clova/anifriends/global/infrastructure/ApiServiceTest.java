@@ -82,7 +82,7 @@ class ApiServiceTest {
 
         @Test
         @DisplayName("예외(ExternalApiException): 상태 코드가 4xx 인 경우")
-        void exceptionWhenResponseIsNull() {
+        void exceptionWhenStatusIs4xx() {
             // given
             String expectedJsonResponse = "{\"status\": \"DONE\"}";
             String url = mockWebServer.url("/").toString();
