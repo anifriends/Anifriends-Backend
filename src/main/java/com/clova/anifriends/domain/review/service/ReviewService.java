@@ -2,7 +2,6 @@ package com.clova.anifriends.domain.review.service;
 
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
-import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.notification.ShelterNotification;
 import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
@@ -92,7 +91,7 @@ public class ReviewService {
         Page<Review> reviewPage
             = reviewRepository.findAllByVolunteerVolunteerIdOrderByCreatedAtDesc(volunteerId,
             pageable);
-        return FindVolunteerReviewsResponse.of(reviewPage.getContent(), PageInfo.from(reviewPage));
+        return FindVolunteerReviewsResponse.from(reviewPage);
     }
 
     @Transactional

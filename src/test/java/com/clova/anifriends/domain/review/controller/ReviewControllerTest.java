@@ -38,7 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.applicant.Applicant;
-import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
@@ -216,8 +215,7 @@ class ReviewControllerTest extends BaseControllerTest {
         setField(shelter, "shelterId", 1L);
         setField(review, "createdAt", LocalDateTime.now());
         Page<Review> page = new PageImpl<>(List.of(review));
-        FindVolunteerReviewsResponse response = FindVolunteerReviewsResponse.of(
-            page.getContent(), PageInfo.from(page));
+        FindVolunteerReviewsResponse response = FindVolunteerReviewsResponse.from(page);
 
         given(reviewService.findVolunteerReviews(anyLong(), any())).willReturn(response);
 
@@ -271,8 +269,7 @@ class ReviewControllerTest extends BaseControllerTest {
         setField(shelter, "shelterId", 1L);
         setField(review, "createdAt", LocalDateTime.now());
         Page<Review> page = new PageImpl<>(List.of(review));
-        FindVolunteerReviewsResponse response = FindVolunteerReviewsResponse.of(
-            page.getContent(), PageInfo.from(page));
+        FindVolunteerReviewsResponse response = FindVolunteerReviewsResponse.from(page);
 
         given(reviewService.findVolunteerReviews(anyLong(), any())).willReturn(response);
 
