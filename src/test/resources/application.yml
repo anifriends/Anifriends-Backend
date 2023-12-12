@@ -46,8 +46,6 @@ schedules:
       auto-close: "* * * * * ?"
 payment:
   toss:
-    success-url: successUrl
-    fail-url: failUrl
     secret-key: tossPaySecretKey
     confirm-url: tossPayConfirmUrl
 
