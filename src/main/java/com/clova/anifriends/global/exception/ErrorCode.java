@@ -25,6 +25,7 @@ public enum ErrorCode implements EnumType {
     ALREADY_EXISTS("AF901"), // 이미 존재하는 리소스
     CONCURRENCY("AF902"), // 선착순 마감
     // 500
+    SERVICE_UNAVAILABLE("AF998"), // 서비스 이용 불가
     INTERNAL_SERVER_ERROR("AF999"); // 서버 내부 에러
 
     private final String value;
