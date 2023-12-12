@@ -91,7 +91,8 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
         Pageable pageable
     ) {
         List<Animal> animals = query.selectFrom(animal)
-            .join(animal.shelter)
+            .join(animal.shelter).fetchJoin()
+            .leftJoin(animal.shelter.image).fetchJoin()
             .where(
                 animalTypeContains(type),
                 animalActiveContains(active),

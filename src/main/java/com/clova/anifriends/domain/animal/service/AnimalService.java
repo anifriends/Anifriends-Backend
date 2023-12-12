@@ -103,7 +103,6 @@ public class AnimalService {
             size,
             pageable
         );
-
         return FindAnimalsResponse.from(animalsWithPagination);
     }
 
