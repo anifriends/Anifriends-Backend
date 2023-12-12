@@ -28,7 +28,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         Pageable pageable) {
         List<FindShelterReviewByShelterResult> content 
             = getShelterReviewsByShelter(shelter, pageable);
-        Long count = em.createQuery(
+        long count = em.createQuery(
                 "select count(r.reviewId) from Review r"
                     + " join r.applicant a"
                     + " join a.recruitment ri"
@@ -42,7 +42,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
             collect.get(result.getReviewId()).stream()
                 .map(ReviewImage::getImageUrl)
                 .toList()));
-        return new PageImpl<>(content, pageable, count != null ? count : 0);
+        return new PageImpl<>(content, pageable, count);
     }
 
     private List<FindShelterReviewByShelterResult> getShelterReviewsByShelter(
