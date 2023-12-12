@@ -1,6 +1,6 @@
 package com.clova.anifriends.global.event;
 
-import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
+import com.clova.anifriends.domain.animal.repository.AnimalRedisRepository;
 import com.clova.anifriends.domain.recruitment.service.RecruitmentCacheService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 public class CacheWarmer {
 
     private final RecruitmentCacheService recruitmentCacheService;
-    private final AnimalCacheRepository animalCacheRepository;
+    private final AnimalRedisRepository animalRedisRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     void synchronizeCache() {
-        animalCacheRepository.synchronizeCache();
-        recruitmentCacheService.synchronizeCache();
+        animalRedisRepository.synchronizeCache();
+        recruitmentCacheService.synchronizeRecruitmentsCache();
     }
 }
