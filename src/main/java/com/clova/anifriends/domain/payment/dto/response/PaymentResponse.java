@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.payment.dto;
+package com.clova.anifriends.domain.payment.dto.response;
 
 import com.clova.anifriends.domain.payment.vo.PaymentStatus;
 

@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.payment.controller;
 
-import com.clova.anifriends.domain.payment.dto.PaymentResponse;
+import com.clova.anifriends.domain.payment.dto.response.PaymentResponse;
 import com.clova.anifriends.domain.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

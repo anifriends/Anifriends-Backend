@@ -9,7 +9,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.queryPar
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.clova.anifriends.base.BaseControllerTest;
-import com.clova.anifriends.domain.payment.dto.PaymentResponse;
+import com.clova.anifriends.domain.payment.dto.response.PaymentResponse;
 import com.clova.anifriends.domain.payment.vo.PaymentStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.payment.dto;
+package com.clova.anifriends.domain.payment.exception;
 
 import static com.clova.anifriends.global.exception.ErrorCode.BAD_REQUEST;
 

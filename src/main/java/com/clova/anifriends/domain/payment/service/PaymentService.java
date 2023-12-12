@@ -1,8 +1,8 @@
 package com.clova.anifriends.domain.payment.service;
 
 import com.clova.anifriends.domain.payment.Payment;
-import com.clova.anifriends.domain.payment.dto.PaymentBadRequestException;
-import com.clova.anifriends.domain.payment.dto.PaymentResponse;
+import com.clova.anifriends.domain.payment.dto.response.PaymentResponse;
+import com.clova.anifriends.domain.payment.exception.PaymentBadRequestException;
 import com.clova.anifriends.domain.payment.repository.PaymentRepository;
 import java.text.MessageFormat;
 import lombok.RequiredArgsConstructor;
