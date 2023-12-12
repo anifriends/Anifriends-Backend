@@ -17,6 +17,7 @@ import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewConflictException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
+import com.clova.anifriends.domain.review.repository.response.FindShelterReviewByShelterResult;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -56,9 +57,9 @@ public class ReviewService {
         Pageable pageable) {
         Shelter shelter = shelterRepository.findById(shelterId)
             .orElseThrow(() -> new ShelterNotFoundException("존재하지 않는 보호소입니다."));
-        Page<Review> shelterReviewsByShelter = reviewRepository.findShelterReviewsByShelter(
-            shelter, pageable);
-        return FindShelterReviewsByShelterResponse.from(shelterReviewsByShelter);
+        Page<FindShelterReviewByShelterResult> shelterReviewsByShelter
+            = reviewRepository.findShelterReviewsByShelter(shelter, pageable);
+        return ReviewMapper.resultToResponse(shelterReviewsByShelter);
     }
 
     @Transactional
