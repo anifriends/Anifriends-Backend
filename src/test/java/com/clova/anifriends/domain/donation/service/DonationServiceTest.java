@@ -53,7 +53,7 @@ class DonationServiceTest {
             Shelter shelter = ShelterFixture.shelter();
             Donation donation = DonationFixture.donation(shelter, volunteer);
             Payment payment = new Payment(donation);
-            PaymentRequestResponse expected = PaymentRequestResponse.from(payment, null, null);
+            PaymentRequestResponse expected = PaymentRequestResponse.of(payment);
 
             when(shelterRepository.findById(anyLong())).thenReturn(Optional.of(shelter));
             when(volunteerRepository.findById(anyLong())).thenReturn(Optional.of(volunteer));
@@ -63,7 +63,7 @@ class DonationServiceTest {
 
             //then
             verify(paymentRepository).save(any(Payment.class));
-            assertThat(result.orderId()).isInstanceOf(java.util.UUID.class);
+            assertThat(result.orderId()).isNotNull();
             assertThat(result).usingRecursiveComparison().ignoringFields("orderId")
                 .isEqualTo(expected);
         }

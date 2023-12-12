@@ -46,7 +46,7 @@ class DonationControllerTest extends BaseControllerTest {
         Donation donation = DonationFixture.donation(shelter, volunteer);
         Payment payment = new Payment(donation);
 
-        PaymentRequestResponse response = PaymentRequestResponse.from(payment, successUrl, failUrl);
+        PaymentRequestResponse response = PaymentRequestResponse.of(payment);
         RegisterDonationRequest request = new RegisterDonationRequest(shelter.getShelterId(),
             donation.getAmount());
 
@@ -74,9 +74,7 @@ class DonationControllerTest extends BaseControllerTest {
                     fieldWithPath("orderId").type(STRING).description("주문 ID"),
                     fieldWithPath("orderName").type(STRING).description("주문명"),
                     fieldWithPath("customerEmail").type(STRING).description("후원자 이메일"),
-                    fieldWithPath("customerName").type(STRING).description("후원자 이름"),
-                    fieldWithPath("successUrl").type(STRING).description("결제 성공 시 이동할 url"),
-                    fieldWithPath("failUrl").type(STRING).description("결제 실패 시 이동할 url")
+                    fieldWithPath("customerName").type(STRING).description("후원자 이름")
                 )
             ));
 

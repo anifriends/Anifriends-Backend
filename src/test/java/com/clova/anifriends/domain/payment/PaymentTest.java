@@ -11,7 +11,6 @@ import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import com.clova.anifriends.domain.shelter.vo.ShelterName;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.support.VolunteerFixture;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,7 @@ class PaymentTest {
 
             // then
             assertThat(payment.getDonation()).isEqualTo(donation);
-            assertThat(payment.getOrderId()).isInstanceOf(UUID.class);
+            assertThat(payment.getOrderId()).isNotNull();
             assertThat(payment.getOrderName()).isEqualTo(shelterName + " 후원금");
         }
 

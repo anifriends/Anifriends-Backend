@@ -52,6 +52,10 @@ public class Donation extends BaseTimeEntity {
         this.amount = new DonationAmount(amount);
     }
 
+    public boolean isDifferentAmount(Integer amount) {
+        return this.amount.isDifferent(amount);
+    }
+
     private void validateShelter(Shelter shelter) {
         if (isNull(shelter)) {
             throw new ShelterNotFoundException("보호소가 존재하지 않습니다.");

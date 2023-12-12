@@ -9,18 +9,12 @@ import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class DonationService {
-
-    @Value("${payment.toss.success-url}")
-    private String successUrl;
-    @Value("${payment.toss.fail-url}")
-    private String failUrl;
 
     private final ShelterRepository shelterRepository;
     private final VolunteerRepository volunteerRepository;
@@ -35,7 +29,7 @@ public class DonationService {
         Payment payment = new Payment(donation);
         paymentRepository.save(payment);
 
-        return PaymentRequestResponse.from(payment, successUrl, failUrl);
+        return PaymentRequestResponse.of(payment);
     }
 
     private Volunteer getVolunteer(Long volunteerId) {

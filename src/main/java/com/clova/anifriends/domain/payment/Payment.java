@@ -1,5 +1,7 @@
 package com.clova.anifriends.domain.payment;
 
+import static com.clova.anifriends.domain.payment.vo.PaymentStatus.ABORTED;
+import static com.clova.anifriends.domain.payment.vo.PaymentStatus.DONE;
 import static java.util.Objects.isNull;
 
 import com.clova.anifriends.domain.common.BaseTimeEntity;
@@ -37,7 +39,7 @@ public class Payment extends BaseTimeEntity {
     private String paymentKey;
 
     @Column(name = "order_id")
-    private UUID orderId;
+    private String orderId;
 
     @Column(name = "order_name")
     private String orderName;
@@ -49,8 +51,20 @@ public class Payment extends BaseTimeEntity {
         validateDonation(donation);
 
         this.donation = donation;
-        this.orderId = UUID.randomUUID();
+        this.orderId = UUID.randomUUID().toString();
         this.orderName = generateOrderName(donation);
+    }
+
+    public void updatePaymentKey(String paymentKey) {
+        this.paymentKey = paymentKey;
+    }
+
+    public void success() {
+        this.status = DONE;
+    }
+
+    public void fail() {
+        this.status = ABORTED;
     }
 
     private void validateDonation(Donation donation) {
@@ -61,5 +75,17 @@ public class Payment extends BaseTimeEntity {
 
     private String generateOrderName(Donation donation) {
         return donation.getShelter().getName() + " 후원금";
+    }
+
+    public boolean isFail() {
+        return this.status.isAborted();
+    }
+
+    public boolean isSuccess() {
+        return this.status.isDone();
+    }
+
+    public boolean isDifferentAmount(Integer amount) {
+        return this.donation.isDifferentAmount(amount);
     }
 }

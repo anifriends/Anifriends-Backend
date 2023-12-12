@@ -23,6 +23,10 @@ public class DonationAmount {
         this.amount = amount;
     }
 
+    public boolean isDifferent(Integer amount) {
+        return !this.amount.equals(amount);
+    }
+
     private void validateAmount(Integer amount) {
         validateNotNull(amount);
         validateSize(amount);
