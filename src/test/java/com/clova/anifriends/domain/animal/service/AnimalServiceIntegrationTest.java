@@ -29,6 +29,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
@@ -333,6 +334,27 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
 
             //then
             assertThat(findAnimals.animals()).hasSize(2);
+        }
+
+        @Test
+        @DisplayName("성공")
+        void findAnimalsV1_1() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            Animal animal = AnimalFixture.animal(shelter);
+            Animal animalB = AnimalFixture.animal(shelter);
+            shelterRepository.save(shelter);
+            animalRepository.save(animal);
+            animalRepository.save(animalB);
+            PageRequest pageRequest = PageRequest.of(0, 20);
+
+            //when
+            Page<FindAnimalsResult> result = animalRepository.findAnimalsV1_1(animalType,
+                animalActive,
+                animalNeuteredFilter, animalAge, animalGender, animalSize, pageRequest);
+
+            //then
+            assertThat(result.getContent()).hasSize(2);
         }
     }
 }

@@ -37,6 +37,16 @@ public interface AnimalRepositoryCustom {
         Pageable pageable
     );
 
+    Page<FindAnimalsResult> findAnimalsV1_1(
+        AnimalType type,
+        AnimalActive active,
+        AnimalNeuteredFilter neuteredFilter,
+        AnimalAge age,
+        AnimalGender gender,
+        AnimalSize size,
+        Pageable pageable
+    );
+
     Slice<FindAnimalsResult> findAnimalsV2(
         AnimalType type,
         AnimalActive active,

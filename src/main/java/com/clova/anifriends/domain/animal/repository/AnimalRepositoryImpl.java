@@ -123,6 +123,61 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     }
 
     @Override
+    public Page<FindAnimalsResult> findAnimalsV1_1(
+        AnimalType type,
+        AnimalActive active,
+        AnimalNeuteredFilter neuteredFilter,
+        AnimalAge age,
+        AnimalGender gender,
+        AnimalSize size,
+        Pageable pageable
+    ) {
+        List<FindAnimalsResult> animals = query
+            .select(new QFindAnimalsResult(
+                animal.animalId,
+                animal.name.name,
+                animal.createdAt,
+                animal.shelter.name.name,
+                animal.shelter.addressInfo.address,
+                ExpressionUtils.as(
+                    select(animalImage.imageUrl.max())
+                        .from(animalImage)
+                        .where(animalImage.animal.eq(animal))
+                    , "animageImageUrl")
+            ))
+            .from(animal)
+            .join(animal.shelter)
+            .leftJoin(animal.shelter.image)
+            .where(
+                animalTypeContains(type),
+                animalActiveContains(active),
+                animalIsNeutered(neuteredFilter),
+                animalAgeContains(age),
+                animalGenderContains(gender),
+                animalSizeContains(size)
+            )
+            .orderBy(animal.createdAt.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        Long count = query.select(animal.count())
+            .from(animal)
+            .join(animal.shelter)
+            .where(
+                animalTypeContains(type),
+                animalActiveContains(active),
+                animalIsNeutered(neuteredFilter),
+                animalAgeContains(age),
+                animalGenderContains(gender),
+                animalSizeContains(size)
+            )
+            .fetchOne();
+
+        return new PageImpl<>(animals, pageable, count == null ? 0 : count);
+    }
+
+    @Override
     public Slice<FindAnimalsResult> findAnimalsV2(
         AnimalType type,
         AnimalActive active,
