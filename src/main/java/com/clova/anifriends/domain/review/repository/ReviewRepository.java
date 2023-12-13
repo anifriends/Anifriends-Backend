@@ -1,7 +1,6 @@
 package com.clova.anifriends.domain.review.repository;
 
 import com.clova.anifriends.domain.review.Review;
-import com.clova.anifriends.domain.shelter.Shelter;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
 
     @Query("select r from Review r "
         + "join fetch r.applicant a "
@@ -30,13 +29,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         + "where a.volunteer.volunteerId = :volunteerId")
     Page<Review> findAllByVolunteerVolunteerIdOrderByCreatedAtDesc(
         @Param("volunteerId") Long volunteerId,
-        Pageable pageable);
-
-    @Query("select r from Review r"
-        + " join fetch r.applicant a"
-        + " join fetch a.volunteer v"
-        + " left join fetch v.image"
-        + " where r.applicant.recruitment.shelter = :shelter")
-    Page<Review> findShelterReviewsByShelter(@Param("shelter") Shelter shelter,
         Pageable pageable);
 }

@@ -1,14 +1,23 @@
 package com.clova.anifriends.domain.review.dto.response;
 
-import com.clova.anifriends.domain.common.dto.PageInfo;
+import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.review.Review;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 public record FindVolunteerReviewsResponse(
     PageInfo pageInfo,
     List<ReviewResponse> reviews
 ) {
+
+    public static FindVolunteerReviewsResponse from(Page<Review> reviewPage) {
+        return new FindVolunteerReviewsResponse(
+            PageInfo.of(reviewPage.getTotalElements(), reviewPage.hasNext()),
+            reviewPage.map(ReviewResponse::from)
+                .toList()
+        );
+    }
 
     private record ReviewResponse(
         Long reviewId,
@@ -29,14 +38,5 @@ public record FindVolunteerReviewsResponse(
                 review.getImages()
             );
         }
-    }
-
-    public static FindVolunteerReviewsResponse of(List<Review> reviews, PageInfo pageInfo) {
-        return new FindVolunteerReviewsResponse(
-            pageInfo,
-            reviews.stream()
-                .map(ReviewResponse::from)
-                .toList()
-        );
     }
 }

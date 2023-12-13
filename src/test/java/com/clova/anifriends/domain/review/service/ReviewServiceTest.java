@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
-import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.common.util.EmailMasker;
 import com.clova.anifriends.domain.notification.ShelterNotification;
@@ -37,6 +36,7 @@ import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsRespo
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.review.exception.ReviewNotFoundException;
 import com.clova.anifriends.domain.review.repository.ReviewRepository;
+import com.clova.anifriends.domain.review.repository.response.FindShelterReviewByShelterResult;
 import com.clova.anifriends.domain.review.support.ReviewFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.repository.ShelterRepository;
@@ -44,6 +44,7 @@ import com.clova.anifriends.domain.volunteer.Volunteer;
 import com.clova.anifriends.domain.volunteer.exception.VolunteerNotFoundException;
 import com.clova.anifriends.domain.volunteer.repository.VolunteerRepository;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerTemperature;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -226,15 +227,14 @@ class ReviewServiceTest {
             Long shelterId = 1L;
             PageRequest pageRequest = PageRequest.of(0, 10);
             Shelter shelter = shelter();
-            Recruitment recruitment = recruitment(shelter);
-            Volunteer volunteer = volunteer();
-            Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
-            Review review = review(applicant);
-            PageImpl<Review> reviewPage = new PageImpl<>(List.of(review), pageRequest, 10);
+            FindShelterReviewByShelterResult result = new FindShelterReviewByShelterResult(
+                1L, LocalDateTime.now(), "리뷰내용", 1L, "봉사자 이름", 36, "imageUrl", 0);
+            PageImpl<FindShelterReviewByShelterResult> findShelterReviewByShelterResults = new PageImpl<>(
+                List.of(result), pageRequest, 1);
 
             given(shelterRepository.findById(anyLong())).willReturn(Optional.of(shelter));
             given(reviewRepository.findShelterReviewsByShelter(any(), any()))
-                .willReturn(reviewPage);
+                .willReturn(findShelterReviewByShelterResults);
 
             //then
             FindShelterReviewsByShelterResponse response
@@ -242,12 +242,14 @@ class ReviewServiceTest {
 
             //then
             FindShelterReviewResponse findReview = response.reviews().get(0);
-            assertThat(findReview.reviewContent()).isEqualTo(review.getContent());
-            assertThat(findReview.reviewImageUrls()).isEqualTo(review.getImages());
-            assertThat(findReview.volunteerTemperature()).isEqualTo(volunteer.getTemperature());
-            assertThat(findReview.volunteerReviewCount()).isEqualTo(volunteer.getReviewCount());
-            assertThat(findReview.volunteerName()).isEqualTo(volunteer.getName());
-            assertThat(findReview.volunteerImageUrl()).isEqualTo(volunteer.getVolunteerImageUrl());
+            assertThat(findReview.reviewContent()).isEqualTo(result.getReviewContent());
+            assertThat(findReview.reviewImageUrls()).isEqualTo(result.getReviewImageUrls());
+            assertThat(findReview.volunteerTemperature()).isEqualTo(
+                result.getVolunteerTemperature());
+            assertThat(findReview.volunteerReviewCount()).isEqualTo(
+                result.getVolunteerReviewCount());
+            assertThat(findReview.volunteerName()).isEqualTo(result.getVolunteerName());
+            assertThat(findReview.volunteerImageUrl()).isEqualTo(result.getVolunteerImageUrl());
         }
     }
 
@@ -267,8 +269,7 @@ class ReviewServiceTest {
             Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
             Review review = review(applicant);
             PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
-            FindVolunteerReviewsResponse expected = FindVolunteerReviewsResponse.of(
-                reviewPage.getContent(), PageInfo.from(reviewPage));
+            FindVolunteerReviewsResponse expected = FindVolunteerReviewsResponse.from(reviewPage);
 
             given(reviewRepository.findAllByVolunteerVolunteerIdOrderByCreatedAtDesc(anyLong(),
                 any()))
