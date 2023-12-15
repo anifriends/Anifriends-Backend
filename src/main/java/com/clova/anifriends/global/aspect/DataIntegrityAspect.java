@@ -3,10 +3,12 @@ package com.clova.anifriends.global.aspect;
 import com.clova.anifriends.global.exception.ErrorCode;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 @Aspect
+@Order(2)
 @Component
 public class DataIntegrityAspect {
 
