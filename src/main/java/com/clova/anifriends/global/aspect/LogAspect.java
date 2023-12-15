@@ -7,18 +7,22 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Aspect
+@Order(1)
 @Component
 public class LogAspect {
 
     @Pointcut("bean(*Service)")
-    private void allService(){}
+    private void allService() {
+    }
 
     @Pointcut("bean(*Controller)")
-    private void allRequest(){}
+    private void allRequest() {
+    }
 
     @AfterThrowing(pointcut = "allService()", throwing = "ex")
     private void logException(JoinPoint joinPoint, RuntimeException ex) {
