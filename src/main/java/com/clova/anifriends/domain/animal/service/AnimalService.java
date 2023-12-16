@@ -3,7 +3,6 @@ package com.clova.anifriends.domain.animal.service;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
-import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
@@ -43,9 +42,30 @@ public class AnimalService {
 
     @Transactional
     public RegisterAnimalResponse registerAnimal(
-        Long shelterId, RegisterAnimalRequest registerAnimalRequest) {
+        Long shelterId,
+        String name,
+        LocalDate birthDate,
+        String type,
+        String breed,
+        String gender,
+        Boolean isNeutered,
+        String active,
+        Double weight,
+        String information,
+        List<String> imageUrls) {
         Shelter shelter = getShelterById(shelterId);
-        Animal animal = AnimalMapper.toAnimal(shelter, registerAnimalRequest);
+        Animal animal = new Animal(
+            shelter,
+            name,
+            birthDate,
+            type,
+            breed,
+            gender,
+            isNeutered,
+            active,
+            weight,
+            information,
+            imageUrls);
         animalRepository.save(animal);
         animalCacheRepository.saveAnimal(animal);
         animalCacheRepository.increaseTotalNumberOfAnimals();

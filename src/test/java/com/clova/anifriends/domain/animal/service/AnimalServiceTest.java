@@ -99,7 +99,17 @@ class AnimalServiceTest {
             given(shelterRepository.findById(anyLong())).willReturn(Optional.ofNullable(shelter));
 
             //when
-            animalService.registerAnimal(1L, registerAnimalRequest);
+            animalService.registerAnimal(1L,
+                registerAnimalRequest.name(),
+                registerAnimalRequest.birthDate(),
+                registerAnimalRequest.type(),
+                registerAnimalRequest.breed(),
+                registerAnimalRequest.gender(),
+                registerAnimalRequest.isNeutered(),
+                registerAnimalRequest.active(),
+                registerAnimalRequest.weight(),
+                registerAnimalRequest.information(),
+                registerAnimalRequest.imageUrls());
 
             //then
             then(animalCacheRepository).should().saveAnimal(any(Animal.class));
@@ -114,7 +124,17 @@ class AnimalServiceTest {
             //given
             //when
             Exception exception = catchException(
-                () -> animalService.registerAnimal(1L, registerAnimalRequest));
+                () -> animalService.registerAnimal(1L,
+                    registerAnimalRequest.name(),
+                    registerAnimalRequest.birthDate(),
+                    registerAnimalRequest.type(),
+                    registerAnimalRequest.breed(),
+                    registerAnimalRequest.gender(),
+                    registerAnimalRequest.isNeutered(),
+                    registerAnimalRequest.active(),
+                    registerAnimalRequest.weight(),
+                    registerAnimalRequest.information(),
+                    registerAnimalRequest.imageUrls()));
 
             //then
             assertThat(exception).isInstanceOf(ShelterNotFoundException.class);

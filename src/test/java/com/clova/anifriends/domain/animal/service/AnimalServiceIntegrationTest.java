@@ -15,7 +15,6 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse.FindA
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.repository.AnimalRedisRepository;
 import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
-import com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
@@ -69,7 +68,17 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
 
             //when
             RegisterAnimalResponse response = animalService.registerAnimal(
-                shelter.getShelterId(), registerAnimalRequest);
+                shelter.getShelterId(),
+                registerAnimalRequest.name(),
+                registerAnimalRequest.birthDate(),
+                registerAnimalRequest.type(),
+                registerAnimalRequest.breed(),
+                registerAnimalRequest.gender(),
+                registerAnimalRequest.isNeutered(),
+                registerAnimalRequest.active(),
+                registerAnimalRequest.weight(),
+                registerAnimalRequest.information(),
+                registerAnimalRequest.imageUrls());
 
             //then
             Animal animal = entityManager.createQuery(
@@ -285,7 +294,16 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             Animal animalToAdd = AnimalFixture.animal(shelter);
 
             animalService.registerAnimal(shelter.getShelterId(),
-                AnimalDtoFixture.registerAnimal(animalToAdd));
+                animalToAdd.getName(),
+                animalToAdd.getBirthDate(),
+                animalToAdd.getType().toString(),
+                animalToAdd.getBreed(),
+                animalToAdd.getGender().toString(),
+                animalToAdd.isNeutered(),
+                animalToAdd.getActive().toString(),
+                animalToAdd.getWeight(),
+                animalToAdd.getInformation(),
+                animalToAdd.getImages());
 
             Slice<FindAnimalsResult> pagination = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null,

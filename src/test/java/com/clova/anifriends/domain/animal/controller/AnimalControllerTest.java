@@ -4,6 +4,9 @@ import static com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixtur
 import static com.clova.anifriends.domain.animal.support.fixture.AnimalFixture.animal;
 import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -74,7 +77,9 @@ class AnimalControllerTest extends BaseControllerTest {
             false, AnimalActive.QUIET.getName(), 0.7, "기타 정보", List.of("www.aws.s3.com/2"));
         RegisterAnimalResponse registerAnimalResponse = new RegisterAnimalResponse(1L);
 
-        given(animalService.registerAnimal(anyLong(), any())).willReturn(registerAnimalResponse);
+        given(animalService.registerAnimal(anyLong(), anyString(), any(), anyString(), anyString(),
+            anyString(), anyBoolean(), anyString(), anyDouble(), anyString(),
+            anyList())).willReturn(registerAnimalResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/shelters/animals")
