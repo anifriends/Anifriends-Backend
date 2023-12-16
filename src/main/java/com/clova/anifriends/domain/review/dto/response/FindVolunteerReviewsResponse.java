@@ -1,9 +1,10 @@
 package com.clova.anifriends.domain.review.dto.response;
 
-import com.clova.anifriends.domain.common.dto.PageInfo;
+import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.review.Review;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 public record FindVolunteerReviewsResponse(
     PageInfo pageInfo,
@@ -31,10 +32,10 @@ public record FindVolunteerReviewsResponse(
         }
     }
 
-    public static FindVolunteerReviewsResponse of(List<Review> reviews, PageInfo pageInfo) {
+    public static FindVolunteerReviewsResponse from(Page<Review> reviews) {
         return new FindVolunteerReviewsResponse(
-            pageInfo,
-            reviews.stream()
+            PageInfo.of(reviews.getTotalElements(), reviews.hasNext()),
+            reviews.getContent().stream()
                 .map(ReviewResponse::from)
                 .toList()
         );

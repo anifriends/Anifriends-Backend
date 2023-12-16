@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
-import com.clova.anifriends.domain.common.dto.PageInfo;
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.common.util.EmailMasker;
 import com.clova.anifriends.domain.notification.ShelterNotification;
@@ -267,8 +266,7 @@ class ReviewServiceTest {
             Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
             Review review = review(applicant);
             PageImpl<Review> reviewPage = new PageImpl<>(List.of(review));
-            FindVolunteerReviewsResponse expected = FindVolunteerReviewsResponse.of(
-                reviewPage.getContent(), PageInfo.from(reviewPage));
+            FindVolunteerReviewsResponse expected = FindVolunteerReviewsResponse.from(reviewPage);
 
             given(reviewRepository.findAllByVolunteerVolunteerIdOrderByCreatedAtDesc(anyLong(),
                 any()))

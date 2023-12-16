@@ -42,6 +42,7 @@ import com.clova.anifriends.domain.animal.dto.request.UpdateAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
+import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse.FindAnimalResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture;
@@ -57,7 +58,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.MediaType;
@@ -266,10 +266,16 @@ class AnimalControllerTest extends BaseControllerTest {
 
         Shelter shelter = shelter();
         Animal animal = animal(shelter);
-        ReflectionTestUtils.setField(animal, "animalId", 1L);
 
-        FindAnimalsResponse response = FindAnimalsResponse
-            .from(new PageImpl<>(List.of(animal)));
+        FindAnimalResponse findAnimalResponse = new FindAnimalResponse(
+            1L,
+            animal.getName(),
+            shelter.getName(),
+            shelter.getAddress(),
+            "imageUrl"
+        );
+        FindAnimalsResponse response = new FindAnimalsResponse(PageInfo.of(1, false),
+            List.of(findAnimalResponse));
 
         when(animalService.findAnimals(
             any(AnimalType.class),
