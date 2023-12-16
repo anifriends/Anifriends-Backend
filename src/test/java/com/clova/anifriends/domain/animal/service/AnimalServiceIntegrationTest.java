@@ -349,7 +349,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             PageRequest pageRequest = PageRequest.of(0, 20);
 
             //when
-            Page<FindAnimalsResult> result = animalRepository.findAnimalsV1_1(animalType,
+            Page<FindAnimalsResult> result = animalRepository.findAnimals(animalType,
                 animalActive,
                 animalNeuteredFilter, animalAge, animalGender, animalSize, pageRequest);
 

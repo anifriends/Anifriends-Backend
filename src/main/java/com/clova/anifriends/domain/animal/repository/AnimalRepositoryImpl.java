@@ -81,49 +81,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     }
 
     @Override
-    public Page<Animal> findAnimals(
-        AnimalType type,
-        AnimalActive active,
-        AnimalNeuteredFilter neuteredFilter,
-        AnimalAge age,
-        AnimalGender gender,
-        AnimalSize size,
-        Pageable pageable
-    ) {
-        List<Animal> animals = query.selectFrom(animal)
-            .join(animal.shelter).fetchJoin()
-            .leftJoin(animal.shelter.image).fetchJoin()
-            .where(
-                animalTypeContains(type),
-                animalActiveContains(active),
-                animalIsNeutered(neuteredFilter),
-                animalAgeContains(age),
-                animalGenderContains(gender),
-                animalSizeContains(size)
-            )
-            .orderBy(animal.createdAt.desc())
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .fetch();
-
-        Long count = query.select(animal.count())
-            .from(animal)
-            .join(animal.shelter)
-            .where(
-                animalTypeContains(type),
-                animalActiveContains(active),
-                animalIsNeutered(neuteredFilter),
-                animalAgeContains(age),
-                animalGenderContains(gender),
-                animalSizeContains(size)
-            )
-            .fetchOne();
-
-        return new PageImpl<>(animals, pageable, count == null ? 0 : count);
-    }
-
-    @Override
-    public Page<FindAnimalsResult> findAnimalsV1_1(
+    public Page<FindAnimalsResult> findAnimals(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,
