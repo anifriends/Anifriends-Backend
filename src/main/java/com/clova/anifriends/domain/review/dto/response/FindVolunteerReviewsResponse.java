@@ -11,6 +11,14 @@ public record FindVolunteerReviewsResponse(
     List<ReviewResponse> reviews
 ) {
 
+    public static FindVolunteerReviewsResponse from(Page<Review> reviewPage) {
+        return new FindVolunteerReviewsResponse(
+            PageInfo.of(reviewPage.getTotalElements(), reviewPage.hasNext()),
+            reviewPage.map(ReviewResponse::from)
+                .toList()
+        );
+    }
+
     private record ReviewResponse(
         Long reviewId,
         Long shelterId,
@@ -30,14 +38,5 @@ public record FindVolunteerReviewsResponse(
                 review.getImages()
             );
         }
-    }
-
-    public static FindVolunteerReviewsResponse from(Page<Review> reviews) {
-        return new FindVolunteerReviewsResponse(
-            PageInfo.of(reviews.getTotalElements(), reviews.hasNext()),
-            reviews.getContent().stream()
-                .map(ReviewResponse::from)
-                .toList()
-        );
     }
 }

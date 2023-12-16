@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.util.Objects;
@@ -55,6 +56,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ErrorResponse> conflictEx(ConflictException e) {
         return ResponseEntity.status(CONFLICT)
+            .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<ErrorResponse> serviceUnavailableEx(ServiceUnavailableException e) {
+        return ResponseEntity.status(SERVICE_UNAVAILABLE)
             .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
     }
 

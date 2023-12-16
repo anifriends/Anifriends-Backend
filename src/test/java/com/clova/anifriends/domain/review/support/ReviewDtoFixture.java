@@ -23,64 +23,6 @@ public class ReviewDtoFixture {
     }
 
     public static FindShelterReviewResult findShelterReviewResult(
-        Long reviewId, LocalDateTime createdAt, String content, int temperature,
-        List<ReviewImage> reviewImages, String volunteerEmail
-    ) {
-        return
-            new FindShelterReviewResult() {
-                @Override
-                public Long getReviewId() {
-                    return reviewId;
-                }
-
-                @Override
-                public LocalDateTime getCreatedAt() {
-                    return createdAt;
-                }
-
-                @Override
-                public String getContent() {
-                    return content;
-                }
-
-                @Override
-                public List<ReviewImage> getReviewImages() {
-                    return reviewImages;
-                }
-
-                @Override
-                public Long getVolunteerId() {
-                    return null;
-                }
-
-                @Override
-                public String getVolunteerName() {
-                    return null;
-                }
-
-                @Override
-                public String getVolunteerEmail() {
-                    return volunteerEmail;
-                }
-
-                @Override
-                public int getTemperature() {
-                    return temperature;
-                }
-
-                @Override
-                public String getVolunteerImageUrl() {
-                    return null;
-                }
-
-                @Override
-                public Long getVolunteerReviewCount() {
-                    return null;
-                }
-            };
-    }
-
-    public static FindShelterReviewResult findShelterReviewResult(
         Long reviewId, LocalDateTime createdAt, String content, Long volunteerId,
         String volunteerName, int temperature, String volunteerImageUrl, Long volunteerReviewCount,
         List<ReviewImage> reviewImages

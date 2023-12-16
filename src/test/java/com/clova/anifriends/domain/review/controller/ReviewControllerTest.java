@@ -40,17 +40,14 @@ import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.review.Review;
-import com.clova.anifriends.domain.review.ReviewImage;
 import com.clova.anifriends.domain.review.dto.request.RegisterReviewRequest;
 import com.clova.anifriends.domain.review.dto.request.UpdateReviewRequest;
 import com.clova.anifriends.domain.review.dto.response.FindReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse;
+import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsByShelterResponse.FindShelterReviewResponse;
 import com.clova.anifriends.domain.review.dto.response.FindShelterReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.FindVolunteerReviewsResponse;
 import com.clova.anifriends.domain.review.dto.response.RegisterReviewResponse;
-import com.clova.anifriends.domain.review.repository.response.FindShelterReviewResult;
-import com.clova.anifriends.domain.review.service.ReviewMapper;
-import com.clova.anifriends.domain.review.support.ReviewDtoFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.volunteer.Volunteer;
 import java.time.LocalDateTime;
@@ -109,25 +106,11 @@ class ReviewControllerTest extends BaseControllerTest {
     @DisplayName("성공: 보호소가 받은 봉사자 리뷰 목록 조회 api 호출")
     void findShelterReviewsByShelter() throws Exception {
         //give
-        Shelter shelter = shelter();
-        Recruitment recruitment = recruitment(shelter);
-        Volunteer volunteer = volunteer();
-        Applicant applicant = applicant(recruitment, volunteer, ATTENDANCE);
-        Review review = review(applicant);
-        ReflectionTestUtils.setField(volunteer, "volunteerId", 1L);
-        ReflectionTestUtils.setField(review, "reviewId", 1L);
-        ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());
-
-        FindShelterReviewResult findShelterReviewResult = ReviewDtoFixture.findShelterReviewResult(
-            review.getReviewId(), review.getCreatedAt(),
-            review.getContent(), review.getVolunteer().getVolunteerId(),
-            review.getVolunteer().getName(),
-            review.getVolunteer().getTemperature(),
-            review.getVolunteer().getVolunteerImageUrl(),
-            review.getVolunteer().getReviewCount(), List.of(new ReviewImage(review, "urls")));
-        PageImpl<FindShelterReviewResult> reviewPage = new PageImpl<>(
-            List.of(findShelterReviewResult));
-        FindShelterReviewsByShelterResponse response = ReviewMapper.resultToResponse(reviewPage);
+        FindShelterReviewResponse findShelterReviewResponse = new FindShelterReviewResponse(1L,
+            LocalDateTime.now(), "리뷰 본문", List.of("imageUrl"), 1L, "봉사자 이름", 36, "imageUrl", 1);
+        FindShelterReviewsByShelterResponse response = new FindShelterReviewsByShelterResponse(
+            List.of(findShelterReviewResponse),
+            com.clova.anifriends.domain.common.PageInfo.of(1, false));
 
         given(reviewService.findShelterReviewsByShelter(anyLong(), any())).willReturn(response);
 
