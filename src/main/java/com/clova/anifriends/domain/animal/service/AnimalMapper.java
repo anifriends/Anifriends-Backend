@@ -12,8 +12,8 @@ import org.springframework.data.domain.Page;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public final class AnimalMapper {
 
-    public static FindAnimalsResponse resultToResponse(Page<FindAnimalsResult> animapPage) {
-        List<FindAnimalResponse> content = animapPage
+    public static FindAnimalsResponse resultToResponse(Page<FindAnimalsResult> animalPage) {
+        List<FindAnimalResponse> content = animalPage
             .map(result -> new FindAnimalResponse(
                 result.getAnimalId(),
                 result.getAnimalName(),
@@ -21,7 +21,7 @@ public final class AnimalMapper {
                 result.getShelterAddress(),
                 result.getAnimalImageUrl()
             )).toList();
-        PageInfo pageInfo = PageInfo.of(animapPage.getTotalElements(), animapPage.hasNext());
+        PageInfo pageInfo = PageInfo.of(animalPage.getTotalElements(), animalPage.hasNext());
         return new FindAnimalsResponse(pageInfo, content);
     }
 }

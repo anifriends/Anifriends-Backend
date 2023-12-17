@@ -113,7 +113,7 @@ public class AnimalService {
         AnimalGender gender,
         AnimalSize size,
         Pageable pageable) {
-        Page<FindAnimalsResult> animapPage = animalRepository.findAnimals(
+        Page<FindAnimalsResult> animalPage = animalRepository.findAnimals(
             type,
             active,
             neuteredFilter,
@@ -122,7 +122,7 @@ public class AnimalService {
             size,
             pageable
         );
-        return AnimalMapper.resultToResponse(animapPage);
+        return AnimalMapper.resultToResponse(animalPage);
     }
 
     @Transactional(readOnly = true)
