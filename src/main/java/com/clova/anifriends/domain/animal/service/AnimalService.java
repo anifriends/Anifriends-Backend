@@ -3,13 +3,11 @@ package com.clova.anifriends.domain.animal.service;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalSize;
-import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalDetail;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsByShelterResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.exception.AnimalNotFoundException;
-import com.clova.anifriends.domain.animal.mapper.AnimalMapper;
 import com.clova.anifriends.domain.animal.repository.AnimalCacheRepository;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
@@ -44,9 +42,30 @@ public class AnimalService {
 
     @Transactional
     public RegisterAnimalResponse registerAnimal(
-        Long shelterId, RegisterAnimalRequest registerAnimalRequest) {
+        Long shelterId,
+        String name,
+        LocalDate birthDate,
+        String type,
+        String breed,
+        String gender,
+        Boolean isNeutered,
+        String active,
+        Double weight,
+        String information,
+        List<String> imageUrls) {
         Shelter shelter = getShelterById(shelterId);
-        Animal animal = AnimalMapper.toAnimal(shelter, registerAnimalRequest);
+        Animal animal = new Animal(
+            shelter,
+            name,
+            birthDate,
+            type,
+            breed,
+            gender,
+            isNeutered,
+            active,
+            weight,
+            information,
+            imageUrls);
         animalRepository.save(animal);
         animalCacheRepository.saveAnimal(animal);
         animalCacheRepository.increaseTotalNumberOfAnimals();
@@ -94,7 +113,7 @@ public class AnimalService {
         AnimalGender gender,
         AnimalSize size,
         Pageable pageable) {
-        Page<Animal> animalsWithPagination = animalRepository.findAnimals(
+        Page<FindAnimalsResult> animalPage = animalRepository.findAnimals(
             type,
             active,
             neuteredFilter,
@@ -103,8 +122,7 @@ public class AnimalService {
             size,
             pageable
         );
-
-        return FindAnimalsResponse.from(animalsWithPagination);
+        return AnimalMapper.resultToResponse(animalPage);
     }
 
     @Transactional(readOnly = true)

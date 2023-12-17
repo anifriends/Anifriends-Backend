@@ -6,17 +6,19 @@ import static org.mockito.Mockito.verify;
 
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.animal.Animal;
+import com.clova.anifriends.domain.animal.AnimalAge;
 import com.clova.anifriends.domain.animal.AnimalImage;
+import com.clova.anifriends.domain.animal.AnimalSize;
 import com.clova.anifriends.domain.animal.dto.request.RegisterAnimalRequest;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse.FindAnimalResponse;
 import com.clova.anifriends.domain.animal.dto.response.RegisterAnimalResponse;
 import com.clova.anifriends.domain.animal.repository.AnimalRedisRepository;
 import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
-import com.clova.anifriends.domain.animal.support.fixture.AnimalDtoFixture;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
+import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -26,6 +28,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,7 +68,17 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
 
             //when
             RegisterAnimalResponse response = animalService.registerAnimal(
-                shelter.getShelterId(), registerAnimalRequest);
+                shelter.getShelterId(),
+                registerAnimalRequest.name(),
+                registerAnimalRequest.birthDate(),
+                registerAnimalRequest.type(),
+                registerAnimalRequest.breed(),
+                registerAnimalRequest.gender(),
+                registerAnimalRequest.isNeutered(),
+                registerAnimalRequest.active(),
+                registerAnimalRequest.weight(),
+                registerAnimalRequest.information(),
+                registerAnimalRequest.imageUrls());
 
             //then
             Animal animal = entityManager.createQuery(
@@ -281,7 +294,16 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             Animal animalToAdd = AnimalFixture.animal(shelter);
 
             animalService.registerAnimal(shelter.getShelterId(),
-                AnimalDtoFixture.registerAnimal(animalToAdd));
+                animalToAdd.getName(),
+                animalToAdd.getBirthDate(),
+                animalToAdd.getType().toString(),
+                animalToAdd.getBreed(),
+                animalToAdd.getGender().toString(),
+                animalToAdd.isNeutered(),
+                animalToAdd.getActive().toString(),
+                animalToAdd.getWeight(),
+                animalToAdd.getInformation(),
+                animalToAdd.getImages());
 
             Slice<FindAnimalsResult> pagination = animalRepository.findAnimalsV2(null,
                 null, null, null, null, null,
@@ -298,6 +320,59 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             assertThat(result.animals()).hasSize(Math.min(size, (int) animalCount + 1));
             assertThat(result.pageInfo()).isEqualTo(expected.pageInfo());
             assertThat(result.animals()).containsExactlyInAnyOrderElementsOf(expected.animals());
+        }
+    }
+
+    @Nested
+    @DisplayName("findAnimals 메서드 실행 시")
+    class FindAnimalsTest {
+
+        AnimalType animalType = null;
+        AnimalActive animalActive = null;
+        AnimalNeuteredFilter animalNeuteredFilter = null;
+        AnimalAge animalAge = null;
+        AnimalGender animalGender = null;
+        AnimalSize animalSize = null;
+
+        @Test
+        @DisplayName("성공")
+        void findAnimals() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            Animal animal = AnimalFixture.animal(shelter);
+            Animal animalB = AnimalFixture.animal(shelter);
+            shelterRepository.save(shelter);
+            animalRepository.save(animal);
+            animalRepository.save(animalB);
+            PageRequest pageRequest = PageRequest.of(0, 20);
+
+            //when
+            FindAnimalsResponse findAnimals = animalService.findAnimals(animalType, animalActive,
+                animalNeuteredFilter, animalAge, animalGender, animalSize, pageRequest);
+
+            //then
+            assertThat(findAnimals.animals()).hasSize(2);
+        }
+
+        @Test
+        @DisplayName("성공")
+        void findAnimalsV1_1() {
+            //given
+            Shelter shelter = ShelterFixture.shelter();
+            Animal animal = AnimalFixture.animal(shelter);
+            Animal animalB = AnimalFixture.animal(shelter);
+            shelterRepository.save(shelter);
+            animalRepository.save(animal);
+            animalRepository.save(animalB);
+            PageRequest pageRequest = PageRequest.of(0, 20);
+
+            //when
+            Page<FindAnimalsResult> result = animalRepository.findAnimals(animalType,
+                animalActive,
+                animalNeuteredFilter, animalAge, animalGender, animalSize, pageRequest);
+
+            //then
+            assertThat(result.getContent()).hasSize(2);
         }
     }
 }

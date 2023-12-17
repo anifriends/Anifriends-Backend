@@ -40,8 +40,18 @@ public class AnimalController {
     public ResponseEntity<RegisterAnimalResponse> registerAnimal(
         @LoginUser Long volunteerId,
         @RequestBody @Valid RegisterAnimalRequest registerAnimalRequest) {
-        RegisterAnimalResponse registerAnimalResponse = animalService.registerAnimal(volunteerId,
-            registerAnimalRequest);
+        RegisterAnimalResponse registerAnimalResponse = animalService.registerAnimal(
+            volunteerId,
+            registerAnimalRequest.name(),
+            registerAnimalRequest.birthDate(),
+            registerAnimalRequest.type(),
+            registerAnimalRequest.breed(),
+            registerAnimalRequest.gender(),
+            registerAnimalRequest.isNeutered(),
+            registerAnimalRequest.active(),
+            registerAnimalRequest.weight(),
+            registerAnimalRequest.information(),
+            registerAnimalRequest.imageUrls());
         URI location = URI.create("/api/shelters/animals/" + registerAnimalResponse.animalId());
         return ResponseEntity.created(location).body(registerAnimalResponse);
     }

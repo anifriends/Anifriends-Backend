@@ -388,7 +388,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Page<Animal> result = animalRepository.findAnimals(
+            Page<FindAnimalsResult> result = animalRepository.findAnimals(
                 typeFilter,
                 activeFilter,
                 neuteredFilter,
@@ -399,7 +399,9 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             );
 
             // then
-            assertThat(result.getContent()).containsExactlyInAnyOrder(matchAnimal1, matchAnimal2);
+            assertThat(result.getContent())
+                .map(FindAnimalsResult::getAnimalId)
+                .containsExactlyInAnyOrder(matchAnimal1.getAnimalId(), matchAnimal2.getAnimalId());
         }
 
         @Test
@@ -454,7 +456,7 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
             // when
-            Page<Animal> result = animalRepository.findAnimals(
+            Page<FindAnimalsResult> result = animalRepository.findAnimals(
                 nullTypeFilter,
                 nullActiveFilter,
                 nullIsNeuteredFilter,
@@ -465,7 +467,9 @@ public class AnimalRepositoryTest extends BaseRepositoryTest {
             );
 
             // then
-            assertThat(result.getContent()).containsExactlyInAnyOrder(matchAnimal1, matchAnimal2);
+            assertThat(result.getContent())
+                .map(FindAnimalsResult::getAnimalId)
+                .containsExactlyInAnyOrder(matchAnimal1.getAnimalId(), matchAnimal2.getAnimalId());
         }
     }
 
