@@ -3,7 +3,9 @@ package com.clova.anifriends.domain.payment.service;
 import com.clova.anifriends.domain.payment.Payment;
 import com.clova.anifriends.domain.payment.dto.response.PaymentResponse;
 import com.clova.anifriends.domain.payment.exception.PaymentBadRequestException;
+import com.clova.anifriends.domain.payment.exception.PaymentFailException;
 import com.clova.anifriends.domain.payment.repository.PaymentRepository;
+import com.clova.anifriends.global.exception.ExternalApiException;
 import java.text.MessageFormat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,13 +18,18 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentClient paymentClient;
 
-    @Transactional
+    @Transactional(noRollbackFor = {PaymentFailException.class, ExternalApiException.class})
     public PaymentResponse paySuccess(String orderId, String paymentKey, Integer amount) {
         Payment payment = getPayment(orderId);
         validatePaymentStatus(payment);
         validatePaymentAmount(payment, amount);
 
-        paymentClient.confirmPayment(orderId, paymentKey, amount);
+        try {
+            paymentClient.confirmPayment(orderId, paymentKey, amount);
+        } catch (PaymentFailException | ExternalApiException exception) {
+            payment.fail();
+            throw exception;
+        }
 
         payment.updatePaymentKey(paymentKey);
         payment.success();
