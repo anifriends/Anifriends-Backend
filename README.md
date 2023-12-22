@@ -84,4 +84,5 @@ https://dev.anifriends.site/docs/index.html
 - [로그 세팅하기 1편. AOP, 로그백](https://prgrms.notion.site/1-AOP-a66142c842224edaacecfd338e6c95e5)
 - [로그 세팅하기 2편. Promtail, Loki, Grafana](https://prgrms.notion.site/2-194c6b711e574d1c8dad2a3593b344fc)
 - [존재하지 않은 객체와 협력하기](https://prgrms.notion.site/90ea0c42ffe04015be311bf2d2e5161b)
-- [로그 파일이 커질 때 어떻게 하지?](https://prgrms.notion.site/215c4c3543f7457eb16739de036bd3ad?pvs=4)  
+- [로그 파일이 커질 때 어떻게 하지?](https://prgrms.notion.site/215c4c3543f7457eb16739de036bd3ad?pvs=4)
+- [프로젝션과 인덱스로 조회성능 개선하기](https://prgrms.notion.site/4da1039c438d4b8b91deb89d57746d09)
