@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.common.event;
 
 import com.clova.anifriends.domain.common.ImageRemover;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -12,6 +13,7 @@ public class ImageDeletionListener {
 
     private final ImageRemover imageRemover;
 
+    @Async("asyncImageRemoverExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleImageDeletionEvent(ImageDeletionEvent imageDeletionEvent) {
         imageRemover.deleteImages(imageDeletionEvent.imageUrls());
