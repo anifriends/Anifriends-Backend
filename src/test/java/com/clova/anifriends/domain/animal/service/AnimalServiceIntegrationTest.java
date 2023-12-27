@@ -1,8 +1,6 @@
 package com.clova.anifriends.domain.animal.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.animal.Animal;
@@ -20,6 +18,7 @@ import com.clova.anifriends.domain.animal.vo.AnimalActive;
 import com.clova.anifriends.domain.animal.vo.AnimalGender;
 import com.clova.anifriends.domain.animal.vo.AnimalNeuteredFilter;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
+import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
 import java.time.LocalDate;
@@ -123,7 +122,7 @@ public class AnimalServiceIntegrationTest extends BaseIntegrationTest {
             animalService.deleteAnimal(shelter.getShelterId(), animal.getAnimalId());
 
             //then
-            verify(s3Service, times(1)).deleteImages(imageUrls);
+            assertThat(events.stream(ImageDeletionEvent.class).count()).isEqualTo(1);
             Animal findAnimal = entityManager.find(Animal.class, animal.getAnimalId());
             assertThat(findAnimal).isNull();
             List<AnimalImage> findAnimalImages = entityManager.createQuery(

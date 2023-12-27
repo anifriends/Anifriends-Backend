@@ -1,11 +1,10 @@
 package com.clova.anifriends.domain.recruitment.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.applicant.Applicant;
+import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.RecruitmentImage;
 import com.clova.anifriends.domain.recruitment.controller.RecruitmentStatusFilter;
@@ -144,7 +143,7 @@ public class RecruitmentIntegrationTest extends BaseIntegrationTest {
                 recruitment.getRecruitmentId());
 
             //then
-            verify(s3Service, times(1)).deleteImages(imageUrls);
+            assertThat(events.stream(ImageDeletionEvent.class).count()).isEqualTo(1);
             Recruitment findRecruitment = entityManager.find(Recruitment.class,
                 recruitment.getRecruitmentId());
             assertThat(findRecruitment).isNull();
