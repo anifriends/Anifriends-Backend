@@ -18,6 +18,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.Optional;
@@ -54,8 +55,8 @@ public class Shelter extends BaseTimeEntity {
     @Embedded
     private ShelterDeviceToken deviceToken;
 
-    @OneToOne(mappedBy = "shelter", fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "shelter_image_id")
     private ShelterImage image;
 
     public Shelter(
@@ -92,11 +93,11 @@ public class Shelter extends BaseTimeEntity {
     }
 
     private ShelterImage updateImage(String imageUrl) {
-        if(nonNull(imageUrl)) {
-            if(imageUrl.isBlank()) {
+        if (nonNull(imageUrl)) {
+            if (imageUrl.isBlank()) {
                 return null;
             }
-            if(nonNull(image) && image.isSameWith(imageUrl)) {
+            if (nonNull(image) && image.isSameWith(imageUrl)) {
                 return image;
             }
             return new ShelterImage(this, imageUrl);

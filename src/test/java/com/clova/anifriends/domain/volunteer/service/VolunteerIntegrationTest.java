@@ -64,7 +64,11 @@ public class VolunteerIntegrationTest extends BaseIntegrationTest {
 
             //then
             Volunteer updatedVolunteer
-                = entityManager.find(Volunteer.class, givenVolunteerId);
+                = entityManager.createQuery(
+                    "select v from Volunteer v join fetch v.image where v.volunteerId = :volunteerId",
+                    Volunteer.class)
+                .setParameter("volunteerId", givenVolunteerId)
+                .getSingleResult();
             assertThat(updatedVolunteer.getName()).isEqualTo(newName);
             assertThat(updatedVolunteer.getGender()).isEqualTo(newGender);
             assertThat(updatedVolunteer.getBirthDate()).isEqualTo(newBirthDate);
@@ -89,6 +93,30 @@ public class VolunteerIntegrationTest extends BaseIntegrationTest {
                     "select vi from VolunteerImage vi", VolunteerImage.class)
                 .getResultList();
             assertThat(result).hasSize(1);
+        }
+
+        @Test
+        @DisplayName("성공: 이미지 url 입력값이 들어왔고, 기존의 봉사자 이미지와 다르다면 volunteerImage 가 새롭게 생성된다.")
+        void updateVolunteerInfoWhenDifferentFromCurrentImage() {
+            //given
+            String beforeImage = "beforeImage.jpg";
+            String afterImage = "afterImage.jpg";
+            volunteerService.updateVolunteerInfo(givenVolunteerId, volunteer.getName(),
+                volunteer.getGender(), volunteer.getBirthDate(), volunteer.getPhoneNumber(),
+                beforeImage);
+
+            //when
+            volunteerService.updateVolunteerInfo(givenVolunteerId, volunteer.getName(),
+                volunteer.getGender(), volunteer.getBirthDate(), volunteer.getPhoneNumber(),
+                afterImage);
+
+            //then
+            Volunteer updatedVolunteer = entityManager.createQuery(
+                    "select v from Volunteer v join fetch v.image where v.volunteerId = :volunteerId",
+                    Volunteer.class)
+                .setParameter("volunteerId", givenVolunteerId)
+                .getSingleResult();
+            assertThat(updatedVolunteer.getVolunteerImageUrl()).isEqualTo(afterImage);
         }
     }
 }
