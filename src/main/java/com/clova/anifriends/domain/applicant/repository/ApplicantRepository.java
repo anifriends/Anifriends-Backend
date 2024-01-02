@@ -3,6 +3,7 @@ package com.clova.anifriends.domain.applicant.repository;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
+import com.clova.anifriends.domain.applicant.repository.response.FindApprovedApplicantsResult;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -44,15 +45,26 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
         @Param("volunteerId") Long volunteerId
     );
 
-    @Query("select a from Applicant a "
-        + "join fetch a.recruitment r "
-        + "join fetch r.shelter s "
-        + "join fetch a.volunteer v "
-        + "where r.recruitmentId = :recruitmentId "
-        + "and s.shelterId = :shelterId "
-        + "and (a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE "
-        + "or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NOSHOW)")
-    List<Applicant> findApprovedApplicants(
+    @Query(
+        """
+                select v.volunteerId as volunteerId,
+                    a.applicantId as applicantId,
+                    v.name.name as volunteerName,
+                    v.birthDate as volunteerBirthDate,
+                    v.gender as volunteerGender,
+                    v.phoneNumber.phoneNumber as volunteerPhoneNumber,
+                    a.status as applicantStatus
+                from Applicant a
+                join a.volunteer v
+                join a.recruitment.shelter s
+                join a.recruitment r
+                where r.recruitmentId = :recruitmentId
+                and s.shelterId = :shelterId
+                and a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE
+                or a.status = com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NOSHOW
+            """
+    )
+    List<FindApprovedApplicantsResult> findApprovedApplicants(
         @Param("recruitmentId") Long recruitmentId,
         @Param("shelterId") Long shelterId
     );
