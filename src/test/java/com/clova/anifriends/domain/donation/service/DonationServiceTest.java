@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import com.clova.anifriends.domain.donation.Donation;
 import com.clova.anifriends.domain.donation.dto.response.PaymentRequestResponse;
+import com.clova.anifriends.domain.donation.repository.DonationCacheRepository;
 import com.clova.anifriends.domain.donation.support.fixture.DonationFixture;
 import com.clova.anifriends.domain.payment.Payment;
 import com.clova.anifriends.domain.payment.repository.PaymentRepository;
@@ -41,6 +42,9 @@ class DonationServiceTest {
     @Mock
     private PaymentRepository paymentRepository;
 
+    @Mock
+    private DonationCacheRepository donationCacheRepository;
+
     @Nested
     @DisplayName("registerDonation 실행 시")
     class RegisterDonationTest {
@@ -55,6 +59,8 @@ class DonationServiceTest {
             Payment payment = new Payment(donation);
             PaymentRequestResponse expected = PaymentRequestResponse.of(payment);
 
+            when(donationCacheRepository.isDuplicateDonation(anyLong())).thenReturn(
+                false);
             when(shelterRepository.findById(anyLong())).thenReturn(Optional.of(shelter));
             when(volunteerRepository.findById(anyLong())).thenReturn(Optional.of(volunteer));
 
