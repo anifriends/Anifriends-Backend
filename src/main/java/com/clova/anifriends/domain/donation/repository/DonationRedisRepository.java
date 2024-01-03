@@ -24,6 +24,7 @@ public class DonationRedisRepository implements DonationCacheRepository {
 
     public boolean isDuplicateDonation(Long volunteerId) {
         String key = "donation:" + volunteerId;
-        return !valueOperations.setIfAbsent(key, true, TIMEOUT, TimeUnit.SECONDS);
+        return Boolean.FALSE.equals(
+            valueOperations.setIfAbsent(key, true, TIMEOUT, TimeUnit.SECONDS));
     }
 }
