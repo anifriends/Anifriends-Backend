@@ -8,6 +8,7 @@ import com.clova.anifriends.domain.applicant.exception.ApplicantCanNotApplyExcep
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
+import com.clova.anifriends.domain.applicant.repository.response.FindApprovedApplicantsResult;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.notification.ShelterNotification;
@@ -16,9 +17,9 @@ import com.clova.anifriends.domain.notification.repository.ShelterNotificationRe
 import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
 import com.clova.anifriends.domain.notification.vo.NotificationType;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.dto.response.IsAppliedRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
-import com.clova.anifriends.domain.recruitment.dto.response.IsAppliedRecruitmentResponse;
 import com.clova.anifriends.domain.review.exception.ApplicantNotFoundException;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.exception.ShelterNotFoundException;
@@ -78,9 +79,9 @@ public class ApplicantService {
     @Transactional(readOnly = true)
     public FindApprovedApplicantsResponse findApprovedApplicants(Long shelterId,
         Long recruitmentId) {
-        List<Applicant> applicantsApproved = applicantRepository
+        List<FindApprovedApplicantsResult> applicantsApproved = applicantRepository
             .findApprovedApplicants(recruitmentId, shelterId);
-        return FindApprovedApplicantsResponse.from(applicantsApproved);
+        return ApplicantMapper.resultToResponse(applicantsApproved);
     }
 
     @Transactional(readOnly = true)

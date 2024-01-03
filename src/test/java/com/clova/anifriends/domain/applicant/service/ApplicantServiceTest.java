@@ -1,6 +1,5 @@
 package com.clova.anifriends.domain.applicant.service;
 
-import static com.clova.anifriends.domain.applicant.support.ApplicantFixture.applicant;
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.ATTENDANCE;
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.NOSHOW;
 import static com.clova.anifriends.domain.applicant.vo.ApplicantStatus.PENDING;
@@ -27,15 +26,17 @@ import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicants
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
+import com.clova.anifriends.domain.applicant.repository.response.FindApprovedApplicantsResult;
 import com.clova.anifriends.domain.applicant.service.dto.UpdateApplicantAttendanceCommand;
 import com.clova.anifriends.domain.applicant.support.ApplicantDtoFixture;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.notification.repository.ShelterNotificationRepository;
 import com.clova.anifriends.domain.notification.repository.VolunteerNotificationRepository;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.dto.response.IsAppliedRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.exception.RecruitmentNotFoundException;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
-import com.clova.anifriends.domain.recruitment.dto.response.IsAppliedRecruitmentResponse;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentApplicantCount;
 import com.clova.anifriends.domain.recruitment.vo.RecruitmentInfo;
@@ -102,7 +103,6 @@ class ApplicantServiceTest {
             false,
             30
         );
-
 
         @Test
         @DisplayName("성공")
@@ -181,13 +181,15 @@ class ApplicantServiceTest {
             // given
             Recruitment recruitment = recruitment(shelter());
             Volunteer volunteer = volunteer();
-            Applicant applicantApproved = applicant(recruitment, volunteer, ATTENDANCE);
-
-            FindApprovedApplicantsResponse response = FindApprovedApplicantsResponse.from(
-                List.of(applicantApproved));
+            Applicant applicant = ApplicantFixture.applicant(recruitment, volunteer,
+                ApplicantStatus.APPROVED);
+            FindApprovedApplicantsResult findApprovedApplicantsResult = ApplicantDtoFixture.findApprovedApplicantsResult(
+                applicant.getStatus());
+            FindApprovedApplicantsResponse response = ApplicantMapper.resultToResponse(
+                List.of(findApprovedApplicantsResult));
 
             when(applicantRepository.findApprovedApplicants(anyLong(), anyLong()))
-                .thenReturn(List.of(applicantApproved));
+                .thenReturn(List.of(findApprovedApplicantsResult));
 
             // when
             FindApprovedApplicantsResponse result = applicantService.findApprovedApplicants(
@@ -201,9 +203,6 @@ class ApplicantServiceTest {
         @DisplayName("성공: 봉사 승인자가 0 명인 경우")
         void findApplicantsApproved2() {
             // given
-            FindApprovedApplicantsResponse response = FindApprovedApplicantsResponse.from(
-                List.of());
-
             when(applicantRepository.findApprovedApplicants(anyLong(), anyLong()))
                 .thenReturn(List.of());
 
@@ -212,7 +211,7 @@ class ApplicantServiceTest {
                 anyLong(), anyLong());
 
             // then
-            assertThat(result).isEqualTo(response);
+            assertThat(result.applicants().size()).isZero();
         }
     }
 

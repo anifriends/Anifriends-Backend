@@ -4,8 +4,12 @@ import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse;
 import com.clova.anifriends.domain.applicant.dto.FindApplicantsResponse.FindApplicantResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse.FindApplyingVolunteerResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse.FindApprovedApplicantResponse;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
+import com.clova.anifriends.domain.applicant.repository.response.FindApprovedApplicantsResult;
+import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import java.util.List;
@@ -49,5 +53,24 @@ public final class ApplicantMapper {
             ))
             .toList();
         return new FindApplicantsResponse(responses, recruitment.getCapacity());
+    }
+
+    public static FindApprovedApplicantsResponse resultToResponse(
+        List<FindApprovedApplicantsResult> applicantsApproved
+    ) {
+        List<FindApprovedApplicantResponse> response = applicantsApproved.stream()
+            .map(findApprovedApplicantsResult -> new FindApprovedApplicantResponse(
+                    findApprovedApplicantsResult.getVolunteerId(),
+                    findApprovedApplicantsResult.getApplicantId(),
+                    findApprovedApplicantsResult.getVolunteerName(),
+                    findApprovedApplicantsResult.getVolunteerBirthDate(),
+                    findApprovedApplicantsResult.getVolunteerGender(),
+                    findApprovedApplicantsResult.getVolunteerPhoneNumber(),
+                    findApprovedApplicantsResult.getApplicantStatus().equals(ApplicantStatus.ATTENDANCE)
+                )
+            )
+            .toList();
+
+        return new FindApprovedApplicantsResponse(response);
     }
 }
