@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 public class DonationRedisRepository implements DonationCacheRepository {
 
     public static final int TIMEOUT = 1;
+    public static final String DONATION_KEY = "donation:";
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -23,7 +24,7 @@ public class DonationRedisRepository implements DonationCacheRepository {
     }
 
     public boolean isDuplicateDonation(Long volunteerId) {
-        String key = "donation:" + volunteerId;
+        String key = DONATION_KEY + volunteerId;
         return Boolean.FALSE.equals(
             valueOperations.setIfAbsent(key, true, TIMEOUT, TimeUnit.SECONDS));
     }
