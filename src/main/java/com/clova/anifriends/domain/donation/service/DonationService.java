@@ -2,6 +2,8 @@ package com.clova.anifriends.domain.donation.service;
 
 import com.clova.anifriends.domain.donation.Donation;
 import com.clova.anifriends.domain.donation.dto.response.PaymentRequestResponse;
+import com.clova.anifriends.domain.donation.exception.DonationDuplicateException;
+import com.clova.anifriends.domain.donation.repository.DonationCacheRepository;
 import com.clova.anifriends.domain.payment.Payment;
 import com.clova.anifriends.domain.payment.repository.PaymentRepository;
 import com.clova.anifriends.domain.shelter.Shelter;
@@ -19,10 +21,13 @@ public class DonationService {
     private final ShelterRepository shelterRepository;
     private final VolunteerRepository volunteerRepository;
     private final PaymentRepository paymentRepository;
+    private final DonationCacheRepository donationCacheRepository;
 
     @Transactional
     public PaymentRequestResponse registerDonation(Long volunteerId, Long shelterId,
         Integer amount) {
+        checkDuplicate(volunteerId);
+
         Shelter shelter = getShelter(shelterId);
         Volunteer volunteer = getVolunteer(volunteerId);
         Donation donation = new Donation(shelter, volunteer, amount);
@@ -30,6 +35,12 @@ public class DonationService {
         paymentRepository.save(payment);
 
         return PaymentRequestResponse.of(payment);
+    }
+
+    private void checkDuplicate(Long volunteerId) {
+        if (donationCacheRepository.isDuplicateDonation(volunteerId)) {
+            throw new DonationDuplicateException("중복된 요청입니다.");
+        }
     }
 
     private Volunteer getVolunteer(Long volunteerId) {
