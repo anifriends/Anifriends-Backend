@@ -27,7 +27,7 @@ public interface AnimalRepositoryCustom {
         Pageable pageable
     );
 
-    Page<Animal> findAnimals(
+    Page<FindAnimalsResult> findAnimals(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,

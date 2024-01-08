@@ -36,4 +36,8 @@ public class ReviewImage extends BaseTimeEntity {
         this.review = review;
         this.imageUrl = imageUrl;
     }
+
+    public Long getReviewId() {
+        return review.getReviewId();
+    }
 }

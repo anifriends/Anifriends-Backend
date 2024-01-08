@@ -15,6 +15,7 @@ import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
+import com.clova.anifriends.domain.applicant.repository.response.FindApprovedApplicantsResult;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
@@ -70,12 +71,12 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             List<Applicant> expected = List.of(applicantAttendance, applicantNoShow);
 
             // when
-            List<Applicant> result = applicantRepository
+            List<FindApprovedApplicantsResult> result = applicantRepository
                 .findApprovedApplicants(recruitment.getRecruitmentId(),
                     shelter.getShelterId());
 
             // then
-            assertThat(result).isEqualTo(expected);
+            assertThat(result.size()).isEqualTo(expected.size());
         }
 
         @Test
@@ -97,15 +98,16 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
             applicantRepository.saveAll(
                 List.of(applicantPending, applicantRefused)
             );
+
             List<Applicant> expected = List.of();
 
             // when
-            List<Applicant> result = applicantRepository
+            List<FindApprovedApplicantsResult> result = applicantRepository
                 .findApprovedApplicants(recruitment.getRecruitmentId(),
                     shelter.getShelterId());
 
             // then
-            assertThat(result).isEqualTo(expected);
+            assertThat(result.size()).isEqualTo(expected.size());
         }
     }
 
@@ -197,7 +199,7 @@ class ApplicantRepositoryTest extends BaseRepositoryTest {
                 .containsExactly(
                     applicantShouldWriteReview1.getApplicantId(),
                     applicantShouldWriteReview2.getApplicantId()
-                    );
+                );
         }
     }
 

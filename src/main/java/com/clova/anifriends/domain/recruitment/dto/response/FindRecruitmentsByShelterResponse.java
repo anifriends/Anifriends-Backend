@@ -1,6 +1,6 @@
 package com.clova.anifriends.domain.recruitment.dto.response;
 
-import com.clova.anifriends.domain.common.dto.PageInfo;
+import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,7 +37,7 @@ public record FindRecruitmentsByShelterResponse(
 
     public static FindRecruitmentsByShelterResponse from(Page<Recruitment> recruitments){
         return new FindRecruitmentsByShelterResponse(
-            PageInfo.from(recruitments),
+            PageInfo.of(recruitments.getTotalElements(), recruitments.hasNext()),
             recruitments.stream()
                 .map(RecruitmentResponse::from)
                 .toList()

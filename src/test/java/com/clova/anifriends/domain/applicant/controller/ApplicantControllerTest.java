@@ -35,6 +35,7 @@ import com.clova.anifriends.domain.applicant.dto.request.UpdateApplicantsAttenda
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApplyingVolunteersResponse.FindApplyingVolunteerResponse;
 import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse;
+import com.clova.anifriends.domain.applicant.dto.response.FindApprovedApplicantsResponse.FindApprovedApplicantResponse;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
@@ -149,10 +150,18 @@ class ApplicantControllerTest extends BaseControllerTest {
     @DisplayName("봉사 신청 승인자 조회 API 호출 시")
     void findApprovedApplicants() throws Exception {
         // given
-        FindApprovedApplicantsResponse.from(List.of());
+        FindApprovedApplicantResponse findApprovedApplicantResponse = new FindApprovedApplicantResponse(
+            1L,
+            2L,
+            "김이름",
+            LocalDate.now(),
+            VolunteerGender.MALE,
+            "010-2382-1832",
+            true
+        );
 
         when(applicantService.findApprovedApplicants(anyLong(), anyLong()))
-            .thenReturn(FindApprovedApplicantsResponse.from(List.of()));
+            .thenReturn(new FindApprovedApplicantsResponse(List.of(findApprovedApplicantResponse)));
 
         // when
         ResultActions result = mockMvc.perform(
@@ -174,7 +183,8 @@ class ApplicantControllerTest extends BaseControllerTest {
                         fieldWithPath("applicants[]").type(ARRAY).description("봉사 신청자 리스트").optional(),
                         fieldWithPath("applicants[].applicantId").type(NUMBER).description("봉사 신청 ID"),
                         fieldWithPath("applicants[].volunteerId").type(NUMBER).description("봉사자 ID"),
-                        fieldWithPath("applicants[].volunteerBirthdate").type(STRING)
+                        fieldWithPath("applicants[].volunteerName").type(STRING).description("봉사자 이름"),
+                        fieldWithPath("applicants[].volunteerBirthDate").type(STRING)
                             .description("봉사자 생일"),
                         fieldWithPath("applicants[].volunteerGender").type(STRING)
                             .description("봉사자 성별"),

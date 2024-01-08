@@ -6,10 +6,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record FindApprovedApplicantsResponse(
-    List<FindApplicant> applicants
+    List<FindApprovedApplicantResponse> applicants
 ) {
 
-    private record FindApplicant(
+    public record FindApprovedApplicantResponse(
         Long volunteerId,
         Long applicantId,
         String volunteerName,
@@ -19,8 +19,8 @@ public record FindApprovedApplicantsResponse(
         boolean volunteerAttendance
     ) {
 
-        private static FindApplicant from(Applicant applicant) {
-            return new FindApplicant(
+        public static FindApprovedApplicantResponse from(Applicant applicant) {
+            return new FindApprovedApplicantResponse(
                 applicant.getVolunteer().getVolunteerId(),
                 applicant.getApplicantId(),
                 applicant.getVolunteer().getName(),
@@ -31,13 +31,4 @@ public record FindApprovedApplicantsResponse(
             );
         }
     }
-
-    public static FindApprovedApplicantsResponse from(List<Applicant> applicants) {
-        return new FindApprovedApplicantsResponse(
-            applicants.stream()
-                .map(FindApplicant::from)
-                .toList()
-        );
-    }
-
 }

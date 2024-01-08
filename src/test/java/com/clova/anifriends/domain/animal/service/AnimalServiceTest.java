@@ -99,7 +99,17 @@ class AnimalServiceTest {
             given(shelterRepository.findById(anyLong())).willReturn(Optional.ofNullable(shelter));
 
             //when
-            animalService.registerAnimal(1L, registerAnimalRequest);
+            animalService.registerAnimal(1L,
+                registerAnimalRequest.name(),
+                registerAnimalRequest.birthDate(),
+                registerAnimalRequest.type(),
+                registerAnimalRequest.breed(),
+                registerAnimalRequest.gender(),
+                registerAnimalRequest.isNeutered(),
+                registerAnimalRequest.active(),
+                registerAnimalRequest.weight(),
+                registerAnimalRequest.information(),
+                registerAnimalRequest.imageUrls());
 
             //then
             then(animalCacheRepository).should().saveAnimal(any(Animal.class));
@@ -114,7 +124,17 @@ class AnimalServiceTest {
             //given
             //when
             Exception exception = catchException(
-                () -> animalService.registerAnimal(1L, registerAnimalRequest));
+                () -> animalService.registerAnimal(1L,
+                    registerAnimalRequest.name(),
+                    registerAnimalRequest.birthDate(),
+                    registerAnimalRequest.type(),
+                    registerAnimalRequest.breed(),
+                    registerAnimalRequest.gender(),
+                    registerAnimalRequest.isNeutered(),
+                    registerAnimalRequest.active(),
+                    registerAnimalRequest.weight(),
+                    registerAnimalRequest.information(),
+                    registerAnimalRequest.imageUrls()));
 
             //then
             assertThat(exception).isInstanceOf(ShelterNotFoundException.class);
@@ -204,11 +224,6 @@ class AnimalServiceTest {
         @DisplayName("성공: 모든 필터 존재")
         void findAnimals1() {
             // given
-            String mockName = "animalName";
-            String mockInformation = "animalInformation";
-            String mockBreed = "animalBreed";
-            List<String> mockImageUrls = List.of("www.aws.s3.com/2");
-
             AnimalType typeFilter = AnimalType.DOG;
             AnimalActive activeFilter = AnimalActive.ACTIVE;
             AnimalNeuteredFilter neuteredFilter = AnimalNeuteredFilter.IS_NEUTERED;
@@ -217,26 +232,14 @@ class AnimalServiceTest {
             AnimalSize sizeFilter = AnimalSize.MEDIUM;
 
             Shelter shelter = ShelterFixture.shelter();
-
-            Animal matchAnimal = new Animal(
-                shelter,
-                mockName,
-                LocalDate.now().minusMonths(ageFilter.getMinMonth()),
-                typeFilter.getName(),
-                mockBreed,
-                genderFilter.getName(),
-                neuteredFilter.isNeutered(),
-                activeFilter.getName(),
-                sizeFilter.getMinWeight(),
-                mockInformation,
-                mockImageUrls
-            );
+            Animal animal = animal(shelter);
+            FindAnimalsResult animalsResult = AnimalDtoFixture.findAnimalsResult(animal);
 
             PageRequest pageRequest = PageRequest.of(0, 10);
-            Page<Animal> pageResult = new PageImpl<>(List.of(matchAnimal), pageRequest, 1);
+            PageImpl<FindAnimalsResult> pageResult = new PageImpl<>(List.of(animalsResult),
+                pageRequest, 1);
 
-            FindAnimalsResponse expected = FindAnimalsResponse.from(
-                pageResult);
+            FindAnimalsResponse expected = AnimalMapper.resultToResponse(pageResult);
 
             when(animalRepository.findAnimals(typeFilter, activeFilter,
                 neuteredFilter, ageFilter, genderFilter, sizeFilter, pageRequest))
@@ -249,7 +252,6 @@ class AnimalServiceTest {
 
             // then
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
-
         }
     }
 

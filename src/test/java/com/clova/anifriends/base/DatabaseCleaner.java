@@ -4,6 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Table;
 import jakarta.persistence.metamodel.Type;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,9 @@ public class DatabaseCleaner {
 
     private final EntityManager entityManager;
     private final List<String> tableNames;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     public DatabaseCleaner(EntityManager em) {
         this.entityManager = em;
@@ -37,5 +42,7 @@ public class DatabaseCleaner {
 
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY true")
             .executeUpdate();
+
+        redisTemplate.getConnectionFactory().getConnection().flushAll();
     }
 }

@@ -49,6 +49,7 @@ class ApplicantTest {
 
             //then
             assertThat(applicant.getRecruitment()).isEqualTo(recruitment);
+            assertThat(applicant.isAttendance()).isEqualTo(false);
         }
 
         @Test

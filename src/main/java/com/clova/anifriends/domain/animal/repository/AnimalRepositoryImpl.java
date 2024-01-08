@@ -81,7 +81,7 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
     }
 
     @Override
-    public Page<Animal> findAnimals(
+    public Page<FindAnimalsResult> findAnimals(
         AnimalType type,
         AnimalActive active,
         AnimalNeuteredFilter neuteredFilter,
@@ -90,8 +90,22 @@ public class AnimalRepositoryImpl implements AnimalRepositoryCustom {
         AnimalSize size,
         Pageable pageable
     ) {
-        List<Animal> animals = query.selectFrom(animal)
+        List<FindAnimalsResult> animals = query
+            .select(new QFindAnimalsResult(
+                animal.animalId,
+                animal.name.name,
+                animal.createdAt,
+                animal.shelter.name.name,
+                animal.shelter.addressInfo.address,
+                ExpressionUtils.as(
+                    select(animalImage.imageUrl.max())
+                        .from(animalImage)
+                        .where(animalImage.animal.eq(animal))
+                    , "animageImageUrl")
+            ))
+            .from(animal)
             .join(animal.shelter)
+            .leftJoin(animal.shelter.image)
             .where(
                 animalTypeContains(type),
                 animalActiveContains(active),

@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.applicant.support;
 
 import com.clova.anifriends.domain.applicant.repository.response.FindApplicantResult;
 import com.clova.anifriends.domain.applicant.repository.response.FindApplyingVolunteerResult;
+import com.clova.anifriends.domain.applicant.repository.response.FindApprovedApplicantsResult;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ public class ApplicantDtoFixture {
     private static final int COMPLETED_VOLUNTEER_COUNT = 5;
     private static final int VOLUNTEER_TEMPERATURE = 36;
     private static final String VOLUNTEER_NAME = "봉사자 이름";
+    private static final String VOLUNTEER_PHONE_NUMBER = "010-9827-1234";
 
     public static List<FindApplyingVolunteerResult> findApplyingVolunteerResults(int end) {
         return IntStream.range(0, end)
@@ -126,6 +128,48 @@ public class ApplicantDtoFixture {
             public ApplicantStatus getApplicantStatus() {
                 return APPLICANT_STATUS;
             }
+        };
+    }
+
+    public static FindApprovedApplicantsResult findApprovedApplicantsResult(
+        ApplicantStatus applicantStatus) {
+        return new FindApprovedApplicantsResult() {
+
+            @Override
+            public Long getVolunteerId() {
+                return VOLUNTEER_ID;
+            }
+
+            @Override
+            public Long getApplicantId() {
+                return APPLICANT_ID;
+            }
+
+            @Override
+            public String getVolunteerName() {
+                return VOLUNTEER_NAME;
+            }
+
+            @Override
+            public LocalDate getVolunteerBirthDate() {
+                return VOLUNTEER_BIRTH_DATE;
+            }
+
+            @Override
+            public VolunteerGender getVolunteerGender() {
+                return VOLUNTEER_GENDER;
+            }
+
+            @Override
+            public String getVolunteerPhoneNumber() {
+                return VOLUNTEER_PHONE_NUMBER;
+            }
+
+            @Override
+            public ApplicantStatus getApplicantStatus() {
+                return applicantStatus;
+            }
+
         };
     }
 }

@@ -23,6 +23,11 @@ spring:
     redis:
       host: localhost
       port: 6379
+
+  output:
+    ansi:
+      enabled: always
+
 cloud:
   aws:
     credentials:
@@ -33,7 +38,7 @@ cloud:
     s3:
       bucket: BuckeyIsThatYou
     stack:
-      auto: false        
+      auto: false
 
 schedules:
   cron:
@@ -44,4 +49,8 @@ schedules:
       encourage-check-attendance: "* * * * * ?"
     recruitment:
       auto-close: "* * * * * ?"
+payment:
+  toss:
+    secret-key: tossPaySecretKey
+    confirm-url: tossPayConfirmUrl
 
