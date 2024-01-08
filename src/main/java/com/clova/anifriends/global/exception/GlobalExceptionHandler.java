@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> runtimeEx(RuntimeException e) {
         return ResponseEntity.status(INTERNAL_SERVER_ERROR)
             .body(new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR.getValue(),
-                "예측하지 못한 예외가 발생하였습니다." + e.getMessage()));
+                "예측하지 못한 예외가 발생하였습니다."));
     }
 
     @ExceptionHandler(BadRequestException.class)
