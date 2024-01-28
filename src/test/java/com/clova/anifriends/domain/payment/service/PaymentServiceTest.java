@@ -68,8 +68,6 @@ class PaymentServiceTest {
             // then
             verify(paymentClient, times(1)).confirmPayment(orderId, paymentKey, amount);
             assertThat(result).usingRecursiveComparison().isEqualTo(expected);
-            assertThat(payment.getStatus()).isEqualTo(PaymentStatus.DONE);
-            assertThat(payment.getPaymentKey()).isEqualTo(paymentKey);
         }
 
         @Test

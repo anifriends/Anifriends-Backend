@@ -1,5 +1,8 @@
 package com.clova.anifriends.domain.payment.service;
 
+import static com.clova.anifriends.domain.payment.vo.PaymentStatus.ABORTED;
+import static com.clova.anifriends.domain.payment.vo.PaymentStatus.DONE;
+
 import com.clova.anifriends.domain.payment.Payment;
 import com.clova.anifriends.domain.payment.dto.response.PaymentResponse;
 import com.clova.anifriends.domain.payment.exception.PaymentBadRequestException;
@@ -18,7 +21,6 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentClient paymentClient;
 
-    @Transactional(noRollbackFor = {PaymentFailException.class, ExternalApiException.class})
     public PaymentResponse paySuccess(String orderId, String paymentKey, Integer amount) {
         Payment payment = getPayment(orderId);
         validatePaymentStatus(payment);
@@ -27,14 +29,13 @@ public class PaymentService {
         try {
             paymentClient.confirmPayment(orderId, paymentKey, amount);
         } catch (PaymentFailException | ExternalApiException exception) {
-            payment.fail();
+            paymentRepository.updatePaymentStatus(payment.getPaymentId(), ABORTED);
             throw exception;
         }
 
-        payment.updatePaymentKey(paymentKey);
-        payment.success();
+        paymentRepository.updatePaymentKeyAndStatus(payment.getPaymentId(), paymentKey, DONE);
 
-        return new PaymentResponse(payment.getStatus(), null);
+        return new PaymentResponse(DONE, null);
     }
 
     @Transactional
