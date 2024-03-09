@@ -4,6 +4,7 @@ import static com.clova.anifriends.domain.recruitment.QRecruitment.recruitment;
 import static com.clova.anifriends.domain.shelter.QShelter.shelter;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.controller.KeywordCondition;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -30,14 +31,13 @@ public class RecruitmentRepositoryImpl implements
 
     @Override
     public Page<Recruitment> findRecruitments(String keyword, LocalDate startDate,
-        LocalDate endDate, Boolean isClosed, boolean titleContains, boolean contentContains,
-        boolean shelterNameContains, Pageable pageable) {
+        LocalDate endDate, Boolean isClosed, KeywordCondition keywordCondition, Pageable pageable) {
         List<Recruitment> content = query.select(recruitment)
             .from(recruitment)
             .join(recruitment.shelter).fetchJoin()
             .leftJoin(shelter.image).fetchJoin()
             .where(
-                keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
+                keywordSearch(keyword, keywordCondition),
                 recruitmentIsClosed(isClosed),
                 recruitmentStartTimeGoe(startDate),
                 recruitmentStartTimeLoe(endDate)
@@ -51,7 +51,7 @@ public class RecruitmentRepositoryImpl implements
             .from(recruitment)
             .join(recruitment.shelter)
             .where(
-                keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
+                keywordSearch(keyword, keywordCondition),
                 recruitmentIsClosed(isClosed),
                 recruitmentStartTimeGoe(startDate),
                 recruitmentStartTimeLoe(endDate)
@@ -61,15 +61,15 @@ public class RecruitmentRepositoryImpl implements
 
     @Override
     public Slice<Recruitment> findRecruitmentsV2(String keyword, LocalDate startDate,
-        LocalDate endDate, Boolean isClosed, boolean titleContains, boolean contentContains,
-        boolean shelterNameContains, LocalDateTime createdAt, Long recruitmentId,
+        LocalDate endDate, Boolean isClosed, KeywordCondition keywordCondition,
+        LocalDateTime createdAt, Long recruitmentId,
         Pageable pageable) {
         List<Recruitment> content = query.select(recruitment)
             .from(recruitment)
             .join(recruitment.shelter).fetchJoin()
             .leftJoin(shelter.image).fetchJoin()
             .where(
-                keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
+                keywordSearch(keyword, keywordCondition),
                 recruitmentIsClosed(isClosed),
                 recruitmentStartTimeGoe(startDate),
                 recruitmentStartTimeLoe(endDate),
@@ -95,14 +95,13 @@ public class RecruitmentRepositoryImpl implements
 
     @Override
     public Long countFindRecruitmentsV2(String keyword, LocalDate startDate,
-        LocalDate endDate, Boolean isClosed, boolean titleContains, boolean contentContains,
-        boolean shelterNameContains) {
+        LocalDate endDate, Boolean isClosed, KeywordCondition keywordCondition) {
 
         Long count = query.select(recruitment.count())
             .from(recruitment)
             .join(recruitment.shelter)
             .where(
-                keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
+                keywordSearch(keyword, keywordCondition),
                 recruitmentIsClosed(isClosed),
                 recruitmentStartTimeGoe(startDate),
                 recruitmentStartTimeLoe(endDate)
@@ -124,11 +123,14 @@ public class RecruitmentRepositoryImpl implements
             );
     }
 
-    private BooleanBuilder keywordSearch(String keyword, boolean titleFilter,
-        boolean contentFilter, boolean shelterNameFilter) {
-        return nullSafeBuilder(() -> recruitmentTitleContains(keyword, titleFilter))
-            .or(nullSafeBuilder(() -> recruitmentContentContains(keyword, contentFilter)))
-            .or(nullSafeBuilder(() -> recruitmentShelterNameContains(keyword, shelterNameFilter)));
+    private BooleanBuilder keywordSearch(String keyword, KeywordCondition keywordCondition) {
+        return nullSafeBuilder(
+            () -> recruitmentTitleContains(keyword, keywordCondition.titleFilter()))
+            .or(
+                nullSafeBuilder(
+                () -> recruitmentContentContains(keyword, keywordCondition.contentFilter())))
+            .or(nullSafeBuilder(
+                () -> recruitmentShelterNameContains(keyword, keywordCondition.shelterNameFilter())));
     }
 
     private BooleanExpression recruitmentTitleContains(String keyword, boolean titleFilter) {

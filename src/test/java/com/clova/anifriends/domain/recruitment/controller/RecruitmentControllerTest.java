@@ -197,8 +197,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         FindRecruitmentsResponse response = new FindRecruitmentsResponse(
             List.of(findRecruitmentResponse), pageInfo);
 
-        given(recruitmentService.findRecruitments(anyString(), any(), any(),
-            any(), anyBoolean(), anyBoolean(), anyBoolean(), any()))
+        given(recruitmentService.findRecruitments(anyString(), any(), any(), any(), any(), any()))
             .willReturn(response);
 
         //when
@@ -280,7 +279,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
             List.of(findRecruitmentResponse), pageInfo);
 
         given(recruitmentService.findRecruitmentsV2(anyString(), any(), any(),
-            any(), anyBoolean(), anyBoolean(), anyBoolean(), any(), anyLong(), any()))
+            any(), any(), any(), anyLong(), any()))
             .willReturn(response);
 
         //when

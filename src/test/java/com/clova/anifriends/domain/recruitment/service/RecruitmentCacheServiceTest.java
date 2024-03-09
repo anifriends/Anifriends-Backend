@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.controller.KeywordCondition;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRedisRepository;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
@@ -47,10 +48,10 @@ class RecruitmentCacheServiceTest {
             PageRequest pageRequest = PageRequest.of(0, 30);
             SliceImpl<Recruitment> recruitmentSlice = new SliceImpl<>(recruitments, pageRequest,
                 true);
+            KeywordCondition allContains = new KeywordCondition(true, true, true);
 
-            given(recruitmentRepository.findRecruitmentsV2(null, null, null, null, true, true, true,
-                    null, null, pageRequest))
-                .willReturn(recruitmentSlice);
+            given(recruitmentRepository.findRecruitmentsV2(null, null, null, null, allContains,
+                null, null, pageRequest)).willReturn(recruitmentSlice);
 
             //when
             recruitmentCacheService.synchronizeRecruitmentsCache();

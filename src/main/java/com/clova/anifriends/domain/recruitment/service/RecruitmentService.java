@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.recruitment.service;
 
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.controller.KeywordCondition;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsByShelterResponse;
@@ -123,18 +124,14 @@ public class RecruitmentService {
         LocalDate startDate,
         LocalDate endDate,
         Boolean isClosed,
-        Boolean titleContains,
-        Boolean contentContains,
-        Boolean shelterNameContains,
+        KeywordCondition keywordCondition,
         Pageable pageable) {
         Page<Recruitment> recruitments = recruitmentRepository.findRecruitments(
             keyword,
             startDate,
             endDate,
             isClosed,
-            titleContains,
-            contentContains,
-            shelterNameContains,
+            keywordCondition,
             pageable);
         return FindRecruitmentsResponse.from(recruitments);
     }
@@ -145,25 +142,21 @@ public class RecruitmentService {
         LocalDate startDate,
         LocalDate endDate,
         Boolean isClosed,
-        Boolean titleContains,
-        Boolean contentContains,
-        Boolean shelterNameContains,
+        KeywordCondition keywordCondition,
         LocalDateTime createdAt,
         Long recruitmentId,
         Pageable pageable
     ) {
         Long count = recruitmentCacheRepository.getRecruitmentCount();
-        if (findRecruitmentsWithoutCondition(keyword, startDate, endDate, isClosed, titleContains,
-            contentContains, shelterNameContains, recruitmentId)) {
-            if(Objects.equals(count, RECRUITMENT_COUNT_NO_CACHE)) {
+        if (findRecruitmentsWithoutCondition(keyword, startDate, endDate, isClosed,
+            keywordCondition, recruitmentId)) {
+            if (Objects.equals(count, RECRUITMENT_COUNT_NO_CACHE)) {
                 count = recruitmentRepository.countFindRecruitmentsV2(
                     keyword,
                     startDate,
                     endDate,
                     isClosed,
-                    titleContains,
-                    contentContains,
-                    shelterNameContains
+                    keywordCondition
                 );
                 recruitmentCacheRepository.saveRecruitmentCount(count);
             }
@@ -173,17 +166,15 @@ public class RecruitmentService {
                 startDate,
                 endDate,
                 isClosed,
-                titleContains,
-                contentContains,
-                shelterNameContains
+                keywordCondition
             );
         }
 
-        if (findRecruitmentsWithoutCondition(keyword, startDate, endDate, isClosed, titleContains,
-            contentContains, shelterNameContains, recruitmentId)) {
+        if (findRecruitmentsWithoutCondition(keyword, startDate, endDate, isClosed,
+            keywordCondition, recruitmentId)) {
             Slice<FindRecruitmentResponse> cachedRecruitments
                 = recruitmentCacheRepository.findRecruitments(pageable);
-            if(canTrustCached(cachedRecruitments)) {
+            if (canTrustCached(cachedRecruitments)) {
                 return FindRecruitmentsResponse.fromCached(cachedRecruitments, count);
             }
         }
@@ -192,9 +183,7 @@ public class RecruitmentService {
             startDate,
             endDate,
             isClosed,
-            titleContains,
-            contentContains,
-            shelterNameContains,
+            keywordCondition,
             createdAt,
             recruitmentId,
             pageable);
@@ -206,9 +195,8 @@ public class RecruitmentService {
     }
 
     private boolean findRecruitmentsWithoutCondition(String keyword, LocalDate startDate,
-        LocalDate endDate, Boolean isClosed, Boolean titleContains, Boolean contentContains,
-        Boolean shelterNameContains, Long recruitmentId) {
-        return Objects.isNull(keyword) && titleContains && contentContains && shelterNameContains
+        LocalDate endDate, Boolean isClosed, KeywordCondition keywordCondition, Long recruitmentId) {
+        return Objects.isNull(keyword) && Objects.isNull(keywordCondition)
             && Objects.isNull(startDate) && Objects.isNull(endDate) && Objects.isNull(isClosed)
             && Objects.isNull(recruitmentId);
     }

@@ -21,6 +21,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.controller.KeywordCondition;
 import com.clova.anifriends.domain.recruitment.controller.RecruitmentStatusFilter;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentDetailResponse;
@@ -161,9 +162,7 @@ class RecruitmentServiceTest {
             LocalDate startDate = LocalDate.now();
             LocalDate endDate = LocalDate.now();
             String isClosed = "IS_CLOSED";
-            boolean title = false;
-            boolean content = false;
-            boolean shelterName = false;
+            KeywordCondition keywordCondition = new KeywordCondition(true, true, true);
             PageRequest pageRequest = PageRequest.of(0, 10);
             Shelter shelter = shelter();
             Recruitment recruitment = recruitment(shelter);
@@ -171,13 +170,13 @@ class RecruitmentServiceTest {
 
             given(recruitmentRepository.findRecruitments(keyword, startDate, endDate,
                 RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(),
-                title, content, shelterName, pageRequest)).willReturn(recruitments);
+                keywordCondition, pageRequest)).willReturn(recruitments);
 
             //when
             FindRecruitmentsResponse recruitmentsByVolunteer
                 = recruitmentService.findRecruitments(keyword, startDate, endDate,
-                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), title, content,
-                shelterName, pageRequest);
+                RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), keywordCondition,
+                pageRequest);
 
             //then
             PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
@@ -220,6 +219,7 @@ class RecruitmentServiceTest {
             boolean titleContains;
             boolean contentContains;
             boolean shelterNameContains;
+            KeywordCondition keywordCondition;
             LocalDateTime createdAt;
             Long recruitmentId;
 
@@ -232,6 +232,7 @@ class RecruitmentServiceTest {
                 titleContains = true;
                 contentContains = true;
                 shelterNameContains = true;
+                keywordCondition = new KeywordCondition(true, true, true);
                 createdAt = null;
                 recruitmentId = null;
             }
@@ -248,19 +249,17 @@ class RecruitmentServiceTest {
                 SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
 
                 given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
-                    isClosed, titleContains, contentContains, shelterNameContains, createdAt,
-                    recruitmentId, pageRequest))
+                    isClosed, keywordCondition, createdAt, recruitmentId, pageRequest))
                     .willReturn(recruitments);
                 given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
-                    isClosed, titleContains, contentContains, shelterNameContains))
+                    isClosed, keywordCondition))
                     .willReturn(Long.valueOf(recruitments.getSize()));
                 given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(-1L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsByVolunteer
                     = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
-                    isClosed, titleContains, contentContains, shelterNameContains, createdAt,
-                    recruitmentId, pageRequest);
+                    isClosed, keywordCondition, createdAt, recruitmentId, pageRequest);
 
                 //then
                 PageInfo pageInfo = recruitmentsByVolunteer.pageInfo();
@@ -288,34 +287,29 @@ class RecruitmentServiceTest {
                 //given
                 keyword = "keyword";
                 isClosed = true;
-                titleContains = true;
-                contentContains = false;
-                shelterNameContains = false;
+                keywordCondition = new KeywordCondition(true, false, false);
                 PageRequest pageRequest = PageRequest.of(0, 10);
                 Recruitment recruitment = recruitment(shelter);
                 ReflectionTestUtils.setField(recruitment, "recruitmentId", recruitmentId);
                 SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
 
                 given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
-                    isClosed, titleContains, contentContains, shelterNameContains, createdAt,
-                    recruitmentId, pageRequest))
+                    isClosed, keywordCondition, createdAt, recruitmentId, pageRequest))
                     .willReturn(recruitments);
                 given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
-                    isClosed, titleContains, contentContains, shelterNameContains))
+                    isClosed, keywordCondition))
                     .willReturn(Long.valueOf(recruitments.getSize()));
                 given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(-1L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsByVolunteer
                     = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
-                    isClosed, titleContains, contentContains, shelterNameContains, createdAt,
-                    recruitmentId, pageRequest);
+                    isClosed, keywordCondition, createdAt, recruitmentId, pageRequest);
 
                 //then
                 then(recruitmentRepository).should()
-                    .findRecruitmentsV2(keyword, startDate, endDate, isClosed, titleContains,
-                        contentContains, shelterNameContains, createdAt, recruitmentId,
-                        pageRequest);
+                    .findRecruitmentsV2(keyword, startDate, endDate, isClosed, keywordCondition,
+                        createdAt, recruitmentId, pageRequest);
             }
 
             @Test
@@ -331,25 +325,21 @@ class RecruitmentServiceTest {
                 SliceImpl<Recruitment> recruitments = new SliceImpl<>(List.of(recruitment));
 
                 given(recruitmentRepository.findRecruitmentsV2(keyword, startDate, endDate,
-                    isClosed, titleContains, contentContains, shelterNameContains, createdAt,
-                    recruitmentId, pageRequest))
+                    isClosed, keywordCondition, createdAt, recruitmentId, pageRequest))
                     .willReturn(recruitments);
                 given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
-                    isClosed, titleContains, contentContains, shelterNameContains))
-                    .willReturn(Long.valueOf(recruitments.getSize()));
+                    isClosed, keywordCondition)).willReturn(Long.valueOf(recruitments.getSize()));
                 given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(-1L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsByVolunteer
                     = recruitmentService.findRecruitmentsV2(keyword, startDate, endDate,
-                    isClosed, titleContains, contentContains, shelterNameContains, createdAt,
-                    recruitmentId, pageRequest);
+                    isClosed, keywordCondition, createdAt, recruitmentId, pageRequest);
 
                 //then
                 then(recruitmentRepository).should()
-                    .findRecruitmentsV2(keyword, startDate, endDate, isClosed, titleContains,
-                        contentContains, shelterNameContains, createdAt, recruitmentId,
-                        pageRequest);
+                    .findRecruitmentsV2(keyword, startDate, endDate, isClosed, keywordCondition,
+                        createdAt, recruitmentId, pageRequest);
             }
         }
 
@@ -361,9 +351,7 @@ class RecruitmentServiceTest {
             final LocalDate nullStartDate = null;
             final LocalDate nullEndDate = null;
             final Boolean nullIsClosed = null;
-            final boolean trueTitleContains = true;
-            final boolean trueContentContains = true;
-            final boolean trueShelterNameContains = true;
+            final KeywordCondition nullKeywordCondition = null;
             final LocalDateTime nullCreatedAt = null;
             final Long nullRecruitmentId = null;
 
@@ -386,17 +374,14 @@ class RecruitmentServiceTest {
 
                 //when
                 FindRecruitmentsResponse recruitmentsV2 = recruitmentService.findRecruitmentsV2(
-                    nullKeyword, nullStartDate, nullEndDate, nullIsClosed, trueTitleContains,
-                    trueContentContains, trueShelterNameContains, nullCreatedAt, nullRecruitmentId,
-                    pageRequest);
+                    nullKeyword, nullStartDate, nullEndDate, nullIsClosed, nullKeywordCondition,
+                    nullCreatedAt, nullRecruitmentId, pageRequest);
 
                 //then
                 then(recruitmentCacheRepository).should().findRecruitments(pageRequest);
                 then(recruitmentRepository).should(times(0))
                     .findRecruitmentsV2(nullKeyword, nullStartDate, nullEndDate, nullIsClosed,
-                        trueTitleContains, trueContentContains, trueShelterNameContains,
-                        nullCreatedAt,
-                        nullRecruitmentId, pageRequest);
+                        nullKeywordCondition, nullCreatedAt, nullRecruitmentId, pageRequest);
             }
 
             @Test
@@ -417,23 +402,20 @@ class RecruitmentServiceTest {
                     .willReturn(cachedRecruitments);
                 given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(10L);
                 given(recruitmentRepository.findRecruitmentsV2(nullKeyword, nullStartDate,
-                    nullEndDate, nullIsClosed, trueTitleContains, trueContentContains,
-                    trueShelterNameContains, nullCreatedAt, nullRecruitmentId, pageRequest))
-                    .willReturn(findRecruitments);
+                    nullEndDate, nullIsClosed, nullKeywordCondition, nullCreatedAt, nullRecruitmentId,
+                    pageRequest)).willReturn(findRecruitments);
                 given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(10L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsV2 = recruitmentService.findRecruitmentsV2(
                     nullKeyword, nullStartDate, nullEndDate,
-                    nullIsClosed, trueTitleContains, trueContentContains, trueShelterNameContains,
-                    nullCreatedAt, nullRecruitmentId, pageRequest);
+                    nullIsClosed, nullKeywordCondition, nullCreatedAt, nullRecruitmentId, pageRequest);
 
                 //then
                 then(recruitmentCacheRepository).should().findRecruitments(pageRequest);
                 then(recruitmentRepository).should()
                     .findRecruitmentsV2(nullKeyword, nullStartDate, nullEndDate, nullIsClosed,
-                        trueTitleContains, trueContentContains, trueShelterNameContains,
-                        nullCreatedAt, nullRecruitmentId, pageRequest);
+                        nullKeywordCondition, nullCreatedAt, nullRecruitmentId, pageRequest);
             }
         }
     }
