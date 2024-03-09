@@ -110,17 +110,13 @@ public class RecruitmentController {
         @ModelAttribute @Valid FindRecruitmentsByShelterRequest findRecruitmentsByShelterRequest,
         Pageable pageable
     ) {
-        KeywordConditionByShelter keywordConditionByShelter = findRecruitmentsByShelterRequest.keywordFilter()
-            .getKeywordConditionByShelter();
-
         return ResponseEntity.ok(recruitmentService.findRecruitmentsByShelter(
             shelterId,
             findRecruitmentsByShelterRequest.keyword(),
             findRecruitmentsByShelterRequest.startDate(),
             findRecruitmentsByShelterRequest.endDate(),
             findRecruitmentsByShelterRequest.closedFilter().getIsClosed(),
-            keywordConditionByShelter.contentFilter(),
-            keywordConditionByShelter.titleFilter(),
+            findRecruitmentsByShelterRequest.keywordFilter().getKeywordConditionByShelter(),
             pageable
         ));
     }

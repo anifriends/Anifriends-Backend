@@ -358,7 +358,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
             pageResult);
 
         when(recruitmentService.findRecruitmentsByShelter(anyLong(), any(), any(), any(),
-            anyBoolean(), anyBoolean(), anyBoolean(), any()))
+            anyBoolean(), any(), any()))
             .thenReturn(response);
 
         // when

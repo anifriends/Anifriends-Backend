@@ -2,6 +2,7 @@ package com.clova.anifriends.domain.recruitment.repository;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.controller.KeywordCondition;
+import com.clova.anifriends.domain.recruitment.controller.KeywordConditionByShelter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
@@ -21,8 +22,8 @@ public interface RecruitmentRepositoryCustom {
         LocalDate endDate, Boolean isClosed, KeywordCondition keywordCondition);
 
     Page<Recruitment> findRecruitmentsByShelterOrderByCreatedAt(long shelterId, String keyword,
-        LocalDate startDate, LocalDate endDate, Boolean isClosed, Boolean content, Boolean title,
-        Pageable pageable);
+        LocalDate startDate, LocalDate endDate, Boolean isClosed,
+        KeywordConditionByShelter keywordConditionByShelter, Pageable pageable);
 
     Page<Recruitment> findShelterRecruitments(long shelterId, Pageable pageable);
 }

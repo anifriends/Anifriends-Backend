@@ -10,6 +10,7 @@ import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.controller.KeywordCondition;
+import com.clova.anifriends.domain.recruitment.controller.KeywordConditionByShelter;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -214,8 +215,7 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
             String keyword = "ab";
             LocalDate startDate = LocalDate.now().plusMonths(3);
             LocalDate endDate = LocalDate.now().plusMonths(5);
-            boolean content = true;
-            boolean title = true;
+            KeywordConditionByShelter allContains = new KeywordConditionByShelter(true, true);
             Boolean isClosed = false;
             PageRequest pageable = PageRequest.of(0, 10);
 
@@ -226,8 +226,7 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
                 startDate,
                 endDate,
                 isClosed,
-                content,
-                title,
+                allContains,
                 pageable
             );
 
@@ -285,7 +284,6 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
             // when
             Page<Recruitment> recruitments = recruitmentRepository.findRecruitmentsByShelterOrderByCreatedAt(
                 shelter.getShelterId(),
-                null,
                 null,
                 null,
                 null,

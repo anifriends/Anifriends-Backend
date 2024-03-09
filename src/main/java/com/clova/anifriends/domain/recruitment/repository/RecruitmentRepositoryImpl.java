@@ -5,6 +5,7 @@ import static com.clova.anifriends.domain.shelter.QShelter.shelter;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.controller.KeywordCondition;
+import com.clova.anifriends.domain.recruitment.controller.KeywordConditionByShelter;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -192,13 +193,11 @@ public class RecruitmentRepositoryImpl implements
 
     @Override
     public Page<Recruitment> findRecruitmentsByShelterOrderByCreatedAt(long shelterId,
-        String keyword, LocalDate startDate, LocalDate endDate, Boolean isClosed, Boolean content,
-        Boolean title,
-        Pageable pageable) {
-
+        String keyword, LocalDate startDate, LocalDate endDate, Boolean isClosed,
+        KeywordConditionByShelter keywordConditionByShelter, Pageable pageable) {
         Predicate predicate = recruitment.shelter.shelterId.eq(shelterId)
             .and(getDateCondition(startDate, endDate))
-            .and(getKeywordCondition(keyword, content, title))
+            .and(getKeywordCondition(keyword, keywordConditionByShelter))
             .and(recruitmentIsClosed(isClosed));
 
         List<Recruitment> recruitments = query.selectFrom(recruitment)
@@ -247,10 +246,16 @@ public class RecruitmentRepositoryImpl implements
         return predicate;
     }
 
-    Predicate getKeywordCondition(String keyword, Boolean content, Boolean title) {
-        return nullSafeBuilder(
-            () -> title != null ? recruitmentTitleContains(keyword, title) : null)
-            .or(nullSafeBuilder(
-                () -> content != null ? recruitmentContentContains(keyword, content) : null));
+    Predicate getKeywordCondition(String keyword, KeywordConditionByShelter keywordCondition) {
+        if (Objects.isNull(keywordCondition)) {
+            return nullSafeBuilder(() -> recruitmentTitleContains(keyword,
+                DEFAULT_KEYWORD_CONDITION.titleFilter()))
+                .or(nullSafeBuilder(() -> recruitmentContentContains(keyword,
+                    DEFAULT_KEYWORD_CONDITION.contentFilter())));
+        }
+        return nullSafeBuilder(() -> recruitmentTitleContains(keyword,
+            keywordCondition.titleFilter()))
+            .or(nullSafeBuilder(() -> recruitmentContentContains(keyword,
+                keywordCondition.contentFilter())));
     }
 }
