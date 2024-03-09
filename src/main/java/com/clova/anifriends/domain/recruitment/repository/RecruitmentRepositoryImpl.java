@@ -235,7 +235,7 @@ public class RecruitmentRepositoryImpl implements
         return new PageImpl<>(recruitments, pageable, count == null ? 0 : count);
     }
 
-    Predicate getDateCondition(LocalDate startDate, LocalDate endDate) {
+    private BooleanExpression getDateCondition(LocalDate startDate, LocalDate endDate) {
         BooleanExpression predicate = recruitment.isNotNull();
         if (startDate != null) {
             predicate = predicate.and(recruitment.info.startTime.goe(startDate.atStartOfDay()));
@@ -246,7 +246,7 @@ public class RecruitmentRepositoryImpl implements
         return predicate;
     }
 
-    Predicate getKeywordCondition(String keyword, KeywordConditionByShelter keywordCondition) {
+    private BooleanBuilder getKeywordCondition(String keyword, KeywordConditionByShelter keywordCondition) {
         if (Objects.isNull(keywordCondition)) {
             return nullSafeBuilder(() -> recruitmentTitleContains(keyword,
                 DEFAULT_KEYWORD_CONDITION.titleFilter()))
