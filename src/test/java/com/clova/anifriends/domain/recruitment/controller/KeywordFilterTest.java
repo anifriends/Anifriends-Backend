@@ -2,6 +2,9 @@ package com.clova.anifriends.domain.recruitment.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.clova.anifriends.domain.recruitment.dto.request.KeywordFilter;
+import com.clova.anifriends.domain.recruitment.service.KeywordCondition;
+import com.clova.anifriends.domain.recruitment.service.KeywordConditionByShelter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

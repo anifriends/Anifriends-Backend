@@ -4,6 +4,8 @@ import static com.clova.anifriends.domain.recruitment.QRecruitment.recruitment;
 import static com.clova.anifriends.domain.shelter.QShelter.shelter;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.service.KeywordCondition;
+import com.clova.anifriends.domain.recruitment.service.KeywordConditionByShelter;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -26,18 +28,20 @@ import org.springframework.stereotype.Repository;
 public class RecruitmentRepositoryImpl implements
     RecruitmentRepositoryCustom {
 
+    private static final KeywordCondition DEFAULT_KEYWORD_CONDITION
+        = new KeywordCondition(true, true, true);
+
     private final JPAQueryFactory query;
 
     @Override
     public Page<Recruitment> findRecruitments(String keyword, LocalDate startDate,
-        LocalDate endDate, Boolean isClosed, boolean titleContains, boolean contentContains,
-        boolean shelterNameContains, Pageable pageable) {
+        LocalDate endDate, Boolean isClosed, KeywordCondition keywordCondition, Pageable pageable) {
         List<Recruitment> content = query.select(recruitment)
             .from(recruitment)
             .join(recruitment.shelter).fetchJoin()
             .leftJoin(shelter.image).fetchJoin()
             .where(
-                keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
+                keywordSearch(keyword, keywordCondition),
                 recruitmentIsClosed(isClosed),
                 recruitmentStartTimeGoe(startDate),
                 recruitmentStartTimeLoe(endDate)
@@ -51,7 +55,7 @@ public class RecruitmentRepositoryImpl implements
             .from(recruitment)
             .join(recruitment.shelter)
             .where(
-                keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
+                keywordSearch(keyword, keywordCondition),
                 recruitmentIsClosed(isClosed),
                 recruitmentStartTimeGoe(startDate),
                 recruitmentStartTimeLoe(endDate)
@@ -61,15 +65,15 @@ public class RecruitmentRepositoryImpl implements
 
     @Override
     public Slice<Recruitment> findRecruitmentsV2(String keyword, LocalDate startDate,
-        LocalDate endDate, Boolean isClosed, boolean titleContains, boolean contentContains,
-        boolean shelterNameContains, LocalDateTime createdAt, Long recruitmentId,
+        LocalDate endDate, Boolean isClosed, KeywordCondition keywordCondition,
+        LocalDateTime createdAt, Long recruitmentId,
         Pageable pageable) {
         List<Recruitment> content = query.select(recruitment)
             .from(recruitment)
             .join(recruitment.shelter).fetchJoin()
             .leftJoin(shelter.image).fetchJoin()
             .where(
-                keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
+                keywordSearch(keyword, keywordCondition),
                 recruitmentIsClosed(isClosed),
                 recruitmentStartTimeGoe(startDate),
                 recruitmentStartTimeLoe(endDate),
@@ -95,14 +99,13 @@ public class RecruitmentRepositoryImpl implements
 
     @Override
     public Long countFindRecruitmentsV2(String keyword, LocalDate startDate,
-        LocalDate endDate, Boolean isClosed, boolean titleContains, boolean contentContains,
-        boolean shelterNameContains) {
+        LocalDate endDate, Boolean isClosed, KeywordCondition keywordCondition) {
 
         Long count = query.select(recruitment.count())
             .from(recruitment)
             .join(recruitment.shelter)
             .where(
-                keywordSearch(keyword, titleContains, contentContains, shelterNameContains),
+                keywordSearch(keyword, keywordCondition),
                 recruitmentIsClosed(isClosed),
                 recruitmentStartTimeGoe(startDate),
                 recruitmentStartTimeLoe(endDate)
@@ -124,11 +127,22 @@ public class RecruitmentRepositoryImpl implements
             );
     }
 
-    private BooleanBuilder keywordSearch(String keyword, boolean titleFilter,
-        boolean contentFilter, boolean shelterNameFilter) {
-        return nullSafeBuilder(() -> recruitmentTitleContains(keyword, titleFilter))
-            .or(nullSafeBuilder(() -> recruitmentContentContains(keyword, contentFilter)))
-            .or(nullSafeBuilder(() -> recruitmentShelterNameContains(keyword, shelterNameFilter)));
+    private BooleanBuilder keywordSearch(String keyword, KeywordCondition keywordCondition) {
+        if (Objects.isNull(keywordCondition)) {
+            return nullSafeBuilder(() -> recruitmentTitleContains(keyword,
+                DEFAULT_KEYWORD_CONDITION.titleFilter()))
+                .or(nullSafeBuilder(() -> recruitmentContentContains(keyword,
+                    DEFAULT_KEYWORD_CONDITION.contentFilter())))
+                .or(nullSafeBuilder(() -> recruitmentShelterNameContains(keyword,
+                    DEFAULT_KEYWORD_CONDITION.shelterNameFilter())));
+        }
+        return nullSafeBuilder(
+            () -> recruitmentTitleContains(keyword,
+                keywordCondition.titleFilter()))
+            .or(nullSafeBuilder(() -> recruitmentContentContains(keyword,
+                keywordCondition.contentFilter())))
+            .or(nullSafeBuilder(() -> recruitmentShelterNameContains(keyword,
+                keywordCondition.shelterNameFilter())));
     }
 
     private BooleanExpression recruitmentTitleContains(String keyword, boolean titleFilter) {
@@ -179,13 +193,11 @@ public class RecruitmentRepositoryImpl implements
 
     @Override
     public Page<Recruitment> findRecruitmentsByShelterOrderByCreatedAt(long shelterId,
-        String keyword, LocalDate startDate, LocalDate endDate, Boolean isClosed, Boolean content,
-        Boolean title,
-        Pageable pageable) {
-
+        String keyword, LocalDate startDate, LocalDate endDate, Boolean isClosed,
+        KeywordConditionByShelter keywordConditionByShelter, Pageable pageable) {
         Predicate predicate = recruitment.shelter.shelterId.eq(shelterId)
             .and(getDateCondition(startDate, endDate))
-            .and(getKeywordCondition(keyword, content, title))
+            .and(getKeywordCondition(keyword, keywordConditionByShelter))
             .and(recruitmentIsClosed(isClosed));
 
         List<Recruitment> recruitments = query.selectFrom(recruitment)
@@ -223,7 +235,7 @@ public class RecruitmentRepositoryImpl implements
         return new PageImpl<>(recruitments, pageable, count == null ? 0 : count);
     }
 
-    Predicate getDateCondition(LocalDate startDate, LocalDate endDate) {
+    private BooleanExpression getDateCondition(LocalDate startDate, LocalDate endDate) {
         BooleanExpression predicate = recruitment.isNotNull();
         if (startDate != null) {
             predicate = predicate.and(recruitment.info.startTime.goe(startDate.atStartOfDay()));
@@ -234,8 +246,16 @@ public class RecruitmentRepositoryImpl implements
         return predicate;
     }
 
-    Predicate getKeywordCondition(String keyword, Boolean content, Boolean title) {
-        return nullSafeBuilder(() -> title != null ? recruitmentTitleContains(keyword, title) : null)
-            .or(nullSafeBuilder(() -> content != null ? recruitmentContentContains(keyword, content) : null));
+    private BooleanBuilder getKeywordCondition(String keyword, KeywordConditionByShelter keywordCondition) {
+        if (Objects.isNull(keywordCondition)) {
+            return nullSafeBuilder(() -> recruitmentTitleContains(keyword,
+                DEFAULT_KEYWORD_CONDITION.titleFilter()))
+                .or(nullSafeBuilder(() -> recruitmentContentContains(keyword,
+                    DEFAULT_KEYWORD_CONDITION.contentFilter())));
+        }
+        return nullSafeBuilder(() -> recruitmentTitleContains(keyword,
+            keywordCondition.titleFilter()))
+            .or(nullSafeBuilder(() -> recruitmentContentContains(keyword,
+                keywordCondition.contentFilter())));
     }
 }

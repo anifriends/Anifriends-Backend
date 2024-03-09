@@ -36,6 +36,7 @@ import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.dto.request.KeywordFilter;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.UpdateRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;
@@ -184,7 +185,6 @@ class RecruitmentControllerTest extends BaseControllerTest {
         params.add("startDate", LocalDate.now().toString());
         params.add("endDate", LocalDate.now().toString());
         params.add("closedFilter", "IS_OPENED");
-        params.add("keywordFilter", KeywordFilter.IS_CONTENT.getName());
         params.add("pageNumber", "0");
         params.add("pageSize", "10");
         Shelter shelter = shelter();
@@ -197,8 +197,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
         FindRecruitmentsResponse response = new FindRecruitmentsResponse(
             List.of(findRecruitmentResponse), pageInfo);
 
-        given(recruitmentService.findRecruitments(anyString(), any(), any(),
-            any(), anyBoolean(), anyBoolean(), anyBoolean(), any()))
+        given(recruitmentService.findRecruitments(anyString(), any(), any(), any(), any(), any()))
             .willReturn(response);
 
         //when
@@ -280,7 +279,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
             List.of(findRecruitmentResponse), pageInfo);
 
         given(recruitmentService.findRecruitmentsV2(anyString(), any(), any(),
-            any(), anyBoolean(), anyBoolean(), anyBoolean(), any(), anyLong(), any()))
+            any(), any(), any(), anyLong(), any()))
             .willReturn(response);
 
         //when
@@ -359,7 +358,7 @@ class RecruitmentControllerTest extends BaseControllerTest {
             pageResult);
 
         when(recruitmentService.findRecruitmentsByShelter(anyLong(), any(), any(), any(),
-            anyBoolean(), anyBoolean(), anyBoolean(), any()))
+            anyBoolean(), any(), any()))
             .thenReturn(response);
 
         // when

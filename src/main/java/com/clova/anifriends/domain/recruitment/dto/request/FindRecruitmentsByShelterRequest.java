@@ -1,7 +1,5 @@
 package com.clova.anifriends.domain.recruitment.dto.request;
 
-import com.clova.anifriends.domain.recruitment.controller.KeywordFilter;
-import com.clova.anifriends.domain.recruitment.controller.RecruitmentStatusFilter;
 import java.time.LocalDate;
 
 public record FindRecruitmentsByShelterRequest(

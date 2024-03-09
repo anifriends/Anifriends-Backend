@@ -7,7 +7,7 @@ import com.clova.anifriends.domain.animal.vo.AnimalGender;
 import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.common.EnumType;
-import com.clova.anifriends.domain.recruitment.controller.KeywordFilter;
+import com.clova.anifriends.domain.recruitment.dto.request.KeywordFilter;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import java.util.Arrays;
 import java.util.Map;

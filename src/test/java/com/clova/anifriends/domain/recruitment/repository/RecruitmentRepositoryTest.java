@@ -9,6 +9,8 @@ import com.clova.anifriends.base.BaseRepositoryTest;
 import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.applicant.support.ApplicantFixture;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.service.KeywordCondition;
+import com.clova.anifriends.domain.recruitment.service.KeywordConditionByShelter;
 import com.clova.anifriends.domain.recruitment.support.fixture.RecruitmentFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
@@ -72,7 +74,6 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
     @DisplayName("findRecruitments 메서드 실행 시")
     class FindRecruitmentsTest {
 
-        //todo: 다양한 케이스에 대한 테스트를 작성할 것
         @Test
         @DisplayName("성공: 모든 인자가 null")
         void findRecruitmentsWhenArgsAreNull() {
@@ -85,8 +86,7 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
 
             //when
             Page<Recruitment> recruitments = recruitmentRepository.findRecruitments(null, null,
-                null, null, false, false, false,
-                pageRequest);
+                null, null, null, pageRequest);
 
             //then
             assertThat(recruitments.getTotalElements()).isEqualTo(1);
@@ -102,16 +102,13 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
             String keyword = shelter.getName();
             LocalDate dateCondition = recruitment.getStartTime().toLocalDate();
             boolean isClosed = false;
-            boolean titleFilter = true;
-            boolean contentFilter = true;
-            boolean shelterNameFilter = true;
+            KeywordCondition allContains = new KeywordCondition(true, true, true);
             shelterRepository.save(shelter);
             recruitmentRepository.save(recruitment);
 
             //when
             Page<Recruitment> recruitments = recruitmentRepository.findRecruitments(keyword,
-                dateCondition, dateCondition, isClosed, titleFilter, contentFilter,
-                shelterNameFilter, pageRequest);
+                dateCondition, dateCondition, isClosed, allContains, pageRequest);
 
             //then
             assertThat(recruitments.getTotalElements()).isEqualTo(1);
@@ -124,7 +121,6 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
     @DisplayName("findRecruitmentsV2 메서드 실행 시")
     class FindRecruitmentsV2Test {
 
-        //todo: 다양한 케이스에 대한 테스트를 작성할 것
         @Test
         @DisplayName("성공: 모든 인자가 null")
         void findRecruitmentsV2WhenArgsAreNull() {
@@ -137,8 +133,7 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
 
             //when
             Slice<Recruitment> recruitments = recruitmentRepository.findRecruitmentsV2(null, null,
-                null, null, false, false, false, LocalDateTime.now(),
-                recruitment.getRecruitmentId(),
+                null, null, null, LocalDateTime.now(), recruitment.getRecruitmentId(),
                 pageRequest);
 
             //then
@@ -150,21 +145,18 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
     @DisplayName("countFindRecruitmentsV2 메서드 실행 시")
     class CountFindRecruitmentsV2Test {
 
-        //todo: 다양한 케이스에 대한 테스트를 작성할 것
         @Test
         @DisplayName("성공: 모든 인자가 null")
         void countFindRecruitmentsV2WhenArgsAreNull() {
             //given
             Shelter shelter = ShelterFixture.shelter();
             Recruitment recruitment = RecruitmentFixture.recruitment(shelter);
-            PageRequest pageRequest = PageRequest.of(0, 10);
             shelterRepository.save(shelter);
             recruitmentRepository.save(recruitment);
 
             //when
             Long count = recruitmentRepository.countFindRecruitmentsV2(null, null,
-                null, null, false, false, false
-            );
+                null, null, null);
 
             //then
             assertThat(count).isEqualTo(1);
@@ -223,8 +215,7 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
             String keyword = "ab";
             LocalDate startDate = LocalDate.now().plusMonths(3);
             LocalDate endDate = LocalDate.now().plusMonths(5);
-            boolean content = true;
-            boolean title = true;
+            KeywordConditionByShelter allContains = new KeywordConditionByShelter(true, true);
             Boolean isClosed = false;
             PageRequest pageable = PageRequest.of(0, 10);
 
@@ -235,8 +226,7 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
                 startDate,
                 endDate,
                 isClosed,
-                content,
-                title,
+                allContains,
                 pageable
             );
 
@@ -294,7 +284,6 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
             // when
             Page<Recruitment> recruitments = recruitmentRepository.findRecruitmentsByShelterOrderByCreatedAt(
                 shelter.getShelterId(),
-                null,
                 null,
                 null,
                 null,

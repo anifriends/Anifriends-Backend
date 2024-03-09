@@ -7,7 +7,7 @@ import com.clova.anifriends.domain.applicant.Applicant;
 import com.clova.anifriends.domain.common.event.ImageDeletionEvent;
 import com.clova.anifriends.domain.recruitment.Recruitment;
 import com.clova.anifriends.domain.recruitment.RecruitmentImage;
-import com.clova.anifriends.domain.recruitment.controller.RecruitmentStatusFilter;
+import com.clova.anifriends.domain.recruitment.dto.request.RecruitmentStatusFilter;
 import com.clova.anifriends.domain.recruitment.dto.response.FindRecruitmentsResponse;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentCacheRepository;
 import com.clova.anifriends.domain.recruitment.repository.RecruitmentRepository;
@@ -253,24 +253,22 @@ public class RecruitmentIntegrationTest extends BaseIntegrationTest {
                 LocalDate startDate = null;
                 LocalDate endDate = null;
                 String isClosed = RecruitmentStatusFilter.ALL.getName();
-                Boolean title = true;
-                Boolean content = true;
-                Boolean shelterName = true;
+                KeywordCondition allContains = new KeywordCondition(true, true, true);
                 PageRequest pageRequest = PageRequest.of(0, 10);
 
                 // when
                 FindRecruitmentsResponse dbRecruitmentCountResponse = recruitmentService.findRecruitmentsV2(
                     keyword, startDate, endDate,
-                    RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), title, content,
-                    shelterName, savedRecruitment.getCreatedAt(),
+                    RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), allContains,
+                    savedRecruitment.getCreatedAt(),
                     savedRecruitment.getRecruitmentId(), pageRequest
                 );
 
                 FindRecruitmentsResponse cachedRecruitmentCountResponse = recruitmentService.findRecruitmentsV2(
                     keyword, startDate, endDate,
-                    RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), title, content,
-                    shelterName, savedRecruitment.getCreatedAt(),
-                    savedRecruitment.getRecruitmentId(), pageRequest
+                    RecruitmentStatusFilter.valueOf(isClosed).getIsClosed(), allContains,
+                    savedRecruitment.getCreatedAt(), savedRecruitment.getRecruitmentId(),
+                    pageRequest
                 );
 
                 // then

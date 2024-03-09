@@ -47,10 +47,10 @@ class RecruitmentCacheServiceTest {
             PageRequest pageRequest = PageRequest.of(0, 30);
             SliceImpl<Recruitment> recruitmentSlice = new SliceImpl<>(recruitments, pageRequest,
                 true);
+            KeywordCondition allContains = new KeywordCondition(true, true, true);
 
-            given(recruitmentRepository.findRecruitmentsV2(null, null, null, null, true, true, true,
-                    null, null, pageRequest))
-                .willReturn(recruitmentSlice);
+            given(recruitmentRepository.findRecruitmentsV2(null, null, null, null, allContains,
+                null, null, pageRequest)).willReturn(recruitmentSlice);
 
             //when
             recruitmentCacheService.synchronizeRecruitmentsCache();

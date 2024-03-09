@@ -14,7 +14,7 @@ import com.clova.anifriends.domain.animal.vo.AnimalType;
 import com.clova.anifriends.domain.applicant.vo.ApplicantStatus;
 import com.clova.anifriends.domain.common.EnumType;
 import com.clova.anifriends.base.BaseControllerTest;
-import com.clova.anifriends.domain.recruitment.controller.KeywordFilter;
+import com.clova.anifriends.domain.recruitment.dto.request.KeywordFilter;
 import com.clova.anifriends.domain.volunteer.vo.VolunteerGender;
 import com.clova.anifriends.global.exception.ErrorCode;
 import java.util.Arrays;

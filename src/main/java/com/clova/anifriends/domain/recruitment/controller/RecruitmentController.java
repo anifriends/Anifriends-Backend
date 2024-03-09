@@ -77,16 +77,12 @@ public class RecruitmentController {
     public ResponseEntity<FindRecruitmentsResponse> findRecruitments(
         @ModelAttribute @Valid FindRecruitmentsRequest findRecruitmentsRequest,
         Pageable pageable) {
-        KeywordCondition keywordCondition = findRecruitmentsRequest.keywordFilter()
-            .getKeywordCondition();
         return ResponseEntity.ok(recruitmentService.findRecruitments(
             findRecruitmentsRequest.keyword(),
             findRecruitmentsRequest.startDate(),
             findRecruitmentsRequest.endDate(),
             findRecruitmentsRequest.closedFilter().getIsClosed(),
-            keywordCondition.titleFilter(),
-            keywordCondition.contentFilter(),
-            keywordCondition.shelterNameFilter(),
+            findRecruitmentsRequest.keywordFilter().getKeywordCondition(),
             pageable
         ));
     }
@@ -95,17 +91,12 @@ public class RecruitmentController {
     public ResponseEntity<FindRecruitmentsResponse> findRecruitmentsV2(
         @ModelAttribute @Valid FindRecruitmentsRequestV2 findRecruitmentsRequestV2,
         Pageable pageable) {
-        KeywordCondition keywordCondition = findRecruitmentsRequestV2.keywordFilter()
-            .getKeywordCondition();
-
         return ResponseEntity.ok(recruitmentService.findRecruitmentsV2(
             findRecruitmentsRequestV2.keyword(),
             findRecruitmentsRequestV2.startDate(),
             findRecruitmentsRequestV2.endDate(),
             findRecruitmentsRequestV2.closedFilter().getIsClosed(),
-            keywordCondition.titleFilter(),
-            keywordCondition.contentFilter(),
-            keywordCondition.shelterNameFilter(),
+            findRecruitmentsRequestV2.keywordFilter().getKeywordCondition(),
             findRecruitmentsRequestV2.createdAt(),
             findRecruitmentsRequestV2.recruitmentId(),
             pageable
@@ -119,17 +110,13 @@ public class RecruitmentController {
         @ModelAttribute @Valid FindRecruitmentsByShelterRequest findRecruitmentsByShelterRequest,
         Pageable pageable
     ) {
-        KeywordConditionByShelter keywordConditionByShelter = findRecruitmentsByShelterRequest.keywordFilter()
-            .getKeywordConditionByShelter();
-
         return ResponseEntity.ok(recruitmentService.findRecruitmentsByShelter(
             shelterId,
             findRecruitmentsByShelterRequest.keyword(),
             findRecruitmentsByShelterRequest.startDate(),
             findRecruitmentsByShelterRequest.endDate(),
             findRecruitmentsByShelterRequest.closedFilter().getIsClosed(),
-            keywordConditionByShelter.contentFilter(),
-            keywordConditionByShelter.titleFilter(),
+            findRecruitmentsByShelterRequest.keywordFilter().getKeywordConditionByShelter(),
             pageable
         ));
     }
