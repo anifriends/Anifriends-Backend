@@ -72,7 +72,7 @@ class RecruitmentRepositoryTest extends BaseRepositoryTest {
     @Nested
     @DisplayName("findRecruitments 메서드 실행 시")
     class FindRecruitmentsTest {
-        
+
         @Test
         @DisplayName("성공: 모든 인자가 null")
         void findRecruitmentsWhenArgsAreNull() {

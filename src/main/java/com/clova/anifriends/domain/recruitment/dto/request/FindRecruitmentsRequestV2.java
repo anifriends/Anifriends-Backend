@@ -28,7 +28,7 @@ public record FindRecruitmentsRequestV2(
         this.startDate = startDate;
         this.endDate = endDate;
         this.closedFilter = closedFilter == null ? RecruitmentStatusFilter.ALL : closedFilter;
-        this.keywordFilter = keywordFilter == null ? KeywordFilter.ALL : keywordFilter;
+        this.keywordFilter = keywordFilter;
         this.recruitmentId = recruitmentId;
         this.createdAt = createdAt;
     }

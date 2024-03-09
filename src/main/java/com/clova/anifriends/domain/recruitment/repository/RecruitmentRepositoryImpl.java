@@ -27,6 +27,9 @@ import org.springframework.stereotype.Repository;
 public class RecruitmentRepositoryImpl implements
     RecruitmentRepositoryCustom {
 
+    private static final KeywordCondition DEFAULT_KEYWORD_CONDITION
+        = new KeywordCondition(true, true, true);
+
     private final JPAQueryFactory query;
 
     @Override
@@ -124,13 +127,21 @@ public class RecruitmentRepositoryImpl implements
     }
 
     private BooleanBuilder keywordSearch(String keyword, KeywordCondition keywordCondition) {
+        if (Objects.isNull(keywordCondition)) {
+            return nullSafeBuilder(() -> recruitmentTitleContains(keyword,
+                DEFAULT_KEYWORD_CONDITION.titleFilter()))
+                .or(nullSafeBuilder(() -> recruitmentContentContains(keyword,
+                    DEFAULT_KEYWORD_CONDITION.contentFilter())))
+                .or(nullSafeBuilder(() -> recruitmentShelterNameContains(keyword,
+                    DEFAULT_KEYWORD_CONDITION.shelterNameFilter())));
+        }
         return nullSafeBuilder(
-            () -> recruitmentTitleContains(keyword, keywordCondition.titleFilter()))
-            .or(
-                nullSafeBuilder(
-                () -> recruitmentContentContains(keyword, keywordCondition.contentFilter())))
-            .or(nullSafeBuilder(
-                () -> recruitmentShelterNameContains(keyword, keywordCondition.shelterNameFilter())));
+            () -> recruitmentTitleContains(keyword,
+                keywordCondition.titleFilter()))
+            .or(nullSafeBuilder(() -> recruitmentContentContains(keyword,
+                keywordCondition.contentFilter())))
+            .or(nullSafeBuilder(() -> recruitmentShelterNameContains(keyword,
+                keywordCondition.shelterNameFilter())));
     }
 
     private BooleanExpression recruitmentTitleContains(String keyword, boolean titleFilter) {
@@ -237,7 +248,9 @@ public class RecruitmentRepositoryImpl implements
     }
 
     Predicate getKeywordCondition(String keyword, Boolean content, Boolean title) {
-        return nullSafeBuilder(() -> title != null ? recruitmentTitleContains(keyword, title) : null)
-            .or(nullSafeBuilder(() -> content != null ? recruitmentContentContains(keyword, content) : null));
+        return nullSafeBuilder(
+            () -> title != null ? recruitmentTitleContains(keyword, title) : null)
+            .or(nullSafeBuilder(
+                () -> content != null ? recruitmentContentContains(keyword, content) : null));
     }
 }
