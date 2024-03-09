@@ -185,7 +185,6 @@ class RecruitmentControllerTest extends BaseControllerTest {
         params.add("startDate", LocalDate.now().toString());
         params.add("endDate", LocalDate.now().toString());
         params.add("closedFilter", "IS_OPENED");
-        params.add("keywordFilter", KeywordFilter.IS_CONTENT.getName());
         params.add("pageNumber", "0");
         params.add("pageSize", "10");
         Shelter shelter = shelter();
