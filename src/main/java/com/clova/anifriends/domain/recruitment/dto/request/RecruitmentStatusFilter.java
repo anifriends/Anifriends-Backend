@@ -1,4 +1,4 @@
-package com.clova.anifriends.domain.recruitment.controller;
+package com.clova.anifriends.domain.recruitment.dto.request;
 
 import com.clova.anifriends.domain.common.EnumType;
 import lombok.RequiredArgsConstructor;

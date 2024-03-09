@@ -4,8 +4,8 @@ import static com.clova.anifriends.domain.recruitment.QRecruitment.recruitment;
 import static com.clova.anifriends.domain.shelter.QShelter.shelter;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.controller.KeywordCondition;
-import com.clova.anifriends.domain.recruitment.controller.KeywordConditionByShelter;
+import com.clova.anifriends.domain.recruitment.service.KeywordCondition;
+import com.clova.anifriends.domain.recruitment.service.KeywordConditionByShelter;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;

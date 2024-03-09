@@ -36,6 +36,7 @@ import com.clova.anifriends.base.BaseControllerTest;
 import com.clova.anifriends.docs.format.DocumentationFormatGenerator;
 import com.clova.anifriends.domain.common.PageInfo;
 import com.clova.anifriends.domain.recruitment.Recruitment;
+import com.clova.anifriends.domain.recruitment.dto.request.KeywordFilter;
 import com.clova.anifriends.domain.recruitment.dto.request.RegisterRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.request.UpdateRecruitmentRequest;
 import com.clova.anifriends.domain.recruitment.dto.response.FindCompletedRecruitmentsResponse;

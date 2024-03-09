@@ -1,8 +1,8 @@
 package com.clova.anifriends.domain.recruitment.repository;
 
 import com.clova.anifriends.domain.recruitment.Recruitment;
-import com.clova.anifriends.domain.recruitment.controller.KeywordCondition;
-import com.clova.anifriends.domain.recruitment.controller.KeywordConditionByShelter;
+import com.clova.anifriends.domain.recruitment.service.KeywordCondition;
+import com.clova.anifriends.domain.recruitment.service.KeywordConditionByShelter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
