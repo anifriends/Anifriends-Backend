@@ -137,7 +137,6 @@ public class AnimalService {
         Long animalId,
         @PageableDefault() Pageable pageable
     ) {
-
         if (isFirstPage(type, active, neuteredFilter, age, gender, size, createdAt, animalId)) {
             return animalCacheRepository.findAnimals(pageable.getPageSize(),
                 animalCacheRepository.getTotalNumberOfAnimals());
@@ -172,8 +171,7 @@ public class AnimalService {
         Animal animal = getAnimalByAnimalIdAndShelterId(animalId, shelterId);
         animal.updateAdoptStatus(isAdopted);
         if (isAdopted == true) {
-            animalCacheRepository.deleteAnimal(animal);
-            animalCacheRepository.decreaseTotalNumberOfAnimals();
+            deleteFromCache(animal);
         }
     }
 
@@ -192,15 +190,18 @@ public class AnimalService {
         String information,
         List<String> imageUrls
     ) {
-        Animal foundAnimal = getAnimalByAnimalIdAndShelterIdWithImages(animalId, shelterId);
-        animalCacheRepository.deleteAnimal(foundAnimal);
+        Animal animal = getAnimalByAnimalIdAndShelterIdWithImages(animalId, shelterId);
+        long number = animalCacheRepository.deleteAnimal(animal);
 
-        List<String> imagesToDelete = foundAnimal.findImagesToDelete(imageUrls);
+        List<String> imagesToDelete = animal.findImagesToDelete(imageUrls);
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
 
-        foundAnimal.updateAnimal(name, birthDate, type, breed, gender, isNeutered, active, weight,
+        animal.updateAnimal(name, birthDate, type, breed, gender, isNeutered, active, weight,
             information, imageUrls);
-        animalCacheRepository.saveAnimal(foundAnimal);
+
+        if (number > 0) {
+            animalCacheRepository.saveAnimal(animal);
+        }
     }
 
     @Transactional
@@ -209,6 +210,10 @@ public class AnimalService {
         List<String> imagesToDelete = animal.getImages();
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
         animalRepository.delete(animal);
+        deleteFromCache(animal);
+    }
+
+    private void deleteFromCache(Animal animal) {
         animalCacheRepository.deleteAnimal(animal);
         animalCacheRepository.decreaseTotalNumberOfAnimals();
     }
