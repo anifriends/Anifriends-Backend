@@ -69,7 +69,8 @@ public class AnimalRedisRepository implements AnimalCacheRepository {
 
     @Override
     public FindAnimalsResponse findAnimals(int size, long count) {
-        Set<Object> cachedResponses = zSetOperations.range(ANIMAL_ZSET_KEY, 0, size - 1L);
+        Set<Object> cachedResponses = requireNonNull(
+            zSetOperations.range(ANIMAL_ZSET_KEY, 0, size - 1L));
         PageInfo pageInfo = PageInfo.of(count, count > size);
 
         if (cachedResponses.size() == size) {
