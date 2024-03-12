@@ -1,5 +1,6 @@
 package com.clova.anifriends.base;
 
+import com.clova.anifriends.domain.animal.repository.AnimalRedisRepository;
 import com.clova.anifriends.domain.animal.repository.AnimalRepository;
 import com.clova.anifriends.domain.applicant.repository.ApplicantRepository;
 import com.clova.anifriends.domain.chat.repository.ChatMessageRepository;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 
@@ -63,6 +65,9 @@ public abstract class BaseIntegrationTest extends TestContainerStarter {
     protected AnimalRepository animalRepository;
 
     @Autowired
+    protected AnimalRedisRepository animalRedisRepository;
+
+    @Autowired
     protected DonationRepository donationRepository;
 
     @Autowired
@@ -70,6 +75,9 @@ public abstract class BaseIntegrationTest extends TestContainerStarter {
 
     @Autowired
     protected PaymentClient paymentClient;
+
+    @Autowired
+    protected RedisTemplate<String, Object> redisTemplate;
 
     @MockBean
     protected ApiService apiService;

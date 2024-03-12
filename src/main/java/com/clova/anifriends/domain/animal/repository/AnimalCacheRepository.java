@@ -12,7 +12,7 @@ public interface AnimalCacheRepository {
 
     void saveAnimal(Animal animal);
 
-    void deleteAnimal(Animal animal);
+    long deleteAnimal(Animal animal);
 
     FindAnimalsResponse findAnimals(int size, long count);
 
