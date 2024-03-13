@@ -253,7 +253,6 @@ class RecruitmentServiceTest {
                 given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                     isClosed, keywordCondition))
                     .willReturn(Long.valueOf(recruitments.getSize()));
-                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(-1L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsByVolunteer
@@ -298,7 +297,6 @@ class RecruitmentServiceTest {
                 given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                     isClosed, keywordCondition))
                     .willReturn(Long.valueOf(recruitments.getSize()));
-                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(-1L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsByVolunteer
@@ -328,7 +326,6 @@ class RecruitmentServiceTest {
                     .willReturn(recruitments);
                 given(recruitmentRepository.countFindRecruitmentsV2(keyword, startDate, endDate,
                     isClosed, keywordCondition)).willReturn(Long.valueOf(recruitments.getSize()));
-                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(-1L);
 
                 //when
                 FindRecruitmentsResponse recruitmentsByVolunteer
@@ -355,7 +352,7 @@ class RecruitmentServiceTest {
             final Long nullRecruitmentId = null;
 
             @Test
-            @DisplayName("성공: 캐시된 봉사 모집글 목록 사이즈가 요청 사이즈를 초과하는 경우 캐시된 목록을 이용")
+            @DisplayName("성공: 캐시 저장소에서 조회를 수행한다.")
             void findRecruitmentsWhenCached() {
                 //given
                 List<Recruitment> recruitments = RecruitmentFixture.recruitments(shelter, 20);
@@ -363,13 +360,12 @@ class RecruitmentServiceTest {
                     .map(FindRecruitmentResponse::from).toList();
                 PageRequest pageRequest = PageRequest.of(0, 10);
                 boolean hasNext = true;
-                SliceImpl<FindRecruitmentResponse> cachedRecruitments
-                    = new SliceImpl<>(recruitmentResponses, pageRequest, hasNext);
+                FindRecruitmentsResponse response = new FindRecruitmentsResponse(
+                    recruitmentResponses,
+                    PageInfo.of(recruitments.size(), hasNext));
 
-                given(recruitmentCacheRepository.findRecruitments(any(PageRequest.class)))
-                    .willReturn(cachedRecruitments);
-                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(10L);
-                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(10L);
+                given(recruitmentCacheRepository.findRecruitments(pageRequest.getPageSize()))
+                    .willReturn(response);
 
                 //when
                 FindRecruitmentsResponse recruitmentsV2 = recruitmentService.findRecruitmentsV2(
@@ -377,42 +373,9 @@ class RecruitmentServiceTest {
                     nullCreatedAt, nullRecruitmentId, pageRequest);
 
                 //then
-                then(recruitmentCacheRepository).should().findRecruitments(pageRequest);
+                then(recruitmentCacheRepository).should()
+                    .findRecruitments(pageRequest.getPageSize());
                 then(recruitmentRepository).should(times(0))
-                    .findRecruitmentsV2(nullKeyword, nullStartDate, nullEndDate, nullIsClosed,
-                        nullKeywordCondition, nullCreatedAt, nullRecruitmentId, pageRequest);
-            }
-
-            @Test
-            @DisplayName("성공: 캐신된 봉사 모집글 사이즈가 요청 사이즈 이하인 경우 캐시된 목록을 이용하지 않음")
-            void findRecruitmentsWhenCachedSizeLTRequestPageSize() {
-                //given
-                List<Recruitment> recruitments = RecruitmentFixture.recruitments(shelter, 10);
-                List<FindRecruitmentResponse> recruitmentResponses = recruitments.stream()
-                    .map(FindRecruitmentResponse::from).toList();
-                PageRequest pageRequest = PageRequest.of(0, 10);
-                boolean hasNext = false;
-                SliceImpl<FindRecruitmentResponse> cachedRecruitments = new SliceImpl<>(
-                    recruitmentResponses, pageRequest, hasNext);
-                SliceImpl<Recruitment> findRecruitments = new SliceImpl<>(recruitments, pageRequest,
-                    hasNext);
-
-                given(recruitmentCacheRepository.findRecruitments(pageRequest))
-                    .willReturn(cachedRecruitments);
-                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(10L);
-                given(recruitmentRepository.findRecruitmentsV2(nullKeyword, nullStartDate,
-                    nullEndDate, nullIsClosed, nullKeywordCondition, nullCreatedAt, nullRecruitmentId,
-                    pageRequest)).willReturn(findRecruitments);
-                given(recruitmentCacheRepository.getRecruitmentCount()).willReturn(10L);
-
-                //when
-                FindRecruitmentsResponse recruitmentsV2 = recruitmentService.findRecruitmentsV2(
-                    nullKeyword, nullStartDate, nullEndDate,
-                    nullIsClosed, nullKeywordCondition, nullCreatedAt, nullRecruitmentId, pageRequest);
-
-                //then
-                then(recruitmentCacheRepository).should().findRecruitments(pageRequest);
-                then(recruitmentRepository).should()
                     .findRecruitmentsV2(nullKeyword, nullStartDate, nullEndDate, nullIsClosed,
                         nullKeywordCondition, nullCreatedAt, nullRecruitmentId, pageRequest);
             }
