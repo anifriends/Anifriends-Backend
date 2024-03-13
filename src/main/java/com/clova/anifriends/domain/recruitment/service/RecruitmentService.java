@@ -141,8 +141,7 @@ public class RecruitmentService {
         Pageable pageable
     ) {
         if (isFirstPage(keyword, startDate, endDate, isClosed, keywordCondition, recruitmentId)) {
-            return recruitmentCacheRepository.findRecruitments(pageable.getPageSize()
-            );
+            return recruitmentCacheRepository.findRecruitments(pageable.getPageSize());
         }
 
         long count = recruitmentRepository.countFindRecruitmentsV2(

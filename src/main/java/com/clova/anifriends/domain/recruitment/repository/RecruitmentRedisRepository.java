@@ -59,7 +59,7 @@ public class RecruitmentRedisRepository implements RecruitmentCacheRepository {
     }
 
     private void trimCache() {
-        cachedRecruitments.removeRange(RECRUITMENT_KEY, 0, -MAX_CACHED_SIZE - 1);
+        cachedRecruitments.removeRange(RECRUITMENT_KEY, ZERO, -MAX_CACHED_SIZE - 1L);
     }
 
     /**
@@ -71,7 +71,7 @@ public class RecruitmentRedisRepository implements RecruitmentCacheRepository {
     @Override
     public FindRecruitmentsResponse findRecruitments(int size) {
         Set<FindRecruitmentResponse> recruitments = Objects.requireNonNull(
-            cachedRecruitments.reverseRange(RECRUITMENT_KEY, ZERO, size - 1));
+            cachedRecruitments.reverseRange(RECRUITMENT_KEY, ZERO, size - 1L));
         long count = getTotalNumberOfRecruitments();
         PageInfo pageInfo = PageInfo.of(count, count > size);
         if (recruitments.size() >= size) {
