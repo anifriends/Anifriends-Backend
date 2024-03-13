@@ -17,6 +17,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -120,9 +123,9 @@ class RecruitmentRedisRepositoryTest extends BaseIntegrationTest {
 
             //then
             List<Long> recruitmentIdsDesc = recruitments.stream()
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
+                .limit(30)
                 .map(Recruitment::getRecruitmentId)
-                .filter(i -> i > 70)
-                .sorted(Comparator.reverseOrder())
                 .toList();
 
             Set<FindRecruitmentResponse> findRecruitments = redisTemplate.opsForZSet()
@@ -130,6 +133,44 @@ class RecruitmentRedisRepositoryTest extends BaseIntegrationTest {
             assertThat(findRecruitments).hasSize(30);
             assertThat(findRecruitments).map(FindRecruitmentResponse::recruitmentId)
                 .containsExactlyElementsOf(recruitmentIdsDesc);
+        }
+
+        @Test
+        @DisplayName("성공: 동시에 새로운 봉사 모집글이 추가되는 경우 손실되지 않는다.")
+        void doseNotLost() throws InterruptedException {
+            //given
+            int count = 100;
+            int cachedSize = 30;
+            List<Recruitment> recruitments = IntStream.range(0, count)
+                .mapToObj(i -> RecruitmentFixture.recruitment(shelter))
+                .toList();
+            recruitmentRepository.saveAll(recruitments);
+            LocalDateTime now = LocalDateTime.now();
+            int hour = 0;
+            for (Recruitment recruitment : recruitments) {
+                ReflectionTestUtils.setField(recruitment, "createdAt", now.plusHours(hour++));
+            }
+
+            ExecutorService executorService = Executors.newFixedThreadPool(count);
+            CountDownLatch latch = new CountDownLatch(count);
+
+            //when
+            for(int i=0; i<count; i++) {
+                int finalI = i;
+                executorService.submit(() -> {
+                    try {
+                        recruitmentRedisRepository.saveRecruitment(recruitments.get(finalI));
+                    } finally {
+                        latch.countDown();
+                    }
+                });
+            }
+            latch.await();
+
+            //then
+            Set<FindRecruitmentResponse> result = redisTemplate.opsForZSet()
+                .range(RECRUITMENT_KEY, ZERO, ALL_ELEMENT);
+            assertThat(result).hasSize(cachedSize);
         }
     }
 

@@ -59,13 +59,7 @@ public class RecruitmentRedisRepository implements RecruitmentCacheRepository {
     }
 
     private void trimCache() {
-        Set<FindRecruitmentResponse> recruitments
-            = cachedRecruitments.range(RECRUITMENT_KEY, ZERO, UNTIL_LAST_ELEMENT);
-        if (Objects.nonNull(recruitments)) {
-            int needToRemoveSize = recruitments.size() - MAX_CACHED_SIZE;
-            needToRemoveSize = Math.max(needToRemoveSize, ZERO);
-            cachedRecruitments.popMin(RECRUITMENT_KEY, needToRemoveSize);
-        }
+        cachedRecruitments.removeRange(RECRUITMENT_KEY, 0, -MAX_CACHED_SIZE - 1);
     }
 
     /**
@@ -101,6 +95,7 @@ public class RecruitmentRedisRepository implements RecruitmentCacheRepository {
 
     /**
      * 캐시된 봉사 모집글을 제거하고 카운트를 감소시킵니다.
+     *
      * @param recruitment
      * @return
      */
