@@ -1,45 +1,101 @@
+package com.clova.anifriends.domain.animal.repository;
 
-package com.clova.anifriends.domain.animal.service;
-
+import static com.clova.anifriends.domain.animal.support.fixture.AnimalFixture.animals;
+import static com.clova.anifriends.domain.shelter.support.ShelterFixture.shelter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.clova.anifriends.base.BaseIntegrationTest;
 import com.clova.anifriends.domain.animal.Animal;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse.FindAnimalResponse;
-import com.clova.anifriends.domain.animal.repository.AnimalRedisRepository;
 import com.clova.anifriends.domain.animal.support.fixture.AnimalFixture;
 import com.clova.anifriends.domain.shelter.Shelter;
 import com.clova.anifriends.domain.shelter.support.ShelterFixture;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.springframework.test.util.ReflectionTestUtils;
 
-@Transactional
-@Testcontainers
-class AnimalCacheServiceTest extends BaseIntegrationTest {
+class AnimalRedisRepositoryTest extends BaseIntegrationTest {
 
-    private static final String ANIMAL_ZSET_KEY = "animal";
+    private static final String ANIMAL_ZSET_KEY = "animal:animals";
     private static final int ANIMAL_CACHE_SIZE = 30;
 
-    @Autowired
-    private AnimalRedisRepository animalRedisRepository;
-
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
     private ZSetOperations<String, Object> zSetOperations;
 
     @BeforeEach
-    void tearDown() {
+    void beforeEach() {
         zSetOperations = redisTemplate.opsForZSet();
-        redisTemplate.delete(ANIMAL_ZSET_KEY);
+    }
+
+    @Test
+    @DisplayName("성공: 동시에 총 동물 수 증가")
+    void increaseTotalNumberOfAnimals() throws InterruptedException {
+        // given
+        int count = 10;
+
+        // when
+        ExecutorService executorService = Executors.newFixedThreadPool(count);
+        CountDownLatch latch = new CountDownLatch(count);
+
+        // when
+        for (int i = 0; i < count; i++) {
+            executorService.submit(() -> {
+                try {
+                    animalRedisRepository.increaseTotalNumberOfAnimals();
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+        latch.await();
+
+        // then
+        assertThat(redisTemplate.opsForValue().get("animal:total_number")).isEqualTo(count);
+    }
+
+    @Test
+    @DisplayName("성공: 동시에 보호 동물 추가")
+    void saveAnimal() throws InterruptedException {
+        // given
+        int count = 50;
+        int cacheSize = 30;
+        Shelter shelter = shelter();
+        List<Animal> animals = animals(shelter, count);
+        long id = 1;
+        for (Animal animal : animals) {
+            ReflectionTestUtils.setField(animal, "animalId", id++);
+            ReflectionTestUtils.setField(animal, "createdAt", LocalDateTime.now());
+        }
+
+        // when
+        ExecutorService executorService = Executors.newFixedThreadPool(count);
+        CountDownLatch latch = new CountDownLatch(count);
+
+        // when
+        for (int i = 0; i < count; i++) {
+            int finalI = i;
+            executorService.submit(() -> {
+                try {
+                    animalRedisRepository.saveAnimal(animals.get(finalI));
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await();
+
+        // then
+        assertThat(redisTemplate.opsForZSet().range("animal:animals", 0, -1))
+            .hasSize(cacheSize);
     }
 
     @Nested
@@ -50,11 +106,11 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
         @DisplayName("성공: 50개 데이터-> 30개 캐싱")
         void synchronizeCache1() {
             // given
-            Shelter shelter = ShelterFixture.shelter();
+            Shelter shelter = shelter();
             shelterRepository.save(shelter);
 
             int animalCount = 50;
-            List<Animal> animals = AnimalFixture.animals(shelter, animalCount);
+            List<Animal> animals = animals(shelter, animalCount);
             animalRepository.saveAll(animals);
 
             int cachedCount = Math.min(animalCount, ANIMAL_CACHE_SIZE);
@@ -403,4 +459,5 @@ class AnimalCacheServiceTest extends BaseIntegrationTest {
             assertThat(result).containsExactlyInAnyOrderElementsOf(expected);
         }
     }
+
 }

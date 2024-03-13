@@ -8,60 +8,87 @@ import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse;
 import com.clova.anifriends.domain.animal.dto.response.FindAnimalsResponse.FindAnimalResponse;
 import com.clova.anifriends.domain.animal.repository.response.FindAnimalsResult;
 import com.clova.anifriends.domain.common.PageInfo;
-import jakarta.annotation.PostConstruct;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@RequiredArgsConstructor
 public class AnimalRedisRepository implements AnimalCacheRepository {
 
-    private static final String ANIMAL_ZSET_KEY = "animal";
-    private static final String TOTAL_NUMBER_OF_ANIMALS_KEY = "total_number_of_animals";
+    private static final String ANIMAL_ZSET_KEY = "animal:animals";
+    private static final String TOTAL_NUMBER_OF_ANIMALS_KEY = "animal:total_number";
     private static final int ANIMAL_CACHE_SIZE = 30;
-    private static final long LAST_INDEX = 1L;
+    private static final long LAST_INDEX = -1;
     public static final double NANO = 1_000_000_000.0;
 
-    private final RedisTemplate<String, Object> redisTemplate;
     private final AnimalRepository animalRepository;
 
-    private ZSetOperations<String, Object> zSetOperations;
+    private final ZSetOperations<String, Object> zSetOperations;
+    private final ValueOperations<String, Object> valueOperations;
 
-    @PostConstruct
-    public void init() {
-        zSetOperations = redisTemplate.opsForZSet();
+
+    public AnimalRedisRepository(
+        RedisTemplate<String, Object> redisTemplate,
+        AnimalRepository animalRepository
+    ) {
+        this.animalRepository = animalRepository;
+        this.zSetOperations = redisTemplate.opsForZSet();
+        this.valueOperations = redisTemplate.opsForValue();
     }
 
     public void synchronizeCache() {
-        zSetOperations.removeRange(ANIMAL_ZSET_KEY, 0, -1);
-        Pageable pageable = PageRequest.of(0, ANIMAL_CACHE_SIZE);
-        Slice<FindAnimalsResult> animals = animalRepository.findAnimalsV2(null, null, null, null,
-            null, null, null, null, pageable);
+        zSetOperations.removeRange(ANIMAL_ZSET_KEY, 0, LAST_INDEX);
+
+        Slice<FindAnimalsResult> animals = getFindAnimalsResults();
         animals.forEach(this::saveAnimal);
+
         long dbCount = animalRepository.countAllAnimalsExceptAdopted();
-        redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, dbCount);
+        valueOperations.set(TOTAL_NUMBER_OF_ANIMALS_KEY, dbCount);
     }
 
     @Override
     public Long getTotalNumberOfAnimals() {
-        Object cachedCount = redisTemplate.opsForValue().get(TOTAL_NUMBER_OF_ANIMALS_KEY);
+        Object cachedCount = valueOperations.get(TOTAL_NUMBER_OF_ANIMALS_KEY);
         if (Objects.nonNull(cachedCount)) {
             return ((Integer) cachedCount).longValue();
         }
         long dbCount = animalRepository.countAllAnimalsExceptAdopted();
-        redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, dbCount);
+        valueOperations.set(TOTAL_NUMBER_OF_ANIMALS_KEY, dbCount);
         return dbCount;
+    }
+
+    @Override
+    public FindAnimalsResponse findAnimals(int size, long count) {
+        Set<Object> cachedResponses = requireNonNull(
+            zSetOperations.range(ANIMAL_ZSET_KEY, 0, size - 1L));
+        PageInfo pageInfo = PageInfo.of(count, count > size);
+
+        if (cachedResponses.size() == size) {
+            List<FindAnimalResponse> responses = requireNonNull(cachedResponses).stream()
+                .map(FindAnimalResponse.class::cast)
+                .toList();
+            return new FindAnimalsResponse(pageInfo, responses);
+        }
+
+        zSetOperations.removeRange(ANIMAL_ZSET_KEY, 0, LAST_INDEX);
+
+        Slice<FindAnimalsResult> animalsResult = getFindAnimalsResults();
+        animalsResult.forEach(this::saveAnimal);
+
+        List<FindAnimalResponse> responses = animalsResult.stream()
+            .map(FindAnimalResponse::from)
+            .toList();
+        return new FindAnimalsResponse(pageInfo, responses);
     }
 
     @Override
@@ -79,34 +106,20 @@ public class AnimalRedisRepository implements AnimalCacheRepository {
     }
 
     @Override
-    public void deleteAnimal(Animal animal) {
+    public long deleteAnimal(Animal animal) {
         FindAnimalResponse findAnimalResponse = FindAnimalResponse.from(animal);
-        zSetOperations.remove(ANIMAL_ZSET_KEY, findAnimalResponse);
-    }
-
-    @Override
-    public FindAnimalsResponse findAnimals(int size, long count) {
-        if (requiresCacheUpdate(size)) {
-            synchronizeCache();
-        }
-        Set<Object> cachedResponses = zSetOperations.range(ANIMAL_ZSET_KEY, 0,
-            size - LAST_INDEX);
-        List<FindAnimalResponse> responses = requireNonNull(cachedResponses).stream()
-            .map(FindAnimalResponse.class::cast)
-            .toList();
-        PageInfo pageInfo = PageInfo.of(count, count > size);
-        return new FindAnimalsResponse(pageInfo, responses);
+        Long number = zSetOperations.remove(ANIMAL_ZSET_KEY, findAnimalResponse);
+        return isNull(number) ? 0 : number;
     }
 
     private void trimCache() {
-        if (zSetOperations.size(ANIMAL_ZSET_KEY) > ANIMAL_CACHE_SIZE) {
-            zSetOperations.removeRange(ANIMAL_ZSET_KEY, LAST_INDEX, LAST_INDEX);
-        }
+        zSetOperations.removeRange(ANIMAL_ZSET_KEY, ANIMAL_CACHE_SIZE, LAST_INDEX);
     }
 
-    private boolean requiresCacheUpdate(int size) {
-        Long count = zSetOperations.size(ANIMAL_ZSET_KEY);
-        return isNull(count) || count < size;
+    private Slice<FindAnimalsResult> getFindAnimalsResults() {
+        Pageable pageable = PageRequest.of(0, ANIMAL_CACHE_SIZE);
+        return animalRepository.findAnimalsV2(null, null, null,
+            null, null, null, null, null, pageable);
     }
 
     private double getScore(LocalDateTime createdAt) {
@@ -116,13 +129,11 @@ public class AnimalRedisRepository implements AnimalCacheRepository {
 
     @Override
     public void increaseTotalNumberOfAnimals() {
-        Long cachedCount = getTotalNumberOfAnimals();
-        redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, cachedCount + 1);
+        valueOperations.increment(TOTAL_NUMBER_OF_ANIMALS_KEY);
     }
 
     @Override
     public void decreaseTotalNumberOfAnimals() {
-        Long cachedCount = getTotalNumberOfAnimals();
-        redisTemplate.opsForValue().set(TOTAL_NUMBER_OF_ANIMALS_KEY, cachedCount - 1);
+        valueOperations.decrement(TOTAL_NUMBER_OF_ANIMALS_KEY);
     }
 }
