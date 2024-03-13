@@ -1,25 +1,28 @@
 #!/bin/bash
 
-BUILD_JAR=$(ls /home/ec2-user/app/deploy/build/libs/*.jar)
-JAR_NAME=$(basename $BUILD_JAR)
-echo ">>> build 파일명: $JAR_NAME" >> /home/ec2-user/app/deploy/deploy.log
+# 변수 설정
+build_jar=$(ls /home/ubuntu/app/deploy/build/libs/*.jar)
+jar_name=$(basename "$build_jar")
+deploy_path=/home/ubuntu/app/deploy/
+deploy_log=$deploy_path/deloy.log
 
-echo ">>> build 파일 복사" >> /home/ec2-user/app/deploy/deploy.log
-DEPLOY_PATH=/home/ec2-user/app/deploy/
-cp $BUILD_JAR $DEPLOY_PATH
+echo ">>> build 파일명: $jar_name" >> $deploy_log
 
-echo ">>> 현재 실행중인 애플리케이션 pid 확인" >> /home/ec2-user/app/deploy/deploy.log
-CURRENT_PID=$(pgrep -f $JAR_NAME)
+echo ">>> build 파일 복사" >> $deploy_log
+cp "$build_jar" $deploy_path
 
-if [ -z $CURRENT_PID ]
+echo ">>> 현재 실행중인 애플리케이션 pid 확인" >> $deploy_log
+CURRENT_PID=$(pgrep -f "$jar_name")
+
+if [ -z "$CURRENT_PID" ]
 then
-  echo ">>> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다." >> /home/ec2-user/app/deploy/deploy.log
+  echo ">>> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다." >> $deploy_log
 else
-  echo ">>> kill -15 $CURRENT_PID"
-  kill -15 $CURRENT_PID
+  echo ">>> kill -15 $CURRENT_PID" >> $deploy_log
+  kill -15 "$CURRENT_PID"
   sleep 5
 fi
 
-DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
-echo ">>> DEPLOY_JAR 배포"    >> /home/ec2-user/app/deploy/deploy.log
-nohup java -jar $DEPLOY_JAR --spring.profiles.active=dev >> /home/ec2-user/deploy.log 2>/home/ec2-user/app/deploy/deploy_err.log &
+DEPLOY_JAR=$deploy_path$jar_name
+echo ">>> DEPLOY_JAR 배포"    >> $deploy_log
+nohup java -jar "$DEPLOY_JAR" --spring.profiles.active=dev >> /home/ubuntu/app.log 2>$deploy_path/deploy_err.log &

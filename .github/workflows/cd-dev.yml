@@ -2,7 +2,8 @@ name: cd-dev-docker
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "blank" ]
+#      - dev
 
 jobs:
   build:
