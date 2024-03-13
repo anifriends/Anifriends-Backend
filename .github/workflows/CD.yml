@@ -2,7 +2,7 @@ name: CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "develop", "main" ]
 
 jobs:
   build:
@@ -45,14 +45,14 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://team07-bucket/anifriends/$GITHUB_SHA.zip
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://anifriends-s3/deploy/$GITHUB_SHA.zip
 
       - name: Deploy
         run: |
           aws deploy create-deployment \
-          --application-name team07-deploy \
+          --application-name anifriends \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
-          --deployment-group-name team07 \
+          --deployment-group-name anifriends \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=team07-bucket,bundleType=zip,key=anifriends/$GITHUB_SHA.zip \
+          --s3-location bucket=anifriends-s3,bundleType=zip,key=deploy/$GITHUB_SHA.zip \
           --region ap-northeast-2 \
