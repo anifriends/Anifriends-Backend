@@ -9,11 +9,15 @@ jwt:
   secret: ThisIsJustTestSecretSoDontWorryItsOnlyForTest
   refresh-expiry-seconds: 100000
   refresh-secret: ThisIsJustTestRefreshSecretSoDontWorryItsOnlyForTest
+
+scheduler:
+  enabled: false
+
 spring:
   datasource:
     driver-class-name: org.h2.Driver
     username: sa
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb;MODE=MYSQL;
   jpa:
     properties:
       hibernate:

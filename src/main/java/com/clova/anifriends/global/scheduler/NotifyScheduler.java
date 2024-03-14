@@ -4,9 +4,7 @@ import com.clova.anifriends.domain.notification.service.ShelterNotificationServi
 import com.clova.anifriends.domain.notification.service.VolunteerNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
-@Component
 @RequiredArgsConstructor
 public class NotifyScheduler {
 
