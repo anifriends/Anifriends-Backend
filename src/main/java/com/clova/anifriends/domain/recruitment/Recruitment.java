@@ -67,6 +67,7 @@ public class Recruitment extends BaseTimeEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Embedded
     private RecruitmentApplicantCount applicantCount = new RecruitmentApplicantCount(0);
 
     public Recruitment(
