@@ -173,9 +173,11 @@ public class RecruitmentService {
     @Transactional
     public void closeRecruitment(Long shelterId, Long recruitmentId) {
         Recruitment recruitment = getRecruitmentByShelter(shelterId, recruitmentId);
-        recruitmentCacheRepository.deleteRecruitment(recruitment);
+        long deleted = recruitmentCacheRepository.deleteRecruitment(recruitment);
         recruitment.closeRecruitment();
-        recruitmentCacheRepository.saveRecruitment(recruitment);
+        if(deleted > 0) {
+            recruitmentCacheRepository.saveRecruitment(recruitment);
+        }
     }
 
     @Transactional
@@ -191,7 +193,7 @@ public class RecruitmentService {
         List<String> imageUrls
     ) {
         Recruitment recruitment = getRecruitmentByShelterWithImages(shelterId, recruitmentId);
-        recruitmentCacheRepository.deleteRecruitment(recruitment);
+        long deleted = recruitmentCacheRepository.deleteRecruitment(recruitment);
 
         List<String> imagesToDelete = recruitment.findImagesToDelete(imageUrls);
         applicationEventPublisher.publishEvent(new ImageDeletionEvent(imagesToDelete));
@@ -205,7 +207,9 @@ public class RecruitmentService {
             content,
             imageUrls
         );
-        recruitmentCacheRepository.saveRecruitment(recruitment);
+        if(deleted > 0) {
+            recruitmentCacheRepository.saveRecruitment(recruitment);
+        }
     }
 
     @Transactional

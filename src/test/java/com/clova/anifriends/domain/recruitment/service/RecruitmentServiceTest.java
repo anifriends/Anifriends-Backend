@@ -516,6 +516,40 @@ class RecruitmentServiceTest {
             //then
             assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
         }
+
+        @Test
+        @DisplayName("성공: 캐시 되어있던 봉사 모집글이 아니면 캐시 추가를 호출하지 않는다.")
+        void doesNotInvokeCacheSave_WhenNotExistsInCache() {
+            //given
+            given(recruitmentRepository.findByShelterIdAndRecruitmentId(anyLong(), anyLong()))
+                .willReturn(Optional.ofNullable(recruitment));
+            given(recruitmentCacheRepository.deleteRecruitment(any()))
+                .willReturn(0L);
+
+            //when
+            recruitmentService.closeRecruitment(1L, 1L);
+
+            //then
+            then(recruitmentCacheRepository).should(times(0))
+                .saveRecruitment(any());
+        }
+
+        @Test
+        @DisplayName("성공: 캐시 되어있던 봉사 모집글이면 캐시 추가를 호출한다.")
+        void invokeCacheSave_WhenExistsInCache() {
+            //given
+            given(recruitmentRepository.findByShelterIdAndRecruitmentId(anyLong(), anyLong()))
+                .willReturn(Optional.ofNullable(recruitment));
+            given(recruitmentCacheRepository.deleteRecruitment(any()))
+                .willReturn(1L);
+
+            //when
+            recruitmentService.closeRecruitment(1L, 1L);
+
+            //then
+            then(recruitmentCacheRepository).should(times(1)).
+                saveRecruitment(any());
+        }
     }
 
     @Nested
@@ -586,6 +620,56 @@ class RecruitmentServiceTest {
 
             //then
             assertThat(exception).isInstanceOf(RecruitmentNotFoundException.class);
+        }
+
+        @Test
+        @DisplayName("성공: 캐시 되어있던 봉사 모집글이 아니면 캐시 추가를 호출하지 않는다.")
+        void doesNotInvokeCacheSave_WhenNotExistsInCache() {
+            //given
+            String newTitle = recruitment.getTitle() + "a";
+            LocalDateTime newStartTime = recruitment.getStartTime().plusDays(1);
+            LocalDateTime newEndTime = recruitment.getEndTime().plusDays(1);
+            LocalDateTime newDeadline = recruitment.getDeadline().plusDays(1);
+            int newCapacity = recruitment.getCapacity() + 1;
+            String newContent = recruitment.getContent() + "a";
+            List<String> newImageUrls = List.of("a1", "a2");
+
+            given(recruitmentRepository.findByShelterIdAndRecruitmentIdWithImages(anyLong(),
+                anyLong())).willReturn(Optional.ofNullable(recruitment));
+            given(recruitmentCacheRepository.deleteRecruitment(any())).willReturn(0L);
+
+            //when
+            recruitmentService.updateRecruitment(1L, 1L,
+                newTitle, newStartTime, newEndTime, newDeadline, newCapacity, newContent,
+                newImageUrls);
+
+            //then
+            then(recruitmentCacheRepository).should(times(0)).saveRecruitment(any());
+        }
+
+        @Test
+        @DisplayName("성공: 캐시 되어있던 봉사 모집글이면 캐시 추가를 호출한다.")
+        void invokeCacheSave_WhenExistsInCache() {
+            //given
+            String newTitle = recruitment.getTitle() + "a";
+            LocalDateTime newStartTime = recruitment.getStartTime().plusDays(1);
+            LocalDateTime newEndTime = recruitment.getEndTime().plusDays(1);
+            LocalDateTime newDeadline = recruitment.getDeadline().plusDays(1);
+            int newCapacity = recruitment.getCapacity() + 1;
+            String newContent = recruitment.getContent() + "a";
+            List<String> newImageUrls = List.of("a1", "a2");
+
+            given(recruitmentRepository.findByShelterIdAndRecruitmentIdWithImages(anyLong(),
+                anyLong())).willReturn(Optional.ofNullable(recruitment));
+            given(recruitmentCacheRepository.deleteRecruitment(any())).willReturn(1L);
+
+            //when
+            recruitmentService.updateRecruitment(1L, 1L,
+                newTitle, newStartTime, newEndTime, newDeadline, newCapacity, newContent,
+                newImageUrls);
+
+            //then
+            then(recruitmentCacheRepository).should(times(1)).saveRecruitment(any());
         }
     }
 
